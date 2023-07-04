@@ -1,0 +1,38 @@
+#mynetwork {
+    width: 1000px;
+    height: 600px;
+    border: 1px solid lightgray;
+}
+
+body {
+    font-family: Arial
+}
+
+.tablesmall {
+    font-size: 0.5em;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+.th_compact {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.td_compact {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.tr_compact:nth-child(even) {
+    background-color: #DCDCCA;
+}
+
+.tr_compact:nth-child(odd) {
+    background-color: #EEEEEB;
+}
+
+.center {
+    margin: 0 auto;
+    text-align: center;
+}
