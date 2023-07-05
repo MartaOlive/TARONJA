@@ -5,7 +5,7 @@
 
 	<title>Sensor Things API plus Explorer</title>
 	<script type="text/javascript" src="vis.min.js"></script>
-	
+
 	<link rel="stylesheet" href="vis.min.css">
 	<link rel="stylesheet" href="general.css">
 
@@ -120,7 +120,7 @@
 			for (var i = 0; i < STAObjects.length; i++)
 				s += "<button onclick='addCircularImage(null, null, \"" + STAObjects[i] + "\", \"" + STAObjects[i] + ".png\");'><img src='" + STAObjects[i] + ".png' height='20' valign='middle'> " + STAObjects[i] + "</button> ";
 			s += "<br>";
-			
+
 			for (var i = 0; i < TableOperations.length; i++)
 				s += "<button onclick='addCircularImage(null, null, \"" + TableOperations[i] + "\", \"" + TableOperations[i] + ".png\");'><img src='" + TableOperations[i] + ".png' height='20' valign='middle'> " + TableOperationsDesc[i] + "</button></br>";
 
@@ -150,7 +150,7 @@
 				return;
 			}
 			// Uses the 'optional chaining' operator
-			if (!(response?.ok)) { // si ok no està definit no genea un problema
+			if (!(response?.ok)) { // si ok no està definit no genera un problema
 				document.getElementById("clarification").innerHTML = "HTTP Response Code: " + response?.status + " reading <small>" + node.STAURL + "</small>: " + response?.statusText;
 				console.log("HTTP Response Code: " + response?.status + ": " + response?.statusText);
 				node.data = null;
@@ -215,7 +215,7 @@
 			}
 			if (a < dataAttributes.length) {
 				var s;
-				currentNode.STAURL += "?$select="
+				currentNode.STAURL += "?$select=" //Construirà la consulta select de la API
 				for (var a = 0; a < dataAttributes.length; a++) {
 					if (document.getElementById("SelectColumn_" + a).checked) {
 						if (dataAttributes[a].startsWith("@iot."))
@@ -259,6 +259,8 @@
 				}
 				if (i < elems.length) {
 					const s = elems[i].id.substring("SelectRow_".length);
+					console.log(elems[i].id);
+					console.log(s);
 					const n = Number(s);
 					if (Number.isInteger(n))
 						currentNode.STAURL += "(" + n + ")";
@@ -443,6 +445,7 @@
 							var nodeFrom = networkNodes.get(data.from);
 							if (nodeFrom.STAURL && IdOfSTAObject(nodeTo) != -1) {
 								var startingNode = networkNodes.get(startingNodeContextId);
+								alert("startedIdContext: "+startingNodeContextId);
 								nodeTo.STAURL = nodeFrom.STAURL + "/" + STAObjects[IdOfSTAObject(nodeTo)];
 								networkNodes.update(nodeTo); //dibuixa la ratlla
 								LoadJSONData(nodeTo);//està fent la nova peticio
