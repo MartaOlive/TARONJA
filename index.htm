@@ -78,6 +78,8 @@
 						height="20" valign="middle"> Add a STA service</button><br>
 				<span id="ButtonsContextMenuObjects"></span>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button><br>
+				<button onclick='giveMeNodeInformation(event, "DialogContextMenu")'>Node Info</button><br>
+				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
 			</p>
 			<div class="center">
 				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
@@ -113,8 +115,9 @@
 		const STAObjects = ["ObservedProperties", "Sensors", "Observations", "FeaturesOfInterest", "Things", "Locations", "HistoricalLocations", "Projects", "Licenses", "Parties", "Groups", "Relations", "Datastreams", "MultiDatastreams"];
 		const TableOperations = ["Table", "SelectColumns", "SelectRows"];
 		const TableOperationsDesc = ["View Table", "Select Columns", "Select Rows"];
+		
 
-		function StartSTAPage() { //Crea els botons
+		function StartSTAPage() { //Crea els botons (A la pàgina i a l'OnContext)
 			var s = "";
 
 			for (var i = 0; i < STAObjects.length; i++)
@@ -159,6 +162,7 @@
 			}
 			try {
 				jsonData = await response.json();
+			
 			} catch (error) {
 				if (error instanceof SyntaxError) {
 					document.getElementById("clarification").innerHTML = 'Syntax error reading ' + node.STAURL + ": " + error.message;
@@ -176,6 +180,7 @@
 				}
 			}
 			node.data = (jsonData.value) ? jsonData.value : [jsonData]; //carregues tota la info al node 
+			// node.ATTRIBUTTES=[];
 			networkNodes.update(node);
 		}
 
@@ -209,26 +214,40 @@
 					currentNode.data = node.data;
 			}
 			var dataAttributes = getDataAttributes(currentNode.data);
+			// console.log("dataAttributes: "+dataAttributes);
 			for (var a = 0; a < dataAttributes.length; a++) {
-				if (!document.getElementById("SelectColumn_" + a).checked)
+				console.log(a);
+				if (!document.getElementById("SelectColumn_" + a).checked){
+					
 					break;
+				}
+					
 			}
-			if (a < dataAttributes.length) {
+			console.log(a);
+			
+			if (a < dataAttributes.length||a==dataAttributes.length) {	
 				var s;
+				var chekedDataAttributes=[];
+				console.log("Checked");
 				currentNode.STAURL += "?$select=" //Construirà la consulta select de la API
 				for (var a = 0; a < dataAttributes.length; a++) {
 					if (document.getElementById("SelectColumn_" + a).checked) {
+						chekedDataAttributes.push(dataAttributes[a]);
 						if (dataAttributes[a].startsWith("@iot."))
 							s = dataAttributes[a].substring(5);
 						else
 							s = dataAttributes[a].replace("@iot.", "/");  //Changes Datastreams@iot.navigationLink to Datastreams/navigationLink
 						currentNode.STAURL += s + ",";
+						
 					}
 				}
-				currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.		
+				
+				currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.	
+				currentNode.ATTRIBUTTES=chekedDataAttributes; //guardes els atributs al node	
 				networkNodes.update(currentNode);
 				LoadJSONData(currentNode);
 				UpdateChildenSTAURL(currentNode);
+				
 			}
 		}
 
@@ -275,8 +294,7 @@
 			LoadJSONData(currentNode);
 			UpdateChildenSTAURL(currentNode);
 		}
-
-
+		
 		function IdOfSTAObject(node) {
 			for (var i = 0; i < STAObjects.length; i++) {
 				if (node.image == STAObjects[i] + ".png")
@@ -287,8 +305,10 @@
 
 		function UpdateChildenSTAURL(parentNode) {
 			var nodeIds = network.getConnectedNodes(parentNode.id, 'to');
-			for (var i = 0; i < nodeIds.length; i++) {
-				var node = networkNodes.get(nodeIds[i])
+			console.log(nodeIds);
+			for (var i = 0; i < nodeIds.length; i++) { //és necessari el for? Crec que cada cop el nodeId és només un node, el següent
+				var node = networkNodes.get(nodeIds[i]);
+				console.log(i);
 				if (node.STAURL) {
 					if (IdOfSTAObject(node) != -1) {
 						node.STAURL = parentNode.STAURL + "/" + STAObjects[IdOfSTAObject(node)];
@@ -365,8 +385,18 @@
 				false);
 		}
 
-		function ShowTableSelectColumnsDialog(nodeId) {
+		function ShowTableSelectColumnsDialog(nodeId) { ///////////////////////////////////
 			var data = networkNodes.get(nodeId).data;
+			console.log(data);
+			 console.log(networkNodes._data[currentNode.id]);
+			if (currentNode.ATTRIBUTTES)
+			console.log(" té atributs");
+
+			else if (!currentNode.ATTRIBUTTES){
+				console.log(" no té atributs");
+			console.log(currentNode);
+			}
+		
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectColumnsHTML").innerHTML = "No data to show.";
@@ -409,7 +439,7 @@
 			document.getElementById("DialogSelectRowsTable").innerHTML = "";
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
-			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
+			document.getElementById("DialogSelectRowsFilter").innerHTML = ""; //què passarà qual el filter estigui checked
 
 		}
 
@@ -445,7 +475,9 @@
 							var nodeFrom = networkNodes.get(data.from);
 							if (nodeFrom.STAURL && IdOfSTAObject(nodeTo) != -1) {
 								var startingNode = networkNodes.get(startingNodeContextId);
-								alert("startedIdContext: "+startingNodeContextId);
+								// console.log("startingNodecontextId:  " + startingNodeContextId);
+								// console.log("startingNode:  " +startingNode);
+
 								nodeTo.STAURL = nodeFrom.STAURL + "/" + STAObjects[IdOfSTAObject(nodeTo)];
 								networkNodes.update(nodeTo); //dibuixa la ratlla
 								LoadJSONData(nodeTo);//està fent la nova peticio
@@ -472,8 +504,9 @@
 			params.event = "[original event]";
 			document.getElementById("eventSpanHeading").innerText = "doubleClick event:";
 			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
+			
 			if (params.nodes && params.nodes.length && !connectionInProcess) {
-				currentNode = networkNodes.get(params.nodes[0])
+				currentNode = networkNodes.get(params.nodes[0]);
 				if (currentNode.image == "ogc.png") {
 					document.getElementById("DialogSTAURLInput").value = currentNode.STAURL;
 					document.getElementById("DialogSTAURL").showModal();
@@ -483,6 +516,8 @@
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length) {
 						if (networkNodes.get(nodeids[0])) {
+							// console.log(networkNodes);
+							// console.log(networkNodes.get(nodeids[0]));
 							var data = networkNodes.get(nodeids[0]).data;
 							if (data && data.length)
 								document.getElementById("DialogOKOptions").innerHTML = "<label><input type='checkbox' checked='checked' id='ShowTableRowNumberDialogOK' onChange='ShowTableDialog(\"" + nodeids[0] + "\");'/> Show row numbers</label>";
@@ -521,6 +556,7 @@
 			params.event.preventDefault();  //https://stackoverflow.com/questions/38258940/open-an-extension-popup-html-list-on-right-click-of-node-contextmenu-in-visj
 
 			var nodeId = network.getNodeAt(params.pointer.DOM); //params.nodes is not useful here as params.nodes are the selected ones and not the ones rightclicked.
+			currentNode = networkNodes.get(params.nodes[0]);
 			if (nodeId) {
 				startingNodeContextId = nodeId;
 				document.getElementById("DialogContextMenu").showModal();
@@ -532,8 +568,8 @@
 		network.on("dragStart", function (params) {
 			// There's no point in displaying this event on screen, it gets immediately overwritten
 			params.event = "[original event]";
-			console.log("dragStart Event:", params);
-			console.log("dragStart event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
+			//console.log("dragStart Event:", params);
+			//console.log("dragStart event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
 		});
 		network.on("dragging", function (params) {
 			params.event = "[original event]";
@@ -544,13 +580,14 @@
 			params.event = "[original event]";
 			document.getElementById("eventSpanHeading").innerText = "dragEnd event:";
 			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
-			console.log("dragEnd Event:", params);
-			console.log("dragEnd event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
+			//console.log("dragEnd Event:", params);
+			//console.log("dragEnd event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
 		});
 		network.on("controlNodeDragging", function (params) {
 			params.event = "[original event]";
 			document.getElementById("eventSpanHeading").innerText = "control node dragging event:";
 			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
+
 		});
 		network.on("controlNodeDragEnd", function (params) {
 			params.event = "[original event]";
@@ -567,34 +604,36 @@
 			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
 		});
 		network.on("hidePopup", function () {
-			console.log("hidePopup Event");
+			//console.log("hidePopup Event");
 		});
 		network.on("select", function (params) {
-			console.log("select Event:", params);
+			//console.log("select Event:", params);
+
 		});
 		network.on("selectNode", function (params) {
-			console.log("selectNode Event:", params);
+			//console.log("selectNode Event:", params);
 		});
 		network.on("selectEdge", function (params) {
-			console.log("selectEdge Event:", params);
+			//console.log("selectEdge Event:", params);
 		});
 		network.on("deselectNode", function (params) {
-			console.log("deselectNode Event:", params);
+			//console.log("deselectNode Event:", params);
 		});
 		network.on("deselectEdge", function (params) {
-			console.log("deselectEdge Event:", params);
+			//console.log("deselectEdge Event:", params);
 		});
 		network.on("hoverNode", function (params) {
-			console.log("hoverNode Event:", params);
+
+			//console.log("hoverNode Event:", params);
 		});
 		network.on("hoverEdge", function (params) {
-			console.log("hoverEdge Event:", params);
+			//console.log("hoverEdge Event:", params);
 		});
 		network.on("blurNode", function (params) {
-			console.log("blurNode Event:", params);
+			//console.log("blurNode Event:", params);
 		});
 		network.on("blurEdge", function (params) {
-			console.log("blurEdge Event:", params);
+			//console.log("blurEdge Event:", params);
 		});
 
 
@@ -606,10 +645,12 @@
 			var newId = (Math.random() * 1e7).toString(32);
 			var node = { id: newId, label: label, image: image, shape: "circularImage" };
 			if (image == "ogc.png")
-				node.STAURL = "https://cos4cloud.demo.secure-dimensions.de/staplus/v1.1";
+				node.STAURL ="https://citiobs.demo.secure-dimensions.de/staplus/v1.1/"; //"https://iot.hamburg.de/v1.1"; //"https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
+
 			else if (startingNodeContextId && IdOfSTAObject(node) != -1) {
 				var startingNode = networkNodes.get(startingNodeContextId);
 				node.STAURL = startingNode.STAURL + "/" + STAObjects[IdOfSTAObject(node)];
+				
 			}
 			else if (image == "SelectColumns.png" || image == "SelectRows.png") {
 				var startingNode = networkNodes.get(startingNodeContextId);
@@ -643,6 +684,24 @@
 			network.addEdgeMode();
 			connectionInProcess = true;
 			document.getElementById("clarification").innerHTML = "Press the mouse botton on the starting node, and drag and drop the mouse on the end node.";
+		}
+		
+		function giveMeNodeInformation(event){
+			console.log (event);
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			
+			if (startingNodeContextId) {
+				console.log(startingNodeContextId);
+				console.log(currentNode);
+				
+			}
+		}
+
+		function giveMeNetworkInformation(event){
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			console.log(networkNodes);
 		}
 
 	</script>
