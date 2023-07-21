@@ -242,14 +242,10 @@
 		function GetSelectColumns(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectColumns").close();
-			// console.log("GetSelectedColums");
 
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			// console.log(currentNode.id);
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
 				var node = networkNodes.get(nodeids[0]); //info del node anterior
-				// console.log("Anterior URL:  " + node.STAURL);
-				// console.log("current: " + currentNode.STAURL);
 				if (node.STAURL)
 					currentNode.STAURL = node.STAURL;
 				if (node.data)
@@ -407,7 +403,6 @@
 
 
 		}
-
 		function GetHTMLTable(data, rowNumbers, rowChecks) {
 			var dataAttributes = getDataAttributes(data);
 

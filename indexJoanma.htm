@@ -352,6 +352,7 @@
 
 		function getDataAttributes(data) {
 			var dataAttributes = [], s;
+			console.log(data);
 
 			for (var i = 0; i < data.length; i++) {
 				var keys = Object.keys(data[i]);
@@ -366,7 +367,34 @@
 			}
 			return dataAttributes;
 		}
+        function createSelectorRowFilter() {
 
+}
+
+
+function GetSelectorsForRowFilter(nodeId) {
+    console.log("getselectorsForRowsFilter:  " + nodeId);
+    var data = networkNodes.get(nodeId).STAdata;
+    var selectorStructure, dataAttributes;
+    dataAttributes = getDataAttributes(data); //Atributs per montar el selector
+    console.log(dataAttributes);
+    selectorStructure = "<div class='divSelectorRowsFilter'><label for='cars'>Choose a Category:</label><br><select name='keys' id='keySelector_1'>";
+
+    for (let i = 0; i < dataAttributes.length; i++) {
+        console.log(dataAttributes[i]);
+
+        // selectorStructure += "< option value =" + dataAttributes[i] + ">" + dataAttributes[i] + "</option >"
+        selectorStructure += "<option value=" + dataAttributes[i] + ">" + dataAttributes[i] + "</option>";
+    }
+    selectorStructure += "</select ></div>";
+
+
+
+
+    return selectorStructure;
+
+
+}
 		function GetHTMLTable(data, rowNumbers, rowChecks) {
 			var dataAttributes = getDataAttributes(data);
 
@@ -458,8 +486,7 @@
 			document.getElementById("DialogSelectRowsTable").innerHTML = "";
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
-			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
-
+            document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
 		}
 
 		function ChangeTableFilterRowsDialog(nodeId) {
@@ -580,7 +607,8 @@
 			params.event.preventDefault();  //https://stackoverflow.com/questions/38258940/open-an-extension-popup-html-list-on-right-click-of-node-contextmenu-in-visj
 
 			var nodeId = network.getNodeAt(params.pointer.DOM); //params.nodes is not useful here as params.nodes are the selected ones and not the ones rightclicked.
-			if (nodeId) {
+			currentNode = networkNodes.get(params.nodes[0]);
+            if (nodeId) {
 				startingNodeContextId = nodeId;
 				document.getElementById("DialogContextMenu").showModal();
 			}
@@ -665,7 +693,7 @@
 			var newId = (Math.random() * 1e7).toString(32);
 			var node = { id: newId, label: label, image: image, shape: "circularImage" };
 			if (image == "ogc.png")
-				node.STAURL = "https://cos4cloud.demo.secure-dimensions.de/staplus/v1.1";
+				node.STAURL = "https://toronto-bike-snapshot.sensorup.com/v1.0";// "https://toronto-bike-snapshot.sensorup.com/v1.0""https://iot.hamburg.de/v1.1"; //"https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
 			else if (startingNodeContextId && IdOfSTAObject(node) != -1) {
 				var startingNode = networkNodes.get(startingNodeContextId);
 				node.STAURL = startingNode.STAURL + "/" + STAObjects[IdOfSTAObject(node)];
@@ -702,6 +730,25 @@
 			network.addEdgeMode();
 			connectionInProcess = true;
 			document.getElementById("clarification").innerHTML = "Press the mouse botton on the starting node, and drag and drop the mouse on the end node.";
+		}
+        function giveMeNodeInformation(event) {
+			console.log(event);
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectColumns").close();
+
+			if (startingNodeContextId) {
+				console.log(startingNodeContextId);
+				console.log(currentNode);
+
+			}
+		}
+
+		function giveMeNetworkInformation(event) {
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectColumns").close();
+			console.log(networkNodes);
 		}
 
 	</script>
