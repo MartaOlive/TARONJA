@@ -446,7 +446,7 @@
 						selectIds.push(selectChild[index]);
 					}
 				}
-				console.log(selectIds);
+				// console.log(selectIds);
 
 				var selectInformation=[];
 
@@ -454,14 +454,22 @@
 					console.log(selectIds[i]);
 					var selector=document.getElementById(selectIds[i].getAttribute("id"));
 					var selectorValue=selector.options[selector.selectedIndex].value;
-					selectInformation.push(selectorValue);
-					
-					
+					selectInformation.push(selectorValue);					
 				}
-				console.log(selectInformation);
+				var node = networkNodes.get(nodeids[0]);
+				// console.log(selectInformation);
 				 
-
+				for (let e = 0; e < selectInformation.length; e++) {
+					currentNode.STAURL += "?$filter="+selectInformation[e]+" eq '"+selectInformation[e+1]+"'";
+					
+					console.log(currentNode.STAURL);
+					e++;
+				}
+				
 			}
+
+
+
 			networkNodes.update(currentNode);
 			LoadJSONData(currentNode);
 			UpdateChildenSTAURL(currentNode);
