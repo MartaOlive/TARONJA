@@ -119,7 +119,7 @@
 			<span id="DialogSelectRowsFilter">
 			</span>
 			<div class="center">
-				<button value="default" onClick="GetSelectRows(event)">OK</button>
+				<button value="default" id="rowSelectorButton" onClick="GetSelectRows(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -435,6 +435,32 @@
 			}
 			else { //El filter està seleccionat
 				alert("TBD");
+					console.log (event);
+				
+				var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
+				var selectChild=divSelectorRowsFilter.childNodes;
+				var selectIds=[]; //llista ids dels selectors
+				for (let index = 0; index < selectChild.length; index++) {
+					var div=index %2;
+					if(div==0 & index!=0){
+						selectIds.push(selectChild[index]);
+					}
+				}
+				console.log(selectIds);
+
+				var selectInformation=[];
+
+				for (let i = 0; i < selectIds.length; i++) { // agafar el valor dels selectors
+					console.log(selectIds[i]);
+					var selector=document.getElementById(selectIds[i].getAttribute("id"));
+					var selectorValue=selector.options[selector.selectedIndex].value;
+					selectInformation.push(selectorValue);
+					
+					
+				}
+				console.log(selectInformation);
+				 
+
 			}
 			networkNodes.update(currentNode);
 			LoadJSONData(currentNode);
@@ -495,10 +521,8 @@
 			// alert(selectedProperty);
 			for (let index = 0; index < data.length; index++) {
 				valor = data[index][selectedProperty];
-
-
 				if (!arrayValors.find(element => element == valor)) {
-					console.log("dins del if")
+					
 					var opcio = document.createElement("option");
 					opcio.setAttribute("value", valor);
 					opcio.innerHTML = valor;
@@ -507,11 +531,6 @@
 				} else {
 					console.log("en el else");
 				}
-
-
-				console.log(index);
-
-
 
 
 			}
@@ -536,7 +555,9 @@
 			selectorStructureRow += "<label for='selectedValue'>Choose a value</label><select name='selectedValue' id='selector2_" + selectorNumber + "' onChange=console.log('OnChange2')>"
 			selectorStructureRow += "</select>";
 
-
+				
+			var okButton=document.getElementById("rowSelectorButton");
+			okButton.setAttribute("name",selectorNumber); 
 
 
 			return selectorStructureRow;
@@ -696,6 +717,7 @@
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = false;
 			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
+
 		}
 
 		function ShowTableFilterRowsDialog(nodeId) {
