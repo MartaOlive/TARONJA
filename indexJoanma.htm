@@ -187,8 +187,8 @@
 				Datastreams: {singular: "Datastream", entities: ["Party", "Sensor", "ObservedProperty", "Projects", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurement", "observationType", "observedArea", "phenomenonTime", "resultTime", "properties"]}, 
 				MultiDatastreams: {singular: "MultiDatastream", entities: ["Party", "Sensor", "ObservedProperties", "Projects", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurements", "observationType", "observedArea", "phenomenonTime", "resultTime", "multiObservationDataTypes", "properties"]}};
 		const STAEntitiesArray = Object.keys(STAEntities);
-		const TableOperations = ["Table","SelectColumns", "SelectRows", "ViewQuery", "SaveTable"];
-		const TableOperationsDesc = ["View Table", "Select Columns", "Select Rows", "View Query", "Save Table"];
+		const TableOperations = ["Table", "SelectColumns", "SelectRows", "SeparateColumns", "ViewQuery", "SaveTable"];
+		const TableOperationsDesc = ["View Table", "Select Columns", "Select Rows", "Separate Columns", "View Query", "Save Table"];
 
 		function StartSTAPage() {
 			var s = "";
@@ -697,7 +697,6 @@
 		function StartCircularImage(nodeTo, nodeFrom, calUnir)
 		{
 			if (nodeFrom.STAURL && IdOfSTAObject(nodeTo) != -1) {
-				var startingNode = networkNodes.get(startingNodeContextId);
 				nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAObject(nodeTo)];
 				networkNodes.update(nodeTo);
 				if (calUnir)
@@ -708,7 +707,6 @@
 			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumns.png" || nodeTo.image == "SelectRows.png")) {
 				nodeTo.STAURL = nodeFrom.STAURL;
 				networkNodes.update(nodeTo);
-				networkEdges.add([{ from: startingNodeContextId, to: newId }]);
 				if (calUnir)
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id }]);
 				LoadJSONData(nodeTo);
