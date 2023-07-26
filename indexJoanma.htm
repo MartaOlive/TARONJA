@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>TAPIS: Tables from APIs for Sensors (Sensor Things API plus Explorer)</title>
 	<script type="text/javascript" src="vis.min.js"></script>
 	<script type="text/javascript" src="papaparse.min.js"></script>
@@ -187,7 +187,7 @@
 				Datastreams: {singular: "Datastream", entities: ["Party", "Sensor", "ObservedProperty", "Projects", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurement", "observationType", "observedArea", "phenomenonTime", "resultTime", "properties"]}, 
 				MultiDatastreams: {singular: "MultiDatastream", entities: ["Party", "Sensor", "ObservedProperties", "Projects", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurements", "observationType", "observedArea", "phenomenonTime", "resultTime", "multiObservationDataTypes", "properties"]}};
 		const STAEntitiesArray = Object.keys(STAEntities);
-		const TableOperations = ["Table", "SelectColumns", "SelectRows", "ViewQuery", "SaveTable"];
+		const TableOperations = ["Table","SelectColumns", "SelectRows", "ViewQuery", "SaveTable"];
 		const TableOperationsDesc = ["View Table", "Select Columns", "Select Rows", "View Query", "Save Table"];
 
 		function StartSTAPage() {
@@ -642,6 +642,87 @@
 				ShowTableFilterRowsDialog(nodeId);
 		}
 
+		function SeparatePropertyIfNeeded(record, property, baseName)
+		{
+			if (typeof property === "object")  //"arrays" are also objects.
+			{
+				if (Array.isArray(property))
+				{
+					//Array: creating multifields
+					for (var j = 0; j<property.length; j++)
+					{
+						if (typeof property[j] === "object")
+						{
+							if (Array.isArray(property[j]))
+							{
+								for (var jj = 0; jj<property[j].length; jj++)
+									SeparatePropertyIfNeeded(record, property[j][jj], baseName + "_" + j + "_" + jj);
+							}
+							else
+							{
+								var subkeys = Object.keys(property[j]);
+								for (var kk = 0; kk < subkeys.length; kk++)
+									SeparatePropertyIfNeeded(record, property[j][subkeys[kk]], baseName + "_" + subkeys[kk] + "_" + j)
+							}
+						}
+						else
+							record[baseName + "_" + j]=property[j];
+					}
+				}
+				else
+				{
+					//Object; lets separate it.
+					var subkeys = Object.keys(property);
+					for (var kk = 0; kk < subkeys.length; kk++)
+						SeparatePropertyIfNeeded(record, property[subkeys[kk]], baseName + "_" + subkeys[kk])
+				}
+			}
+			else
+				record[baseName]=property;
+		}
+
+		function SeparateColumns(node, nodeParent) {
+			var data=nodeParent.STAdata, record, recordParent;
+			node.STAURL=nodeParent.STAURL;
+			node.STAdata=[];
+			for (var i = 0; i < data.length; i++) {
+				record=node.STAdata[i]={};
+				recordParent=data[i]
+				var keys = Object.keys(recordParent);
+				for (var k = 0; k < keys.length; k++)
+					SeparatePropertyIfNeeded(record, recordParent[keys[k]], keys[k]);
+			}
+		}
+
+		function StartCircularImage(nodeTo, nodeFrom, calUnir)
+		{
+			if (nodeFrom.STAURL && IdOfSTAObject(nodeTo) != -1) {
+				var startingNode = networkNodes.get(startingNodeContextId);
+				nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAObject(nodeTo)];
+				networkNodes.update(nodeTo);
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id }]);
+				LoadJSONData(nodeTo);
+				return true;
+			}
+			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumns.png" || nodeTo.image == "SelectRows.png")) {
+				nodeTo.STAURL = nodeFrom.STAURL;
+				networkNodes.update(nodeTo);
+				networkEdges.add([{ from: startingNodeContextId, to: newId }]);
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id }]);
+				LoadJSONData(nodeTo);
+				return true;
+			}
+			if (nodeFrom.STAURL && (nodeTo.image == "SeparateColumns.png")) {
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id }]);
+				SeparateColumns(nodeTo, nodeFrom);
+				networkNodes.update(nodeTo);
+				return true;
+			}
+			return false;
+		}
 
 		// create an array with nodes	
 		var networkNodes = new vis.DataSet([]);
@@ -663,19 +744,7 @@
 							alert("Connection to the same node is not allowed");
 						else {
 							networkEdges.add([{ from: data.from, to: data.to }]);
-							var nodeTo = networkNodes.get(data.to);
-							var nodeFrom = networkNodes.get(data.from);
-							if (nodeFrom.STAURL && IdOfSTAObject(nodeTo) != -1) {
-								var startingNode = networkNodes.get(startingNodeContextId);
-								nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAObject(nodeTo)];
-								networkNodes.update(nodeTo);
-								LoadJSONData(nodeTo);
-							}
-							else if (nodeFrom.STAURL && (nodeTo.image == "SelectColumns.png" || nodeTo.image == "SelectRows.png")) {
-								nodeTo.STAURL = nodeFrom.STAURL;
-								networkNodes.update(nodeTo);
-								LoadJSONData(nodeTo);
-							}
+							StartCircularImage(networkNodes.get(data.to), networkNodes.get(data.from), false);
 						}
 						connectionInProcess = false;
 						document.getElementById("clarification").innerHTML = "";
@@ -847,26 +916,22 @@
 				document.getElementById(dialog).close();
 			var newId = (Math.random() * 1e7).toString(32);
 			var node = { id: newId, label: label, image: image, shape: "circularImage" };
-			if (image == "ogc.png")
-				node.STAURL = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
-			else if (startingNodeContextId && IdOfSTAObject(node) != -1) {
-				var startingNode = networkNodes.get(startingNodeContextId);
-				node.STAURL = startingNode.STAURL + "/" + STAEntitiesArray[IdOfSTAObject(node)];
-			}
-			else if (image == "SelectColumns.png" || image == "SelectRows.png") {
-				var startingNode = networkNodes.get(startingNodeContextId);
-				node.STAURL = startingNode.STAURL;
-			}
-			networkNodes.add(node);
 
 			if (image == "ogc.png")
+			{
+				node.STAURL = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
+				networkNodes.add(node);
 				LoadJSONData(node);
-			if (startingNodeContextId) {
-				networkEdges.add([{ from: startingNodeContextId, to: newId }]);
-				if (IdOfSTAObject(node) != -1 || image == "SelectColumns.png" || image == "SelectRows.png")
-					LoadJSONData(node);
-				startingNodeContextId = null;
 			}
+			else if (!startingNodeContextId || !StartCircularImage(node, networkNodes.get(startingNodeContextId), true))
+			{
+				networkNodes.add(node);
+				networkEdges.add([{ from: startingNodeContextId, to: newId }]);
+			}
+
+			if (startingNodeContextId)
+				startingNodeContextId = null;
+
 			network.selectNodes([newId]);
 		}
 
