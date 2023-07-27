@@ -47,9 +47,24 @@
 		}
 
 		#divSelectorRowsFilter {
-			margin-top: 20px;
-			min-width: 800px;
+			min-width: 500px;
 			height: 300px;
+			border: black 1px solid;
+			position: absolute;
+			left: 250px;
+		}
+
+		#chooseTypeOfFilter {
+			border: black 1px solid;
+			min-width: 200px;
+			height: 300px;
+			position: absolute;
+			left: 0px;
+		}
+
+		#selectorRowsContainer {
+			min-width: 1750px;
+			min-height: 300px;
 		}
 	</style>
 	<link rel="stylesheet" href="vis.min.css">
@@ -572,7 +587,7 @@
 			for (let index = 0; index < data.length; index++) {
 				valor = data[index][dataAttributes[0]];
 				if (!arrayValors.find(element => element == valor)) {
-					selectorStructureRow +=	"<option value='" + valor + "'>" + valor + "</option>";
+					selectorStructureRow += "<option value='" + valor + "'>" + valor + "</option>";
 					arrayValors.push(valor);
 				} else {
 					console.log("en el else");
@@ -582,17 +597,37 @@
 			return selectorStructureRow;
 		}
 
+		function showRowFilterByValues(nodeId) {
+			// console.log(typeof(nodeId));
+			var data = networkNodes.get(nodeId).STAdata;
+			console.log(data);
+			var dataAttributes = getDataAttributes(data);
+			console.log(dataAttributes);
 
+		};
+		function showRowFilterByInterval(nodeId) {
+			var data = networkNodes.get(nodeId).STAdata;
+			console.log(data);
+		}
 		function GetSelectorsForRowFilter(nodeId) {
+			console.log(typeof (nodeId));
 			console.log("getselectorsForRowsFilter:  " + nodeId);
 			var data = networkNodes.get(nodeId).STAdata;
+			// console.log(typeof(nodeId));
 			var divSelectorStructure, dataAttributes;
 			dataAttributes = getDataAttributes(data); //Atributs per montar el selector
 			console.log(dataAttributes);
-			divSelectorStructure = "<div id='divSelectorRowsFilter'>";
-
+			divSelectorStructure = `
+			<div id=selectorRowsContainer>
+				<div id=chooseTypeOfFilter>
+					<label for='oneOrMoreValue'><input type='radio' name='typeOfFilter' value='oneOrMoreValue' id='oneOrMoreValue' onClick= 'showRowFilterByValues(\"`+ nodeId + `\")' checked='checked'>Filter for one or more values</label><br>
+					<label for='interval'><input type='radio' name='typeOfFilter' value='interval' id='interval' onClick= 'showRowFilterByInterval(\"`+ nodeId + `"\)'>Filter for interval</label>
+				</div>
+				<div id='divSelectorRowsFilter'></div></div>`;
 			var selectorStructureRow = createSelectorRowFilter(dataAttributes, nodeId);
-			divSelectorStructure += selectorStructureRow + "</div>";
+			var selectorSelectorRowsFiler = document.getElementById("divSelectorRowsFilter");
+
+			divSelectorStructure += selectorStructureRow + "</div></div>";
 
 			return divSelectorStructure;
 
@@ -751,6 +786,7 @@
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
 			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
+			
 		}
 
 		function ChangeTableFilterRowsDialog(nodeId) {
@@ -1025,7 +1061,7 @@
 			var node = { id: newId, label: label, image: image, shape: "circularImage" };
 
 			if (image == "ogc.png") {
-				node.STAURL = "https://toronto-bike-snapshot.sensorup.com/v1.0";// "https://toronto-bike-snapshot.sensorup.com/v1.0""https://iot.hamburg.de/v1.1"; //"https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
+				node.STAURL = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";// "https://toronto-bike-snapshot.sensorup.com/v1.0""https://iot.hamburg.de/v1.1"; //"https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
 				networkNodes.add(node);
 				LoadJSONData(node);
 			}
