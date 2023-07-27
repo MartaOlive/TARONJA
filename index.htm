@@ -66,6 +66,10 @@
 			min-width: 1750px;
 			min-height: 300px;
 		}
+
+		.hidden {
+			display: none;
+		}
 	</style>
 	<link rel="stylesheet" href="vis.min.css">
 
@@ -449,9 +453,6 @@
 				}
 			}
 			else { //El filter està seleccionat
-
-				console.log(event);
-
 				var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
 				var selectChild = divSelectorRowsFilter.childNodes;
 				var selectIds = []; //llista ids dels selectors
@@ -461,10 +462,7 @@
 						selectIds.push(selectChild[index]);
 					}
 				}
-				// console.log(selectIds);
-
 				var selectInformation = [];
-
 				for (let i = 0; i < selectIds.length; i++) { // agafar el valor dels selectors
 					console.log(selectIds[i]);
 					var selector = document.getElementById(selectIds[i].getAttribute("id"));
@@ -472,7 +470,6 @@
 					selectInformation.push(selectorValue);
 				}
 				var node = networkNodes.get(nodeids[0]);
-				// console.log(selectInformation);
 				var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
 					if (element.startsWith("@iot.")) {
 						return element.substring(5);
@@ -481,18 +478,13 @@
 					}
 				});
 				console.log(selectInformationWithoutAt);
-
 				for (let e = 0; e < selectInformationWithoutAt.length; e++) {
 					currentNode.STAURL += "?$filter=" + selectInformationWithoutAt[e] + " eq '" + selectInformationWithoutAt[e + 1] + "'";
 
 					console.log(currentNode.STAURL);
 					e++;
 				}
-
 			}
-
-
-
 			networkNodes.update(currentNode);
 			LoadJSONData(currentNode);
 			UpdateChildenSTAURL(currentNode);
@@ -540,20 +532,29 @@
 			return dataAttributes;
 		}
 
-		function fillValueSelector(selectorNumber, nodeId) {
-			// console.log(nodeId);
+		function fillValueSelector(selectorNumber, nodeId, type) {
 			var data = networkNodes.get(nodeId).STAdata;
-			const select = document.getElementById("selector_" + selectorNumber);
+			var select;
+			if (type == "particular") {
+				select = document.getElementById("selectorParticular_" + selectorNumber);
+			} else {
+				select = document.getElementById("selectorInterval_" + selectorNumber);
+			}
 			var selectedProperty = select.options[select.selectedIndex].value;
-			var selectedElement = document.getElementById("selector2_" + selectorNumber);
+			var selectedElement;
+			if (type == "particular") {
+				selectedElement = document.getElementById("selectorParticular2_" + selectorNumber);
+			} else {
+				selectedElement = document.getElementById("selectorInterval2_" + selectorNumber);
+			}
 			selectedElement.innerHTML = "";
+
 			var valor;
 			var arrayValors = [];
-			// alert(selectedProperty);
+			// s'ha de filtrar
 			for (let index = 0; index < data.length; index++) {
 				valor = data[index][selectedProperty];
 				if (!arrayValors.find(element => element == valor)) {
-
 					var opcio = document.createElement("option");
 					opcio.setAttribute("value", valor);
 					opcio.innerHTML = valor;
@@ -562,42 +563,113 @@
 				} else {
 					console.log("en el else");
 				}
-
-
 			}
-
-
 		}
 
-		function createSelectorRowFilter(dataAttributes, nodeId) {
+		function createSelectorRowFilterParticular(dataAttributes, nodeId) {
+			var type = "particular";
 			var data = networkNodes.get(nodeId).STAdata;
 			var selectorStructureRow;
+			var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
 			var selectorNumber = 1; //row 1, Augmentarà a mesura que s'afegeixin opcions
-			var selectorStructureRow = "<label> Choose a Property</label> <select name='category' id='selector_" + selectorNumber + "' onChange='fillValueSelector(" + selectorNumber + ",\"" + nodeId + "\")'>";
-			for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category
-				console.log(dataAttributes[i]);
-				selectorStructureRow += "<option value='" + dataAttributes[i] + "'>" + dataAttributes[i] + "</option>"
-			}
-			selectorStructureRow += "</select>";
+			var divParticularBox = document.createElement("div");
+			divParticularBox.setAttribute("id", "divSelectorRowsFilterParticular");
+			divSelectorRowsFilter.appendChild(divParticularBox);
 
-			selectorStructureRow += "<label for='selectedValue'>Choose a value</label><select name='selectedValue' id='selector2_" + selectorNumber + "'>"; //S'han d'omplir les opcions de quan es crea per primer cop perque la funció que omple el segon selector es crida al onChange del primer selector
+			var label1 = document.createElement("label");
+			label1.innerHTML = "Choose a Property";
+			divParticularBox.appendChild(label1);
+			var select1 = document.createElement("select");
+			select1.setAttribute("name", "category");
+			select1.setAttribute("id", "selectorParticular_" + selectorNumber);
+			select1.setAttribute("onChange", "fillValueSelector(" + selectorNumber + ",'" + nodeId + "','" + type + "')");
+			divParticularBox.appendChild(select1);
+
+			for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category
+				var option = document.createElement("option");
+				option.setAttribute("value", dataAttributes[i]);
+				option.innerHTML = dataAttributes[i];
+				select1.appendChild(option);
+			}
+
+			var label2 = document.createElement("label");
+			label2.innerHTML = "Choose a Value";
+			divParticularBox.appendChild(label2);
+			var select2 = document.createElement("select");
+			select2.setAttribute("name", "selectedValue");
+			select2.setAttribute("id", "selectorParticular2_" + selectorNumber);
+			divParticularBox.appendChild(select2);
 
 			var valor;
 			var arrayValors = [];
 			for (let index = 0; index < data.length; index++) {
 				valor = data[index][dataAttributes[0]];
 				if (!arrayValors.find(element => element == valor)) {
-					selectorStructureRow += "<option value='" + valor + "'>" + valor + "</option>";
+					var option = document.createElement("option");
+					option.setAttribute("value", valor);
+					option.innerHTML = valor;
+					select2.appendChild(option);
 					arrayValors.push(valor);
 				} else {
 					console.log("en el else");
 				}
 			}
-			selectorStructureRow += "</select>";
-			return selectorStructureRow;
+		}
+		function createSelectorRowFilterInterval(dataAttributes, nodeId) {
+			var type = "interval";
+			var data = networkNodes.get(nodeId).STAdata;
+			var selectorStructureRow;
+			var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
+			var selectorNumber = 1; //row 1, Augmentarà a mesura que s'afegeixin opcions
+			var divIntervalBox = document.createElement("div");
+			divIntervalBox.setAttribute("id", "divSelectorRowsFilterInterval");
+			divSelectorRowsFilter.appendChild(divIntervalBox);
+
+			var label1 = document.createElement("label");
+			label1.innerHTML = "Choose a Property";
+			divIntervalBox.appendChild(label1);
+			var select1 = document.createElement("select");
+			select1.setAttribute("name", "category");
+			select1.setAttribute("id", "selectorInterval_" + selectorNumber);
+			select1.setAttribute("onChange", "fillValueSelector(" + selectorNumber + ",'" + nodeId + "','" + type + "')");
+			divIntervalBox.appendChild(select1);
+
+			//filtered cathegories
+
+			for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category
+				var option = document.createElement("option");
+				option.setAttribute("value", dataAttributes[i]);
+				option.innerHTML = dataAttributes[i];
+				select1.appendChild(option);
+			}
+
+			var label2 = document.createElement("label");
+			label2.innerHTML = "Choose a Value";
+			divIntervalBox.appendChild(label2);
+			var select2 = document.createElement("select");
+			select2.setAttribute("name", "selectedValue");
+			select2.setAttribute("id", "selectorInterval2_" + selectorNumber);
+			divIntervalBox.appendChild(select2);
+
+			var valor;
+			var arrayValors = [];
+			for (let index = 0; index < data.length; index++) {
+				valor = data[index][dataAttributes[0]];
+				if (!arrayValors.find(element => element == valor)) {
+					var option = document.createElement("option");
+					option.setAttribute("value", valor);
+					option.innerHTML = valor;
+					select2.appendChild(option);
+					arrayValors.push(valor);
+				} else {
+					console.log("en el else");
+				}
+			}
 		}
 
 		function showRowFilterByValues(nodeId) {
+			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
+			divSelectorRowsFilterParticular.classList.remove("hidden");
 			// console.log(typeof(nodeId));
 			var data = networkNodes.get(nodeId).STAdata;
 			console.log(data);
@@ -607,16 +679,12 @@
 		};
 		function showRowFilterByInterval(nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
+			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
+			divSelectorRowsFilterParticular.classList.add("hidden");
 			console.log(data);
 		}
 		function GetSelectorsForRowFilter(nodeId) {
-			console.log(typeof (nodeId));
-			console.log("getselectorsForRowsFilter:  " + nodeId);
-			var data = networkNodes.get(nodeId).STAdata;
-			// console.log(typeof(nodeId));
-			var divSelectorStructure, dataAttributes;
-			dataAttributes = getDataAttributes(data); //Atributs per montar el selector
-			console.log(dataAttributes);
+			var divSelectorStructure;
 			divSelectorStructure = `
 			<div id=selectorRowsContainer>
 				<div id=chooseTypeOfFilter>
@@ -624,10 +692,6 @@
 					<label for='interval'><input type='radio' name='typeOfFilter' value='interval' id='interval' onClick= 'showRowFilterByInterval(\"`+ nodeId + `"\)'>Filter for interval</label>
 				</div>
 				<div id='divSelectorRowsFilter'></div></div>`;
-			var selectorStructureRow = createSelectorRowFilter(dataAttributes, nodeId);
-			var selectorSelectorRowsFiler = document.getElementById("divSelectorRowsFilter");
-
-			divSelectorStructure += selectorStructureRow + "</div></div>";
 
 			return divSelectorStructure;
 
@@ -775,6 +839,7 @@
 
 		function ShowTableFilterRowsDialog(nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
+			var dataAttributes = getDataAttributes(data);
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
@@ -786,7 +851,11 @@
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
 			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
-			
+
+			createSelectorRowFilterInterval(dataAttributes, nodeId);
+			createSelectorRowFilterParticular(dataAttributes, nodeId);
+
+
 		}
 
 		function ChangeTableFilterRowsDialog(nodeId) {
