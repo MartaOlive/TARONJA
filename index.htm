@@ -670,6 +670,8 @@
 		function showRowFilterByValues(nodeId) {
 			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
 			divSelectorRowsFilterParticular.classList.remove("hidden");
+			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterInterval");
+			divSelectorRowsFilterParticular.classList.add("hidden");
 			// console.log(typeof(nodeId));
 			var data = networkNodes.get(nodeId).STAdata;
 			console.log(data);
@@ -681,6 +683,8 @@
 			var data = networkNodes.get(nodeId).STAdata;
 			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
 			divSelectorRowsFilterParticular.classList.add("hidden");
+			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterInterval");
+			divSelectorRowsFilterParticular.classList.remove("hidden");
 			console.log(data);
 		}
 		function GetSelectorsForRowFilter(nodeId) {
