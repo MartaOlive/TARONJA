@@ -47,7 +47,7 @@
 		}
 
 		#divSelectorRowsFilter {
-			min-width: 500px;
+			min-width: 1750px;
 			height: 300px;
 			border: black 1px solid;
 			position: absolute;
@@ -63,12 +63,17 @@
 		}
 
 		#selectorRowsContainer {
-			min-width: 1750px;
+			min-width: 1500px;
 			min-height: 300px;
 		}
 
 		.hidden {
 			display: none;
+		}
+
+		.instructions {
+			font-size: 12px;
+			font-style: italic;
 		}
 	</style>
 	<link rel="stylesheet" href="vis.min.css">
@@ -368,7 +373,7 @@
 					else
 						currentNode.STASelectedColumns[a] = false;
 				}
-				currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.	
+				currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.
 				networkNodes.update(currentNode);
 				LoadJSONData(currentNode);
 				UpdateChildenSTAURL(currentNode);
@@ -409,7 +414,7 @@
 					else
 						currentNode.STASelectedExpands.selected[a] = false;
 				}
-				currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.	
+				currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.
 				networkNodes.update(currentNode);
 				LoadJSONData(currentNode);
 				UpdateChildenSTAURL(currentNode);
@@ -419,7 +424,7 @@
 		}
 
 		function isNumeric(str) {
-			if (typeof str != "string") return false // we only process strings!  	
+			if (typeof str != "string") return false // we only process strings!
 			return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
@@ -453,37 +458,56 @@
 				}
 			}
 			else { //El filter està seleccionat
-				var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
+				var divSelectorRowsFilter;
+				if (document.getElementById("oneOrMoreValue").checked) {
+					divSelectorRowsFilter = document.getElementById("divSelectorRowsFilterParticular");
+				} else {
+					divSelectorRowsFilter = document.getElementById("divSelectorRowsFilterInterval");
+				}
+
 				var selectChild = divSelectorRowsFilter.childNodes;
 				var selectIds = []; //llista ids dels selectors
+				//console.log(selectChild); label, select1, label2, select2,textInput,button, instructions
+				var valueField;
+				var collectedInformation = [];
+				var chosenValue = [];
+				var select2;
 				for (let index = 0; index < selectChild.length; index++) {
-					var div = index % 2;
-					if (div == 0 & index != 0) {
-						selectIds.push(selectChild[index]);
+					if (index == 1 || index == 3) { //selectors
+						valueField = document.getElementById(selectChild[index].getAttribute("id"));
+						chosenValue = valueField.options[valueField.selectedIndex].value;
+						collectedInformation.push(chosenValue);
+						if (index == 3) select2=document.getElementById(selectChild[index].getAttribute("id"));
+					} else if (index == 4) { //inputText
+						valueField = document.getElementById(selectChild[index].getAttribute("id"));
+						chosenValue = valueField.value;
+						collectedInformation.push(chosenValue); //[infoSelect1, InfoSelect2, InfoInput (encara que estigui buit)]
 					}
-				}
-				var selectInformation = [];
-				for (let i = 0; i < selectIds.length; i++) { // agafar el valor dels selectors
-					console.log(selectIds[i]);
-					var selector = document.getElementById(selectIds[i].getAttribute("id"));
-					var selectorValue = selector.options[selector.selectedIndex].value;
-					selectInformation.push(selectorValue);
-				}
-				var node = networkNodes.get(nodeids[0]);
-				var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
-					if (element.startsWith("@iot.")) {
-						return element.substring(5);
-					} else {
-						return element.replace("@iot.", "/");
-					}
-				});
-				console.log(selectInformationWithoutAt);
-				for (let e = 0; e < selectInformationWithoutAt.length; e++) {
-					currentNode.STAURL += "?$filter=" + selectInformationWithoutAt[e] + " eq '" + selectInformationWithoutAt[e + 1] + "'";
 
-					console.log(currentNode.STAURL);
-					e++;
 				}
+				console.log(collectedInformation);
+
+				// var node = networkNodes.get(nodeids[0]);
+				// var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
+				// 	if (element.startsWith("@iot.")) {
+				// 		return element.substring(5);
+				// 	} else {
+				// 		return element.replace("@iot.", "/");
+				// 	}
+				// });
+
+
+				// console.log(selectInformationWithoutAt);
+
+				currentNode.STAURL += "?$filter=" + collectedInformation[0] + " eq '"; //selector1
+				if (select2.classList.contains("hidden")) { //Si es tria amb el textInput
+					currentNode.STAURL += collectedInformation[2] + "'";
+					console.log("select2hidden");
+				} else {
+					currentNode.STAURL += collectedInformation[1] + "'";
+					console.log("select2 Nohidden");
+				}
+				console.log(currentNode.STAURL);
 			}
 			networkNodes.update(currentNode);
 			LoadJSONData(currentNode);
@@ -566,6 +590,35 @@
 			}
 		}
 
+		function changeSelectToWrite(selectorNumber) {  //Que pugui recollir el text del input
+			event.preventDefault();
+			var textInput = document.getElementById("textInput_" + selectorNumber);
+			var selector2 = document.getElementById("selectorParticular2_" + selectorNumber);
+			var label2 = document.getElementById("label2_" + selectorNumber);
+			var writeButton = document.getElementById("chooseValueButton_" + selectorNumber);
+			var textInput = document.getElementById("textInput_" + selectorNumber);
+			var instructions = document.getElementById("instructions_" + selectorNumber);
+			if (textInput.classList.contains("hidden")) {
+				selector2.setAttribute("class", "hidden");
+				label2.innerHTML = "Write a value";
+				writeButton.innerHTML = "Click here if you want to use selector";
+				textInput.classList.remove("hidden");
+				instructions.innerHTML = "If you prefere to select value with select option click the button. If you click ok button you will use the value in the text field to apply the filter"
+			} else {
+				selector2.classList.remove("hidden");
+				label2.innerHTML = "Choose a value";
+				writeButton.innerHTML = "Click here if you prefere to write the value";
+				textInput.classList.add("hidden");
+				instructions.innerHTML = "If you prefere to write the value, click the button";
+
+			}
+
+			console.log(selectorNumber);
+
+
+		}
+
+
 		function createSelectorRowFilterParticular(dataAttributes, nodeId) {
 			var type = "particular";
 			var data = networkNodes.get(nodeId).STAdata;
@@ -593,6 +646,7 @@
 			}
 
 			var label2 = document.createElement("label");
+			label2.setAttribute("id", "label2_" + selectorNumber);
 			label2.innerHTML = "Choose a Value";
 			divParticularBox.appendChild(label2);
 			var select2 = document.createElement("select");
@@ -614,6 +668,34 @@
 					console.log("en el else");
 				}
 			}
+
+
+			var textInput = document.createElement("input");
+			textInput.setAttribute("id", "textInput_" + selectorNumber);
+			textInput.setAttribute("type", "text");
+			textInput.setAttribute("class", "hidden");
+			divParticularBox.appendChild(textInput);
+
+			var writeButton = document.createElement("button");
+			writeButton.innerHTML = "Click here if you prefere to write the value";
+			writeButton.setAttribute("id", "chooseValueButton_" + selectorNumber);
+			writeButton.setAttribute("onclick", "changeSelectToWrite(" + selectorNumber + ")");
+			divParticularBox.appendChild(writeButton);
+
+			var instructions = document.createElement("div");
+			instructions.setAttribute("id", "instructions_" + selectorNumber);
+			instructions.innerHTML = "If you prefere to write the value, click the button";
+			instructions.setAttribute("class", "instructions");
+			divParticularBox.appendChild(instructions);
+
+			//onclick
+			//id
+
+
+
+
+			// divIntervalBox.setAttribute("class", "hidden");
+
 		}
 		function createSelectorRowFilterInterval(dataAttributes, nodeId) {
 			var type = "interval";
@@ -623,6 +705,7 @@
 			var selectorNumber = 1; //row 1, Augmentarà a mesura que s'afegeixin opcions
 			var divIntervalBox = document.createElement("div");
 			divIntervalBox.setAttribute("id", "divSelectorRowsFilterInterval");
+			divIntervalBox.setAttribute("class", "hidden");
 			divSelectorRowsFilter.appendChild(divIntervalBox);
 
 			var label1 = document.createElement("label");
@@ -735,7 +818,6 @@
 			s += "</table>";
 			return s;
 		}
-
 		function ShowTableDialog(nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
 
@@ -748,7 +830,6 @@
 				document.getElementById("ShowTableRowNumberDialogOK").checked ? true : false,
 				false);
 		}
-
 		function StringifyObjectElements(data) {
 			var dataAttributes = getDataAttributes(data), jsonTable = [];
 
@@ -763,12 +844,9 @@
 			}
 			return jsonTable;
 		}
-
-
 		function ShowSaveTableDialog(nodeId) {
 			;
 		}
-
 		function SaveTable() {
 			event.preventDefault(); // We don't want to submit this form
 			var delimiter = document.getElementById("DialogSaveTableDelimiter").value;
@@ -780,7 +858,6 @@
 						(IdOfSTAObject(networkNodes.get(nodeids[0])) == -1) ? "table" : STAEntitiesArray[IdOfSTAObject(networkNodes.get(nodeids[0]))], ".csv", "application/vnd.ms-excel");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
 			}
 		}
-
 		function ShowTableSelectColumnsDialog(nodeParentId, nodeId) {
 			var data = networkNodes.get(nodeParentId).STAdata,
 				selectedColumns = networkNodes.get(nodeId).STASelectedColumns;
@@ -797,7 +874,6 @@
 			s += "</table>";
 			document.getElementById("DialogSelectColumnsHTML").innerHTML = s;
 		}
-
 		function ShowTableSelectExpandsDialog(nodeId) {
 			var data = networkNodes.get(nodeId).STAdata,
 				entities = STAEntities[STAEntitiesArray[IdOfSTAObject(networkNodes.get(nodeId))]].entities,
@@ -903,11 +979,14 @@
 
 		function SeparateColumns(node, nodeParent) {
 			var data = nodeParent.STAdata, record, recordParent;
+			console.log(data);
 			node.STAURL = nodeParent.STAURL;
 			node.STAdata = [];
 			for (var i = 0; i < data.length; i++) {
 				record = node.STAdata[i] = {};
+				console.log(record);
 				recordParent = data[i]
+				console.log(recordParent);
 				var keys = Object.keys(recordParent);
 				for (var k = 0; k < keys.length; k++)
 					SeparatePropertyIfNeeded(record, recordParent[keys[k]], keys[k]);
@@ -941,10 +1020,10 @@
 			return false;
 		}
 
-		// create an array with nodes	
+		// create an array with nodes
 		var networkNodes = new vis.DataSet([]);
 
-		// create an array with edges	
+		// create an array with edges
 		var networkEdges = new vis.DataSet([]);
 
 		var network = new vis.Network(document.getElementById("mynetwork"), {
@@ -1134,7 +1213,7 @@
 			var node = { id: newId, label: label, image: image, shape: "circularImage" };
 
 			if (image == "ogc.png") {
-				node.STAURL = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";// "https://toronto-bike-snapshot.sensorup.com/v1.0""https://iot.hamburg.de/v1.1"; //"https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
+				node.STAURL = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";// "https://toronto-bike-snapshot.sensorup.com/v1.0""https://iot.hamburg.de/v1.1"; "https://citiobs.demo.secure-dimensions.de/staplus/v1.1";
 				networkNodes.add(node);
 				LoadJSONData(node);
 			}
