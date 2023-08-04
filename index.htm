@@ -48,7 +48,7 @@
 
 		#divSelectorRowsFilter {
 			min-width: 1750px;
-			height: 300px;
+			height: 800px;
 			border: black 1px solid;
 			position: absolute;
 			left: 250px;
@@ -64,7 +64,7 @@
 
 		#selectorRowsContainer {
 			min-width: 1500px;
-			min-height: 300px;
+			min-height: 800px;
 		}
 
 		.hidden {
@@ -74,6 +74,18 @@
 		.instructions {
 			font-size: 12px;
 			font-style: italic;
+		}
+
+
+		.objectInSelect {
+			background-color: rgba(255, 153, 0, 0.87);
+		}
+
+		#imageIsAnObject {
+			display: block;
+			/* height:400; */
+			position: absolute;
+			/* left:20; */
 		}
 	</style>
 	<link rel="stylesheet" href="vis.min.css">
@@ -560,25 +572,20 @@
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
 			select = document.getElementById("selector" + type + "_" + selectorNumber);
-			// if (type == "particular") {
-			// 	select = document.getElementById("selectorParticular_" + selectorNumber);
-			// } else {
-			// 	select = document.getElementById("selectorInterval_" + selectorNumber);
-			// }
 			var selectedProperty = select.options[select.selectedIndex].value;
 			var selectedElement;
-			// if (type == "particular") {
 			selectedElement = document.getElementById("selector" + type + "2_" + selectorNumber);
-			// } else {
-			// 	selectedElement = document.getElementById("selectorInterval2_" + selectorNumber);
-			// }
 			selectedElement.innerHTML = "";
 
 			var valor;
 			var arrayValors = [];
+			var isAnObject;
+
 			// s'ha de filtrar
 			for (let index = 0; index < data.length; index++) {
 				valor = data[index][selectedProperty];
+				console.log(typeof valor);
+				if (typeof valor === "object") isAnObject = "yes";
 				if (!arrayValors.find(element => element == valor)) {
 					var opcio = document.createElement("option");
 					opcio.setAttribute("value", valor);
@@ -588,6 +595,17 @@
 				} else {
 					console.log("en el else");
 				}
+
+			}
+
+			var divIsAnObject = document.getElementById("divIsAnObject")
+			if (isAnObject === "yes") {
+				selectedElement.setAttribute("class", "objectInSelect");
+				divIsAnObject.classList.remove("hidden");
+
+			} else {
+				selectedElement.classList.remove("objectInSelect");
+				divIsAnObject.classList.add("hidden");
 			}
 		}
 
@@ -616,6 +634,15 @@
 		}
 
 		function isAnObject(selectorNumber, nodeId, type) {
+			var select = document.getElementById("selector" + type + "2_" + selectorNumber);
+			var selectOption = select.options[select.selectedIndex].value;
+			if (selectOption === "[object Object]") {
+				console.log("object!!!!");
+			} else {
+				console.log(selectOption);
+				console.log(typeof selectOption);
+			}
+
 			//es un objecte?
 			//canviar color del sleector
 			//afegir un missatge amb foto ejej
@@ -694,59 +721,42 @@
 			divParticularBox.appendChild(instructions);
 
 
+			var divIsAnObject = document.createElement("div");
+			divIsAnObject.setAttribute("id", "divIsAnObject");
+			divIsAnObject.setAttribute("class", "hidden");
+			var textIsAnObject = document.createElement("h5");
+			textIsAnObject.setAttribute("id", "textIsAnObject");
+			textIsAnObject.innerHTML = 'This property contains a set of values, if you want to sail inside it to choose one value, please use "separate colums" option before using "Row filter" option to unfold the values. Follow example below';
+			divIsAnObject.appendChild(textIsAnObject);
+			var imageIsAnObject = document.createElement("img");
+			imageIsAnObject.setAttribute("src", "SeparateColumsExample.png");
+			imageIsAnObject.setAttribute("height", "300");
+			imageIsAnObject.setAttribute("id", "imageIsAnObject");
+
+			divIsAnObject.appendChild(imageIsAnObject);
+			divParticularBox.appendChild(divIsAnObject);
+
+			var addAConditionButtonAnd = document.createElement("button");
+			addAConditionButtonAnd.setAttribute("id", "addAConditionButtonAnd_" + selectorNumber);
+			addAConditionButtonAnd.setAttribute("onclick", "addARowFilterWithAnd('" + dataAttributes + "','" + nodeId + "','" + kindOfSource + "')");
+			addAConditionButtonAnd.innerHTML = "And";
+			divParticularBox.appendChild(addAConditionButtonAnd);
+
+			var addAConditionButtonOr = document.createElement("button");
+			addAConditionButtonOr.setAttribute("id", "addAConditionButtonOr_" + selectorNumber);
+			addAConditionButtonOr.setAttribute("onclick", "addARowFilterWithOr('" + dataAttributes + "','" + nodeId + "','" + kindOfSource + "')");
+			addAConditionButtonOr.innerHTML = "Or";
+			divParticularBox.appendChild(addAConditionButtonOr);
+
+
+
 		}
-		// function createSelectorRowFilterInterval(dataAttributes, nodeId) {
-		// 	var type = "interval";
-		// 	var data = networkNodes.get(nodeId).STAdata;
-		// 	var selectorStructureRow;
-		// 	var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-		// 	var selectorNumber = 1; //row 1, Augmentarà a mesura que s'afegeixin opcions
-		// 	var divIntervalBox = document.createElement("div");
-		// 	divIntervalBox.setAttribute("id", "divSelectorRowsFilterInterval");
-		// 	divIntervalBox.setAttribute("class", "hidden");
-		// 	divSelectorRowsFilter.appendChild(divIntervalBox);
 
-		// 	var label1 = document.createElement("label");
-		// 	label1.innerHTML = "Choose a Property";
-		// 	divIntervalBox.appendChild(label1);
-		// 	var select1 = document.createElement("select");
-		// 	select1.setAttribute("name", "category");
-		// 	select1.setAttribute("id", "selectorInterval_" + selectorNumber);
-		// 	select1.setAttribute("onChange", "fillValueSelector(" + selectorNumber + ",'" + nodeId + "','" + type + "')");
-		// 	divIntervalBox.appendChild(select1);
+		function addARowFilterWithAnd(dataAttributes, nodeId, kindOfSource){
+			event.preventDefault();
+			createSelectorRowFilters(dataAttributes, nodeId, kindOfSource);
+		}
 
-		// 	//filtered cathegories
-
-		// 	for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category
-		// 		var option = document.createElement("option");
-		// 		option.setAttribute("value", dataAttributes[i]);
-		// 		option.innerHTML = dataAttributes[i];
-		// 		select1.appendChild(option);
-		// 	}
-
-		// 	var label2 = document.createElement("label");
-		// 	label2.innerHTML = "Choose a Value";
-		// 	divIntervalBox.appendChild(label2);
-		// 	var select2 = document.createElement("select");
-		// 	select2.setAttribute("name", "selectedValue");
-		// 	select2.setAttribute("id", "selectorInterval2_" + selectorNumber);
-		// 	divIntervalBox.appendChild(select2);
-
-		// 	var valor;
-		// 	var arrayValors = [];
-		// 	for (let index = 0; index < data.length; index++) {
-		// 		valor = data[index][dataAttributes[0]];
-		// 		if (!arrayValors.find(element => element == valor)) {
-		// 			var option = document.createElement("option");
-		// 			option.setAttribute("value", valor);
-		// 			option.innerHTML = valor;
-		// 			select2.appendChild(option);
-		// 			arrayValors.push(valor);
-		// 		} else {
-		// 			console.log("en el else");
-		// 		}
-		// 	}
-		// }
 
 		function showRowFilterByValues(nodeId) {
 			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
