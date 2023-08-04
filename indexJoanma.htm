@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>TAPIS: Tables from APIs for Sensors (Sensor Things API plus Explorer)</title>
 	<script type="text/javascript" src="vis.min.js"></script>
 	<script type="text/javascript" src="papaparse.min.js"></script>
@@ -45,31 +45,6 @@
 			margin: 0 auto;
 			text-align: center;
 		}
-
-		#divSelectorRowsFilter {
-			min-width: 500px;
-			height: 300px;
-			border: black 1px solid;
-			position: absolute;
-			left: 250px;
-		}
-
-		#chooseTypeOfFilter {
-			border: black 1px solid;
-			min-width: 200px;
-			height: 300px;
-			position: absolute;
-			left: 0px;
-		}
-
-		#selectorRowsContainer {
-			min-width: 1750px;
-			min-height: 300px;
-		}
-
-		.hidden {
-			display: none;
-		}
 	</style>
 	<link rel="stylesheet" href="vis.min.css">
 
@@ -80,7 +55,7 @@
 	<h2>TAPIS: Tables from APIs for Sensors (Sensor Things API plus Explorer)</h2>
 
 	<button onclick='addCircularImage(null, null, "STAplus", "ogc.png");'><img src="ogc.png" height="20"
-			valign="middle"> Add a STA service</button><br>
+		valign="middle"> Add a STA service</button><br>
 	<span id="ButtonsSTAEntities"></span>
 	<button onclick="addEdge();">Connect two nodes</button><br>
 
@@ -138,7 +113,7 @@
 			<span id="DialogSelectRowsFilter">
 			</span>
 			<div class="center">
-				<button value="default" id="rowSelectorButton" onClick="GetSelectRows(event)">OK</button>
+				<button value="default" onClick="GetSelectRows(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -147,12 +122,10 @@
 	<dialog id="DialogContextMenu">
 		<form>
 			<p>
-				<button onclick='addCircularImage(event, "DialogContextMenu", "STAplus", "ogc.png");'><img src="ogc.png"
+				<button onclick='addCircularImage(event, "DialogContextMenu" "STAplus", "ogc.png");'><img src="ogc.png"
 						height="20" valign="middle"> Add a STA service</button><br>
 				<span id="ButtonsContextMenuObjects"></span>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button><br>
-				<button onclick='giveMeNodeInformation(event, "DialogContextMenu")'>Node Info</button><br>
-				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
 			</p>
 			<div class="center">
 				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
@@ -199,22 +172,20 @@
 		window.onbeforeunload = function () { return "Your work will be lost."; }
 
 		var currentNode = null, connectionInProcess = false, startingNodeContextId = null;
-		const STAEntities = {
-			ObservedProperties: { singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"] },
-			Sensors: { singular: "Sensor", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "description", "encodingType", "metadata", "properties"] },
-			Observations: { singular: "Observation", entities: ["Datastream", "MultiDatastream", "FeatureOfInterest", "Groups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"] },
-			FeaturesOfInterest: { singular: "FeatureOfInterest", entities: ["Observations"], properties: ["name", "description", "encodingType", "feature", "properties"] },
-			Things: { singular: "Thing", entities: ["Datastreams", "MultiDatastreams", "Party", "Locations", "HistoricalLocations"], properties: ["name", "description", "properties"] },
-			Locations: { singular: "Location", entities: ["Things", "HistoricalLocations"], properties: ["name", "description", "encodingType", "location", "properties"] },
-			HistoricalLocations: { singular: "HistoricalLocation", entities: ["Things", "Location"], properties: ["time"] },
-			Projects: { singular: "Project", entities: ["Datastreams", "MultiDatastreams", "Party", "License"], properties: ["name", "description", "classification", "termsOfUse", "privacyPolicy", "creationTime", "startTime", "endTime", "url", "properties"] },
-			Licenses: { singular: "License", entities: ["Datastreams", "MultiDatastreams", "Projects", "Groups"], properties: ["name", "description", "definition", "logo", "attributionText"] },
-			Parties: { singular: "Party", entities: ["Datastreams", "MultiDatastreams", "Projects", "Groups", "Things"], properties: ["description", "authId", "role", "displayName"] },
-			Groups: { singular: "Group", entities: ["Party", "Projects", "License", "Observations", "Relations"], properties: ["name", "description", "purpose", "creationTime", "endTime", "termsOfUsed", "privacyPolicy", "properties", "dataQuality"] },
-			Relations: { singular: "Relation", entities: ["Object", "Subject", "Groups"], properties: ["role", "description", "externalObject", "properties"] },
-			Datastreams: { singular: "Datastream", entities: ["Party", "Sensor", "ObservedProperty", "Projects", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurement", "observationType", "observedArea", "phenomenonTime", "resultTime", "properties"] },
-			MultiDatastreams: { singular: "MultiDatastream", entities: ["Party", "Sensor", "ObservedProperties", "Projects", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurements", "observationType", "observedArea", "phenomenonTime", "resultTime", "multiObservationDataTypes", "properties"] }
-		};
+		const STAEntities = {ObservedProperties: {singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"]}, 
+				Sensors: {singular: "Sensor", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "description", "encodingType", "metadata", "properties"]}, 
+				Observations: {singular: "Observation", entities: ["Datastream", "MultiDatastream", "FeatureOfInterest", "Groups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"]}, 
+      				FeaturesOfInterest: {singular: "FeatureOfInterest", entities: ["Observations"], properties: ["name", "description", "encodingType", "feature", "properties"]}, 
+				Things: {singular: "Thing", entities: ["Datastreams", "MultiDatastreams", "Party", "Locations", "HistoricalLocations"], properties: ["name", "description", "properties"]},     
+				Locations: {singular: "Location", entities: ["Things", "HistoricalLocations"], properties: ["name", "description", "encodingType", "location", "properties"]}, 
+				HistoricalLocations: {singular: "HistoricalLocation", entities: ["Things", "Location"], properties: ["time"]}, 
+				Projects: {singular: "Project", entities: ["Datastreams", "MultiDatastreams", "Party", "License"], properties: ["name", "description", "classification", "termsOfUse", "privacyPolicy", "creationTime", "startTime", "endTime", "url", "properties"]}, 
+				Licenses: {singular: "License", entities: ["Datastreams", "MultiDatastreams", "Projects", "Groups"], properties: ["name", "description", "definition", "logo", "attributionText"]}, 
+				Parties: {singular: "Party", entities: ["Datastreams", "MultiDatastreams", "Projects", "Groups", "Things"], properties: ["description", "authId", "role", "displayName"]}, 
+				Groups: {singular: "Group", entities: ["Party", "Projects", "License", "Observations", "Relations"], properties: ["name", "description", "purpose", "creationTime", "endTime", "termsOfUsed", "privacyPolicy", "properties", "dataQuality"]}, 
+				Relations: {singular: "Relation", entities: ["Object", "Subject", "Groups"], properties: ["role", "description", "externalObject", "properties"]}, 
+				Datastreams: {singular: "Datastream", entities: ["Party", "Sensor", "ObservedProperty", "Projects", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurement", "observationType", "observedArea", "phenomenonTime", "resultTime", "properties"]}, 
+				MultiDatastreams: {singular: "MultiDatastream", entities: ["Party", "Sensor", "ObservedProperties", "Projects", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurements", "observationType", "observedArea", "phenomenonTime", "resultTime", "multiObservationDataTypes", "properties"]}};
 		const STAEntitiesArray = Object.keys(STAEntities);
 		const TableOperations = ["Table", "SelectColumns", "SelectRows", "SeparateColumns", "ViewQuery", "SaveTable"];
 		const TableOperationsDesc = ["View Table", "Select Columns", "Select Rows", "Separate Columns", "View Query", "Save Table"];
@@ -286,8 +257,9 @@
 
 		var savedFile = null;
 
-		function MakeHrefData(data, mediatype) {
-			var blobData = new Blob([data], { type: mediatype });
+		function MakeHrefData(data, mediatype)
+		{
+			var blobData = new Blob([data], {type: mediatype});
 
 			// If we are replacing a previously generated file we need to
 			// manually revoke the object URL to avoid memory leaks.
@@ -300,21 +272,21 @@
 
 		function SaveLocalDataFile(data, fileName, extension, mediatype)   //Saves a memory data structure to a local file
 		{
-			const link = document.createElement('a');
-			if (fileName.substring(fileName.length - extension.length) != extension)
-				fileName += extension;
+		const link = document.createElement('a');
+			if (fileName.substring(fileName.length-extension.length) != extension)
+				fileName+=extension;
 			link.setAttribute('download', fileName);
 			link.setAttribute('href', MakeHrefData(data));
 			document.body.appendChild(link);
 
 			// wait for the link to be added to the document
 			window.requestAnimationFrame(function () {
-				var event = new MouseEvent('click');
+		      	var event = new MouseEvent('click');
 				link.dispatchEvent(event);
 				document.body.removeChild(link);
 			});
 
-			return false;
+		  	return false;
 		}
 
 		function GetSTAURL(event) {
@@ -346,7 +318,7 @@
 				if (node.STAdata)
 					currentNode.STAdata = node.STAdata;
 			}
-			currentNode.STASelectedColumns = [];
+			currentNode.STASelectedColumns=[];
 			var dataAttributes = getDataAttributes(currentNode.STAdata);
 			for (var a = 0; a < dataAttributes.length; a++) {
 				if (!document.getElementById("SelectColumn_" + a).checked)
@@ -363,10 +335,10 @@
 						else
 							s = dataAttributes[a].replace("@iot.", "/");  //Changes Datastreams@iot.navigationLink to Datastreams/navigationLink
 						currentNode.STAURL += s + ",";
-						currentNode.STASelectedColumns[a] = true;
+						currentNode.STASelectedColumns[a]=true;
 					}
 					else
-						currentNode.STASelectedColumns[a] = false;
+						currentNode.STASelectedColumns[a]=false;
 				}
 				currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.	
 				networkNodes.update(currentNode);
@@ -376,7 +348,7 @@
 			else   //If no selected collumn has been found, no filter is done and all collumns are selected
 			{
 				for (var a = 0; a < dataAttributes.length; a++) {
-					currentNode.STASelectedColumns[a] = true;
+					currentNode.STASelectedColumns[a]=true;
 				}
 			}
 		}
@@ -384,12 +356,12 @@
 		function GetSelectExpands(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectExpands").close();
-
+			
 			var dataAttributes = getDataAttributes(currentNode.STAdata);
 			if (!currentNode.STASelectedExpands)
-				currentNode.STASelectedExpands = { STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: dataAttributes.slice(), selected: [] };
-
-			var dataAttr = currentNode.STASelectedExpands.dataAttributesUnexpanded;
+				currentNode.STASelectedExpands={STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: dataAttributes.slice(), selected: []};
+			
+			var dataAttr=currentNode.STASelectedExpands.dataAttributesUnexpanded;
 			for (var a = 0; a < dataAttr.length; a++) {
 				if (document.getElementById("SelectExpand_" + a) && document.getElementById("SelectExpand_" + a).checked)
 					break;
@@ -399,15 +371,15 @@
 				var s;
 				currentNode.STAURL = currentNode.STASelectedExpands.STAURLUnexpanded + "?$expand="
 				for (var a = 0; a < dataAttr.length; a++) {
-					if (document.getElementById("SelectExpand_" + a) &&
-						document.getElementById("SelectExpand_" + a).checked &&
-						dataAttr[a].endsWith("@iot.navigationLink")) {
-						s = dataAttr[a].substring(0, dataAttr[a].length - "@iot.navigationLink".length);
+					if (document.getElementById("SelectExpand_" + a) && 
+						document.getElementById("SelectExpand_" + a).checked && 
+						dataAttr[a].endsWith("@iot.navigationLink")){
+						s = dataAttr[a].substring(0, dataAttr[a].length-"@iot.navigationLink".length);
 						currentNode.STAURL += s + ",";
-						currentNode.STASelectedExpands.selected[a] = true;
+						currentNode.STASelectedExpands.selected[a]=true;
 					}
 					else
-						currentNode.STASelectedExpands.selected[a] = false;
+						currentNode.STASelectedExpands.selected[a]=false;
 				}
 				currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.	
 				networkNodes.update(currentNode);
@@ -452,38 +424,8 @@
 						currentNode.STAURL += "(\"" + s + "\")";
 				}
 			}
-			else { //El filter està seleccionat
-				var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-				var selectChild = divSelectorRowsFilter.childNodes;
-				var selectIds = []; //llista ids dels selectors
-				for (let index = 0; index < selectChild.length; index++) {
-					var div = index % 2;
-					if (div == 0 & index != 0) {
-						selectIds.push(selectChild[index]);
-					}
-				}
-				var selectInformation = [];
-				for (let i = 0; i < selectIds.length; i++) { // agafar el valor dels selectors
-					console.log(selectIds[i]);
-					var selector = document.getElementById(selectIds[i].getAttribute("id"));
-					var selectorValue = selector.options[selector.selectedIndex].value;
-					selectInformation.push(selectorValue);
-				}
-				var node = networkNodes.get(nodeids[0]);
-				var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
-					if (element.startsWith("@iot.")) {
-						return element.substring(5);
-					} else {
-						return element.replace("@iot.", "/");
-					}
-				});
-				console.log(selectInformationWithoutAt);
-				for (let e = 0; e < selectInformationWithoutAt.length; e++) {
-					currentNode.STAURL += "?$filter=" + selectInformationWithoutAt[e] + " eq '" + selectInformationWithoutAt[e + 1] + "'";
-
-					console.log(currentNode.STAURL);
-					e++;
-				}
+			else {
+				alert("TBD");
 			}
 			networkNodes.update(currentNode);
 			LoadJSONData(currentNode);
@@ -506,7 +448,7 @@
 				if (node.STAURL) {
 					if (IdOfSTAObject(node) != -1) {
 						node.STAURL = parentNode.STAURL + "/" + STAEntitiesArray[IdOfSTAObject(node)];
-						if (node.STASelectedExpands) node.STASelectedExpands = null;
+						if (node.STASelectedExpands) node.STASelectedExpands=null;
 						networkNodes.update(node);
 						LoadJSONData(node);
 					}
@@ -532,176 +474,6 @@
 			return dataAttributes;
 		}
 
-		function fillValueSelector(selectorNumber, nodeId, type) {
-			var data = networkNodes.get(nodeId).STAdata;
-			var select;
-			if (type == "particular") {
-				select = document.getElementById("selectorParticular_" + selectorNumber);
-			} else {
-				select = document.getElementById("selectorInterval_" + selectorNumber);
-			}
-			var selectedProperty = select.options[select.selectedIndex].value;
-			var selectedElement;
-			if (type == "particular") {
-				selectedElement = document.getElementById("selectorParticular2_" + selectorNumber);
-			} else {
-				selectedElement = document.getElementById("selectorInterval2_" + selectorNumber);
-			}
-			selectedElement.innerHTML = "";
-
-			var valor;
-			var arrayValors = [];
-			// s'ha de filtrar
-			for (let index = 0; index < data.length; index++) {
-				valor = data[index][selectedProperty];
-				if (!arrayValors.find(element => element == valor)) {
-					var opcio = document.createElement("option");
-					opcio.setAttribute("value", valor);
-					opcio.innerHTML = valor;
-					selectedElement.appendChild(opcio);
-					arrayValors.push(valor);
-				} else {
-					console.log("en el else");
-				}
-			}
-		}
-
-		function createSelectorRowFilterParticular(dataAttributes, nodeId) {
-			var type = "particular";
-			var data = networkNodes.get(nodeId).STAdata;
-			var selectorStructureRow;
-			var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-			var selectorNumber = 1; //row 1, Augmentarà a mesura que s'afegeixin opcions
-			var divParticularBox = document.createElement("div");
-			divParticularBox.setAttribute("id", "divSelectorRowsFilterParticular");
-			divSelectorRowsFilter.appendChild(divParticularBox);
-
-			var label1 = document.createElement("label");
-			label1.innerHTML = "Choose a Property";
-			divParticularBox.appendChild(label1);
-			var select1 = document.createElement("select");
-			select1.setAttribute("name", "category");
-			select1.setAttribute("id", "selectorParticular_" + selectorNumber);
-			select1.setAttribute("onChange", "fillValueSelector(" + selectorNumber + ",'" + nodeId + "','" + type + "')");
-			divParticularBox.appendChild(select1);
-
-			for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category
-				var option = document.createElement("option");
-				option.setAttribute("value", dataAttributes[i]);
-				option.innerHTML = dataAttributes[i];
-				select1.appendChild(option);
-			}
-
-			var label2 = document.createElement("label");
-			label2.innerHTML = "Choose a Value";
-			divParticularBox.appendChild(label2);
-			var select2 = document.createElement("select");
-			select2.setAttribute("name", "selectedValue");
-			select2.setAttribute("id", "selectorParticular2_" + selectorNumber);
-			divParticularBox.appendChild(select2);
-
-			var valor;
-			var arrayValors = [];
-			for (let index = 0; index < data.length; index++) {
-				valor = data[index][dataAttributes[0]];
-				if (!arrayValors.find(element => element == valor)) {
-					var option = document.createElement("option");
-					option.setAttribute("value", valor);
-					option.innerHTML = valor;
-					select2.appendChild(option);
-					arrayValors.push(valor);
-				} else {
-					console.log("en el else");
-				}
-			}
-		}
-		function createSelectorRowFilterInterval(dataAttributes, nodeId) {
-			var type = "interval";
-			var data = networkNodes.get(nodeId).STAdata;
-			var selectorStructureRow;
-			var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-			var selectorNumber = 1; //row 1, Augmentarà a mesura que s'afegeixin opcions
-			var divIntervalBox = document.createElement("div");
-			divIntervalBox.setAttribute("id", "divSelectorRowsFilterInterval");
-			divIntervalBox.setAttribute("class", "hidden");
-			divSelectorRowsFilter.appendChild(divIntervalBox);
-
-			var label1 = document.createElement("label");
-			label1.innerHTML = "Choose a Property";
-			divIntervalBox.appendChild(label1);
-			var select1 = document.createElement("select");
-			select1.setAttribute("name", "category");
-			select1.setAttribute("id", "selectorInterval_" + selectorNumber);
-			select1.setAttribute("onChange", "fillValueSelector(" + selectorNumber + ",'" + nodeId + "','" + type + "')");
-			divIntervalBox.appendChild(select1);
-
-			//filtered cathegories
-
-			for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category
-				var option = document.createElement("option");
-				option.setAttribute("value", dataAttributes[i]);
-				option.innerHTML = dataAttributes[i];
-				select1.appendChild(option);
-			}
-
-			var label2 = document.createElement("label");
-			label2.innerHTML = "Choose a Value";
-			divIntervalBox.appendChild(label2);
-			var select2 = document.createElement("select");
-			select2.setAttribute("name", "selectedValue");
-			select2.setAttribute("id", "selectorInterval2_" + selectorNumber);
-			divIntervalBox.appendChild(select2);
-
-			var valor;
-			var arrayValors = [];
-			for (let index = 0; index < data.length; index++) {
-				valor = data[index][dataAttributes[0]];
-				if (!arrayValors.find(element => element == valor)) {
-					var option = document.createElement("option");
-					option.setAttribute("value", valor);
-					option.innerHTML = valor;
-					select2.appendChild(option);
-					arrayValors.push(valor);
-				} else {
-					console.log("en el else");
-				}
-			}
-		}
-
-		function showRowFilterByValues(nodeId) {
-			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
-			divSelectorRowsFilterParticular.classList.remove("hidden");
-			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterInterval");
-			divSelectorRowsFilterParticular.classList.add("hidden");
-			// console.log(typeof(nodeId));
-			var data = networkNodes.get(nodeId).STAdata;
-			console.log(data);
-			var dataAttributes = getDataAttributes(data);
-			console.log(dataAttributes);
-
-		};
-		function showRowFilterByInterval(nodeId) {
-			var data = networkNodes.get(nodeId).STAdata;
-			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
-			divSelectorRowsFilterParticular.classList.add("hidden");
-			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterInterval");
-			divSelectorRowsFilterParticular.classList.remove("hidden");
-			console.log(data);
-		}
-		function GetSelectorsForRowFilter(nodeId) {
-			var divSelectorStructure;
-			divSelectorStructure = `
-			<div id=selectorRowsContainer>
-				<div id=chooseTypeOfFilter>
-					<label for='oneOrMoreValue'><input type='radio' name='typeOfFilter' value='oneOrMoreValue' id='oneOrMoreValue' onClick= 'showRowFilterByValues(\"`+ nodeId + `\")' checked='checked'>Filter for one or more values</label><br>
-					<label for='interval'><input type='radio' name='typeOfFilter' value='interval' id='interval' onClick= 'showRowFilterByInterval(\"`+ nodeId + `"\)'>Filter for interval</label>
-				</div>
-				<div id='divSelectorRowsFilter'></div></div>`;
-
-			return divSelectorStructure;
-
-
-		}
 		function GetHTMLTable(data, rowNumbers, rowChecks) {
 			var dataAttributes = getDataAttributes(data);
 
@@ -751,15 +523,16 @@
 		}
 
 		function StringifyObjectElements(data) {
-			var dataAttributes = getDataAttributes(data), jsonTable = [];
+			var dataAttributes = getDataAttributes(data), jsonTable=[];
 
 			for (var i = 0; i < data.length; i++) {
-				jsonTable[i] = {};
-				for (var a = 0; a < dataAttributes.length; a++) {
+				jsonTable[i]={};
+				for (var a = 0; a < dataAttributes.length; a++)
+				{
 					if (typeof data[i][dataAttributes[a]] === "object")  //"arrays" are also objects.
-						jsonTable[i][dataAttributes[a]] = JSON.stringify(data[i][dataAttributes[a]]);
+						jsonTable[i][dataAttributes[a]]=JSON.stringify(data[i][dataAttributes[a]]);
 					else
-						jsonTable[i][dataAttributes[a]] = data[i][dataAttributes[a]];
+						jsonTable[i][dataAttributes[a]]=data[i][dataAttributes[a]];
 				}
 			}
 			return jsonTable;
@@ -772,19 +545,19 @@
 
 		function SaveTable() {
 			event.preventDefault(); // We don't want to submit this form
-			var delimiter = document.getElementById("DialogSaveTableDelimiter").value;
+			var delimiter=document.getElementById("DialogSaveTableDelimiter").value;
 			document.getElementById("DialogSaveTable").close();
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
 			if (nodeids && nodeids.length) {
 				if (networkNodes.get(nodeids[0]))
-					SaveLocalDataFile(Papa.unparse(StringifyObjectElements(networkNodes.get(nodeids[0]).STAdata), { quotes: false, quoteChar: '"', escapeChar: '"', delimiter: (delimiter ? delimiter : ";"), header: true, newline: "\r\n", skipEmptyLines: "greedy" }),
-						(IdOfSTAObject(networkNodes.get(nodeids[0])) == -1) ? "table" : STAEntitiesArray[IdOfSTAObject(networkNodes.get(nodeids[0]))], ".csv", "application/vnd.ms-excel");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
+					SaveLocalDataFile(Papa.unparse(StringifyObjectElements(networkNodes.get(nodeids[0]).STAdata), { quotes: false, quoteChar: '"', escapeChar: '"', delimiter: (delimiter ? delimiter : ";"), header: true, newline: "\r\n", skipEmptyLines: "greedy"}), 
+						(IdOfSTAObject(networkNodes.get(nodeids[0])) == -1) ?  "table" : STAEntitiesArray[IdOfSTAObject(networkNodes.get(nodeids[0]))], ".csv", "application/vnd.ms-excel");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
 			}
 		}
 
-		function ShowTableSelectColumnsDialog(nodeParentId, nodeId) {
-			var data = networkNodes.get(nodeParentId).STAdata,
-				selectedColumns = networkNodes.get(nodeId).STASelectedColumns;
+		function ShowTableSelectColumnsDialog(nodeParentId,nodeId) {
+			var data = networkNodes.get(nodeParentId).STAdata, 
+					selectedColumns=networkNodes.get(nodeId).STASelectedColumns;
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectColumnsHTML").innerHTML = "No data to show.";
@@ -794,15 +567,15 @@
 
 			var s = "<table>";
 			for (var a = 0; a < dataAttributes.length; a++)
-				s += "<tr><td><label><input type='checkbox'" + ((!selectedColumns || a >= selectedColumns.length || selectedColumns[a]) ? "checked='checked'" : "") + " id='SelectColumn_" + a + "' /> " + dataAttributes[a] + "</label></td></tr>";
+				s += "<tr><td><label><input type='checkbox'" + ((!selectedColumns || a>=selectedColumns.length || selectedColumns[a]) ? "checked='checked'" : "") + " id='SelectColumn_" + a + "' /> " + dataAttributes[a] + "</label></td></tr>";
 			s += "</table>";
 			document.getElementById("DialogSelectColumnsHTML").innerHTML = s;
 		}
 
 		function ShowTableSelectExpandsDialog(nodeId) {
-			var data = networkNodes.get(nodeId).STAdata,
-				entities = STAEntities[STAEntitiesArray[IdOfSTAObject(networkNodes.get(nodeId))]].entities,
-				selectedExpands = networkNodes.get(nodeId).STASelectedExpands;
+			var data = networkNodes.get(nodeId).STAdata, 
+					entities=STAEntities[STAEntitiesArray[IdOfSTAObject(networkNodes.get(nodeId))]].entities,
+					selectedExpands=networkNodes.get(nodeId).STASelectedExpands;
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectExpandsHTML").innerHTML = "No data to show.";
@@ -812,12 +585,16 @@
 			var dataAttributes = selectedExpands ? selectedExpands.dataAttributesUnexpanded : getDataAttributes(data);
 
 			var s = "<table>";
-			for (var a = 0; a < dataAttributes.length; a++) {
-				if (dataAttributes[a].endsWith("@iot.navigationLink")) {
-					var da = dataAttributes[a].substring(0, dataAttributes[a].length - "@iot.navigationLink".length);
-					for (var e = 0; e < entities.length; e++) {
-						if (entities[e] == da) {
-							s += "<tr><td><label><input type='checkbox'" + ((selectedExpands && a < selectedExpands.selected.length && selectedExpands.selected[a]) ? "checked='checked'" : "") + " id='SelectExpand_" + a + "' /> " + da + "</label></td></tr>";
+			for (var a = 0; a < dataAttributes.length; a++)
+			{
+				if (dataAttributes[a].endsWith("@iot.navigationLink"))
+				{
+					var da=dataAttributes[a].substring(0, dataAttributes[a].length-"@iot.navigationLink".length);
+					for (var e=0; e < entities.length; e++)
+					{
+						if (entities[e]==da)
+						{
+							s += "<tr><td><label><input type='checkbox'" + ((selectedExpands && a<selectedExpands.selected.length && selectedExpands.selected[a]) ? "checked='checked'" : "") + " id='SelectExpand_" + a + "' /> " + da + "</label></td></tr>";
 							break;
 						}
 					}
@@ -844,7 +621,6 @@
 
 		function ShowTableFilterRowsDialog(nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
-			var dataAttributes = getDataAttributes(data);
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
@@ -855,11 +631,7 @@
 			document.getElementById("DialogSelectRowsTable").innerHTML = "";
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
-			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
-
-			createSelectorRowFilterInterval(dataAttributes, nodeId);
-			createSelectorRowFilterParticular(dataAttributes, nodeId);
-
+			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
 
 		}
 
@@ -870,28 +642,35 @@
 				ShowTableFilterRowsDialog(nodeId);
 		}
 
-		function SeparatePropertyIfNeeded(record, property, baseName) {
+		function SeparatePropertyIfNeeded(record, property, baseName)
+		{
 			if (typeof property === "object")  //"arrays" are also objects.
 			{
-				if (Array.isArray(property)) {
+				if (Array.isArray(property))
+				{
 					//Array: creating multifields
-					for (var j = 0; j < property.length; j++) {
-						if (typeof property[j] === "object") {
-							if (Array.isArray(property[j])) {
-								for (var jj = 0; jj < property[j].length; jj++)
+					for (var j = 0; j<property.length; j++)
+					{
+						if (typeof property[j] === "object")
+						{
+							if (Array.isArray(property[j]))
+							{
+								for (var jj = 0; jj<property[j].length; jj++)
 									SeparatePropertyIfNeeded(record, property[j][jj], baseName + "_" + j + "_" + jj);
 							}
-							else {
+							else
+							{
 								var subkeys = Object.keys(property[j]);
 								for (var kk = 0; kk < subkeys.length; kk++)
 									SeparatePropertyIfNeeded(record, property[j][subkeys[kk]], baseName + "_" + subkeys[kk] + "_" + j)
 							}
 						}
 						else
-							record[baseName + "_" + j] = property[j];
+							record[baseName + "_" + j]=property[j];
 					}
 				}
-				else {
+				else
+				{
 					//Object; lets separate it.
 					var subkeys = Object.keys(property);
 					for (var kk = 0; kk < subkeys.length; kk++)
@@ -899,25 +678,24 @@
 				}
 			}
 			else
-				record[baseName] = property;
+				record[baseName]=property;
 		}
+
 		function SeparateColumns(node, nodeParent) {
-			var data = nodeParent.STAdata, record, recordParent;
-			console.log(data);
-			node.STAURL = nodeParent.STAURL;
-			node.STAdata = [];
+			var data=nodeParent.STAdata, record, recordParent;
+			node.STAURL=nodeParent.STAURL;
+			node.STAdata=[];
 			for (var i = 0; i < data.length; i++) {
-				record = node.STAdata[i] = {};
-				console.log(record);
-				recordParent = data[i]
-				console.log(recordParent);
+				record=node.STAdata[i]={};
+				recordParent=data[i]
 				var keys = Object.keys(recordParent);
 				for (var k = 0; k < keys.length; k++)
 					SeparatePropertyIfNeeded(record, recordParent[keys[k]], keys[k]);
 			}
 		}
 
-		function StartCircularImage(nodeTo, nodeFrom, calUnir) {
+		function StartCircularImage(nodeTo, nodeFrom, calUnir)
+		{
 			if (nodeFrom.STAURL && IdOfSTAObject(nodeTo) != -1) {
 				nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAObject(nodeTo)];
 				networkNodes.update(nodeTo);
@@ -990,10 +768,10 @@
 					document.getElementById("DialogSTAURL").showModal();
 				}
 				else if (currentNode.image == "ViewQuery.png") {
-					document.getElementById("DialogSTAURLInput").value = "";
+					document.getElementById("DialogSTAURLInput").value="";
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length) {
-						if (networkNodes.get(nodeids[0]))
+						if (networkNodes.get(nodeids[0])) 
 							document.getElementById("DialogSTAURLInput").value = networkNodes.get(nodeids[0]).STAURL;
 					}
 					document.getElementById("DialogSTAURLInput").readOnly = true;
@@ -1040,7 +818,8 @@
 						document.getElementById("DialogSelectRows").showModal();
 					}
 				}
-				else if (IdOfSTAObject(currentNode) != -1) {
+				else if (IdOfSTAObject(currentNode) != -1)
+				{
 					//Offering expand
 					ShowTableSelectExpandsDialog(currentNode.id);
 					document.getElementById("DialogSelectExpands").showModal();
@@ -1136,12 +915,14 @@
 			var newId = (Math.random() * 1e7).toString(32);
 			var node = { id: newId, label: label, image: image, shape: "circularImage" };
 
-			if (image == "ogc.png") {
-				node.STAURL = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";// "https://toronto-bike-snapshot.sensorup.com/v1.0""https://iot.hamburg.de/v1.1" https://citiobs.demo.secure-dimensions.de/staplus/v1.1";
+			if (image == "ogc.png")
+			{
+				node.STAURL = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
 				networkNodes.add(node);
 				LoadJSONData(node);
 			}
-			else if (!startingNodeContextId || !StartCircularImage(node, networkNodes.get(startingNodeContextId), true)) {
+			else if (!startingNodeContextId || !StartCircularImage(node, networkNodes.get(startingNodeContextId), true))
+			{
 				networkNodes.add(node);
 				networkEdges.add([{ from: startingNodeContextId, to: newId }]);
 			}
@@ -1167,25 +948,6 @@
 			network.addEdgeMode();
 			connectionInProcess = true;
 			document.getElementById("clarification").innerHTML = "Press the mouse botton on the starting node, and drag and drop the mouse on the end node.";
-		}
-		function giveMeNodeInformation(event) {
-			console.log(event);
-			if (event)
-				event.preventDefault(); // We don't want to submit this form
-			document.getElementById("DialogSelectColumns").close();
-
-			if (startingNodeContextId) {
-				console.log(startingNodeContextId);
-				console.log(currentNode);
-
-			}
-		}
-
-		function giveMeNetworkInformation(event) {
-			if (event)
-				event.preventDefault(); // We don't want to submit this form
-			document.getElementById("DialogSelectColumns").close();
-			console.log(networkNodes);
 		}
 
 	</script>
