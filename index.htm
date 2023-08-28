@@ -729,7 +729,7 @@ else
 			// s'ha de filtrar
 			for (let index = 0; index < data.length; index++) {
 				valor = data[index][selectedProperty];
-				console.log(typeof valor);
+				// console.log(typeof valor);
 				if (typeof valor === "object") isAnObject = "yes";
 				if (!arrayValors.find(element => element == valor)) {
 					var opcio = document.createElement("option");
@@ -809,7 +809,7 @@ else
 			select1.setAttribute("onChange", "fillValueSelector(" + selectorNumber + ",'" + nodeId + "','" + type + "')");
 			divParticularBox.appendChild(select1);
 
-			for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category
+			for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category/property
 				var option = document.createElement("option");
 				option.setAttribute("value", dataAttributes[i]);
 				option.innerHTML = dataAttributes[i];
@@ -860,7 +860,7 @@ else
 			divParticularBox.appendChild(instructions);
 
 
-			var divIsAnObject = document.createElement("div");
+			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
 			divIsAnObject.setAttribute("id", "divIsAnObject");
 			divIsAnObject.setAttribute("class", "hidden");
 			var textIsAnObject = document.createElement("h5");
@@ -875,24 +875,30 @@ else
 			divIsAnObject.appendChild(imageIsAnObject);
 			divParticularBox.appendChild(divIsAnObject);
 
-			var addAConditionButtonAnd = document.createElement("button");
+			var addAConditionButtonAnd = document.createElement("button"); //Button per afegir condició AND
 			addAConditionButtonAnd.setAttribute("id", "addAConditionButtonAnd_" + selectorNumber);
-			addAConditionButtonAnd.setAttribute("onclick", "addARowFilterWithAnd('" + dataAttributes + "','" + nodeId + "','" + kindOfSource + "')");
+			addAConditionButtonAnd.setAttribute("onclick", "addARowFilterWithAnd('" + nodeId + "','" + kindOfSource + "')");
 			addAConditionButtonAnd.innerHTML = "And";
 			divParticularBox.appendChild(addAConditionButtonAnd);
 
-			var addAConditionButtonOr = document.createElement("button");
+			var addAConditionButtonOr = document.createElement("button"); //Button per afegir condició OR
 			addAConditionButtonOr.setAttribute("id", "addAConditionButtonOr_" + selectorNumber);
-			addAConditionButtonOr.setAttribute("onclick", "addARowFilterWithOr('" + dataAttributes + "','" + nodeId + "','" + kindOfSource + "')");
+			addAConditionButtonOr.setAttribute("onclick", "addARowFilterWithOr('" + nodeId + "','" + kindOfSource + "')");
 			addAConditionButtonOr.innerHTML = "Or";
 			divParticularBox.appendChild(addAConditionButtonOr);
-
-
-
 		}
 
-		function addARowFilterWithAnd(dataAttributes, nodeId, kindOfSource){
+		function addARowFilterWithAnd(nodeId, kindOfSource){
 			event.preventDefault();
+			var data = networkNodes.get(nodeId).STAdata;
+			var dataAttributes = getDataAttributes(data);
+			createSelectorRowFilters(dataAttributes, nodeId, kindOfSource);
+		}
+
+		function addARowFilterWithOr(nodeId, kindOfSource){
+			event.preventDefault();
+			var data = networkNodes.get(nodeId).STAdata;
+			var dataAttributes = getDataAttributes(data);
 			createSelectorRowFilters(dataAttributes, nodeId, kindOfSource);
 		}
 
