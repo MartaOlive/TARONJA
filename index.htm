@@ -87,6 +87,14 @@
 			position: absolute;
 			/* left:20; */
 		}
+
+		.borderTable {
+			border: black 1px solid;
+		}
+
+		th.borderTable {
+			min-width: 100px;
+		}
 	</style>
 	<link rel="stylesheet" href="vis.min.css">
 
@@ -760,7 +768,7 @@
 			var textInput = document.getElementById("textInput" + type);
 			var selector2 = document.getElementById("selectorParticular2");
 			var label2 = document.getElementById("label2" + type);
-			var writeButton = document.getElementById("chooseValueButton" + type );
+			var writeButton = document.getElementById("chooseValueButton" + type);
 			var textInput = document.getElementById("textInput" + type);
 			var instructions = document.getElementById("instructions" + type);
 			if (textInput.classList.contains("hidden")) {
@@ -800,10 +808,9 @@
 			if (type == "Interval") divParticularBox.setAttribute("class", "hidden");
 			divSelectorRowsFilter.appendChild(divParticularBox);
 
-			var optionsRow=document.createElement("div");
+			var optionsRow = document.createElement("div");
 			optionsRow.setAttribute("id", "optionsRow");
 			divParticularBox.appendChild(optionsRow);
-
 			var label1 = document.createElement("label");
 			label1.innerHTML = "Choose a Property";
 			optionsRow.appendChild(label1);
@@ -854,7 +861,7 @@
 			var writeButton = document.createElement("button");
 			writeButton.innerHTML = "Click here if you prefere to write the value";
 			writeButton.setAttribute("id", "chooseValueButton" + type);
-			writeButton.setAttribute("onclick", "changeSelectToWrite(,'" + type + "')");
+			writeButton.setAttribute("onclick", "changeSelectToWrite('" + type + "')");
 			divParticularBox.appendChild(writeButton);
 
 			var instructions = document.createElement("div");
@@ -863,12 +870,12 @@
 			instructions.setAttribute("class", "instructions");
 			divParticularBox.appendChild(instructions);
 
-			var addButton=document.createElement("button");
-			addButton.setAttribute("id", "addButton");
-			addButton.setAttribute("onclick", "addSelected()");
-			addButton.innerHTML="add";
+			var addButton = document.createElement("button");
+			addButton.setAttribute("id", "addButton" + type);
+			addButton.setAttribute("onclick", "addSelected('" + type + "')");
+			addButton.setAttribute("value", 1)
+			addButton.innerHTML = "add";
 			divParticularBox.appendChild(addButton);
-
 
 
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
@@ -886,37 +893,80 @@
 			divIsAnObject.appendChild(imageIsAnObject);
 			divParticularBox.appendChild(divIsAnObject);
 
+			var divResult = document.createElement("div");
+			divResult.setAttribute("id", "divResult" + type);
+			divResult.innerHTML = "These are your values selected to filter ";
+			divParticularBox.appendChild(divResult);
 
-			
-				// var divAndOr = document.createElement("div");
-				// var addAConditionButtonAnd = document.createElement("button"); //Button per afegir condició AND
-				// addAConditionButtonAnd.setAttribute("id", "addAConditionButtonAnd_" + selectorNumber);
-				// addAConditionButtonAnd.setAttribute("onclick", "addARowFilterWithAnd('" + nodeId + "','" + kindOfSource + "')");
-				// addAConditionButtonAnd.innerHTML = "And";
-				// divAndOr.appendChild(addAConditionButtonAnd);
+			var table = document.createElement("table");
+			table.setAttribute("id", "tableResult");
+			table.setAttribute("class", "borderTable");
+			var tableTr = document.createElement("tr");
+			tableTr.setAttribute("id", "tableTr0");
+			tableTr.setAttribute("class", "borderTable");
+			table.appendChild(tableTr);
+			for (var i = 0; i < 4; i++) {
+				var tableTh = document.createElement("th");
+				tableTh.setAttribute("class", "borderTable");
+				console.log("aaa");
+				if (i == 1) {
+					tableTh.innerHTML = "Property";
 
-				// var addAConditionButtonOr = document.createElement("button"); //Button per afegir condició OR
-				// addAConditionButtonOr.setAttribute("id", "addAConditionButtonOr_" + selectorNumber);
-				// addAConditionButtonOr.setAttribute("onclick", "addARowFilterWithOr('" + nodeId + "','" + kindOfSource + "')");
-				// addAConditionButtonOr.innerHTML = "Or";
-				// divAndOr.appendChild(addAConditionButtonOr);
-				// divParticularBox.appendChild(divAndOr);
+				} else if (i == 2) {
+					tableTh.innerHTML = "Value";
+				}
+				tableTr.appendChild(tableTh)
+			}
 
-				var divResult = document.createElement("div");
-				divResult.setAttribute("id", "divResult");
-				divResult.innerHTML="There is nothing selected yet";
-				divParticularBox.appendChild(divResult);
-
-			
-
-			
+			divResult.appendChild(table);
 
 		}
 
-		function addSelected(){
+		function addSelected(type) {
 			event.preventDefault();
 			console.log("add");
-			var divResult=document.getElementById("divResult");
+			var addButton = document.getElementById("addButton" + type);
+			var valueButton = addButton.getAttribute("value");
+			var valueButtonInt = parseInt(valueButton);
+			console.log(valueButton);
+
+			var table = document.getElementById("tableResult");
+			var tableTr = document.createElement("tr");
+			tableTr.setAttribute("id", "tableTr" + valueButtonInt);
+			tableTr.setAttribute("class", "borderTable");
+			table.appendChild(tableTr);
+
+			var selector1 = document.getElementById("selector" + type);
+			var selector2 = document.getElementById("selector" + type + "2");
+
+			// selector1.options[selector1.selectedIndex].value;
+			// selector2.options[selector2.selectedIndex].value;
+
+			for (var a = 0; a < 4; a++) {
+				var tableTh = document.createElement("th");
+				tableTh.setAttribute("class", "borderTable");
+				console.log("bb")
+
+				if (a == 0) {
+					if (valueButtonInt != 1) {
+						tableTh.innerHTML = "select";
+					}
+				}
+				else if (a == 1) {
+					tableTh.innerHTML = selector1.options[selector1.selectedIndex].value;
+
+				} else if (a == 2) {
+					tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
+
+				}else if (a==3){
+					tableTh.innerHTML = "delete";
+				}
+				tableTr.appendChild(tableTh)
+			}
+
+
+			valueButtonInt++;
+			addButton.setAttribute("value", valueButtonInt);
 
 		}
 
@@ -1689,8 +1739,8 @@
 
 			// createSelectorRowFilterInterval(dataAttributes, nodeId);
 			// createSelectorRowFilterParticular(dataAttributes, nodeId);
-			createSelectorRowFilters(dataAttributes, nodeId, "Particular",1);
-			createSelectorRowFilters(dataAttributes, nodeId, "Interval",1);
+			createSelectorRowFilters(dataAttributes, nodeId, "Particular", 1);
+			createSelectorRowFilters(dataAttributes, nodeId, "Interval", 1);
 		}
 
 		function ChangeTableFilterRowsDialog(nodeId) {
