@@ -64,7 +64,7 @@
 
 		#selectorRowsContainer {
 			min-width: 1500px;
-			min-height: 800px;
+			min-height: 400px;
 		}
 
 		.hidden {
@@ -94,6 +94,14 @@
 
 		th.borderTable {
 			min-width: 100px;
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+
+		.divResultBox{
+			margin-top: 20px;
+			height: 300px;
+			border: black 1px solid;
 		}
 	</style>
 	<link rel="stylesheet" href="vis.min.css">
@@ -895,6 +903,7 @@
 
 			var divResult = document.createElement("div");
 			divResult.setAttribute("id", "divResult" + type);
+			divResult.setAttribute("class", "divResultBox")
 			divResult.innerHTML = "These are your values selected to filter ";
 			divParticularBox.appendChild(divResult);
 
@@ -949,7 +958,25 @@
 
 				if (a == 0) {
 					if (valueButtonInt != 1) {
-						tableTh.innerHTML = "select";
+						tableTh.setAttribute("id", "tr_" + valueButtonInt);
+						// tableTh.innerHTML = "select";
+						var selectAndOr = document.createElement("select");
+						selectAndOr.setAttribute("id", "select_row_" + valueButtonInt);
+						tableTh.appendChild(selectAndOr);
+
+						for (var s = 0; s < 2; s++) {
+							console.log(s);
+							var optionSelect = document.createElement("option");
+							if (s == 0) {
+								optionSelect.setAttribute("value", "and");
+								optionSelect.innerHTML = "And";
+
+							} else {
+								optionSelect.setAttribute("value", "or");
+								optionSelect.innerHTML = "Or";
+							}
+							selectAndOr.appendChild(optionSelect);
+						}
 					}
 				}
 				else if (a == 1) {
@@ -958,7 +985,7 @@
 				} else if (a == 2) {
 					tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
 
-				}else if (a==3){
+				} else if (a == 3) {
 					tableTh.innerHTML = "delete";
 				}
 				tableTr.appendChild(tableTh)
@@ -970,19 +997,6 @@
 
 		}
 
-		// function addARowFilterWithAnd(nodeId, kindOfSource){
-		// 	event.preventDefault();
-		// 	var data = networkNodes.get(nodeId).STAdata;
-		// 	var dataAttributes = getDataAttributes(data);
-		// 	createSelectorRowFilters(dataAttributes, nodeId, kindOfSource);
-		// }
-
-		// function addARowFilterWithOr(nodeId, kindOfSource){
-		// 	event.preventDefault();
-		// 	var data = networkNodes.get(nodeId).STAdata;
-		// 	var dataAttributes = getDataAttributes(data);
-		// 	createSelectorRowFilters(dataAttributes, nodeId, kindOfSource);
-		// }
 
 
 		function showRowFilterByValues(nodeId) {
