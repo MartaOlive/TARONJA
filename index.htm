@@ -986,19 +986,26 @@
 					tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
 
 				} else if (a == 3) {
-					tableTh.innerHTML = "delete";
+					// tableTh.innerHTML = "delete";
+					var buttonDelete=document.createElement("button");
+					buttonDelete.setAttribute("id", "buttonDelete_"+valueButtonInt);
+					buttonDelete.setAttribute("onclick", "deleteRow()");
+					buttonDelete.innerHTML="Delete ";
+					tableTh.appendChild(buttonDelete);
+
 				}
 				tableTr.appendChild(tableTh)
 			}
-
-
 			valueButtonInt++;
 			addButton.setAttribute("value", valueButtonInt);
 
 		}
 
 
-
+function deleteRow(){
+	event.preventDefault();
+	console.log("deleteRow");
+}
 		function showRowFilterByValues(nodeId) {
 			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
 			divSelectorRowsFilterParticular.classList.remove("hidden");
