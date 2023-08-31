@@ -934,12 +934,16 @@
 		function addSelected(type) {
 			event.preventDefault();
 			console.log("add");
+			var array=[];
+			array.push("a"); 
+			console.log(array);
 			var addButton = document.getElementById("addButton" + type);
 			var valueButton = addButton.getAttribute("value");
 			var valueButtonInt = parseInt(valueButton);
 			console.log(valueButton);
 
 			var table = document.getElementById("tableResult");
+			table.setAttribute("value", ["bliliblbi", "aaaa"]);
 			var tableTr = document.createElement("tr");
 			tableTr.setAttribute("id", "tableTr" + valueButtonInt);
 			tableTr.setAttribute("class", "borderTable");
@@ -989,7 +993,7 @@
 					// tableTh.innerHTML = "delete";
 					var buttonDelete=document.createElement("button");
 					buttonDelete.setAttribute("id", "buttonDelete_"+valueButtonInt);
-					buttonDelete.setAttribute("onclick", "deleteRow()");
+					buttonDelete.setAttribute("onclick", "deleteRow("+valueButtonInt+")");
 					buttonDelete.innerHTML="Delete ";
 					tableTh.appendChild(buttonDelete);
 
