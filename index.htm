@@ -98,7 +98,7 @@
 			padding-right: 10px;
 		}
 
-		.divResultBox{
+		.divResultBox {
 			margin-top: 20px;
 			height: 300px;
 			border: black 1px solid;
@@ -880,7 +880,7 @@
 
 			var addButton = document.createElement("button");
 			addButton.setAttribute("id", "addButton" + type);
-			addButton.setAttribute("onclick", "addSelected('" + type + "')");
+			addButton.setAttribute("onclick", "addSelected('" + type + "','"+nodeId+"')");
 			addButton.setAttribute("value", 1)
 			addButton.innerHTML = "add";
 			divParticularBox.appendChild(addButton);
@@ -931,21 +931,21 @@
 
 		}
 
-		function addSelected(type) {
+		function addSelected(type,nodeId) {
 			event.preventDefault();
 			console.log("add");
-			var array=[];
-			array.push("a"); 
-			console.log(array);
-			var addButton = document.getElementById("addButton" + type);
-			var valueButton = addButton.getAttribute("value");
-			var valueButtonInt = parseInt(valueButton);
-			console.log(valueButton);
 
 			var table = document.getElementById("tableResult");
-			table.setAttribute("value", ["bliliblbi", "aaaa"]);
+			var rows = table.rows.length;
+
+			if (rows == 3) {
+				var addButton = document.getElementById("addButton" + type);
+				addButton.disabled = true;
+			}
+
+
 			var tableTr = document.createElement("tr");
-			tableTr.setAttribute("id", "tableTr" + valueButtonInt);
+			tableTr.setAttribute("id", "tableTr_" + (rows - 1));
 			tableTr.setAttribute("class", "borderTable");
 			table.appendChild(tableTr);
 
@@ -961,11 +961,11 @@
 				console.log("bb")
 
 				if (a == 0) {
-					if (valueButtonInt != 1) {
-						tableTh.setAttribute("id", "tr_" + valueButtonInt);
+					if (rows!= 1) {
+						// tableTh.setAttribute("id", "tr_"+nodeId+"_"+(rows-1)+"_select");
 						// tableTh.innerHTML = "select";
 						var selectAndOr = document.createElement("select");
-						selectAndOr.setAttribute("id", "select_row_" + valueButtonInt);
+						selectAndOr.setAttribute("id", "select_"+nodeId+"_"+(rows-1));
 						tableTh.appendChild(selectAndOr);
 
 						for (var s = 0; s < 2; s++) {
@@ -991,25 +991,26 @@
 
 				} else if (a == 3) {
 					// tableTh.innerHTML = "delete";
-					var buttonDelete=document.createElement("button");
-					buttonDelete.setAttribute("id", "buttonDelete_"+valueButtonInt);
-					buttonDelete.setAttribute("onclick", "deleteRow("+valueButtonInt+")");
-					buttonDelete.innerHTML="Delete ";
+					var buttonDelete = document.createElement("button");
+					buttonDelete.setAttribute("id", "delete_"+nodeId+"_"+(rows-1));
+					buttonDelete.setAttribute("onclick", "deleteRow(" + (rows - 1) + ")");
+					buttonDelete.innerHTML = "Delete ";
 					tableTh.appendChild(buttonDelete);
 
 				}
 				tableTr.appendChild(tableTh)
 			}
-			valueButtonInt++;
-			addButton.setAttribute("value", valueButtonInt);
+
 
 		}
 
 
-function deleteRow(){
-	event.preventDefault();
-	console.log("deleteRow");
-}
+		function deleteRow(row) {
+			event.preventDefault();
+			console.log(row);
+		}
+
+
 		function showRowFilterByValues(nodeId) {
 			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
 			divSelectorRowsFilterParticular.classList.remove("hidden");
