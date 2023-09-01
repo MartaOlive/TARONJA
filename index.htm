@@ -880,8 +880,7 @@
 
 			var addButton = document.createElement("button");
 			addButton.setAttribute("id", "addButton" + type);
-			addButton.setAttribute("onclick", "addSelected('" + type + "','"+nodeId+"')");
-			addButton.setAttribute("value", 1)
+			addButton.setAttribute("onclick", "addSelected('" + type + "','" + nodeId + "')");
 			addButton.innerHTML = "add";
 			divParticularBox.appendChild(addButton);
 
@@ -931,29 +930,26 @@
 
 		}
 
-		function addSelected(type,nodeId) {
+		function addSelected(type, nodeId) {
 			event.preventDefault();
 			console.log("add");
 
 			var table = document.getElementById("tableResult");
 			var rows = table.rows.length;
 
-			if (rows == 3) {
+			if (rows == 3) { //limita que només pugui filtrar-se per tres coses
 				var addButton = document.getElementById("addButton" + type);
 				addButton.disabled = true;
 			}
 
 
 			var tableTr = document.createElement("tr");
-			tableTr.setAttribute("id", "tableTr_" + (rows - 1));
+			tableTr.setAttribute("id", "tableTr_" + (rows));
 			tableTr.setAttribute("class", "borderTable");
 			table.appendChild(tableTr);
 
 			var selector1 = document.getElementById("selector" + type);
 			var selector2 = document.getElementById("selector" + type + "2");
-
-			// selector1.options[selector1.selectedIndex].value;
-			// selector2.options[selector2.selectedIndex].value;
 
 			for (var a = 0; a < 4; a++) {
 				var tableTh = document.createElement("th");
@@ -961,11 +957,11 @@
 				console.log("bb")
 
 				if (a == 0) {
-					if (rows!= 1) {
-						// tableTh.setAttribute("id", "tr_"+nodeId+"_"+(rows-1)+"_select");
+					if (rows != 1) {
+						// tableTh.setAttribute("id", "tr_"+nodeId+"_"+(rows)+"_select");
 						// tableTh.innerHTML = "select";
 						var selectAndOr = document.createElement("select");
-						selectAndOr.setAttribute("id", "select_"+nodeId+"_"+(rows-1));
+						selectAndOr.setAttribute("id", "select_" + nodeId + "_" + (rows));
 						tableTh.appendChild(selectAndOr);
 
 						for (var s = 0; s < 2; s++) {
@@ -984,16 +980,19 @@
 					}
 				}
 				else if (a == 1) {
+					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows + 1) + "_property");
 					tableTh.innerHTML = selector1.options[selector1.selectedIndex].value;
 
 				} else if (a == 2) {
+					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows + 1) + "_value");
 					tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
 
 				} else if (a == 3) {
 					// tableTh.innerHTML = "delete";
 					var buttonDelete = document.createElement("button");
-					buttonDelete.setAttribute("id", "delete_"+nodeId+"_"+(rows-1));
-					buttonDelete.setAttribute("onclick", "deleteRow(" + (rows - 1) + ")");
+					buttonDelete.setAttribute("value", rows);
+					// buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'"+type+"')");
+					buttonDelete.setAttribute("onclick", "deleteRow(" + rows + ",'" + nodeId + "')");
 					buttonDelete.innerHTML = "Delete ";
 					tableTh.appendChild(buttonDelete);
 
@@ -1005,9 +1004,49 @@
 		}
 
 
-		function deleteRow(row) {
+		function deleteRow(rows, nodeId) { //s'ha de tornar a pintar la taula xq no coincideix rows i id
 			event.preventDefault();
-			console.log(row);
+			console.log(rows);
+			var table = document.getElementById("tableResult");
+
+			var tableResults = [];
+			var rowsNumber = table.rows.length;
+			console.log(rowsNumber);
+			if (rowsNumber > 1) {
+				for (var r = 1; r < rowsNumber; r++) {
+					var property = document.getElementById("th_" + nodeId + "_" + (r + 1) + "_property");
+					var propertyText = property.innerHTML;
+					var value = document.getElementById("th_" + nodeId + "_" + (r + 1) + "_value");
+					var valueText = value.innerHTML;
+
+					tableResults.push(propertyText);
+					tableResults.push(valueText);
+				}
+				 
+				var a=1;
+				var rowsNumbers2 = table.rows.length; 
+
+				while (rowsNumbers2 >1){
+					table.deleteRow(a);
+					rowsNumbers2 = table.rows.length; 
+				}
+			}
+
+			//activar el add
+			
+			//tornar a pintar la taula
+
+			console.log(tableResults);
+
+
+
+
+
+
+
+
+			//  table.deleteRow(row);
+
 		}
 
 
