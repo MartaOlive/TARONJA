@@ -800,10 +800,11 @@
 			var selectOption = select.options[select.selectedIndex].value;
 			if (selectOption === "[object Object]") {
 				console.log("object!!!!");
-			} else {
-				console.log(selectOption);
-				console.log(typeof selectOption);
 			}
+			// else {
+			// 	console.log(selectOption);
+			// 	console.log(typeof selectOption);
+			// }
 		}
 
 		function createSelectorRowFilters(dataAttributes, nodeId, kindOfSource,) {
@@ -916,7 +917,6 @@
 			for (var i = 0; i < 4; i++) {
 				var tableTh = document.createElement("th");
 				tableTh.setAttribute("class", "borderTable");
-				console.log("aaa");
 				if (i == 1) {
 					tableTh.innerHTML = "Property";
 
@@ -932,8 +932,6 @@
 
 		function addSelected(type, nodeId) {
 			event.preventDefault();
-			console.log("add");
-
 			var table = document.getElementById("tableResult");
 			var rows = table.rows.length;
 
@@ -954,8 +952,6 @@
 			for (var a = 0; a < 4; a++) {
 				var tableTh = document.createElement("th");
 				tableTh.setAttribute("class", "borderTable");
-				console.log("bb")
-
 				if (a == 0) {
 					if (rows != 1) {
 						// tableTh.setAttribute("id", "tr_"+nodeId+"_"+(rows)+"_select");
@@ -965,7 +961,6 @@
 						tableTh.appendChild(selectAndOr);
 
 						for (var s = 0; s < 2; s++) {
-							console.log(s);
 							var optionSelect = document.createElement("option");
 							if (s == 0) {
 								optionSelect.setAttribute("value", "and");
@@ -992,7 +987,7 @@
 					var buttonDelete = document.createElement("button");
 					buttonDelete.setAttribute("value", rows);
 					// buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'"+type+"')");
-					buttonDelete.setAttribute("onclick", "deleteRow(" + rows + ",'" + nodeId + "')");
+					buttonDelete.setAttribute("onclick", "deleteRow(" + rows + ",'" + nodeId + "','" + type + "')");
 					buttonDelete.innerHTML = "Delete ";
 					tableTh.appendChild(buttonDelete);
 
@@ -1004,9 +999,9 @@
 		}
 
 
-		function deleteRow(rows, nodeId) { //s'ha de tornar a pintar la taula xq no coincideix rows i id
+		function deleteRow(row, nodeId, type) { //s'ha de tornar a pintar la taula xq no coincideix rows i id
 			event.preventDefault();
-			console.log(rows);
+			console.log(row);
 			var table = document.getElementById("tableResult");
 
 			var tableResults = [];
@@ -1022,23 +1017,128 @@
 					tableResults.push(propertyText);
 					tableResults.push(valueText);
 				}
-				 
-				var a=1;
-				var rowsNumbers2 = table.rows.length; 
 
-				while (rowsNumbers2 >1){
+				var a = 1;
+				var rowsNumbers2 = table.rows.length;
+
+				while (rowsNumbers2 > 1) {
 					table.deleteRow(a);
-					rowsNumbers2 = table.rows.length; 
+					rowsNumbers2 = table.rows.length;
 				}
 			}
 
 			//activar el add
-			
+			var addButton = document.getElementById("addButton" + type);
+			addButton.disabled = false;
+
+			//treure la linea que no vull 
+			var tableResultsNew = [];
+
+			switch (tableResults.length) {
+				case 4:
+					if (row == 1) {
+						tableResultsNew.push(tableResults[2]);
+						tableResultsNew.push(tableResults[3]);
+					} else {
+						tableResultsNew.push(tableResults[0]);
+						tableResultsNew.push(tableResults[1]);
+					}
+					break;
+				case 6:
+					if (row == 1) {
+						tableResultsNew.push(tableResults[2]);
+						tableResultsNew.push(tableResults[3]);
+						tableResultsNew.push(tableResults[4]);
+						tableResultsNew.push(tableResults[5]);
+					} else if (row == 2) {
+						tableResultsNew.push(tableResults[0]);
+						tableResultsNew.push(tableResults[1]);
+						tableResultsNew.push(tableResults[4]);
+						tableResultsNew.push(tableResults[5]);
+					} else {
+						tableResultsNew.push(tableResults[0]);
+						tableResultsNew.push(tableResults[1]);
+						tableResultsNew.push(tableResults[2]);
+						tableResultsNew.push(tableResults[3]);
+					}
+
+					break;
+
+
+			}
+		
+
+
+
 			//tornar a pintar la taula
+			// 	var table = document.getElementById("tableResult");		
+
+
+			// 	for (var f = 0; f < tableResults; f++){
+
+			// 	}
+			// 	var tableTr = document.createElement("tr");
+			// 	tableTr.setAttribute("id", "tableTr_" + (rows));
+			// 	tableTr.setAttribute("class", "borderTable");
+			// 	table.appendChild(tableTr);
+
+			// 	for (var a = 0; a < 4; a++) {
+			// 		var tableTh = document.createElement("th");
+			// 		tableTh.setAttribute("class", "borderTable");
+			// 		console.log("bb")
+
+			// 		if (a == 0) {
+			// 			if (rows != 1) {
+			// 				// tableTh.setAttribute("id", "tr_"+nodeId+"_"+(rows)+"_select");
+			// 				// tableTh.innerHTML = "select";
+			// 				var selectAndOr = document.createElement("select");
+			// 				selectAndOr.setAttribute("id", "select_" + nodeId + "_" + (rows));
+			// 				tableTh.appendChild(selectAndOr);
+
+			// 				for (var s = 0; s < 2; s++) {
+			// 					console.log(s);
+			// 					var optionSelect = document.createElement("option");
+			// 					if (s == 0) {
+			// 						optionSelect.setAttribute("value", "and");
+			// 						optionSelect.innerHTML = "And";
+
+			// 					} else {
+			// 						optionSelect.setAttribute("value", "or");
+			// 						optionSelect.innerHTML = "Or";
+			// 					}
+			// 					selectAndOr.appendChild(optionSelect);
+			// 				}
+			// 			}
+			// 		}
+			// 		else if (a == 1) {
+			// 			tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows + 1) + "_property");
+			// 			tableTh.innerHTML = selector1.options[selector1.selectedIndex].value;
+
+			// 		} else if (a == 2) {
+			// 			tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows + 1) + "_value");
+			// 			tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
+
+			// 		} else if (a == 3) {
+			// 			// tableTh.innerHTML = "delete";
+			// 			var buttonDelete = document.createElement("button");
+			// 			buttonDelete.setAttribute("value", rows);
+			// 			// buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'"+type+"')");
+			// 			buttonDelete.setAttribute("onclick", "deleteRow(" + rows + ",'" + nodeId + "','"+type+"')");
+			// 			buttonDelete.innerHTML = "Delete ";
+			// 			tableTh.appendChild(buttonDelete);
+
+			// 		}
+			// 		tableTr.appendChild(tableTh)
+			// 	}
+
+
+			// }
+
+
+
 
 			console.log(tableResults);
-
-
+			console.log(tableResultsNew);
 
 
 
