@@ -979,15 +979,21 @@
 					tableTh.innerHTML = selector1.options[selector1.selectedIndex].value;
 
 				} else if (a == 2) {
+					var inputText = document.getElementById("textInput" + type);
 					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_value");
-					tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
+					if (inputText.classList.contains("hidden")) {//select o input
+						tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
+					}else {
+						tableTh.innerHTML =inputText.value;
+					}
+
 
 				} else if (a == 3) {
 					// tableTh.innerHTML = "delete";
 					var buttonDelete = document.createElement("button");
 					buttonDelete.setAttribute("value", rows);
 					// buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'"+type+"')");
-					buttonDelete.setAttribute("onclick", "deleteRow(" + (rows)+ ",'" + nodeId + "','" + type + "')");
+					buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'" + nodeId + "','" + type + "')");
 					buttonDelete.innerHTML = "Delete ";
 					tableTh.appendChild(buttonDelete);
 
@@ -1069,9 +1075,9 @@
 			//tornar a pintar la taula
 
 			if (tableResultsNew.length != 0) {
-				for (var r = 2; r < (tableResultsNew.length+1); r += 2) { //length o 2 o 4
+				for (var r = 2; r < (tableResultsNew.length + 1); r += 2) { //length o 2 o 4
 					var tableTr = document.createElement("tr");
-					tableTr.setAttribute("id", "tableTr_" + (r/2)); // o 1 o 2
+					tableTr.setAttribute("id", "tableTr_" + (r / 2)); // o 1 o 2
 					tableTr.setAttribute("class", "borderTable");
 					table.appendChild(tableTr);
 
@@ -1105,7 +1111,7 @@
 							tableTh.innerHTML = tableResultsNew[(r - 2)];
 
 						} else if (a == 2) {
-							tableTh.setAttribute("id", "th_" + nodeId + "_" +(r / 2) + "_value");
+							tableTh.setAttribute("id", "th_" + nodeId + "_" + (r / 2) + "_value");
 							tableTh.innerHTML = tableResultsNew[(r - 1)];
 
 						} else if (a == 3) {
