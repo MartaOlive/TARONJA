@@ -975,11 +975,11 @@
 					}
 				}
 				else if (a == 1) {
-					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows + 1) + "_property");
+					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_property");
 					tableTh.innerHTML = selector1.options[selector1.selectedIndex].value;
 
 				} else if (a == 2) {
-					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows + 1) + "_value");
+					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_value");
 					tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
 
 				} else if (a == 3) {
@@ -987,7 +987,7 @@
 					var buttonDelete = document.createElement("button");
 					buttonDelete.setAttribute("value", rows);
 					// buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'"+type+"')");
-					buttonDelete.setAttribute("onclick", "deleteRow(" + rows + ",'" + nodeId + "','" + type + "')");
+					buttonDelete.setAttribute("onclick", "deleteRow(" + (rows)+ ",'" + nodeId + "','" + type + "')");
 					buttonDelete.innerHTML = "Delete ";
 					tableTh.appendChild(buttonDelete);
 
@@ -1003,15 +1003,14 @@
 			event.preventDefault();
 			console.log(row);
 			var table = document.getElementById("tableResult");
-
-			var tableResults = [];
+			var tableResults = []; //on es guarden els valors de la taula
 			var rowsNumber = table.rows.length;
 			console.log(rowsNumber);
 			if (rowsNumber > 1) {
 				for (var r = 1; r < rowsNumber; r++) {
-					var property = document.getElementById("th_" + nodeId + "_" + (r + 1) + "_property");
+					var property = document.getElementById("th_" + nodeId + "_" + (r) + "_property");
 					var propertyText = property.innerHTML;
-					var value = document.getElementById("th_" + nodeId + "_" + (r + 1) + "_value");
+					var value = document.getElementById("th_" + nodeId + "_" + (r) + "_value");
 					var valueText = value.innerHTML;
 
 					tableResults.push(propertyText);
@@ -1021,7 +1020,7 @@
 				var a = 1;
 				var rowsNumbers2 = table.rows.length;
 
-				while (rowsNumbers2 > 1) {
+				while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
 					table.deleteRow(a);
 					rowsNumbers2 = table.rows.length;
 				}
@@ -1031,7 +1030,7 @@
 			var addButton = document.getElementById("addButton" + type);
 			addButton.disabled = false;
 
-			//treure la linea que no vull 
+			//treure les dades de la fila eliminada de les dades guardades
 			var tableResultsNew = [];
 
 			switch (tableResults.length) {
@@ -1066,77 +1065,62 @@
 
 
 			}
-		
-
-
 
 			//tornar a pintar la taula
-			// 	var table = document.getElementById("tableResult");		
 
+			if (tableResultsNew.length != 0) {
+				for (var r = 2; r < (tableResultsNew.length+1); r += 2) { //length o 2 o 4
+					var tableTr = document.createElement("tr");
+					tableTr.setAttribute("id", "tableTr_" + (r/2)); // o 1 o 2
+					tableTr.setAttribute("class", "borderTable");
+					table.appendChild(tableTr);
 
-			// 	for (var f = 0; f < tableResults; f++){
+					for (var a = 0; a < 4; a++) { //4 columnes
+						var tableTh = document.createElement("th");
+						tableTh.setAttribute("class", "borderTable");
+						if (a == 0) {
+							if (r != 2) { //no hi ha select en la primera
 
-			// 	}
-			// 	var tableTr = document.createElement("tr");
-			// 	tableTr.setAttribute("id", "tableTr_" + (rows));
-			// 	tableTr.setAttribute("class", "borderTable");
-			// 	table.appendChild(tableTr);
+								// 				tableTh.innerHTML = "select";
+								var selectAndOr = document.createElement("select");
+								selectAndOr.setAttribute("id", "select_" + nodeId + "_" + (r / 2));
+								tableTh.appendChild(selectAndOr);
 
-			// 	for (var a = 0; a < 4; a++) {
-			// 		var tableTh = document.createElement("th");
-			// 		tableTh.setAttribute("class", "borderTable");
-			// 		console.log("bb")
+								for (var s = 0; s < 2; s++) {
+									var optionSelect = document.createElement("option");
+									if (s == 0) {
+										optionSelect.setAttribute("value", "and");
+										optionSelect.innerHTML = "And";
 
-			// 		if (a == 0) {
-			// 			if (rows != 1) {
-			// 				// tableTh.setAttribute("id", "tr_"+nodeId+"_"+(rows)+"_select");
-			// 				// tableTh.innerHTML = "select";
-			// 				var selectAndOr = document.createElement("select");
-			// 				selectAndOr.setAttribute("id", "select_" + nodeId + "_" + (rows));
-			// 				tableTh.appendChild(selectAndOr);
+									} else {
+										optionSelect.setAttribute("value", "or");
+										optionSelect.innerHTML = "Or";
+									}
+									selectAndOr.appendChild(optionSelect);
+								}
+							}
+						}
+						else if (a == 1) {
+							tableTh.setAttribute("id", "th_" + nodeId + "_" + (r / 2) + "_property");
+							tableTh.innerHTML = tableResultsNew[(r - 2)];
 
-			// 				for (var s = 0; s < 2; s++) {
-			// 					console.log(s);
-			// 					var optionSelect = document.createElement("option");
-			// 					if (s == 0) {
-			// 						optionSelect.setAttribute("value", "and");
-			// 						optionSelect.innerHTML = "And";
+						} else if (a == 2) {
+							tableTh.setAttribute("id", "th_" + nodeId + "_" +(r / 2) + "_value");
+							tableTh.innerHTML = tableResultsNew[(r - 1)];
 
-			// 					} else {
-			// 						optionSelect.setAttribute("value", "or");
-			// 						optionSelect.innerHTML = "Or";
-			// 					}
-			// 					selectAndOr.appendChild(optionSelect);
-			// 				}
-			// 			}
-			// 		}
-			// 		else if (a == 1) {
-			// 			tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows + 1) + "_property");
-			// 			tableTh.innerHTML = selector1.options[selector1.selectedIndex].value;
+						} else if (a == 3) {
+							// 			// tableTh.innerHTML = "delete";
+							var buttonDelete = document.createElement("button");
+							// buttonDelete.setAttribute("value", r / 2);
+							buttonDelete.setAttribute("onclick", "deleteRow(" + (r / 2) + ",'" + nodeId + "','" + type + "')");
+							buttonDelete.innerHTML = "Delete ";
+							tableTh.appendChild(buttonDelete);
 
-			// 		} else if (a == 2) {
-			// 			tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows + 1) + "_value");
-			// 			tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
-
-			// 		} else if (a == 3) {
-			// 			// tableTh.innerHTML = "delete";
-			// 			var buttonDelete = document.createElement("button");
-			// 			buttonDelete.setAttribute("value", rows);
-			// 			// buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'"+type+"')");
-			// 			buttonDelete.setAttribute("onclick", "deleteRow(" + rows + ",'" + nodeId + "','"+type+"')");
-			// 			buttonDelete.innerHTML = "Delete ";
-			// 			tableTh.appendChild(buttonDelete);
-
-			// 		}
-			// 		tableTr.appendChild(tableTh)
-			// 	}
-
-
-			// }
-
-
-
-
+						}
+						tableTr.appendChild(tableTh)
+					}
+				}
+			}
 			console.log(tableResults);
 			console.log(tableResultsNew);
 
