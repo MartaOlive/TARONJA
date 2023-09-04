@@ -48,7 +48,7 @@
 
 		#divSelectorRowsFilter {
 			min-width: 1750px;
-			height: 800px;
+			height: 300px;
 			border: black 1px solid;
 			position: absolute;
 			left: 250px;
@@ -589,6 +589,7 @@
 			document.getElementById("DialogSelectRows").close();
 
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
+			// console.log(nodeids);
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
 				var node = networkNodes.get(nodeids[0]);
 				if (node.STAURL)
@@ -599,6 +600,7 @@
 			else
 				return;
 
+			var type;
 			if (document.getElementById("DialogSelectRowsTableRadio").checked) {
 				var elems = document.getElementsByName("SelectRowRadio");
 				for (var i = 0; i < elems.length; i++) {
@@ -615,35 +617,70 @@
 				}
 			}
 			else { //El filter està seleccionat
-				var divSelectorRowsFilter;
-				if (document.getElementById("oneOrMoreValue").checked) {
-					divSelectorRowsFilter = document.getElementById("divSelectorRowsFilterParticular");
-				} else {
-					divSelectorRowsFilter = document.getElementById("divSelectorRowsFilterInterval");
-				}
 
-				var selectChild = divSelectorRowsFilter.childNodes;
-				var selectIds = []; //llista ids dels selectors
-				//console.log(selectChild); label, select1, label2, select2,textInput,button, instructions
-				var valueField;
-				var collectedInformation = [];
-				var chosenValue = [];
-				var select2;
-				for (let index = 0; index < selectChild.length; index++) {
-					if (index == 1 || index == 3) { //selectors
-						valueField = document.getElementById(selectChild[index].getAttribute("id"));
-						chosenValue = valueField.options[valueField.selectedIndex].value;
-						collectedInformation.push(chosenValue);
-						if (index == 3) select2 = document.getElementById(selectChild[index].getAttribute("id"));
-					} else if (index == 4) { //inputText
-						valueField = document.getElementById(selectChild[index].getAttribute("id"));
-						chosenValue = valueField.value;
-						collectedInformation.push(chosenValue); //[infoSelect1, InfoSelect2, InfoInput (encara que estigui buit)]
+				if (document.getElementById("oneOrMoreValue").checked) {
+					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilterParticular");
+					type = "Particular";
+					var table = document.getElementById("tableResult");
+					var tableResults = []; //on es guarden els valors de la taula
+					var rowsNumber = table.rows.length;
+					if (rowsNumber > 1) {
+						for (var r = 1; r < rowsNumber; r++) {
+							var property = document.getElementById("th_" + nodeids + "_" + (r) + "_property");
+							var value = document.getElementById("th_" + nodeids + "_" + (r) + "_value");
+
+							if (r == 1) {
+								tableResults.push("0");
+								var propertyText = property.innerHTML;
+								var valueText = value.innerHTML;
+								tableResults.push(propertyText);
+								tableResults.push(valueText);
+							} else {
+								//resultat del select
+								var select = document.getElementById("select_" + nodeids + "_" + (r));
+								tableResults.push(select.options[select.selectedIndex].value);
+								var propertyText = property.innerHTML;
+								var valueText = value.innerHTML;
+								tableResults.push(propertyText);
+								tableResults.push(valueText);
+							}
+
+						}
+						console.log(tableResults);
+					} else { //cap selecció
+						alert("There is nothing selected! The filter will not be applied.");
 					}
 
-				}
-				console.log(collectedInformation);
 
+				} else {
+					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilterInterval");
+					type = "Interval";
+				}
+
+
+				// var selectChild = divSelectorRowsFilter.childNodes;
+				// var selectIds = []; //llista ids dels selectors
+				// //console.log(selectChild); label, select1, label2, select2,textInput,button, instructions
+				// var valueField;
+				// var collectedInformation = [];
+				// var chosenValue = [];
+				// var select2;
+				// for (let index = 0; index < selectChild.length; index++) {
+				// 	if (index == 1 || index == 3) { //selectors
+				// 		valueField = document.getElementById(selectChild[index].getAttribute("id"));
+				// 		chosenValue = valueField.options[valueField.selectedIndex].value;
+				// 		collectedInformation.push(chosenValue);
+				// 		if (index == 3) select2 = document.getElementById(selectChild[index].getAttribute("id"));
+				// 	} else if (index == 4) { //inputText
+				// 		valueField = document.getElementById(selectChild[index].getAttribute("id"));
+				// 		chosenValue = valueField.value;
+				// 		collectedInformation.push(chosenValue); //[infoSelect1, InfoSelect2, InfoInput (encara que estigui buit)]
+				// 	}
+
+				// }
+				// console.log(collectedInformation);
+
+				///////////////////////////////////////////////////////////////////
 				// var node = networkNodes.get(nodeids[0]);
 				// var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
 				// 	if (element.startsWith("@iot.")) {
@@ -656,19 +693,21 @@
 
 				// console.log(selectInformationWithoutAt);
 
-				currentNode.STAURL += "?$filter=" + collectedInformation[0] + " eq '"; //selector1
-				if (select2.classList.contains("hidden")) { //Si es tria amb el textInput
-					currentNode.STAURL += collectedInformation[2] + "'";
-					console.log("select2hidden");
-				} else {
-					currentNode.STAURL += collectedInformation[1] + "'";
-					console.log("select2 Nohidden");
-				}
-				console.log(currentNode.STAURL);
+				/////////////////////////////////////////////////////////////////////////////
+
+				// 	currentNode.STAURL += "?$filter=" + collectedInformation[0] + " eq '"; //selector1
+				// 	if (select2.classList.contains("hidden")) { //Si es tria amb el textInput
+				// 		currentNode.STAURL += collectedInformation[2] + "'";
+				// 		console.log("select2hidden");
+				// 	} else {
+				// 		currentNode.STAURL += collectedInformation[1] + "'";
+				// 		console.log("select2 Nohidden");
+				// 	}
+				// 	console.log(currentNode.STAURL);
 			}
-			networkNodes.update(currentNode);
-			LoadJSONData(currentNode);
-			UpdateChildenSTAURL(currentNode);
+			// networkNodes.update(currentNode);
+			// LoadJSONData(currentNode);
+			// UpdateChildenSTAURL(currentNode);
 		}
 
 
@@ -983,8 +1022,8 @@
 					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_value");
 					if (inputText.classList.contains("hidden")) {//select o input
 						tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
-					}else {
-						tableTh.innerHTML =inputText.value;
+					} else {
+						tableTh.innerHTML = inputText.value;
 					}
 
 
@@ -1011,7 +1050,6 @@
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
 			var rowsNumber = table.rows.length;
-			console.log(rowsNumber);
 			if (rowsNumber > 1) {
 				for (var r = 1; r < rowsNumber; r++) {
 					var property = document.getElementById("th_" + nodeId + "_" + (r) + "_property");
@@ -1169,6 +1207,8 @@
 					<label for='interval'><input type='radio' name='typeOfFilter' value='interval' id='interval' onClick= 'showRowFilterByInterval(\"`+ nodeId + `"\)'>Filter for interval</label>
 				</div>
 				<div id='divSelectorRowsFilter'></div></div>`;
+
+
 
 			return divSelectorStructure;
 
