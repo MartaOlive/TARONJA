@@ -658,29 +658,7 @@
 				}
 
 
-				// var selectChild = divSelectorRowsFilter.childNodes;
-				// var selectIds = []; //llista ids dels selectors
-				// //console.log(selectChild); label, select1, label2, select2,textInput,button, instructions
-				// var valueField;
-				// var collectedInformation = [];
-				// var chosenValue = [];
-				// var select2;
-				// for (let index = 0; index < selectChild.length; index++) {
-				// 	if (index == 1 || index == 3) { //selectors
-				// 		valueField = document.getElementById(selectChild[index].getAttribute("id"));
-				// 		chosenValue = valueField.options[valueField.selectedIndex].value;
-				// 		collectedInformation.push(chosenValue);
-				// 		if (index == 3) select2 = document.getElementById(selectChild[index].getAttribute("id"));
-				// 	} else if (index == 4) { //inputText
-				// 		valueField = document.getElementById(selectChild[index].getAttribute("id"));
-				// 		chosenValue = valueField.value;
-				// 		collectedInformation.push(chosenValue); //[infoSelect1, InfoSelect2, InfoInput (encara que estigui buit)]
-				// 	}
-
-				// }
-				// console.log(collectedInformation);
-
-				///////////////////////////////////////////////////////////////////
+					//////////////////////////////////////////////Per treure el @iot.
 				// var node = networkNodes.get(nodeids[0]);
 				// var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
 				// 	if (element.startsWith("@iot.")) {
@@ -694,7 +672,18 @@
 				// console.log(selectInformationWithoutAt);
 
 				/////////////////////////////////////////////////////////////////////////////
+				// Es posa la info al STAURL
 
+				for (var i = 0; i < tableResults.length; i+=3) {  //o 3 o 6
+					if (i==0){ //té segona opció And o or
+						currentNode.STAURL += "?$filter=" + tableResults[i+1] + " eq '"+tableResults[i+2]+"' ";
+					}else {
+						currentNode.STAURL += tableResults[i]+" "+tableResults[i+1] + " eq '"+tableResults[i+2]+"'";
+					}
+					
+				}
+
+				console.log(currentNode.STAURL);
 				// 	currentNode.STAURL += "?$filter=" + collectedInformation[0] + " eq '"; //selector1
 				// 	if (select2.classList.contains("hidden")) { //Si es tria amb el textInput
 				// 		currentNode.STAURL += collectedInformation[2] + "'";
@@ -705,9 +694,9 @@
 				// 	}
 				// 	console.log(currentNode.STAURL);
 			}
-			// networkNodes.update(currentNode);
-			// LoadJSONData(currentNode);
-			// UpdateChildenSTAURL(currentNode);
+			networkNodes.update(currentNode);
+			LoadJSONData(currentNode);
+			UpdateChildenSTAURL(currentNode);
 		}
 
 
@@ -1087,23 +1076,23 @@
 						tableResultsNew.push(tableResults[1]);
 					}
 					break;
-				// case 6:
-				// 	if (row == 1) {
-				// 		tableResultsNew.push(tableResults[2]);
-				// 		tableResultsNew.push(tableResults[3]);
-				// 		tableResultsNew.push(tableResults[4]);
-				// 		tableResultsNew.push(tableResults[5]);
-				// 	} else if (row == 2) {
-				// 		tableResultsNew.push(tableResults[0]);
-				// 		tableResultsNew.push(tableResults[1]);
-				// 		tableResultsNew.push(tableResults[4]);
-				// 		tableResultsNew.push(tableResults[5]);
-				// 	} else {
-				// 		tableResultsNew.push(tableResults[0]);
-				// 		tableResultsNew.push(tableResults[1]);
-				// 		tableResultsNew.push(tableResults[2]);
-				// 		tableResultsNew.push(tableResults[3]);
-				// 	}
+					// case 6:
+					// 	if (row == 1) {
+					// 		tableResultsNew.push(tableResults[2]);
+					// 		tableResultsNew.push(tableResults[3]);
+					// 		tableResultsNew.push(tableResults[4]);
+					// 		tableResultsNew.push(tableResults[5]);
+					// 	} else if (row == 2) {
+					// 		tableResultsNew.push(tableResults[0]);
+					// 		tableResultsNew.push(tableResults[1]);
+					// 		tableResultsNew.push(tableResults[4]);
+					// 		tableResultsNew.push(tableResults[5]);
+					// 	} else {
+					// 		tableResultsNew.push(tableResults[0]);
+					// 		tableResultsNew.push(tableResults[1]);
+					// 		tableResultsNew.push(tableResults[2]);
+					// 		tableResultsNew.push(tableResults[3]);
+					// 	}
 
 					break;
 
