@@ -823,7 +823,7 @@
 				label2.innerHTML = "Write a value";
 				writeButton.innerHTML = "Click here if you want to use selector";
 				textInput.classList.remove("hidden");
-				instructions.innerHTML = "If you prefere to select value with select option click the button. If you click ok button you will use the value in the text field to apply the filter"
+				instructions.innerHTML = "If you prefere to select value with select option click the button. If you click add button you will use the value in the text field to apply the filter"
 			} else {
 				selector2.classList.remove("hidden");
 				label2.innerHTML = "Choose a value";
@@ -974,7 +974,7 @@
 			var table = document.getElementById("tableResult");
 			var rows = table.rows.length;
 
-			if (rows == 3) { //limita que només pugui filtrar-se per tres coses
+			if (rows == 2) { //limita que només pugui filtrar-se per dos coses
 				var addButton = document.getElementById("addButton" + type);
 				addButton.disabled = true;
 			}
@@ -1087,23 +1087,23 @@
 						tableResultsNew.push(tableResults[1]);
 					}
 					break;
-				case 6:
-					if (row == 1) {
-						tableResultsNew.push(tableResults[2]);
-						tableResultsNew.push(tableResults[3]);
-						tableResultsNew.push(tableResults[4]);
-						tableResultsNew.push(tableResults[5]);
-					} else if (row == 2) {
-						tableResultsNew.push(tableResults[0]);
-						tableResultsNew.push(tableResults[1]);
-						tableResultsNew.push(tableResults[4]);
-						tableResultsNew.push(tableResults[5]);
-					} else {
-						tableResultsNew.push(tableResults[0]);
-						tableResultsNew.push(tableResults[1]);
-						tableResultsNew.push(tableResults[2]);
-						tableResultsNew.push(tableResults[3]);
-					}
+				// case 6:
+				// 	if (row == 1) {
+				// 		tableResultsNew.push(tableResults[2]);
+				// 		tableResultsNew.push(tableResults[3]);
+				// 		tableResultsNew.push(tableResults[4]);
+				// 		tableResultsNew.push(tableResults[5]);
+				// 	} else if (row == 2) {
+				// 		tableResultsNew.push(tableResults[0]);
+				// 		tableResultsNew.push(tableResults[1]);
+				// 		tableResultsNew.push(tableResults[4]);
+				// 		tableResultsNew.push(tableResults[5]);
+				// 	} else {
+				// 		tableResultsNew.push(tableResults[0]);
+				// 		tableResultsNew.push(tableResults[1]);
+				// 		tableResultsNew.push(tableResults[2]);
+				// 		tableResultsNew.push(tableResults[3]);
+				// 	}
 
 					break;
 
@@ -1167,13 +1167,6 @@
 			}
 			console.log(tableResults);
 			console.log(tableResultsNew);
-
-
-
-
-
-
-			//  table.deleteRow(row);
 
 		}
 
