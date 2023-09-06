@@ -1,3 +1,8 @@
+<!-- https://citiobs.demo.secure-dimensions.de/staplus/v1.1/Observations?$select=result&$orderby=phenomenonTime%20desc&$filter=phenomenonTime%20ge%202023-09-04T00:00:00.000Z%20and%20phenomenonTime%20le%202023-09-04T00:59:59.999Z%20and%20Datastream/Party/displayName%20eq%20%27Joan%20Mas%C3%B3%27&$count=true -->
+<!-- https://citiobs.demo.secure-dimensions.de/staplus/v1.1/Datastreams(17)/Observations?$orderby=phenomenonTime%20desc&$filter=phenomenonTime%20ge%202023-09-04T00:00:00.000Z%20and%20phenomenonTime%20le%202023-09-04T23:59:59.999Z
+(recorda que un %20 és un espai). -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -787,19 +792,19 @@
 			}
 		}
 
-		function changeSelectToWrite(type,number) {  //Que pugui recollir el text del input
+		function changeSelectToWrite(type, number) {  //Que pugui recollir el text del input
 			event.preventDefault();
 			var number2;
-			if (number==1){
-				number2=2;
-			}else if (number==2){
-				number2=3;
+			if (number == 1) {
+				number2 = 2;
+			} else if (number == 2) {
+				number2 = 3;
 			}
-			var textInput = document.getElementById("textInput" + type+number);
-			var selector2 = document.getElementById("selector"+type+(number2));
-			var label2 = document.getElementById("label" + type+(number2));
-			var writeButton = document.getElementById("chooseValueButton" + type+number);
-			var textInput = document.getElementById("textInput" + type+number);
+			var textInput = document.getElementById("textInput" + type + number);
+			var selector2 = document.getElementById("selector" + type + (number2));
+			var label2 = document.getElementById("label" + type + (number2));
+			var writeButton = document.getElementById("chooseValueButton" + type + number);
+			var textInput = document.getElementById("textInput" + type + number);
 			var instructions = document.getElementById("instructions" + type);
 			if (textInput.classList.contains("hidden")) {
 				selector2.setAttribute("class", "hidden");
@@ -859,7 +864,7 @@
 			}
 
 			var label2 = document.createElement("label");
-			label2.setAttribute("id", "label" + type+"2");
+			label2.setAttribute("id", "label" + type + "2");
 			label2.innerHTML = "Choose a Value";
 			optionsRow.appendChild(label2);
 			var select2 = document.createElement("select");
@@ -884,20 +889,20 @@
 			}
 
 			var textInput = document.createElement("input");
-			textInput.setAttribute("id", "textInput" + type+"1");
+			textInput.setAttribute("id", "textInput" + type + "1");
 			textInput.setAttribute("type", "text");
 			textInput.setAttribute("class", "hidden");
 			optionsRow.appendChild(textInput);
 
 			var writeButton = document.createElement("button");
 			writeButton.innerHTML = "Click here if you prefere to write the value";
-			writeButton.setAttribute("id", "chooseValueButton" + type+"1");
+			writeButton.setAttribute("id", "chooseValueButton" + type + "1");
 			writeButton.setAttribute("onclick", "changeSelectToWrite('" + type + "','1')");
 			optionsRow.appendChild(writeButton);
 
 			if (type == "Interval") {
 				var label3 = document.createElement("label");
-				label3.setAttribute("id", "label" + type+"3");
+				label3.setAttribute("id", "label" + type + "3");
 				label3.innerHTML = "Choose a Value";
 				optionsRow.appendChild(label3);
 				var select3 = document.createElement("select");
@@ -916,10 +921,10 @@
 				}
 
 				var textInput2 = document.createElement("input");
-			textInput2.setAttribute("id", "textInput" + type+"2");
-			textInput2.setAttribute("type", "text");
-			textInput2.setAttribute("class", "hidden");
-			optionsRow.appendChild(textInput2);
+				textInput2.setAttribute("id", "textInput" + type + "2");
+				textInput2.setAttribute("type", "text");
+				textInput2.setAttribute("class", "hidden");
+				optionsRow.appendChild(textInput2);
 
 				var writeButton2 = document.createElement("button");
 				writeButton2.innerHTML = "Click here if you prefere to write the value";
@@ -1036,7 +1041,7 @@
 					tableTh.innerHTML = selector1.options[selector1.selectedIndex].value;
 
 				} else if (a == 2) {
-					var inputText = document.getElementById("textInput" + type+"1");
+					var inputText = document.getElementById("textInput" + type + "1");
 					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_value");
 					if (inputText.classList.contains("hidden")) {//select o input
 						tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
