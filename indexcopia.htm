@@ -55,6 +55,8 @@
 			min-width: 1750px;
 			height: 300px;
 			border: black 1px solid;
+			position: absolute;
+			left: 250px;
 		}
 
 		#chooseTypeOfFilter {
@@ -64,6 +66,7 @@
 			position: absolute;
 			left: 0px;
 		}
+
 		#selectorRowsContainer {
 			min-width: 1500px;
 			min-height: 400px;
@@ -98,13 +101,6 @@
 			min-width: 100px;
 			padding-left: 10px;
 			padding-right: 10px;
-		}
-
-		#divSelectorRowsFilter {
-			margin-top: 20px;
-			min-height: 300px;
-			min-width: 800px;
-			border: black 1px solid;
 		}
 
 		.divResultBox {
@@ -593,7 +589,7 @@
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
 
-		function GetSelectRows(event) { //Al apretar el ok
+		function GetSelectRows(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectRows").close();
 
@@ -609,6 +605,7 @@
 			else
 				return;
 
+			var type;
 			if (document.getElementById("DialogSelectRowsTableRadio").checked) {
 				var elems = document.getElementsByName("SelectRowRadio");
 				for (var i = 0; i < elems.length; i++) {
@@ -625,39 +622,45 @@
 				}
 			}
 			else { //El filter està seleccionat
-				var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-				var table = document.getElementById("tableResult");
-				var tableResults = []; //on es guarden els valors de la taula
-				var rowsNumber = table.rows.length;
-				if (rowsNumber > 1) {
-					for (var r = 1; r < rowsNumber; r++) {
-						var property = document.getElementById("th_" + nodeids + "_" + (r) + "_property");
-						var value = document.getElementById("th_" + nodeids + "_" + (r) + "_value");
 
-						if (r == 1) {
-							tableResults.push("0");
-							var propertyText = property.innerHTML;
-							var valueText = value.innerHTML;
-							tableResults.push(propertyText);
-							tableResults.push(valueText);
-						} else {
-							//resultat del select
-							var select = document.getElementById("select_" + nodeids + "_" + (r));
-							tableResults.push(select.options[select.selectedIndex].value);
-							var propertyText = property.innerHTML;
-							var valueText = value.innerHTML;
-							tableResults.push(propertyText);
-							tableResults.push(valueText);
+				if (document.getElementById("oneOrMoreValue").checked) {
+					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilterParticular");
+					type = "Particular";
+					var table = document.getElementById("tableResult");
+					var tableResults = []; //on es guarden els valors de la taula
+					var rowsNumber = table.rows.length;
+					if (rowsNumber > 1) {
+						for (var r = 1; r < rowsNumber; r++) {
+							var property = document.getElementById("th_" + nodeids + "_" + (r) + "_property");
+							var value = document.getElementById("th_" + nodeids + "_" + (r) + "_value");
+
+							if (r == 1) {
+								tableResults.push("0");
+								var propertyText = property.innerHTML;
+								var valueText = value.innerHTML;
+								tableResults.push(propertyText);
+								tableResults.push(valueText);
+							} else {
+								//resultat del select
+								var select = document.getElementById("select_" + nodeids + "_" + (r));
+								tableResults.push(select.options[select.selectedIndex].value);
+								var propertyText = property.innerHTML;
+								var valueText = value.innerHTML;
+								tableResults.push(propertyText);
+								tableResults.push(valueText);
+							}
+
 						}
-
+						console.log(tableResults);
+					} else { //cap selecció
+						alert("There is nothing selected! The filter will not be applied.");
 					}
-					console.log(tableResults);
-				} else { //cap selecció
-					alert("There is nothing selected! The filter will not be applied.");
+
+
+				} else {
+					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilterInterval");
+					type = "Interval";
 				}
-
-
-
 
 
 				//////////////////////////////////////////////Per treure el @iot. No borrar 
@@ -748,13 +751,13 @@
 			return dataAttributes;
 		}
 
-		function fillValueSelector(nodeId) {
+		function fillValueSelector(nodeId, type) {
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
-			select = document.getElementById("selector");
+			select = document.getElementById("selector" + type);
 			var selectedProperty = select.options[select.selectedIndex].value;
 			var selectedElement;
-			selectedElement = document.getElementById("selector2");
+			selectedElement = document.getElementById("selector" + type + "2");
 			selectedElement.innerHTML = "";
 
 			var valor;
@@ -775,6 +778,7 @@
 				} else {
 					console.log("en el else");
 				}
+
 			}
 
 			var divIsAnObject = document.getElementById("divIsAnObject")
@@ -788,7 +792,7 @@
 			}
 		}
 
-		function changeSelectToWrite(number) {  //Que pugui recollir el text del input
+		function changeSelectToWrite(type, number) {  //Que pugui recollir el text del input
 			event.preventDefault();
 			var number2;
 			if (number == 1) {
@@ -796,12 +800,12 @@
 			} else if (number == 2) {
 				number2 = 3;
 			}
-			var textInput = document.getElementById("textInput" + number);
-			var selector2 = document.getElementById("selector" + (number2));
-			var label2 = document.getElementById("label" + (number2));
-			var writeButton = document.getElementById("chooseValueButton" + number);
-			var textInput = document.getElementById("textInput" + number);
-			var instructions = document.getElementById("instructions");
+			var textInput = document.getElementById("textInput" + type + number);
+			var selector2 = document.getElementById("selector" + type + (number2));
+			var label2 = document.getElementById("label" + type + (number2));
+			var writeButton = document.getElementById("chooseValueButton" + type + number);
+			var textInput = document.getElementById("textInput" + type + number);
+			var instructions = document.getElementById("instructions" + type);
 			if (textInput.classList.contains("hidden")) {
 				selector2.setAttribute("class", "hidden");
 				label2.innerHTML = "Write a value";
@@ -818,8 +822,8 @@
 			// console.log(selectorNumber);
 		}
 
-		function isAnObject(nodeId) {
-			var select = document.getElementById("selector2");
+		function isAnObject(nodeId, type) {
+			var select = document.getElementById("selector" + type + "2");
 			var selectOption = select.options[select.selectedIndex].value;
 			if (selectOption === "[object Object]") {
 				console.log("object!!!!");
@@ -830,134 +834,171 @@
 			// }
 		}
 
-		function createSelectorRowFilters(dataAttributes, nodeId) {
+		function createSelectorRowFilters(dataAttributes, nodeId, kindOfSource,) {
+			var type = kindOfSource;
 			var data = networkNodes.get(nodeId).STAdata;
 			var selectorStructureRow;
-			var divFilterBox = document.getElementById("divSelectorRowsFilter");
-			divFilterBox.innerHTML = "holi";
+			var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
+			var divParticularBox = document.createElement("div"); //general
+			divParticularBox.setAttribute("id", "divSelectorRowsFilter" + type);
+			if (type == "Interval") divParticularBox.setAttribute("class", "hidden");
+			divSelectorRowsFilter.appendChild(divParticularBox);
 
-			 var optionsRow = document.createElement("div");
-			 optionsRow.setAttribute("id", "optionsRow");
-			 divFilterBox.appendChild(optionsRow);
-			 var label1 = document.createElement("label");
-			 label1.innerHTML = "Choose a Property";
-			 optionsRow.appendChild(label1);
-			 var select1 = document.createElement("select");
-			 select1.setAttribute("name", "category");
-			 select1.setAttribute("id", "selector");
-			 select1.setAttribute("onChange", "fillValueSelector('" + nodeId + "')");
-			 optionsRow.appendChild(select1);
+			var optionsRow = document.createElement("div");
+			optionsRow.setAttribute("id", "optionsRow");
+			divParticularBox.appendChild(optionsRow);
+			var label1 = document.createElement("label");
+			label1.innerHTML = "Choose a Property";
+			optionsRow.appendChild(label1);
+			var select1 = document.createElement("select");
+			select1.setAttribute("name", "category");
+			select1.setAttribute("id", "selector" + type);
+			select1.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + type + "')");
+			optionsRow.appendChild(select1);
 
-			 for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category/property
-			 	var option = document.createElement("option");
-			 	option.setAttribute("value", dataAttributes[i]);
-			 	option.innerHTML = dataAttributes[i];
-			 	select1.appendChild(option);
-			 }
+			for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category/property
+				var option = document.createElement("option");
+				option.setAttribute("value", dataAttributes[i]);
+				option.innerHTML = dataAttributes[i];
+				select1.appendChild(option);
+			}
 
-			 var label2 = document.createElement("label");
-			 label2.setAttribute("id", "label2");
-			 label2.innerHTML = "Choose a Value";
-			 optionsRow.appendChild(label2);
-			 var select2 = document.createElement("select");
-			 select2.setAttribute("name", "selectedValue");
-			 select2.setAttribute("id", "selector2");
-			 select2.setAttribute("onChange", "isAnObject('" + nodeId + "')");
-			 optionsRow.appendChild(select2);
+			var label2 = document.createElement("label");
+			label2.setAttribute("id", "label" + type + "2");
+			label2.innerHTML = "Choose a Value";
+			optionsRow.appendChild(label2);
+			var select2 = document.createElement("select");
+			select2.setAttribute("name", "selectedValue");
+			select2.setAttribute("id", "selector" + type + "2");
+			select2.setAttribute("onChange", "isAnObject('" + nodeId + "','" + type + "')");
+			optionsRow.appendChild(select2);
 
-			 var valor;
-			 var arrayValors = [];
-			 for (let index = 0; index < data.length; index++) {
-			 	valor = data[index][dataAttributes[0]];
-			 	if (!arrayValors.find(element => element == valor)) {
-			 		var option = document.createElement("option");
-			 		option.setAttribute("value", valor);
-			 		option.innerHTML = valor;
-			 		select2.appendChild(option);
-			 		arrayValors.push(valor);
-			 	} else {
-			 		console.log("en el else");
-			 	}
-			 }
+			var valor;
+			var arrayValors = [];
+			for (let index = 0; index < data.length; index++) {
+				valor = data[index][dataAttributes[0]];
+				if (!arrayValors.find(element => element == valor)) {
+					var option = document.createElement("option");
+					option.setAttribute("value", valor);
+					option.innerHTML = valor;
+					select2.appendChild(option);
+					arrayValors.push(valor);
+				} else {
+					console.log("en el else");
+				}
+			}
 
-			 var textInput = document.createElement("input");
-			 textInput.setAttribute("id", "textInput1");
-			 textInput.setAttribute("type", "text");
-			 textInput.setAttribute("class", "hidden");
-			 optionsRow.appendChild(textInput);
+			var textInput = document.createElement("input");
+			textInput.setAttribute("id", "textInput" + type + "1");
+			textInput.setAttribute("type", "text");
+			textInput.setAttribute("class", "hidden");
+			optionsRow.appendChild(textInput);
 
-			 var writeButton = document.createElement("button");
-			 writeButton.innerHTML = "Click here if you prefere to write the value";
-			 writeButton.setAttribute("id", "chooseValueButton1");
-			 writeButton.setAttribute("onclick", "changeSelectToWrite('1')");
-			 optionsRow.appendChild(writeButton);
+			var writeButton = document.createElement("button");
+			writeButton.innerHTML = "Click here if you prefere to write the value";
+			writeButton.setAttribute("id", "chooseValueButton" + type + "1");
+			writeButton.setAttribute("onclick", "changeSelectToWrite('" + type + "','1')");
+			optionsRow.appendChild(writeButton);
 
-			 var instructions = document.createElement("div");
-			 instructions.setAttribute("id", "instructions");
-			 instructions.innerHTML = "Is not your value on the list? You can write it, click the button";
-			 instructions.setAttribute("class", "instructions");
-			 optionsRow.appendChild(instructions);
-
-			 var addButton = document.createElement("button");
-			 addButton.setAttribute("id", "addButton");
-			 addButton.setAttribute("onclick", "addSelected('" + nodeId + "')");
-			 addButton.innerHTML = "add";
-			 optionsRow.appendChild(addButton);
-
-
-			 var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
-			 divIsAnObject.setAttribute("id", "divIsAnObject");
-			 divIsAnObject.setAttribute("class", "hidden");
-			 var textIsAnObject = document.createElement("h5");
-			 textIsAnObject.setAttribute("id", "textIsAnObject");
-			 textIsAnObject.innerHTML = 'This property contains a set of values, if you want to sail inside it to choose one value, please use "separate colums" option before using "Row filter" option to unfold the values. Follow example below';
-			 divIsAnObject.appendChild(textIsAnObject);
-			 var imageIsAnObject = document.createElement("img");
-			 imageIsAnObject.setAttribute("src", "SeparateColumsExample.png");
-			 imageIsAnObject.setAttribute("height", "300");
-			 imageIsAnObject.setAttribute("id", "imageIsAnObject");
-
-			 divIsAnObject.appendChild(imageIsAnObject);
-			 divFilterBox.appendChild(divIsAnObject);
+			if (type == "Interval") {
+				var label3 = document.createElement("label");
+				label3.setAttribute("id", "label" + type + "3");
+				label3.innerHTML = "Choose a Value";
+				optionsRow.appendChild(label3);
+				var select3 = document.createElement("select");
+				select3.setAttribute("name", "selectedValue");
+				select3.setAttribute("id", "selector" + type + "3");
+				select3.setAttribute("onChange", "isAnObject('" + nodeId + "','" + type + "')");
+				optionsRow.appendChild(select3);
 
 
-			 var divResult = document.createElement("div");
-			 divResult.setAttribute("id", "divResult");
-			 divResult.setAttribute("class", "divResultBox")
-			 divResult.innerHTML = "These are your values selected to filter ";
-			 divFilterBox.appendChild(divResult);
+				for (let i = 0; i < arrayValors.length; i++) {
+					valor = arrayValors[i];
+					var option = document.createElement("option");
+					option.setAttribute("value", valor);
+					option.innerHTML = valor;
+					select3.appendChild(option);
+				}
 
-			 var table = document.createElement("table");
-			 table.setAttribute("id", "tableResult");
-			 table.setAttribute("class", "borderTable");
-			 var tableTr = document.createElement("tr");
-			 tableTr.setAttribute("id", "tableTr0");
-			 tableTr.setAttribute("class", "borderTable");
-			 table.appendChild(tableTr);
-			 for (var i = 0; i < 4; i++) {
-			 	var tableTh = document.createElement("th");
-			 	tableTh.setAttribute("class", "borderTable");
-			 	if (i == 1) {
-			 		tableTh.innerHTML = "Property";
+				var textInput2 = document.createElement("input");
+				textInput2.setAttribute("id", "textInput" + type + "2");
+				textInput2.setAttribute("type", "text");
+				textInput2.setAttribute("class", "hidden");
+				optionsRow.appendChild(textInput2);
 
-			 	} else if (i == 2) {
-			 		tableTh.innerHTML = "Value";
-			 	}
-			 	tableTr.appendChild(tableTh)
-			 }
+				var writeButton2 = document.createElement("button");
+				writeButton2.innerHTML = "Click here if you prefere to write the value";
+				writeButton2.setAttribute("id", "chooseValueButton" + type + "2");
+				writeButton2.setAttribute("onclick", "changeSelectToWrite('" + type + "','2')");
+				optionsRow.appendChild(writeButton2);
+			}
 
-			 divResult.appendChild(table);
+			var instructions = document.createElement("div");
+			instructions.setAttribute("id", "instructions" + type);
+			instructions.innerHTML = "Is not your value on the list? You can write it, click the button";
+			instructions.setAttribute("class", "instructions");
+			optionsRow.appendChild(instructions);
 
+			var addButton = document.createElement("button");
+			addButton.setAttribute("id", "addButton" + type);
+			addButton.setAttribute("onclick", "addSelected('" + type + "','" + nodeId + "')");
+			addButton.innerHTML = "add";
+			optionsRow.appendChild(addButton);
+
+
+			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
+			divIsAnObject.setAttribute("id", "divIsAnObject");
+			divIsAnObject.setAttribute("class", "hidden");
+			var textIsAnObject = document.createElement("h5");
+			textIsAnObject.setAttribute("id", "textIsAnObject");
+			textIsAnObject.innerHTML = 'This property contains a set of values, if you want to sail inside it to choose one value, please use "separate colums" option before using "Row filter" option to unfold the values. Follow example below';
+			divIsAnObject.appendChild(textIsAnObject);
+			var imageIsAnObject = document.createElement("img");
+			imageIsAnObject.setAttribute("src", "SeparateColumsExample.png");
+			imageIsAnObject.setAttribute("height", "300");
+			imageIsAnObject.setAttribute("id", "imageIsAnObject");
+
+			divIsAnObject.appendChild(imageIsAnObject);
+			divParticularBox.appendChild(divIsAnObject);
+
+			if (type == "Particular") {
+				var divResult = document.createElement("div");
+				divResult.setAttribute("id", "divResult" + type);
+				divResult.setAttribute("class", "divResultBox")
+				divResult.innerHTML = "These are your values selected to filter ";
+				divParticularBox.appendChild(divResult);
+
+				var table = document.createElement("table");
+				table.setAttribute("id", "tableResult");
+				table.setAttribute("class", "borderTable");
+				var tableTr = document.createElement("tr");
+				tableTr.setAttribute("id", "tableTr0");
+				tableTr.setAttribute("class", "borderTable");
+				table.appendChild(tableTr);
+				for (var i = 0; i < 4; i++) {
+					var tableTh = document.createElement("th");
+					tableTh.setAttribute("class", "borderTable");
+					if (i == 1) {
+						tableTh.innerHTML = "Property";
+
+					} else if (i == 2) {
+						tableTh.innerHTML = "Value";
+					}
+					tableTr.appendChild(tableTh)
+				}
+
+				divResult.appendChild(table);
+			}
 
 		}
 
-		function addSelected(nodeId) {
+		function addSelected(type, nodeId) {
 			event.preventDefault();
 			var table = document.getElementById("tableResult");
 			var rows = table.rows.length;
 
 			if (rows == 2) { //limita que només pugui filtrar-se per dos coses
-				var addButton = document.getElementById("addButton");
+				var addButton = document.getElementById("addButton" + type);
 				addButton.disabled = true;
 			}
 
@@ -967,8 +1008,8 @@
 			tableTr.setAttribute("class", "borderTable");
 			table.appendChild(tableTr);
 
-			var selector1 = document.getElementById("selector");
-			var selector2 = document.getElementById("selector2");
+			var selector1 = document.getElementById("selector" + type);
+			var selector2 = document.getElementById("selector" + type + "2");
 
 			for (var a = 0; a < 4; a++) {
 				var tableTh = document.createElement("th");
@@ -1000,7 +1041,7 @@
 					tableTh.innerHTML = selector1.options[selector1.selectedIndex].value;
 
 				} else if (a == 2) {
-					var inputText = document.getElementById("textInput1");
+					var inputText = document.getElementById("textInput" + type + "1");
 					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_value");
 					if (inputText.classList.contains("hidden")) {//select o input
 						tableTh.innerHTML = selector2.options[selector2.selectedIndex].value;
@@ -1013,7 +1054,8 @@
 					// tableTh.innerHTML = "delete";
 					var buttonDelete = document.createElement("button");
 					buttonDelete.setAttribute("value", rows);
-					buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'" + nodeId + "')");
+					// buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'"+type+"')");
+					buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'" + nodeId + "','" + type + "')");
 					buttonDelete.innerHTML = "Delete ";
 					tableTh.appendChild(buttonDelete);
 
@@ -1025,7 +1067,7 @@
 		}
 
 
-		function deleteRow(row, nodeId) { //s'ha de tornar a pintar la taula xq no coincideix rows i id
+		function deleteRow(row, nodeId, type) { //s'ha de tornar a pintar la taula xq no coincideix rows i id
 			event.preventDefault();
 			console.log(row);
 			var table = document.getElementById("tableResult");
@@ -1052,7 +1094,7 @@
 			}
 
 			//activar el add
-			var addButton = document.getElementById("addButton");
+			var addButton = document.getElementById("addButton" + type);
 			addButton.disabled = false;
 
 			//treure les dades de la fila eliminada de les dades guardades
@@ -1137,7 +1179,7 @@
 							// 			// tableTh.innerHTML = "delete";
 							var buttonDelete = document.createElement("button");
 							// buttonDelete.setAttribute("value", r / 2);
-							buttonDelete.setAttribute("onclick", "deleteRow(" + (r / 2) + ",'" + nodeId + "')");
+							buttonDelete.setAttribute("onclick", "deleteRow(" + (r / 2) + ",'" + nodeId + "','" + type + "')");
 							buttonDelete.innerHTML = "Delete ";
 							tableTh.appendChild(buttonDelete);
 
@@ -1151,13 +1193,42 @@
 
 		}
 
+
+		function showRowFilterByValues(nodeId) {
+			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
+			divSelectorRowsFilterParticular.classList.remove("hidden");
+			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterInterval");
+			divSelectorRowsFilterParticular.classList.add("hidden");
+			// console.log(typeof(nodeId));
+			var data = networkNodes.get(nodeId).STAdata;
+			console.log(data);
+			var dataAttributes = getDataAttributes(data);
+			console.log(dataAttributes);
+
+		};
+		function showRowFilterByInterval(nodeId) {
+			var data = networkNodes.get(nodeId).STAdata;
+			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterParticular");
+			divSelectorRowsFilterParticular.classList.add("hidden");
+			var divSelectorRowsFilterParticular = document.getElementById("divSelectorRowsFilterInterval");
+			divSelectorRowsFilterParticular.classList.remove("hidden");
+			console.log(data);
+		}
 		function GetSelectorsForRowFilter(nodeId) {
 			var divSelectorStructure;
 			divSelectorStructure = `<div id=selectorRowsContainer>
+				<div id=chooseTypeOfFilter>
+					<label for='oneOrMoreValue'><input type='radio' name='typeOfFilter' value='oneOrMoreValue' id='oneOrMoreValue' onClick= 'showRowFilterByValues(\"`+ nodeId + `\")' checked='checked'>Filter for one or more values</label><br>
+					<label for='interval'><input type='radio' name='typeOfFilter' value='interval' id='interval' onClick= 'showRowFilterByInterval(\"`+ nodeId + `"\)'>Filter for interval</label>
+				</div>
 				<div id='divSelectorRowsFilter'></div></div>`;
-			return divSelectorStructure;
-		}
 
+
+
+			return divSelectorStructure;
+
+
+		}
 		function GetHTMLTable(data, rowNumbers, rowChecks) {
 			var dataAttributes = getDataAttributes(data);
 
@@ -1876,7 +1947,10 @@
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
 			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
 
-			createSelectorRowFilters(dataAttributes, nodeId);
+			// createSelectorRowFilterInterval(dataAttributes, nodeId);
+			// createSelectorRowFilterParticular(dataAttributes, nodeId);
+			createSelectorRowFilters(dataAttributes, nodeId, "Particular", 1);
+			createSelectorRowFilters(dataAttributes, nodeId, "Interval", 1);
 		}
 
 		function ChangeTableFilterRowsDialog(nodeId) {
