@@ -70,6 +70,11 @@
 			left: 0px;
 		}
 
+		#selectorRowsContainer {
+			min-width: 1500px;
+			min-height: 400px;
+		}
+
 		.hidden {
 			display: none;
 		}
@@ -908,8 +913,8 @@ function getJSONSchemaTypeFromAttributeType(t)
 
 			 for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de category/property
 			 	var option = document.createElement("option");
-			 	option.setAttribute("value", dataAttributes[i]);
-			 	option.innerHTML = dataAttributes[i];
+			 	option.setAttribute("value", dataAttributes[i].name);
+			 	option.innerHTML = dataAttributes[i].name;
 			 	select1.appendChild(option);
 			 }
 
@@ -926,7 +931,7 @@ function getJSONSchemaTypeFromAttributeType(t)
 			 var valor;
 			 var arrayValors = [];
 			 for (let index = 0; index < data.length; index++) {
-			 	valor = data[index][dataAttributes[0]];
+			 	valor = data[index][dataAttributes[0].name];
 			 	if (!arrayValors.find(element => element == valor)) {
 			 		var option = document.createElement("option");
 			 		option.setAttribute("value", valor);
@@ -1211,7 +1216,9 @@ function getJSONSchemaTypeFromAttributeType(t)
 
 		function GetSelectorsForRowFilter(nodeId) {
 			var divSelectorStructure;
-			divSelectorStructure = "<div id='divSelectorRowsFilter'></div>";
+			divSelectorStructure = `<div id=selectorRowsContainer>
+		
+				<div id='divSelectorRowsFilter'></div></div>`;
 			return divSelectorStructure;
 		}
 
