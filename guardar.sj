@@ -14,9 +14,9 @@ event.preventDefault();
 
 			 }
 			 var selector1 = document.getElementById("selector" + type);
-			 var selector2 = document.getElementById("selector" + type + "2");
+			 var selector3 = document.getElementById("selector" + type + "2");
 			 tableResults.push(selector1.options[selector1.selectedIndex].value);
-			 tableResults.push(selector2.options[selector2.selectedIndex].value);
+			 tableResults.push(selector3.options[selector3.selectedIndex].value);
 
 			
 			 var table = document.getElementById("tableResult");
