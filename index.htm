@@ -109,6 +109,16 @@
 			height: 300px;
 			border: black 1px solid;
 		}
+
+		 #textInput {
+			
+
+
+		} 
+
+		.inblock {
+			display: inline-block;
+		}
 	</style>
 	<link rel="stylesheet" href="vis.min.css">
 
@@ -856,52 +866,29 @@
 
 		function closeModalSelect() {
 			event.preventDefault();
-			var modal = document.getElementById("modalSelect");
-			modal.close();
+			var textInput = document.getElementById("textInput");
+			var divFilterContainer = document.getElementById("divFilterContainer");
+			var displaySelectButton = document.getElementById("displaySelect");
+			divFilterContainer.classList.add("hidden");
+			divFilterContainer.classList.remove("inblock");
+			displaySelectButton.classList.remove("hidden");
+			textInput.classList.remove("hidden");
 
+			//Falta escriure l'opcio del select
+			var selector3 = document.getElementById("selector3");
+			textInput.value = selector3.options[selector3.selectedIndex].value;
+			adjustWidth();
 		}
 
-		function changeSelectToWrite(number) {  //Que pugui recollir el text del input
+		function changeWriteToSelect(nodeId) {  //Que pugui recollir el text del input
 			event.preventDefault();
-			var selectorRowsContainer = document.getElementById("selectorRowsContainer");
-			var modalSelect = document.createElement("dialog");
-			modalSelect.setAttribute("class", "modal");
-			modalSelect.setAttribute("id", "modalSelect");
-			selectorRowsContainer.appendChild(modalSelect);
-			var selectInModal = document.createElement("select");
-			modalSelect.appendChild(selectInModal);
-			var buttonOk = document.createElement("button");
-			buttonOk.setAttribute("onclick", "closeModalSelect()");
-			buttonOk.innerHTML = "Ok";
-			modalSelect.appendChild(buttonOk);
-			modalSelect.show();
-
-			// var number2;
-			// if (number == 1) {
-			// 	number2 = 2;
-			// } else if (number == 2) {
-			// 	number2 = 3;
-			// }
-			// var textInput = document.getElementById("textInput" + number);
-			// var selector3 = document.getElementById("selector" + (number2));
-			// var label2 = document.getElementById("label" + (number2));
-			// var writeButton = document.getElementById("chooseValueButton" + number);
-			// var textInput = document.getElementById("textInput" + number);
-			// var instructions = document.getElementById("instructions");
-			// if (textInput.classList.contains("hidden")) {
-			// 	selector3.setAttribute("class", "hidden");
-			// 	label2.innerHTML = "Write a value";
-			// 	writeButton.innerHTML = "Click here if you want to use selector";
-			// 	textInput.classList.remove("hidden");
-			// 	instructions.innerHTML = "If you prefere to select value with select option click the button. If you click add button you will use the value in the text field to apply the filter"
-			// } else {
-			// 	selector3.classList.remove("hidden");
-			// 	label2.innerHTML = "Choose a value";
-			// 	writeButton.innerHTML = "Click here if you prefere to write the value";
-			// 	textInput.classList.add("hidden");
-			// 	instructions.innerHTML = "Is not your value on the list? If you prefere to write the value, click the button";
-			// }
-			// // console.log(selectorNumber);
+			var textInput = document.getElementById("textInput");
+			var divFilterContainer = document.getElementById("divFilterContainer");
+			var displaySelectButton = document.getElementById("displaySelect");
+			textInput.classList.add("hidden");
+			divFilterContainer.classList.remove("hidden");
+			divFilterContainer.classList.add("inblock");
+			displaySelectButton.classList.add("hidden");
 		}
 
 		function isAnObject(nodeId) {
@@ -914,6 +901,17 @@
 			// 	console.log(selectOption);
 			// 	console.log(typeof selectOption);
 			// }
+		}
+		function adjustWidth(){
+			var textInput = document.getElementById("textInput");
+			var value = textInput.value;
+			var valueLength=value.length;
+			var width=100;
+			if (valueLength >20){
+				width = valueLength * 8 +5; // 8px per character
+			textInput.style.width = width + "px";
+			}
+			
 		}
 
 		function createSelectorRowFilters(dataAttributes, nodeId) {
@@ -957,11 +955,21 @@
 			label2.setAttribute("id", "label2");
 			label2.innerHTML = "a Value";
 			optionsRow.appendChild(label2);
+
+			var divFilterContainer = document.createElement("div");
+			divFilterContainer.setAttribute("id", "divFilterContainer");
+			divFilterContainer.setAttribute("class", "hidden");
+			optionsRow.appendChild(divFilterContainer);
 			var select3 = document.createElement("select");
 			select3.setAttribute("name", "selectedValue");
 			select3.setAttribute("id", "selector3");
 			select3.setAttribute("onChange", "isAnObject('" + nodeId + "')");
-			optionsRow.appendChild(select3);
+			divFilterContainer.appendChild(select3);
+			var buttonOk = document.createElement("button");
+			buttonOk.setAttribute("onclick", "closeModalSelect()");
+			buttonOk.innerHTML = "Ok";
+			divFilterContainer.appendChild(buttonOk);
+
 
 			var valor;
 			var arrayValors = [];
@@ -979,15 +987,16 @@
 			}
 
 			var textInput = document.createElement("input");
-			textInput.setAttribute("id", "textInput1");
+			textInput.setAttribute("id", "textInput");
 			textInput.setAttribute("type", "text");
-			textInput.setAttribute("class", "hidden");
+			textInput.addEventListener("input", adjustWidth);
 			optionsRow.appendChild(textInput);
 
+
 			var writeButton = document.createElement("button");
-			writeButton.innerHTML = "Click here if you prefere to write the value";
-			writeButton.setAttribute("id", "chooseValueButton1");
-			writeButton.setAttribute("onclick", "changeSelectToWrite('1')");
+			writeButton.innerHTML = "...";
+			writeButton.setAttribute("id", "displaySelect");
+			writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "')");
 			optionsRow.appendChild(writeButton);
 
 			var instructions = document.createElement("div");
@@ -1070,7 +1079,7 @@
 
 			var selector1 = document.getElementById("selector1");
 			var selector2 = document.getElementById("selector2");
-			var selector3 = document.getElementById("selector3");
+			var selector3 = document.getElementById("selector3"); //AGAFAR DEL INPUT
 
 			for (var a = 0; a < 5; a++) {
 				var tableTh = document.createElement("th");
@@ -1115,7 +1124,7 @@
 
 
 				else if (a == 3) {
-					var inputText = document.getElementById("textInput1");
+					var inputText = document.getElementById("textInput");
 					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_value");
 					if (inputText.classList.contains("hidden")) {//select o input
 						tableTh.innerHTML = selector3.options[selector3.selectedIndex].value;
@@ -1209,7 +1218,7 @@
 			contador = 1;
 			//tornar a pintar la taula
 
-			if (tableContentNew.length != 0) { 
+			if (tableContentNew.length != 0) {
 				for (var r = 0; r < tableContentNew.length; r += 4) {
 					var tableTr = document.createElement("tr");
 					tableTr.setAttribute("id", "tableTr_" + contador);
@@ -1258,7 +1267,7 @@
 
 						} else if (a == 2) {
 							tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_condition");
-							tableTh.innerHTML = tableContentNew[(r+ 2)];
+							tableTh.innerHTML = tableContentNew[(r + 2)];
 
 						}
 						else if (a == 3) {
