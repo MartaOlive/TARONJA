@@ -1135,25 +1135,25 @@
 					// tableTh.innerHTML = "delete";
 					var buttonDelete = document.createElement("button");
 					buttonDelete.setAttribute("value", rows);
-					buttonDelete.setAttribute("id", "buttonDelete"+rows);
+					buttonDelete.setAttribute("id", "buttonDelete" + rows);
 					buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'" + nodeId + "')");
 					buttonDelete.innerHTML = "Delete ";
 					tableTh.appendChild(buttonDelete);
 					var buttonEdit = document.createElement("button");
 					buttonEdit.setAttribute("value", rows);
-					buttonEdit.setAttribute("id", "buttonEdit"+rows);
+					buttonEdit.setAttribute("id", "buttonEdit" + rows);
 					buttonEdit.setAttribute("onclick", "editRow(" + (rows) + ",'" + nodeId + "')");
 					buttonEdit.innerHTML = "Edit ";
 					tableTh.appendChild(buttonEdit);
 					var buttonInsert = document.createElement("button");
 					buttonInsert.setAttribute("value", rows);
-					buttonInsert.setAttribute("id", "buttonInsert"+rows);
+					buttonInsert.setAttribute("id", "buttonInsert" + rows);
 					buttonInsert.setAttribute("onclick", "deleteRow(" + (rows) + ",'" + nodeId + "')");
 					buttonInsert.innerHTML = "Insert ";
 					tableTh.appendChild(buttonInsert);
 					var buttonSave = document.createElement("button");
 					buttonSave.setAttribute("value", rows);
-					buttonSave.setAttribute("id", "buttonSave"+rows);
+					buttonSave.setAttribute("id", "buttonSave" + rows);
 					buttonSave.setAttribute("class", "hidden");
 					buttonSave.setAttribute("onclick", "saveRow(" + (rows) + ",'" + nodeId + "')");
 					buttonSave.innerHTML = "Save ";
@@ -1192,74 +1192,9 @@
 			return tableResults;
 		}
 
-		function saveRow(row, nodeId){
-			event.preventDefault();
-			var buttonEdit=document.getElementById("buttonEdit"+row);
-			var buttonInsert=document.getElementById("buttonInsert"+row);
-			var buttonSave=document.getElementById("buttonSave"+row);
-
-			buttonEdit.classList.remove("hidden");
-			buttonInsert.classList.remove("hidden");
-			buttonSave.classList.add("hidden");
-			var addButton = document.getElementById("addButton");
-			addButton.disabled = false;
-		}
-		function editRow(row, nodeId) {
-			event.preventDefault();
-			var tableContent = readTableFilterRow(nodeId);
-
-			//pintar la taula canviat els valors pels selects i tenint la seleccio del select posada al input
-
-
-
-			//desabilitar el add
-			var addButton = document.getElementById("addButton");
-			addButton.disabled = true;
-
-			//amagar els botons de edit,Insert, mostrar botó save i mantenir suprimir
-			var buttonEdit=document.getElementById("buttonEdit"+row);
-			var buttonInsert=document.getElementById("buttonInsert"+row);
-			var buttonSave=document.getElementById("buttonSave"+row);
-
-			 buttonEdit.classList.add("hidden");
-			 buttonInsert.classList.add("hidden");
-			 buttonSave.classList.remove("hidden");
-			
-		}
-		function deleteRow(row, nodeId) {
-			event.preventDefault();
-			console.log(row);
-
-			var tableContent = readTableFilterRow(nodeId); //agafar els valors de la taula
-			console.log(tableContent);
-			var table = document.getElementById("tableResult");
-			var a = 1;
-			var rowsNumbers2 = table.rows.length;
-
-			while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
-				table.deleteRow(a);
-				rowsNumbers2 = table.rows.length;
-			}
-
-
-			//treure les dades de la fila eliminada de les dades guardades
-			var tableContentNew = [];
+		function drawTable(nodeId, tableContentNew, button) {
 			var contador = 1;
-
-			for (var i = 0; i < tableContent.length; i += 4) {
-				if (row != contador) {
-					tableContentNew.push(tableContent[i]);
-					tableContentNew.push(tableContent[i + 1]);
-					tableContentNew.push(tableContent[i + 2]);
-					tableContentNew.push(tableContent[i + 3]);
-				}
-				
-				contador++; 
-			}
-			console.log(tableContent);
-			console.log(tableContentNew);
-			contador = 1;
-			//tornar a pintar la taula
+			var table = document.getElementById("tableResult");
 
 			if (tableContentNew.length != 0) {
 				for (var r = 0; r < tableContentNew.length; r += 4) {
@@ -1305,41 +1240,49 @@
 							}
 						}
 						else if (a == 1) {
-							tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_property");
-							tableTh.innerHTML = tableContentNew[(r + 1)];
+							if (button==="delete"){
+								tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_property");
+								tableTh.innerHTML = tableContentNew[(r + 1)];
+							}
+							
 
 						} else if (a == 2) {
-							tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_condition");
+							if (button==="delete"){
+								tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_condition");
 							tableTh.innerHTML = tableContentNew[(r + 2)];
-
+							}
+							
 						}
 						else if (a == 3) {
-							tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_value");
+							if (button==="delete"){
+								tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_value");
 							tableTh.innerHTML = tableContentNew[(r + 3)];
+							}
+							
 
 						} else if (a == 4) {
 							var buttonDelete = document.createElement("button");
 							buttonDelete.setAttribute("value", contador);
-							buttonDelete.setAttribute("id", "buttonDelete"+contador);
+							buttonDelete.setAttribute("id", "buttonDelete" + contador);
 							buttonDelete.setAttribute("onclick", "deleteRow(" + (contador) + ",'" + nodeId + "')");
 							buttonDelete.innerHTML = "Delete ";
 							tableTh.appendChild(buttonDelete);
 							var buttonEdit = document.createElement("button");
 							buttonEdit.setAttribute("value", contador);
-							buttonEdit.setAttribute("id", "buttonEdit"+contador);
+							buttonEdit.setAttribute("id", "buttonEdit" + contador);
 							buttonEdit.setAttribute("onclick", "editRow(" + (contador) + ",'" + nodeId + "')");
 							buttonEdit.innerHTML = "Edit ";
 							tableTh.appendChild(buttonEdit);
 							var buttonInsert = document.createElement("button");
 							buttonInsert.setAttribute("value", contador);
-							buttonInsert.setAttribute("id", "buttonInsert"+contador);
+							buttonInsert.setAttribute("id", "buttonInsert" + contador);
 							buttonInsert.setAttribute("onclick", "deleteRow(" + (contador) + ",'" + nodeId + "')");
 							buttonInsert.innerHTML = "Insert ";
 							tableTh.appendChild(buttonInsert);
 							var buttonSave = document.createElement("button");
 							buttonSave.setAttribute("value", contador);
 							buttonSave.setAttribute("class", "hidden");
-							buttonSave.setAttribute("id", "buttonSave"+contador);							
+							buttonSave.setAttribute("id", "buttonSave" + contador);
 							buttonSave.setAttribute("onclick", "saveRow(" + (contador) + ",'" + nodeId + "')");
 							buttonSave.innerHTML = "Save ";
 
@@ -1352,6 +1295,187 @@
 					contador++;
 				}
 			}
+
+
+		}
+		function insertRow(){
+			event.preventDefault();
+			//agafar el contingut, i afegir " " en el lloc on toqui.PEr ccrear una fila buida on somplirà amb selects
+
+			//drawTable(....)
+
+			//
+			//canviar hiddens dels botons
+		}
+
+		function saveRow(row, nodeId) {
+
+
+
+
+
+
+			event.preventDefault();
+			var buttonEdit = document.getElementById("buttonEdit" + row);
+			var buttonInsert = document.getElementById("buttonInsert" + row);
+			var buttonSave = document.getElementById("buttonSave" + row);
+
+			buttonEdit.classList.remove("hidden");
+			buttonInsert.classList.remove("hidden");
+			buttonSave.classList.add("hidden");
+			var addButton = document.getElementById("addButton");
+			addButton.disabled = false;
+		}
+		function editRow(row, nodeId) {
+			event.preventDefault();
+			var tableContent = readTableFilterRow(nodeId);
+
+			//pintar la taula canviat els valors pels selects i tenint la seleccio del select posada al input
+
+
+
+			//desabilitar el add
+			var addButton = document.getElementById("addButton");
+			addButton.disabled = true;
+
+			//amagar els botons de edit,Insert, mostrar botó save i mantenir suprimir
+			var buttonEdit = document.getElementById("buttonEdit" + row);
+			var buttonInsert = document.getElementById("buttonInsert" + row);
+			var buttonSave = document.getElementById("buttonSave" + row);
+
+			buttonEdit.classList.add("hidden");
+			buttonInsert.classList.add("hidden");
+			buttonSave.classList.remove("hidden");
+
+		}
+		function deleteRow(row, nodeId) {
+			event.preventDefault();
+			console.log(row);
+
+			var tableContent = readTableFilterRow(nodeId); //agafar els valors de la taula
+			console.log(tableContent);
+			var table = document.getElementById("tableResult");
+			var a = 1;
+			var rowsNumbers2 = table.rows.length;
+
+			while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
+				table.deleteRow(a);
+				rowsNumbers2 = table.rows.length;
+			}
+
+
+			//treure les dades de la fila eliminada de les dades guardades
+			var tableContentNew = [];
+			var contador = 1;
+
+			for (var i = 0; i < tableContent.length; i += 4) {
+				if (row != contador) {
+					tableContentNew.push(tableContent[i]);
+					tableContentNew.push(tableContent[i + 1]);
+					tableContentNew.push(tableContent[i + 2]);
+					tableContentNew.push(tableContent[i + 3]);
+				}
+
+				contador++;
+			}
+
+			console.log(tableContent);
+			console.log(tableContentNew);
+			contador = 1;
+			//tornar a pintar la taula (drawTable)
+			drawTable(nodeId, tableContentNew, "delete");
+
+			// if (tableContentNew.length != 0) {
+			// 	for (var r = 0; r < tableContentNew.length; r += 4) {
+			// 		var tableTr = document.createElement("tr");
+			// 		tableTr.setAttribute("id", "tableTr_" + contador);
+			// 		table.appendChild(tableTr);
+
+			// 		for (var a = 0; a < 5; a++) { //4 columnes
+			// 			var tableTh = document.createElement("th");
+			// 			tableTh.setAttribute("class", "borderTable");
+			// 			if (a == 0) {
+			// 				if (contador != 1) { //no hi ha select en la primera
+			// 					// tableTh.innerHTML = "select";
+			// 					var selectAndOr = document.createElement("select");
+			// 					selectAndOr.setAttribute("id", "select_" + nodeId + "_" + (contador));
+			// 					tableTh.appendChild(selectAndOr);
+
+			// 					for (var s = 0; s < 3; s++) {
+			// 						var optionSelect = document.createElement("option");
+			// 						if (s == 0) {
+			// 							if (tableContentNew[r] == "and") {
+			// 								optionSelect.setAttribute("selected", true);
+			// 							}
+			// 							optionSelect.setAttribute("value", "and");
+			// 							optionSelect.innerHTML = "And";
+
+			// 						} else if (s == 1) {
+			// 							if (tableContentNew[r] == "or") {
+			// 								optionSelect.setAttribute("selected", true);
+			// 							}
+			// 							optionSelect.setAttribute("value", "or");
+			// 							optionSelect.innerHTML = "Or";
+			// 						}
+			// 						else {
+			// 							if (tableContentNew[r] == "not") {
+			// 								optionSelect.setAttribute("selected", true);
+			// 							}
+			// 							optionSelect.setAttribute("value", "not");
+			// 							optionSelect.innerHTML = "Not";
+			// 						}
+			// 						selectAndOr.appendChild(optionSelect);
+			// 					}
+			// 				}
+			// 			}
+			// 			else if (a == 1) {
+			// 				tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_property");
+			// 				tableTh.innerHTML = tableContentNew[(r + 1)];
+
+			// 			} else if (a == 2) {
+			// 				tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_condition");
+			// 				tableTh.innerHTML = tableContentNew[(r + 2)];
+
+			// 			}
+			// 			else if (a == 3) {
+			// 				tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_value");
+			// 				tableTh.innerHTML = tableContentNew[(r + 3)];
+
+			// 			} else if (a == 4) {
+			// 				var buttonDelete = document.createElement("button");
+			// 				buttonDelete.setAttribute("value", contador);
+			// 				buttonDelete.setAttribute("id", "buttonDelete" + contador);
+			// 				buttonDelete.setAttribute("onclick", "deleteRow(" + (contador) + ",'" + nodeId + "')");
+			// 				buttonDelete.innerHTML = "Delete ";
+			// 				tableTh.appendChild(buttonDelete);
+			// 				var buttonEdit = document.createElement("button");
+			// 				buttonEdit.setAttribute("value", contador);
+			// 				buttonEdit.setAttribute("id", "buttonEdit" + contador);
+			// 				buttonEdit.setAttribute("onclick", "editRow(" + (contador) + ",'" + nodeId + "')");
+			// 				buttonEdit.innerHTML = "Edit ";
+			// 				tableTh.appendChild(buttonEdit);
+			// 				var buttonInsert = document.createElement("button");
+			// 				buttonInsert.setAttribute("value", contador);
+			// 				buttonInsert.setAttribute("id", "buttonInsert" + contador);
+			// 				buttonInsert.setAttribute("onclick", "deleteRow(" + (contador) + ",'" + nodeId + "')");
+			// 				buttonInsert.innerHTML = "Insert ";
+			// 				tableTh.appendChild(buttonInsert);
+			// 				var buttonSave = document.createElement("button");
+			// 				buttonSave.setAttribute("value", contador);
+			// 				buttonSave.setAttribute("class", "hidden");
+			// 				buttonSave.setAttribute("id", "buttonSave" + contador);
+			// 				buttonSave.setAttribute("onclick", "saveRow(" + (contador) + ",'" + nodeId + "')");
+			// 				buttonSave.innerHTML = "Save ";
+
+			// 				tableTh.appendChild(buttonSave);
+
+			// 			}
+			// 			tableTr.appendChild(tableTh)
+			// 		}
+
+			// 		contador++;
+			// 	}
+			// }
 			console.log(tableContent);
 			console.log(tableContentNew);
 
