@@ -110,11 +110,7 @@
 			border: black 1px solid;
 		}
 
-		 #textInput {
-			
 
-
-		} 
 
 		.inblock {
 			display: inline-block;
@@ -902,16 +898,18 @@
 			// 	console.log(typeof selectOption);
 			// }
 		}
-		function adjustWidth(){
+		function adjustWidth() {
 			var textInput = document.getElementById("textInput");
 			var value = textInput.value;
-			var valueLength=value.length;
-			var width=100;
-			if (valueLength >20){
-				width = valueLength * 8 +5; // 8px per character
-			textInput.style.width = width + "px";
+			var valueLength = value.length;
+			var width = 100;
+			if (valueLength > 20) {
+				width = valueLength * 8; // 8px per character
+				textInput.style.width = width + "px";
+			} else if (valueLength <= 20) {
+				textInput.style.width="100px";
 			}
-			
+
 		}
 
 		function createSelectorRowFilters(dataAttributes, nodeId) {
