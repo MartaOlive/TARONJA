@@ -865,10 +865,12 @@
 			var textInput = document.getElementById("textInput" + place);
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
 			var displaySelectButton = document.getElementById("displaySelect" + place);
+			var addButton = document.getElementById("addButton");
 			divFilterContainer.classList.add("hidden");
 			divFilterContainer.classList.remove("inblock");
 			displaySelectButton.classList.remove("hidden");
 			textInput.classList.remove("hidden");
+			addButton.disabled = false;
 
 			//Falta escriure l'opcio del select
 			var selectorValue = document.getElementById("selectorValue" + place);
@@ -881,10 +883,13 @@
 			var textInput = document.getElementById("textInput" + place);
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
 			var displaySelectButton = document.getElementById("displaySelect" + place);
+			var addButton = document.getElementById("addButton");
 			textInput.classList.add("hidden");
 			divFilterContainer.classList.remove("hidden");
 			divFilterContainer.classList.add("inblock");
 			displaySelectButton.classList.add("hidden");
+			addButton.disabled = true;
+
 		}
 
 		function isAnObject(nodeId, place) {
@@ -998,115 +1003,45 @@
 		function addSelected(nodeId, place) {
 			event.preventDefault();
 			var table = document.getElementById("tableResult");
-			var rows = table.rows.length;
-
-
-			var tableTr = document.createElement("tr");
-			tableTr.setAttribute("id", "tableTr_" + (rows));
-			tableTr.setAttribute("class", "borderTable");
-			table.appendChild(tableTr);
-
+			// var señectorAndOrNot=document.getElementById("select_"+nodeId+"_"+(table.length-1));
 			var selectorProperty = document.getElementById("selectorProperty" + place);
 			var selectorCondition = document.getElementById("selectorCondition" + place);
-			var selectorValue = document.getElementById("selectorValue" + place); //AGAFAR DEL INPUT
-			//readTableFilterRow(nodeId)
-			var tableContent=readTableFilterRow(nodeId);
-			var tableContentNew;
-			
+			var textInput = document.getElementById("textInput" + place);
+
+			//llegir taula
+			var tableContent = [];
+			tableContent = readTableFilterRow(nodeId);
+			console.log("abans d'afegir: " + tableContent);
 
 			//afegir els valors nous
-			
 
-			//drawTable(nodeId, tableContentNew, button) 
-
-			for (var a = 0; a < 5; a++) {
-				var tableTh = document.createElement("th");
-				tableTh.setAttribute("class", "borderTable");
-				if (a == 0) {
-					if (rows != 1) {
-						// tableTh.setAttribute("id", "tr_"+nodeId+"_"+(rows)+"_select");
-						// tableTh.innerHTML = "select";
-						var selectAndOr = document.createElement("select");
-						selectAndOr.setAttribute("id", "select_" + nodeId + "_" + (rows));
-						tableTh.appendChild(selectAndOr);
-
-						for (var s = 0; s < 3; s++) {
-							var optionSelect = document.createElement("option");
-							if (s == 0) {
-								optionSelect.setAttribute("value", "and");
-								optionSelect.innerHTML = "And";
-
-							} else if (s == 1) {
-								optionSelect.setAttribute("value", "or");
-								optionSelect.innerHTML = "Or";
-							}
-							else {
-								optionSelect.setAttribute("value", "not");
-								optionSelect.innerHTML = "Not";
-							}
-							selectAndOr.appendChild(optionSelect);
-						}
-					}
-				}
-				else if (a == 1) {
-					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_property");
-					tableTh.innerHTML = selectorProperty.options[selectorProperty.selectedIndex].value;
-
-				}
-				else if (a == 2) {
-					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_condition");
-					tableTh.setAttribute("value", selectConditionContent[selectorCondition.options[selectorCondition.selectedIndex].value]);
-					tableTh.innerHTML = selectConditionContent[selectorCondition.options[selectorCondition.selectedIndex].value];
-
-				}
-
-
-				else if (a == 3) {
-					var inputText = document.getElementById("textInput");
-					tableTh.setAttribute("id", "th_" + nodeId + "_" + (rows) + "_value");
-					if (inputText.classList.contains("hidden")) {//select o input
-						tableTh.innerHTML = selectorValue.options[selectorValue.selectedIndex].value;
-					} else {
-						tableTh.innerHTML = inputText.value;
-					}
-
-
-				} else if (a == 4) {
-					// tableTh.innerHTML = "delete";
-					var buttonDelete = document.createElement("button");
-					buttonDelete.setAttribute("value", rows);
-					buttonDelete.setAttribute("id", "buttonDelete" + rows);
-					buttonDelete.setAttribute("onclick", "deleteRow(" + (rows) + ",'" + nodeId + "')");
-					buttonDelete.innerHTML = "Delete ";
-					tableTh.appendChild(buttonDelete);
-					var buttonEdit = document.createElement("button");
-					buttonEdit.setAttribute("value", rows);
-					buttonEdit.setAttribute("id", "buttonEdit" + rows);
-					buttonEdit.setAttribute("onclick", "editRow(" + (rows) + ",'" + nodeId + "')");
-					buttonEdit.innerHTML = "Edit ";
-					tableTh.appendChild(buttonEdit);
-					var buttonInsert = document.createElement("button");
-					buttonInsert.setAttribute("value", rows);
-					buttonInsert.setAttribute("id", "buttonInsert" + rows);
-					buttonInsert.setAttribute("onclick", "deleteRow(" + (rows) + ",'" + nodeId + "')");
-					buttonInsert.innerHTML = "Insert ";
-					tableTh.appendChild(buttonInsert);
-					var buttonSave = document.createElement("button");
-					buttonSave.setAttribute("value", rows);
-					buttonSave.setAttribute("id", "buttonSave" + rows);
-					buttonSave.setAttribute("class", "hidden");
-					buttonSave.setAttribute("onclick", "saveRow(" + (rows) + ",'" + nodeId + "')");
-					buttonSave.innerHTML = "Save ";
-					tableTh.appendChild(buttonSave);
-
-				}
-				tableTr.appendChild(tableTh)
+			if (tableContent.length == 0) {
+				tableContent.push("nothing");
 			}
+			else {
+				tableContent.push("and");
+			}
+			tableContent.push(selectorProperty.options[selectorProperty.selectedIndex].value);
+			tableContent.push(selectorCondition.options[selectorCondition.selectedIndex].value);
+			tableContent.push(textInput.value);
+			console.log("despres d'afegir: " + tableContent);
 
+
+			//borrar taula
+			var a = 1;
+			var rowsNumbers2 = table.rows.length;
+
+			while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
+				table.deleteRow(a);
+				rowsNumbers2 = table.rows.length;
+			}
+			//pintar taula 
+			drawTable(nodeId, tableContent, "add");
 
 		}
 
-		function createSelect(number, place, place_Id, nodeId, dataAttributes,button,selected) {
+
+		function createSelect(number, place, place_Id, nodeId, dataAttributes, button, selected) {
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data = networkNodes.get(nodeId).STAdata;
@@ -1118,9 +1053,12 @@
 					var option = document.createElement("option");
 					option.setAttribute("value", dataAttributes[i].name);
 					option.innerHTML = dataAttributes[i].name;
-					if(button=="edit"||	dataAttributes[i].name==selected){
-						option.setAttribute("selected", true);
+					if (selected) {
+						if (button == "edit" || dataAttributes[i].name == selected) {
+							option.setAttribute("selected", true);
+						}
 					}
+
 					select.appendChild(option);
 				}
 				placeId.appendChild(select);
@@ -1130,9 +1068,13 @@
 					var opcioCondicio = document.createElement("option");
 					opcioCondicio.setAttribute("value", i);
 					opcioCondicio.innerHTML = selectConditionContent[i];
-					if(button=="edit"||	dataAttributes[i].name==selected){
-						option.setAttribute("selected", true);
+					// console.log(selected);
+					if (selected) {
+						if (button == "edit" || dataAttributes[i].name == selected) {
+							option.setAttribute("selected", true);
+						}
 					}
+
 					select.appendChild(opcioCondicio);
 				}
 				placeId.appendChild(select);
@@ -1155,9 +1097,12 @@
 						var option = document.createElement("option");
 						option.setAttribute("value", valor);
 						option.innerHTML = valor;
-						if(button=="edit"||	dataAttributes[i].name==selected){
-						option.setAttribute("selected", true);
-					}
+						if (selected) {
+							if (button == "edit" || dataAttributes[i].name == selected) {
+								option.setAttribute("selected", true);
+							}
+						}
+
 						select.appendChild(option);
 						arrayValors.push(valor);
 					} else {
@@ -1202,11 +1147,11 @@
 					var property = document.getElementById("th_" + nodeId + "_" + (r) + "_property");
 					var propertyText = property.innerHTML;
 					var condition = document.getElementById("th_" + nodeId + "_" + (r) + "_condition");
-					var conditionText = condition.innerHTML;
+					var conditionText = condition.getAttribute("value");
 					var value = document.getElementById("th_" + nodeId + "_" + (r) + "_value");
 					var valueText = value.innerHTML;
-					if (r == 1) {
-						tableResults.push("0");
+					if (r == 1 ) {
+						tableResults.push("nothing");
 					} else {
 						var selectAndOrNot = document.getElementById("select_" + nodeId + "_" + r);
 						tableResults.push(selectAndOrNot.options[selectAndOrNot.selectedIndex].value);
@@ -1222,77 +1167,89 @@
 		function drawTable(nodeId, tableContentNew, button) {
 			var contador = 1;
 			var table = document.getElementById("tableResult");
+			console.log("el q escriu: " + tableContentNew);
 
 			if (tableContentNew.length != 0) {
-				for (var r = 0; r < tableContentNew.length; r += 4) {
+				for (var r = 0; r < tableContentNew.length; r += 4) { //recorrerem tot l'arrai dels elements guardats, de 4 en 4 (4valors a guardar per linea)
 					var tableTr = document.createElement("tr");
-					tableTr.setAttribute("id", "tableTr_" + contador);
+					tableTr.setAttribute("id", "tableTr_" + contador); //Fila 1, 2, 3, 4.. (contador suma 1 per volta)
 					table.appendChild(tableTr);
 
-					for (var a = 0; a < 5; a++) { //4 columnes
+					for (var a = 0; a < 5; a++) { //5 columnes (crearem cada fila, columna a columna. La a indica la columna)comença al 0 perque l'arrai comença en [0]
 						var tableTh = document.createElement("th");
 						tableTh.setAttribute("class", "borderTable");
-						if (a == 0) {
-							if (contador != 1) { //no hi ha select en la primera
-								// tableTh.innerHTML = "select";
+
+						if (a == 0) { //Columna del ar or not ()
+
+							if (contador != 1) { //no hi ha select en la primera. Al començar per 1 nomes no posarà el primer
 								var selectAndOr = document.createElement("select");
 								selectAndOr.setAttribute("id", "select_" + nodeId + "_" + (contador));
 								tableTh.appendChild(selectAndOr);
 
-								for (var s = 0; s < 3; s++) {
+								for (var s = 0; s < 3; s++) { //omplim select (3 opcions: and, or, not) FUNCIONA BÉ AMB ADD
 									var optionSelect = document.createElement("option");
-									if (s == 0 &(button=="edit"||button=="delete")) {
-										if (tableContentNew[r] == "and") {
-											optionSelect.setAttribute("selected", true);
+									if (s == 0) {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save") { //no insert 
+											if (tableContentNew[r] == "and") { //r= 0,3,7,11...
+												optionSelect.setAttribute("selected", true);
+											}
 										}
 										optionSelect.setAttribute("value", "and");
 										optionSelect.innerHTML = "And";
-
-									} else if (s == 1&(button=="edit"||button=="delete")) {
-										if (tableContentNew[r] == "or") {
-											optionSelect.setAttribute("selected", true);
+									}
+									else if (s == 1) {
+										if (button == "edit" || button == "delete" || button == "add") {
+											if (tableContentNew[r] == "or") {
+												optionSelect.setAttribute("selected", true);
+											}
 										}
+
 										optionSelect.setAttribute("value", "or");
 										optionSelect.innerHTML = "Or";
 									}
-									else if (s==2 &(button=="edit"||button=="delete")){
-										if (tableContentNew[r] == "not") {
-											optionSelect.setAttribute("selected", true);
+									else if (s == 2) {
+										if (button == "edit" || button == "delete" || button == "add") {
+											if (tableContentNew[r] == "not") {
+												optionSelect.setAttribute("selected", true);
+											}
+											optionSelect.setAttribute("value", "not");
+											optionSelect.innerHTML = "Not";
 										}
-										optionSelect.setAttribute("value", "not");
-										optionSelect.innerHTML = "Not";
 									}
+
 									selectAndOr.appendChild(optionSelect);
 								}
 							}
 						}
-						else if (a == 1) {
+						else if (a == 1) { //2a columna, property
 							tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_property");
-							if (button === "delete") {
-								tableTh.innerHTML = tableContentNew[(r + 1)];
+							if (button === "delete" || button == "add") {
+								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7... 
 							} else if (button === "edit") {
 								//muntar input/select amb opicio seleccionada
-								createSelect(1,"_tableResult", "tableResult",nodeId,tableContentNew,button,tableContentNew[(r + 1)]);
+								createSelect(1, "_tableResult", "tableResult", nodeId, tableContentNew, button, tableContentNew[(r + 1)]);
 							}
 
 
 						} else if (a == 2) {
-							if (button === "delete") {
+							if (button === "delete" || button == "add") {
 								tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_condition");
-								tableTh.innerHTML = tableContentNew[(r + 2)];
+								tableTh.innerHTML = selectConditionContent[tableContentNew[r + 2]];
+								tableTh.setAttribute("value", tableContentNew[r + 2]);
+
 							} else if (button === "edit") {
 								//muntar input/select amb opicio seleccionada
-								createSelect(2,"_tableResult", "tableResult",nodeId,tableContentNew,button,tableContentNew[(r + 1)]);
+								createSelect(2, "_tableResult", "tableResult", nodeId, tableContentNew, button, tableContentNew[(r + 2)]);
 							}
 
 						}
 						else if (a == 3) {
-							if (button === "delete") {
+							if (button === "delete" || button == "add") {
 								tableTh.setAttribute("id", "th_" + nodeId + "_" + (contador) + "_value");
 								tableTh.innerHTML = tableContentNew[(r + 3)];
-							}else if (button === "edit") {
+							} else if (button === "edit") {
 								//muntar input/select amb opicio seleccionada
-								createSelect(3,"_tableResult", "tableResult",nodeId,tableContentNew,button,tableContentNew[(r + 1)]);
+								createSelect(3, "_tableResult", "tableResult", nodeId, tableContentNew, button, tableContentNew[(r + 1)]);
 							}
 
 
