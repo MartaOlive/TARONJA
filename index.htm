@@ -1010,8 +1010,8 @@
 
 			//llegir taula
 			var tableContent = [];
-			tableContent = readTableFilterRow(nodeId);
-			console.log("abans d'afegir: " + tableContent);
+			tableContent = readTableFilterRow(nodeId, 0);
+			// console.log("abans d'afegir: " + tableContent);
 
 			//afegir els valors nous
 
@@ -1024,7 +1024,7 @@
 			tableContent.push(selectorProperty.options[selectorProperty.selectedIndex].value);
 			tableContent.push(selectorCondition.options[selectorCondition.selectedIndex].value);
 			tableContent.push(textInput.value);
-			console.log("despres d'afegir: " + tableContent);
+			// console.log("despres d'afegir: " + tableContent);
 
 
 			//borrar taula
@@ -1137,20 +1137,24 @@
 
 		}
 
-		function readTableFilterRow(nodeId) {
+		function readTableFilterRow(nodeId, rowForSelects) {
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
 			var rowsNumber = table.rows.length;
-			console.log("rows: " + rowsNumber);
+
 			if (rowsNumber > 1) {
 				for (var r = 1; r < rowsNumber; r++) {
+					 if (rowForSelects) {
+					 	console.log("rowForSelects:  "+rowForSelects);
+					 	r = rowForSelects;					
+					 } 
 					var property = document.getElementById("th_" + nodeId + "_" + (r) + "_property");
 					var propertyText = property.innerHTML;
 					var condition = document.getElementById("th_" + nodeId + "_" + (r) + "_condition");
 					var conditionText = condition.getAttribute("value");
 					var value = document.getElementById("th_" + nodeId + "_" + (r) + "_value");
 					var valueText = value.innerHTML;
-					if (r == 1 ) {
+					if (r == 1) {
 						tableResults.push("nothing");
 					} else {
 						var selectAndOrNot = document.getElementById("select_" + nodeId + "_" + r);
@@ -1159,15 +1163,20 @@
 					tableResults.push(propertyText);
 					tableResults.push(conditionText);
 					tableResults.push(valueText);
+					console.log("tableResults:  " + tableResults);
+					 if (rowForSelects!=0) {
+					 	r=rowsNumber;
+					 } 
 				}
+
 			}
 			return tableResults;
 		}
 
-		function drawTable(nodeId, tableContentNew, button) {
+		function drawTable(nodeId, tableContentNew, button, rowInfo) {
 			var contador = 1;
 			var table = document.getElementById("tableResult");
-			console.log("el q escriu: " + tableContentNew);
+			// console.log("el q escriu: " + tableContentNew);
 
 			if (tableContentNew.length != 0) {
 				for (var r = 0; r < tableContentNew.length; r += 4) { //recorrerem tot l'arrai dels elements guardats, de 4 en 4 (4valors a guardar per linea)
@@ -1304,10 +1313,6 @@
 		function saveRow(row, nodeId) {
 
 
-
-
-
-
 			event.preventDefault();
 			var buttonEdit = document.getElementById("buttonEdit" + row);
 			var buttonInsert = document.getElementById("buttonInsert" + row);
@@ -1325,8 +1330,23 @@
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId);
 
+			//borrar taula
+			var table = document.getElementById("tableResult");
+			var a = 1;
+			var rowsNumbers2 = table.rows.length;
+
+
+			//Agafar les dades de la fila
+			console.log("row:  " + row);
+			var rowInfo = readTableFilterRow(nodeId, row);
+			console.log("rowInfo: " + rowInfo);
+
+			while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
+				table.deleteRow(a);
+				rowsNumbers2 = table.rows.length;
+			}
 			//pintar la taula canviat els valors pels selects i tenint la seleccio del select posada al input
-			drawTable(nodeId, tableContent, "edit");
+			// drawTable(nodeId, tableContent, "edit", rowInfo);
 
 
 			//desabilitar el add
@@ -1338,16 +1358,17 @@
 			var buttonInsert = document.getElementById("buttonInsert" + row);
 			var buttonSave = document.getElementById("buttonSave" + row);
 
-			buttonEdit.classList.add("hidden");
-			buttonInsert.classList.add("hidden");
-			buttonSave.classList.remove("hidden");
+			// buttonEdit.classList.add("hidden");
+			// buttonInsert.classList.add("hidden");
+			// buttonSave.classList.remove("hidden");
 
 		}
+
 		function deleteRow(row, nodeId) {
 			event.preventDefault();
 			console.log(row);
 
-			var tableContent = readTableFilterRow(nodeId); //agafar els valors de la taula
+			var tableContent = readTableFilterRow(nodeId, 0); //agafar els valors de la taula
 			console.log(tableContent);
 			var table = document.getElementById("tableResult");
 			var a = 1;
