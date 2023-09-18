@@ -1229,62 +1229,55 @@
 
 							tableTr.appendChild(tableTh);
 
-							if (button == "delete" || button == "add") {
+							if (button == "delete" || button == "add" || (button == "edit" & contador != row)) {
 								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7... 
 							}
-							else if (button == "edit") {
+							else if (button == "edit" & contador == row) {
 								// 	//muntar input/select amb opicio seleccionada
-								if (contador == row) {
-									console.log(tableContentNew[(r + 1)]);
-									console.log("if");
-									// 	createSelect(1, "_tableResult", idProperty, nodeId, tableContentNew, button, tableContentNew[(r + 1)]);
-								}
-								else {
-									tableTh.innerHTML = tableContentNew[(r + 1)];
-									console.log("else");
-								}
-							}
 
+								console.log(tableContentNew[(r + 1)]);
+
+								// 	createSelect(1, "_tableResult", idProperty, nodeId, tableContentNew, button, tableContentNew[(r + 1)]);
+
+
+							}
 						}
 						else if (a == 2) {
 							var idCondition = "th_" + nodeId + "_" + (contador) + "_condition";
 							tableTh.setAttribute("id", idCondition);
 							tableTr.appendChild(tableTh);
 
-							if (button === "delete" || button == "add") {
-
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row)) {
 								tableTh.innerHTML = selectConditionContent[tableContentNew[r + 2]];
 								tableTh.setAttribute("value", tableContentNew[r + 2]);
 
 							}
-							else if (button == "edit") {
+							else if (button == "edit" & contador == row) {
 								// 	//muntar input/select amb opicio seleccionada
-								if (a == (row + 1)) {
-									console.log(tableContentNew[(r + 2)]);
-									//createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, tableContentNew[(r + 2)]);
-								}
+
+								console.log(tableContentNew[(r + 2)]);
+								//createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, tableContentNew[(r + 2)]);
+
+
 							}
-							else {
-								tableTh.innerHTML = tableContentNew[(r + 2)];
-							}
+
 						}
 						else if (a == 3) {
 							var idValue = "th_" + nodeId + "_" + (contador) + "_value";
 							tableTr.appendChild(tableTh);
-							if (button === "delete" || button == "add") {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row)) {
 								tableTh.setAttribute("id", idValue);
 								tableTh.innerHTML = tableContentNew[(r + 3)];
 							}
-							else if (button == "edit") {
+							else if (button == "edit" & contador == row) {
 								// 	//muntar input/select amb opicio seleccionada
-								if (a == (row + 1)) {
-									console.log(tableContentNew[(r + 3)]);
-									//createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, tableContentNew[(r + 2)]);
-								}
+
+								console.log(tableContentNew[(r + 3)]);
+								//createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, tableContentNew[(r + 2)]);
+
+
 							}
-							else {
-								tableTh.innerHTML = tableContentNew[(r + 3)];
-							}
+
 
 						} else if (a == 4) {
 							tableTr.appendChild(tableTh);
