@@ -860,18 +860,24 @@
 			}
 		}
 
-		function closeModalSelect(place, button) {
+		function closeModalSelect(place, button, row) {
 			event.preventDefault();
 			var textInput = document.getElementById("textInput" + place);
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
 			var displaySelectButton = document.getElementById("displaySelect" + place);
 			var addButton = document.getElementById("addButton");
+			var saveButton = document.getElementById("buttonSave" + row);
 
 			divFilterContainer.classList.add("hidden");
 			divFilterContainer.classList.remove("inblock");
 			displaySelectButton.classList.remove("hidden");
 			textInput.classList.remove("hidden");
+
 			addButton.disabled = false;
+			if (place!="_optionsRow"){
+					saveButton.disabled = false;
+			}
+		
 
 			//Falta escriure l'opcio del select
 			if (button == "ok") {
@@ -879,6 +885,7 @@
 				textInput.value = selectorValue.options[selectorValue.selectedIndex].value;
 				adjustWidth(place);
 			}
+
 
 		}
 
@@ -888,11 +895,23 @@
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
 			var displaySelectButton = document.getElementById("displaySelect" + place);
 			var addButton = document.getElementById("addButton");
+
 			textInput.classList.add("hidden");
 			divFilterContainer.classList.remove("hidden");
 			divFilterContainer.classList.add("inblock");
 			displaySelectButton.classList.add("hidden");
 			addButton.disabled = true;
+
+			var table = document.getElementById("tableResult");
+			var rowsNumbers = table.rows.length;
+			var saveButton;
+
+			for (var i = 1; i < rowsNumbers; i++) {
+				saveButton = document.getElementById("buttonSave" + i);
+				if (saveButton.classList.contains("hidden") == false) {
+					saveButton.disabled = true;
+				}
+			}
 
 		}
 
@@ -1049,6 +1068,11 @@
 			var select = document.createElement("select");
 			var data = networkNodes.get(nodeId).STAdata;
 			var dataAttributes2;
+			if (button != "initial"){
+				var table = document.getElementById("tableResult");
+			var rowsNumbers = table.rows.length;
+			}
+			
 
 			if (dataAttributes === "no") {
 				dataAttributes2 = getDataAttributes(data);
@@ -1136,15 +1160,18 @@
 					adjustWidth(place);
 				}
 
+
+				var row = rowsNumbers - 1;
+
 				var okButton = document.createElement("button");
-				okButton.setAttribute("onclick", "closeModalSelect('" + place + "','ok')");
+				okButton.setAttribute("onclick", "closeModalSelect('" + place + "','ok'," + row + ")");
 				okButton.setAttribute("id", "okButton" + place);
 				okButton.innerHTML = "Ok";
 
 
 				divFilterContainer.appendChild(select);
 				var cancelButton = document.createElement("button");
-				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','cancel')");
+				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','cancel'," + row + ")");
 				cancelButton.setAttribute("id", "cancelButton" + place);
 				cancelButton.innerHTML = "Cancel";
 
@@ -1166,7 +1193,7 @@
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
 			var rowsNumber = table.rows.length;
-			var property, propertyText, condition, conditionText, value, valueText;
+			var property, propertyText, condition, conditionText, value, valueText, selectorProperty, selectorCondition, inputValue;
 
 			if (rowsNumber > 1) {
 				for (var r = 1; r < rowsNumber; r++) {
@@ -1174,11 +1201,30 @@
 						r = row
 					}
 					property = document.getElementById("th_" + nodeId + "_" + (r) + "_property");
-					propertyText = property.innerHTML;
+					if (property.children.length > 0) {
+						selectorProperty = document.getElementById("selectorProperty_tableResult");
+						propertyText = selectorProperty.options[selectorProperty.selectedIndex].value;
+
+					} else {
+						propertyText = property.innerHTML;
+					}
+
 					condition = document.getElementById("th_" + nodeId + "_" + (r) + "_condition");
-					conditionText = condition.getAttribute("value");
+					if (condition.children.length > 0) {
+						selectorCondition = document.getElementById("selectorCondition_tableResult");
+						conditionText = selectorCondition.options[selectorCondition.selectedIndex].value;
+					} else {
+						conditionText = condition.getAttribute("value");
+					}
+
 					value = document.getElementById("th_" + nodeId + "_" + (r) + "_value");
-					valueText = value.innerHTML;
+					if (value.children.length > 0) {
+						inputValue = document.getElementById("textInput_tableResult");
+						valueText = inputValue.value;
+					} else {
+						valueText = value.innerHTML;
+					}
+
 					if (r == 1) {
 						tableResults.push("nothing");
 					} else {
@@ -1233,7 +1279,7 @@
 										optionSelect.innerHTML = "And";
 									}
 									else if (s == 1) {
-										if (button == "edit" || button == "delete" || button == "add") {
+										if (button == "edit" || button == "delete" || button == "add"|| button == "save") {
 											if (tableContentNew[r] == "or") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -1243,7 +1289,7 @@
 										optionSelect.innerHTML = "Or";
 									}
 									else if (s == 2) {
-										if (button == "edit" || button == "delete" || button == "add") {
+										if (button == "edit" || button == "delete" || button == "add"|| button == "save") {
 											if (tableContentNew[r] == "not") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -1263,7 +1309,7 @@
 
 							tableTr.appendChild(tableTh);
 
-							if (button == "delete" || button == "add" || (button == "edit" & contador != row)) {
+							if (button == "delete" || button == "add" || (button == "edit" & contador != row)|| button == "save") {
 								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7... 
 							}
 							else if (button == "edit" & contador == row) {
@@ -1281,7 +1327,7 @@
 							tableTh.setAttribute("id", idCondition);
 							tableTr.appendChild(tableTh);
 
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row)) {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row)|| button == "save") {
 								tableTh.innerHTML = selectConditionContent[tableContentNew[r + 2]];
 								tableTh.setAttribute("value", tableContentNew[r + 2]);
 
@@ -1299,7 +1345,7 @@
 							var idValue = "th_" + nodeId + "_" + (contador) + "_value";
 							tableTr.appendChild(tableTh);
 							tableTh.setAttribute("id", idValue);
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row)) {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row)|| button == "save") {
 
 								tableTh.innerHTML = tableContentNew[(r + 3)];
 							}
@@ -1366,9 +1412,20 @@
 
 		function saveRow(row, nodeId) {
 			event.preventDefault();
+			var tableContent = readTableFilterRow(nodeId, 0);
 			var table = document.getElementById("tableResult");
+			var a = 1;
 			var rowsNumbers = table.rows.length;
+			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
+				table.deleteRow(a);
+				rowsNumbers = table.rows.length;
+			}
+			
+			drawTable(nodeId,tableContent,"save",row, "no");
 
+			//amagar i mostrar botons
+			
+			var rowsNumbers = table.rows.length;
 			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
 			for (var i = 1; i < rowsNumbers; i++) {
 				buttonEdit = document.getElementById("buttonEdit" + i);
@@ -1377,15 +1434,12 @@
 				buttonEdit.classList.remove("hidden");
 				buttonDelete.classList.remove("hidden");
 				buttonInsert.classList.remove("hidden");
-
 				if (row == i) {
 					buttonSave = document.getElementById("buttonSave" + i);
 					buttonSave.classList.add("hidden");
 				}
-
 			}
-
-		var addButton = document.getElementById("addButton");
+			var addButton = document.getElementById("addButton");
 			addButton.disabled = false;
 		}
 
