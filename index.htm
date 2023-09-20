@@ -860,12 +860,13 @@
 			}
 		}
 
-		function closeModalSelect(place) {
+		function closeModalSelect(place, button) {
 			event.preventDefault();
 			var textInput = document.getElementById("textInput" + place);
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
 			var displaySelectButton = document.getElementById("displaySelect" + place);
 			var addButton = document.getElementById("addButton");
+
 			divFilterContainer.classList.add("hidden");
 			divFilterContainer.classList.remove("inblock");
 			displaySelectButton.classList.remove("hidden");
@@ -873,9 +874,12 @@
 			addButton.disabled = false;
 
 			//Falta escriure l'opcio del select
-			var selectorValue = document.getElementById("selectorValue" + place);
-			textInput.value = selectorValue.options[selectorValue.selectedIndex].value;
-			adjustWidth(place);
+			if (button == "ok") {
+				var selectorValue = document.getElementById("selectorValue" + place);
+				textInput.value = selectorValue.options[selectorValue.selectedIndex].value;
+				adjustWidth(place);
+			}
+
 		}
 
 		function changeWriteToSelect(nodeId, place) {  //Que pugui recollir el text del input
@@ -1117,12 +1121,7 @@
 					}
 				}
 
-
 				divFilterContainer.appendChild(select);
-				var buttonOk = document.createElement("button");
-				buttonOk.setAttribute("onclick", "closeModalSelect('" + place + "')");
-				buttonOk.innerHTML = "Ok";
-				divFilterContainer.appendChild(buttonOk);
 
 				var textInput = document.createElement("input");
 				textInput.setAttribute("id", "textInput" + place);
@@ -1132,16 +1131,32 @@
 				});
 
 				placeId.appendChild(textInput);
-
 				if (button == "edit") {
 					textInput.value = editRowContent[3];
 					adjustWidth(place);
 				}
+
+				var okButton = document.createElement("button");
+				okButton.setAttribute("onclick", "closeModalSelect('" + place + "','ok')");
+				okButton.setAttribute("id", "okButton" + place);
+				okButton.innerHTML = "Ok";
+				
+
+				divFilterContainer.appendChild(select);
+				var cancelButton = document.createElement("button");
+				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','cancel')");
+				cancelButton.setAttribute("id", "cancelButton" + place);
+				cancelButton.innerHTML = "Cancel";
+				
+
+
 				var writeButton = document.createElement("button");
 				writeButton.innerHTML = "...";
 				writeButton.setAttribute("id", "displaySelect" + place);
 				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "')");
 				placeId.appendChild(writeButton);
+				divFilterContainer.appendChild(okButton);
+				divFilterContainer.appendChild(cancelButton);
 
 			}
 
