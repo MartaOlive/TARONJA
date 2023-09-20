@@ -930,15 +930,15 @@
 			optionsRow.appendChild(label1);
 
 
-			createSelect(1, "_optionsRow", "optionsRow", nodeId, dataAttributes, "initial");
-			createSelect(2, "_optionsRow", "optionsRow", nodeId, dataAttributes, "initial");
+			createSelect(1, "_optionsRow", "optionsRow", nodeId, dataAttributes, "no", "initial", "no");
+			createSelect(2, "_optionsRow", "optionsRow", nodeId, dataAttributes, "no", "initial", "no");
 
 			var label2 = document.createElement("label");
 			label2.setAttribute("id", "label2");
 			label2.innerHTML = "a Value";
 			optionsRow.appendChild(label2);
 
-			createSelect(3, "_optionsRow", "optionsRow", nodeId, dataAttributes, "initial");
+			createSelect(3, "_optionsRow", "optionsRow", nodeId, dataAttributes, "no", "initial", "no");
 
 			var instructions = document.createElement("div");
 			instructions.setAttribute("id", "instructions");
@@ -1040,24 +1040,31 @@
 
 		}
 
-		function createSelect(number, place, place_Id, nodeId, dataAttributes, button, selected) {
+		function createSelect(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent) {
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data = networkNodes.get(nodeId).STAdata;
+			var dataAttributes2;
+
+			if (dataAttributes === "no") {
+				dataAttributes2 = getDataAttributes(data);
+			} else {
+				dataAttributes2 = dataAttributes;
+			};
+
 			if (number == 1) {
 				select.setAttribute("id", "selectorProperty" + place);
 				select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + place + "')");
 
-				for (let i = 0; i < dataAttributes.length; i++) {// per omplir el de property/property
+				for (let i = 0; i < dataAttributes2.length; i++) {// per omplir el de property/property
 					var option = document.createElement("option");
-					option.setAttribute("value", dataAttributes[i].name);
-					option.innerHTML = dataAttributes[i].name;
-					// if (selected) {
-					// 	if (button == "edit" & dataAttributes[i].name == selected) {
-					// 		option.setAttribute("selected", true);
-					// 	}
-					// }
-
+					option.setAttribute("value", dataAttributes2[i].name);
+					option.innerHTML = dataAttributes2[i].name;
+					if (editRowContent !== 'undefined' & button == "edit") {
+						if (dataAttributes2[i].name == editRowContent[number]) {
+							option.setAttribute("selected", true);
+						}
+					}
 					select.appendChild(option);
 				}
 				placeId.appendChild(select);
@@ -1067,15 +1074,13 @@
 					var opcioCondicio = document.createElement("option");
 					opcioCondicio.setAttribute("value", i);
 					opcioCondicio.innerHTML = selectConditionContent[i];
-					// console.log("selected:  " + selected);
-					// console.log("dataAttributes:  " + dataAttributes[i].name);
-					// if (selected) {
-					// 	console.log(dataAttributes[i].name );
-					// 	 if (button == "edit" & dataAttributes[i].name == selected) {
-					// 	 	option.setAttribute("selected", true);
-					// 	 }
-					// }
 
+					if (editRowContent !== 'undefined' & button == "edit") {
+						console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
+						if (i == editRowContent[2]) {
+							option.setAttribute("selected", true);
+						}
+					}
 					select.appendChild(opcioCondicio);
 				}
 				placeId.appendChild(select);
@@ -1093,23 +1098,26 @@
 				var arrayValors = [];
 
 				for (let index = 0; index < data.length; index++) {
-					valor = data[index][dataAttributes[0].name];
+					if (button == "edit") {
+						valor = data[index][editRowContent[1]];
+					}
+					else {
+						valor = data[index][dataAttributes2[0].name];
+
+					}
+
 					if (!arrayValors.find(element => element == valor)) {
 						var option = document.createElement("option");
 						option.setAttribute("value", valor);
 						option.innerHTML = valor;
-						if (selected) {
-							if (button == "edit" || dataAttributes[i].name == selected) {
-								option.setAttribute("selected", true);
-							}
-						}
-
 						select.appendChild(option);
 						arrayValors.push(valor);
 					} else {
 						console.log("en el else");
 					}
 				}
+
+
 				divFilterContainer.appendChild(select);
 				var buttonOk = document.createElement("button");
 				buttonOk.setAttribute("onclick", "closeModalSelect('" + place + "')");
@@ -1122,8 +1130,13 @@
 				textInput.addEventListener("input", function () {
 					adjustWidth(place)
 				});
+
 				placeId.appendChild(textInput);
 
+				if (button == "edit") {
+					textInput.value = editRowContent[3];
+					adjustWidth(place);
+				}
 				var writeButton = document.createElement("button");
 				writeButton.innerHTML = "...";
 				writeButton.setAttribute("id", "displaySelect" + place);
@@ -1134,7 +1147,7 @@
 
 		}
 
-		function readTableFilterRow(nodeId) {
+		function readTableFilterRow(nodeId, row) {
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
 			var rowsNumber = table.rows.length;
@@ -1142,6 +1155,9 @@
 
 			if (rowsNumber > 1) {
 				for (var r = 1; r < rowsNumber; r++) {
+					if (row !== 0) {
+						r = row
+					}
 					property = document.getElementById("th_" + nodeId + "_" + (r) + "_property");
 					propertyText = property.innerHTML;
 					condition = document.getElementById("th_" + nodeId + "_" + (r) + "_condition");
@@ -1157,18 +1173,21 @@
 					tableResults.push(propertyText);
 					tableResults.push(conditionText);
 					tableResults.push(valueText);
-					console.log("tableResults:  " + tableResults);
-
+					// console.log("tableResults:  " + tableResults);
+					if (row !== 0) {
+						r = rowsNumber;
+					}
 				}
 
 			}
 			return tableResults;
 		}
 
-		function drawTable(nodeId, tableContentNew, button, row) {
+		function drawTable(nodeId, tableContentNew, button, row, editRowContent) {
 			var contador = 1;
 			var table = document.getElementById("tableResult");
-			console.log("el q escriu: " + tableContentNew);
+			// console.log("el q escriu: " + tableContentNew);
+
 
 			if (tableContentNew.length != 0) {
 				for (var r = 0; r < tableContentNew.length; r += 4) { //recorrerem tot l'arrai dels elements guardats, de 4 en 4 (4valors a guardar per linea)
@@ -1235,9 +1254,9 @@
 							else if (button == "edit" & contador == row) {
 								// 	//muntar input/select amb opicio seleccionada
 
-								console.log(tableContentNew[(r + 1)]);
+								// console.log(tableContentNew[(r + 1)]);
 
-								// 	createSelect(1, "_tableResult", idProperty, nodeId, tableContentNew, button, tableContentNew[(r + 1)]);
+								createSelect(1, "_tableResult", idProperty, nodeId, "no", tableContentNew, button, editRowContent);
 
 
 							}
@@ -1255,8 +1274,7 @@
 							else if (button == "edit" & contador == row) {
 								// 	//muntar input/select amb opicio seleccionada
 
-								console.log(tableContentNew[(r + 2)]);
-								//createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, tableContentNew[(r + 2)]);
+								createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, editRowContent);
 
 
 							}
@@ -1265,15 +1283,18 @@
 						else if (a == 3) {
 							var idValue = "th_" + nodeId + "_" + (contador) + "_value";
 							tableTr.appendChild(tableTh);
+							tableTh.setAttribute("id", idValue);
 							if (button === "delete" || button == "add" || (button == "edit" & contador != row)) {
-								tableTh.setAttribute("id", idValue);
+
 								tableTh.innerHTML = tableContentNew[(r + 3)];
 							}
 							else if (button == "edit" & contador == row) {
 								// 	//muntar input/select amb opicio seleccionada
 
 								console.log(tableContentNew[(r + 3)]);
-								//createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, tableContentNew[(r + 2)]);
+
+
+								createSelect(3, "_tableResult", idValue, nodeId, "no", tableContentNew, button, editRowContent);
 
 
 							}
@@ -1346,13 +1367,13 @@
 
 		function editRow(row, nodeId) {
 			event.preventDefault();
-			var tableContent = readTableFilterRow(nodeId);
-			console.log("edit: " + tableContent);
+			var tableContent = readTableFilterRow(nodeId, 0);
+			// console.log("edit: " + tableContent);
 
 			//Agafar les dades de la fila
 			// console.log("row:  " + row);
-			// var rowInfo = readTableFilterRow(nodeId, row);
-			// console.log("rowInfo: " + rowInfo);
+			var editRowContent = readTableFilterRow(nodeId, row);
+			console.log("editRowContent: " + editRowContent);
 
 			//borrar taula
 			var table = document.getElementById("tableResult");
@@ -1363,7 +1384,7 @@
 				rowsNumbers2 = table.rows.length;
 			}
 			//pintar la taula canviat els valors pels selects i tenint la seleccio del select posada al input
-			drawTable(nodeId, tableContent, "edit", row);
+			drawTable(nodeId, tableContent, "edit", row, editRowContent);
 
 
 			//desabilitar el add
