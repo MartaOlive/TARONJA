@@ -1309,30 +1309,30 @@
 
 							tableTr.appendChild(tableTh);
 
-							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save") {
+							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save"||(button=="insert"& tableContentNew[(r + 1)]!="insertSelect")) {
 								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7... 
 							}
-							else if (button == "edit" & contador == row) {
+							else if ((button == "edit" & contador == row)||(button=="insert"& tableContentNew[(r + 1)]=="insertSelect")) {
 								// 	//muntar input/select amb opicio seleccionada
 
 								// console.log(tableContentNew[(r + 1)]);
-
-								createSelect(1, "_tableResult", idProperty, nodeId, "no", tableContentNew, button, editRowContent);
-
-
+							
+									createSelect(1, "_tableResult", idProperty, nodeId, "no", tableContentNew, button, editRowContent);
+														
 							}
+
 						}
 						else if (a == 2) {
 							var idCondition = "th_" + nodeId + "_" + (contador) + "_condition";
 							tableTh.setAttribute("id", idCondition);
 							tableTr.appendChild(tableTh);
 
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save") {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save"||(button=="insert"& tableContentNew[(r + 1)]!="insertSelect")) {
 								tableTh.innerHTML = selectConditionContent[tableContentNew[r + 2]];
 								tableTh.setAttribute("value", tableContentNew[r + 2]);
 
 							}
-							else if (button == "edit" & contador == row) {
+							else if ((button == "edit" & contador == row)||(button=="insert"& tableContentNew[(r + 1)]=="insertSelect")) {
 								// 	//muntar input/select amb opicio seleccionada
 
 								createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, editRowContent);
@@ -1345,16 +1345,13 @@
 							var idValue = "th_" + nodeId + "_" + (contador) + "_value";
 							tableTr.appendChild(tableTh);
 							tableTh.setAttribute("id", idValue);
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save") {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save"||(button=="insert"& tableContentNew[(r + 1)]!="insertSelect")) {
 
 								tableTh.innerHTML = tableContentNew[(r + 3)];
 							}
-							else if (button == "edit" & contador == row) {
+							else if ((button == "edit" & contador == row)||(button=="insert"& tableContentNew[(r + 1)]=="insertSelect")) {
 								// 	//muntar input/select amb opicio seleccionada
-
 								console.log(tableContentNew[(r + 3)]);
-
-
 								createSelect(3, "_tableResult", idValue, nodeId, "no", tableContentNew, button, editRowContent);
 
 
@@ -1411,9 +1408,16 @@
 			console.log(tableContent);
 			tableContent.splice(position, 0, "insertSelect", "insertSelect", "insertSelect", "insertSelect");
 			console.log(tableContent);
+			//borrar taula
+			var table = document.getElementById("tableResult");
+			var a = 1;
+			var rowsNumbers = table.rows.length;
+			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
+				table.deleteRow(a);
+				rowsNumbers = table.rows.length;
+			}
 			//drawTable(....)
-			
-			//
+			drawTable(nodeId, tableContent, "insert", row, "no");
 			//canviar hiddens dels botons
 		}
 
