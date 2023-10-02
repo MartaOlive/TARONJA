@@ -874,10 +874,10 @@
 			textInput.classList.remove("hidden");
 
 			addButton.disabled = false;
-			if (place!="_optionsRow"){
-					saveButton.disabled = false;
+			if (place != "_optionsRow") {
+				saveButton.disabled = false;
 			}
-		
+
 
 			//Falta escriure l'opcio del select
 			if (button == "ok") {
@@ -1068,11 +1068,11 @@
 			var select = document.createElement("select");
 			var data = networkNodes.get(nodeId).STAdata;
 			var dataAttributes2;
-			if (button != "initial"){
+			if (button != "initial") {
 				var table = document.getElementById("tableResult");
-			var rowsNumbers = table.rows.length;
+				var rowsNumbers = table.rows.length;
 			}
-			
+
 
 			if (dataAttributes === "no") {
 				dataAttributes2 = getDataAttributes(data);
@@ -1279,7 +1279,7 @@
 										optionSelect.innerHTML = "And";
 									}
 									else if (s == 1) {
-										if (button == "edit" || button == "delete" || button == "add"|| button == "save") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save") {
 											if (tableContentNew[r] == "or") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -1289,7 +1289,7 @@
 										optionSelect.innerHTML = "Or";
 									}
 									else if (s == 2) {
-										if (button == "edit" || button == "delete" || button == "add"|| button == "save") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save") {
 											if (tableContentNew[r] == "not") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -1309,7 +1309,7 @@
 
 							tableTr.appendChild(tableTh);
 
-							if (button == "delete" || button == "add" || (button == "edit" & contador != row)|| button == "save") {
+							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save") {
 								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7... 
 							}
 							else if (button == "edit" & contador == row) {
@@ -1327,7 +1327,7 @@
 							tableTh.setAttribute("id", idCondition);
 							tableTr.appendChild(tableTh);
 
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row)|| button == "save") {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save") {
 								tableTh.innerHTML = selectConditionContent[tableContentNew[r + 2]];
 								tableTh.setAttribute("value", tableContentNew[r + 2]);
 
@@ -1345,7 +1345,7 @@
 							var idValue = "th_" + nodeId + "_" + (contador) + "_value";
 							tableTr.appendChild(tableTh);
 							tableTh.setAttribute("id", idValue);
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row)|| button == "save") {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save") {
 
 								tableTh.innerHTML = tableContentNew[(r + 3)];
 							}
@@ -1378,7 +1378,7 @@
 							var buttonInsert = document.createElement("button");
 							buttonInsert.setAttribute("value", contador);
 							buttonInsert.setAttribute("id", "buttonInsert" + contador);
-							buttonInsert.setAttribute("onclick", "deleteRow(" + (contador) + ",'" + nodeId + "')");
+							buttonInsert.setAttribute("onclick", "insertRow(" + (contador) + ",'" + nodeId + "')");
 							buttonInsert.innerHTML = "Insert ";
 							tableTh.appendChild(buttonInsert);
 							var buttonSave = document.createElement("button");
@@ -1400,12 +1400,19 @@
 
 
 		}
-		function insertRow() {
+		function insertRow(row, nodeId) {
 			event.preventDefault();
+			var tableContent = readTableFilterRow(nodeId, 0);
 			//agafar el contingut, i afegir " " en el lloc on toqui.PEr ccrear una fila buida on somplirà amb selects
-
+			var row2=parseInt(row);
+			console.log(typeof row2);
+			var position = (row2 - 1) * 4;
+			console.log(position);
+			console.log(tableContent);
+			tableContent.splice(position, 0, "insertSelect", "insertSelect", "insertSelect", "insertSelect");
+			console.log(tableContent);
 			//drawTable(....)
-
+			
 			//
 			//canviar hiddens dels botons
 		}
@@ -1420,11 +1427,11 @@
 				table.deleteRow(a);
 				rowsNumbers = table.rows.length;
 			}
-			
-			drawTable(nodeId,tableContent,"save",row, "no");
+
+			drawTable(nodeId, tableContent, "save", row, "no");
 
 			//amagar i mostrar botons
-			
+
 			var rowsNumbers = table.rows.length;
 			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
 			for (var i = 1; i < rowsNumbers; i++) {
