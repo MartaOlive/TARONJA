@@ -1085,15 +1085,17 @@
 				select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + place + "')");
 
 				for (let i = 0; i < dataAttributes2.length; i++) {// per omplir el de property/property
-					var option = document.createElement("option");
-					option.setAttribute("value", dataAttributes2[i].name);
-					option.innerHTML = dataAttributes2[i].name;
-					if (editRowContent !== 'undefined' & button == "edit") {
-						if (dataAttributes2[i].name == editRowContent[number]) {
-							option.setAttribute("selected", true);
+					if (dataAttributes2[i].name != "@iot.selfLink") {
+						var option = document.createElement("option");
+						option.setAttribute("value", dataAttributes2[i].name);
+						option.innerHTML = dataAttributes2[i].name;
+						if (editRowContent !== 'undefined' & button == "edit") {
+							if (dataAttributes2[i].name == editRowContent[number]) {
+								option.setAttribute("selected", true);
+							}
 						}
+						select.appendChild(option);
 					}
-					select.appendChild(option);
 				}
 				placeId.appendChild(select);
 			} else if (number == 2) {
@@ -1384,8 +1386,18 @@
 							buttonSave.setAttribute("id", "buttonSave" + contador);
 							buttonSave.setAttribute("onclick", "saveRow(" + (contador) + ",'" + nodeId + "')");
 							buttonSave.innerHTML = "Save ";
-
 							tableTh.appendChild(buttonSave);
+							var buttonUp = document.createElement("button");
+							buttonUp.setAttribute("id", "buttonUp" + contador);
+							buttonUp.setAttribute("onclick", "movingRow(" + (contador) + ",'" + nodeId + "','up')");
+							buttonUp.innerHTML = "&#9650;";
+							tableTh.appendChild(buttonUp);
+							var buttonDown = document.createElement("button");
+							buttonDown.setAttribute("id", "buttonDown" + contador);
+							buttonDown.setAttribute("onclick", "movingRow(" + (contador) + ",'" + nodeId + "','down')");
+							buttonDown.innerHTML = "&#9660;";
+							tableTh.appendChild(buttonDown);
+							
 
 						}
 
@@ -1424,15 +1436,20 @@
 			//desabilitar el add
 			var addButton = document.getElementById("addButton");
 			addButton.disabled = true;
-			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
+			var buttonEdit, buttonDelete, buttonInsert, buttonSave, buttonUp,buttonDown;
 
 			for (var i = 1; i < rowsNumbers; i++) {
 				buttonEdit = document.getElementById("buttonEdit" + i);
 				buttonDelete = document.getElementById("buttonDelete" + i);
 				buttonInsert = document.getElementById("buttonInsert" + i);
+				buttonUp = document.getElementById("buttonUp" + i);
+				buttonDown = document.getElementById("buttonDown" + i);
+
 				buttonEdit.classList.add("hidden");
 				buttonDelete.classList.add("hidden");
 				buttonInsert.classList.add("hidden");
+				buttonUp.classList.add("hidden");
+				buttonDown.classList.add("hidden");
 
 				if (row == i) {
 					buttonSave = document.getElementById("buttonSave" + i);
@@ -1458,18 +1475,19 @@
 			//amagar i mostrar botons
 
 			var rowsNumbers = table.rows.length;
-			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
+			var buttonEdit, buttonDelete, buttonInsert, buttonSave, buttonUp, buttonDown;
 			for (var i = 1; i < rowsNumbers; i++) {
 				buttonEdit = document.getElementById("buttonEdit" + i);
 				buttonDelete = document.getElementById("buttonDelete" + i);
 				buttonInsert = document.getElementById("buttonInsert" + i);
+				buttonUp = document.getElementById("buttonUp" + i);
+				buttonDown = document.getElementById("buttonDown" + i);
+
 				buttonEdit.classList.remove("hidden");
 				buttonDelete.classList.remove("hidden");
 				buttonInsert.classList.remove("hidden");
-				if (row == i) {
-					buttonSave = document.getElementById("buttonSave" + i);
-					buttonSave.classList.add("hidden");
-				}
+				buttonUp.classList.remove("hidden");
+				buttonDown.classList.remove("hidden");
 			}
 			var addButton = document.getElementById("addButton");
 			addButton.disabled = false;
@@ -1505,15 +1523,20 @@
 
 			//amagar els botons de edit,Insert, mostrar botó save i mantenir suprimir
 
-			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
-
+			var buttonEdit, buttonDelete, buttonInsert, buttonSave, buttonUp, buttonDown;
 			for (var i = 1; i < rowsNumbers; i++) {
 				buttonEdit = document.getElementById("buttonEdit" + i);
 				buttonDelete = document.getElementById("buttonDelete" + i);
 				buttonInsert = document.getElementById("buttonInsert" + i);
+				buttonUp = document.getElementById("buttonUp" + i);
+				buttonDown = document.getElementById("buttonDown" + i);
+
 				buttonEdit.classList.add("hidden");
 				buttonDelete.classList.add("hidden");
 				buttonInsert.classList.add("hidden");
+				buttonUp.classList.add("hidden");
+				buttonDown.classList.add("hidden");
+			
 
 				if (row == i) {
 					buttonSave = document.getElementById("buttonSave" + i);
