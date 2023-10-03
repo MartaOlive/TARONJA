@@ -1190,6 +1190,52 @@
 			}
 
 		}
+		function movingRow(row, nodeId, arrow) {
+			event.preventDefault();
+			var tableContent = readTableFilterRow(nodeId, 0);
+
+			var row2 = parseInt(row);
+			console.log(typeof row2);
+			var position = (row2 - 1) * 4;
+
+			//Copiar la fila
+			var rowValuesToKeep = []
+			
+			for (var i = 0; i < tableContent.length; i += 4) {
+				if (i == position) {
+					rowValuesToKeep.push(tableContent[i]);
+					rowValuesToKeep.push(tableContent[i + 1]);
+					rowValuesToKeep.push(tableContent[i + 2]);
+					rowValuesToKeep.push(tableContent[i + 3]);
+				}
+			}
+			//console.log("fila que s'ha de moure    " + rowValuesToKeep);
+
+			tableContent.splice((position), 4); //treure els valors
+			console.log("despres del splice    " + tableContent);
+			
+			if (arrow == "up") {
+				if (position - 4 < 0) {
+					position = 0;
+				}else{
+					position=position-4;
+				}
+				console.log("position:  " + position);
+				tableContent.splice((position), 0, ...rowValuesToKeep); //funciona
+			} else if (arrow == "down") {
+				if(position+4 ==tableContent.length){
+					position=tableContent.length-4;
+				}else {
+					position=position+4;
+				}
+				
+				console.log("position:  " + position);
+				tableContent.splice((position), 0, ...rowValuesToKeep);
+			}
+
+			console.log(tableContent);
+		}
+
 
 		function readTableFilterRow(nodeId, row) {
 			var table = document.getElementById("tableResult");
@@ -1245,6 +1291,7 @@
 			}
 			return tableResults;
 		}
+
 
 		function drawTable(nodeId, tableContentNew, button, row, editRowContent) {
 			var contador = 1;
@@ -1397,7 +1444,7 @@
 							buttonDown.setAttribute("onclick", "movingRow(" + (contador) + ",'" + nodeId + "','down')");
 							buttonDown.innerHTML = "&#9660;";
 							tableTh.appendChild(buttonDown);
-							
+
 
 						}
 
@@ -1436,7 +1483,7 @@
 			//desabilitar el add
 			var addButton = document.getElementById("addButton");
 			addButton.disabled = true;
-			var buttonEdit, buttonDelete, buttonInsert, buttonSave, buttonUp,buttonDown;
+			var buttonEdit, buttonDelete, buttonInsert, buttonSave, buttonUp, buttonDown;
 
 			for (var i = 1; i < rowsNumbers; i++) {
 				buttonEdit = document.getElementById("buttonEdit" + i);
@@ -1536,7 +1583,7 @@
 				buttonInsert.classList.add("hidden");
 				buttonUp.classList.add("hidden");
 				buttonDown.classList.add("hidden");
-			
+
 
 				if (row == i) {
 					buttonSave = document.getElementById("buttonSave" + i);
@@ -1549,10 +1596,8 @@
 
 		function deleteRow(row, nodeId) {
 			event.preventDefault();
-			console.log(row);
-
 			var tableContent = readTableFilterRow(nodeId, 0); //agafar els valors de la taula
-			console.log(tableContent);
+
 			var table = document.getElementById("tableResult");
 			var a = 1;
 			var rowsNumbers2 = table.rows.length;
@@ -1585,8 +1630,6 @@
 			drawTable(nodeId, tableContentNew, "delete");
 
 
-			console.log(tableContent);
-			console.log(tableContentNew);
 
 		}
 
