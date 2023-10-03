@@ -1080,25 +1080,33 @@
 				dataAttributes2 = dataAttributes;
 			};
 
+			//dataAttributes3
+			var dataAttributes3=dataAttributes2.filter((element)=>element.name!="@iot.selfLink"
+			); 
+			console.log(dataAttributes3);
+
+
+
 			if (number == 1) {
 				select.setAttribute("id", "selectorProperty" + place);
 				select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + place + "')");
 
-				for (let i = 0; i < dataAttributes2.length; i++) {// per omplir el de property/property
-					if (dataAttributes2[i].name != "@iot.selfLink") {
+				for (let i = 0; i < dataAttributes3.length; i++) {// per omplir el de property/property
+					//if (dataAttributes3[i].name != "@iot.selfLink") {
 						var option = document.createElement("option");
-						option.setAttribute("value", dataAttributes2[i].name);
-						option.innerHTML = dataAttributes2[i].name;
+						option.setAttribute("value", dataAttributes3[i].name);
+						option.innerHTML = dataAttributes3[i].name;
 						if (editRowContent !== 'undefined' & button == "edit") {
-							if (dataAttributes2[i].name == editRowContent[number]) {
+							if (dataAttributes3[i].name == editRowContent[number]) {
 								option.setAttribute("selected", true);
 							}
 						}
 						select.appendChild(option);
-					}
+					//}
 				}
 				placeId.appendChild(select);
-			} else if (number == 2) {
+			} 
+			else if (number == 2) {
 				select.setAttribute("id", "selectorCondition" + place);
 				for (var i = 0; i < selectConditionContent.length; i++) { //crear les opcions del selector de condició
 					var opcioCondicio = document.createElement("option");
@@ -1115,7 +1123,8 @@
 				}
 				placeId.appendChild(select);
 
-			} else if (number == 3) { //la caixa de select, ok i butó de canvi
+			}
+			 else if (number == 3) { //la caixa de select, ok i butó de canvi
 				var divFilterContainer = document.createElement("div");
 				divFilterContainer.setAttribute("id", "divFilterContainer" + place);
 				divFilterContainer.setAttribute("class", "hidden");
@@ -1132,7 +1141,7 @@
 						valor = data[index][editRowContent[1]];
 					}
 					else {
-						valor = data[index][dataAttributes2[0].name];
+						valor = data[index][dataAttributes3[0].name];
 
 					}
 
