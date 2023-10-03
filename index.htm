@@ -1223,8 +1223,8 @@
 				console.log("position:  " + position);
 				tableContent.splice((position), 0, ...rowValuesToKeep); //funciona
 			} else if (arrow == "down") {
-				if(position+4 ==tableContent.length){
-					position=tableContent.length-4;
+				if(position+4 >tableContent.length){
+					position=position;
 				}else {
 					position=position+4;
 				}
@@ -1234,6 +1234,16 @@
 			}
 
 			console.log(tableContent);
+			//borrar taula
+			var table = document.getElementById("tableResult");
+			var a = 1;
+			var rowsNumbers = table.rows.length;
+			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
+				table.deleteRow(a);
+				rowsNumbers = table.rows.length;
+			}
+			//dibuixar taula
+			drawTable(nodeId, tableContent, "arrow", row,"no");
 		}
 
 
@@ -1358,7 +1368,7 @@
 
 							tableTr.appendChild(tableTh);
 
-							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")) {
+							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")||button=="arrow") {
 								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7... 
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
@@ -1376,7 +1386,7 @@
 							tableTh.setAttribute("id", idCondition);
 							tableTr.appendChild(tableTh);
 
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")) {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")||button=="arrow") {
 								tableTh.innerHTML = selectConditionContent[tableContentNew[r + 2]];
 								tableTh.setAttribute("value", tableContentNew[r + 2]);
 
@@ -1394,7 +1404,7 @@
 							var idValue = "th_" + nodeId + "_" + (contador) + "_value";
 							tableTr.appendChild(tableTh);
 							tableTh.setAttribute("id", idValue);
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")) {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")||button=="arrow") {
 
 								tableTh.innerHTML = tableContentNew[(r + 3)];
 							}
