@@ -845,18 +845,47 @@
 					selectedElement.appendChild(opcio);
 					arrayValors.push(valor);
 				} else {
-					console.log("en el else");
+					// console.log("en el else");
 				}
 			}
 
-			var divIsAnObject = document.getElementById("divIsAnObject")
+			var divIsAnObject = document.getElementById("divIsAnObject");
+			var addButton = document.getElementById("addButton");
+			var table = document.getElementById("tableResult");
+			var rowsNumbers = table.rows.length;
+			var buttonSave;
+
 			if (isAnObject === "yes") {
 				selectedElement.setAttribute("class", "objectInSelect");
 				divIsAnObject.classList.remove("hidden");
+				addButton.disabled = true;
+
+
+				for (var i = 1; i < rowsNumbers; i++) {
+
+					// if (row == i) {
+					// 	buttonSave = document.getElementById("buttonSave" + i);
+					// 	if (!buttonSave.contains("hidden")) {
+					// 		buttonSave.disabled = true;
+					// 	};
+					// }
+					
+				}
+
+
 
 			} else {
 				selectedElement.classList.remove("objectInSelect");
 				divIsAnObject.classList.add("hidden");
+				addButton.disabled = false;
+				for (var i = 1; i < rowsNumbers; i++) {
+					// if (row == i) {
+					// 	buttonSave = document.getElementById("buttonSave" + i);
+					// 	if (!buttonSave.contains("hidden")) {
+					// 		buttonSave.disabled = false;
+					// 	};
+					// }
+				}
 			}
 		}
 
@@ -975,6 +1004,11 @@
 			addButton.innerHTML = "add";
 			optionsRow.appendChild(addButton);
 
+			var divResult = document.createElement("div");
+			divResult.setAttribute("id", "divResult");
+			divResult.setAttribute("class", "divResultBox")
+			divResult.innerHTML = "These are your values selected to filter ";
+			divFilterBox.appendChild(divResult);
 
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
 			divIsAnObject.setAttribute("id", "divIsAnObject");
@@ -992,11 +1026,7 @@
 			divFilterBox.appendChild(divIsAnObject);
 
 
-			var divResult = document.createElement("div");
-			divResult.setAttribute("id", "divResult");
-			divResult.setAttribute("class", "divResultBox")
-			divResult.innerHTML = "These are your values selected to filter ";
-			divFilterBox.appendChild(divResult);
+
 
 			var table = document.createElement("table");
 			table.setAttribute("id", "tableResult");
@@ -1081,9 +1111,9 @@
 			};
 
 			//dataAttributes3
-			var dataAttributes3=dataAttributes2.filter((element)=>element.name!="@iot.selfLink"
-			); 
-			console.log(dataAttributes3);
+			var dataAttributes3 = dataAttributes2.filter((element) => element.name != "@iot.selfLink"
+			);
+			// console.log(dataAttributes3);
 
 
 
@@ -1093,19 +1123,19 @@
 
 				for (let i = 0; i < dataAttributes3.length; i++) {// per omplir el de property/property
 					//if (dataAttributes3[i].name != "@iot.selfLink") {
-						var option = document.createElement("option");
-						option.setAttribute("value", dataAttributes3[i].name);
-						option.innerHTML = dataAttributes3[i].name;
-						if (editRowContent !== 'undefined' & button == "edit") {
-							if (dataAttributes3[i].name == editRowContent[number]) {
-								option.setAttribute("selected", true);
-							}
+					var option = document.createElement("option");
+					option.setAttribute("value", dataAttributes3[i].name);
+					option.innerHTML = dataAttributes3[i].name;
+					if (editRowContent !== 'undefined' & button == "edit") {
+						if (dataAttributes3[i].name == editRowContent[number]) {
+							option.setAttribute("selected", true);
 						}
-						select.appendChild(option);
+					}
+					select.appendChild(option);
 					//}
 				}
 				placeId.appendChild(select);
-			} 
+			}
 			else if (number == 2) {
 				select.setAttribute("id", "selectorCondition" + place);
 				for (var i = 0; i < selectConditionContent.length; i++) { //crear les opcions del selector de condició
@@ -1124,7 +1154,7 @@
 				placeId.appendChild(select);
 
 			}
-			 else if (number == 3) { //la caixa de select, ok i butó de canvi
+			else if (number == 3) { //la caixa de select, ok i butó de canvi
 				var divFilterContainer = document.createElement("div");
 				divFilterContainer.setAttribute("id", "divFilterContainer" + place);
 				divFilterContainer.setAttribute("class", "hidden");
@@ -1209,7 +1239,7 @@
 
 			//Copiar la fila
 			var rowValuesToKeep = []
-			
+
 			for (var i = 0; i < tableContent.length; i += 4) {
 				if (i == position) {
 					rowValuesToKeep.push(tableContent[i]);
@@ -1222,22 +1252,22 @@
 
 			tableContent.splice((position), 4); //treure els valors
 			console.log("despres del splice    " + tableContent);
-			
+
 			if (arrow == "up") {
 				if (position - 4 < 0) {
 					position = 0;
-				}else{
-					position=position-4;
+				} else {
+					position = position - 4;
 				}
 				console.log("position:  " + position);
 				tableContent.splice((position), 0, ...rowValuesToKeep); //funciona
 			} else if (arrow == "down") {
-				if(position+4 >tableContent.length){
-					position=position;
-				}else {
-					position=position+4;
+				if (position + 4 > tableContent.length) {
+					position = position;
+				} else {
+					position = position + 4;
 				}
-				
+
 				console.log("position:  " + position);
 				tableContent.splice((position), 0, ...rowValuesToKeep);
 			}
@@ -1252,7 +1282,7 @@
 				rowsNumbers = table.rows.length;
 			}
 			//dibuixar taula
-			drawTable(nodeId, tableContent, "arrow", row,"no");
+			drawTable(nodeId, tableContent, "arrow", row, "no");
 		}
 
 
@@ -1377,7 +1407,7 @@
 
 							tableTr.appendChild(tableTh);
 
-							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")||button=="arrow") {
+							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
 								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7... 
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
@@ -1395,7 +1425,7 @@
 							tableTh.setAttribute("id", idCondition);
 							tableTr.appendChild(tableTh);
 
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")||button=="arrow") {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
 								tableTh.innerHTML = selectConditionContent[tableContentNew[r + 2]];
 								tableTh.setAttribute("value", tableContentNew[r + 2]);
 
@@ -1413,7 +1443,7 @@
 							var idValue = "th_" + nodeId + "_" + (contador) + "_value";
 							tableTr.appendChild(tableTh);
 							tableTh.setAttribute("id", idValue);
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")||button=="arrow") {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
 
 								tableTh.innerHTML = tableContentNew[(r + 3)];
 							}
