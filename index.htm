@@ -1732,17 +1732,11 @@
 			tableContent.push(selectorProperty.options[selectorProperty.selectedIndex].value);
 			tableContent.push(selectorCondition.options[selectorCondition.selectedIndex].value);
 			tableContent.push(textInput.value);
-			// console.log("despres d'afegir: " + tableContent);
+			//console.log("despres d'afegir: " + tableContent);
 
 
 			//borrar taula
-			var a = 1;
-			var rowsNumbers2 = table.rows.length;
-
-			while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
-				table.deleteRow(a);
-				rowsNumbers2 = table.rows.length;
-			}
+			eraseTable();
 			//pintar taula 
 			drawTable(nodeId, tableContent, "add");
 
@@ -1761,16 +1755,12 @@
 
 			if (dataAttributes === "no") {
 				dataAttributes2 = getDataAttributes(data);
-				console.log("aqui");
 			} else {
-				console.log(dataAttributes);
 				dataAttributes2 = dataAttributes;
-				console.log("aqui2");
 			};
 			
 
 			var dataAttributesKeys = Object.keys(dataAttributes2); //Crear un array amb les keys de l'objecte
-			console.log(dataAttributesKeys);
 			var dataAttributesFiltered = dataAttributesKeys.filter((element) => 
 				element != "@iot.selfLink"
 			);
@@ -1930,13 +1920,7 @@
 
 			console.log(tableContent);
 			//borrar taula
-			var table = document.getElementById("tableResult");
-			var a = 1;
-			var rowsNumbers = table.rows.length;
-			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
-				table.deleteRow(a);
-				rowsNumbers = table.rows.length;
-			}
+			eraseTable();
 			//dibuixar taula
 			drawTable(nodeId, tableContent, "arrow", row, "no");
 		}
@@ -2024,7 +2008,7 @@
 								for (var s = 0; s < 3; s++) { //omplim select (3 opcions: and, or, not) FUNCIONA BÉ AMB ADD
 									var optionSelect = document.createElement("option");
 									if (s == 0) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save") { //no insert 
+										if (button == "edit" || button == "delete" || button == "add" || button == "save"||button=="insert"||button=="arrow") { //no insert 
 											if (tableContentNew[r] == "and") { //r= 0,3,7,11...
 												optionSelect.setAttribute("selected", true);
 											}
@@ -2033,7 +2017,7 @@
 										optionSelect.innerHTML = "And";
 									}
 									else if (s == 1) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save"||button=="insert"||button=="arrow") {
 											if (tableContentNew[r] == "or") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -2043,13 +2027,13 @@
 										optionSelect.innerHTML = "Or";
 									}
 									else if (s == 2) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save"||button=="insert"||button=="arrow") {
 											if (tableContentNew[r] == "not") {
 												optionSelect.setAttribute("selected", true);
 											}
-											optionSelect.setAttribute("value", "not");
-											optionSelect.innerHTML = "Not";
 										}
+										optionSelect.setAttribute("value", "not");
+											optionSelect.innerHTML = "Not";
 									}
 
 									selectAndOr.appendChild(optionSelect);
@@ -2161,18 +2145,8 @@
 
 
 		}
-		function insertRow(row, nodeId) {
-			event.preventDefault();
-			var tableContent = readTableFilterRow(nodeId, 0);
-			//agafar el contingut, i afegir " " en el lloc on toqui.PEr ccrear una fila buida on somplirà amb selects
-			var row2 = parseInt(row);
-			console.log(typeof row2);
-			var position = (row2 - 1) * 4;
-			console.log(position);
-			console.log(tableContent);
-			tableContent.splice(position, 0, "insertSelect", "insertSelect", "insertSelect", "insertSelect");
-			console.log(tableContent);
-			//borrar taula
+
+		function eraseTable(){
 			var table = document.getElementById("tableResult");
 			var a = 1;
 			var rowsNumbers = table.rows.length;
@@ -2180,11 +2154,25 @@
 				table.deleteRow(a);
 				rowsNumbers = table.rows.length;
 			}
+		}
+		function insertRow(row, nodeId) {
+			event.preventDefault();
+			var tableContent = readTableFilterRow(nodeId, 0);//agafar el contingut, i afegir " " en el lloc on toqui.Per ccrear una fila buida on somplirà amb selects
+			
+			var row2 = parseInt(row);
+			var position = (row2 - 1) * 4;
+
+			tableContent.splice(position, 0, "insertSelect", "insertSelect", "insertSelect", "insertSelect");
+			console.log(tableContent);
+			//borrar taula
+			eraseTable();
+
 			//drawTable(....)
 			drawTable(nodeId, tableContent, "insert", row, "no");
 
 			//amagar els botons de edit,Insert, mostrar botó save i mantenir suprimir
-			rowsNumbers = table.rows.length;
+			var table = document.getElementById("tableResult");
+			var rowsNumbers = table.rows.length;
 			//desabilitar el add
 			var addButton = document.getElementById("addButton");
 			addButton.disabled = true;
@@ -2257,17 +2245,11 @@
 			console.log("editRowContent: " + editRowContent);
 
 			//borrar taula
-			var table = document.getElementById("tableResult");
-			var a = 1;
-			var rowsNumbers = table.rows.length;
-			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
-				table.deleteRow(a);
-				rowsNumbers = table.rows.length;
-			}
+			eraseTable();
 			//pintar la taula canviat els valors pels selects i tenint la seleccio del select posada al input
 			drawTable(nodeId, tableContent, "edit", row, editRowContent);
-
-			rowsNumbers = table.rows.length;
+			var table = document.getElementById("tableResult");
+			var rowsNumbers = table.rows.length;
 
 			//desabilitar el add
 			var addButton = document.getElementById("addButton");
