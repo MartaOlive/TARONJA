@@ -1546,16 +1546,46 @@
 
 		function closeModalSelect(place, button, row, selector) {
 			event.preventDefault();
-			var textInput = document.getElementById("textInput" + place);
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
-			var displaySelectButton = document.getElementById("displaySelect" + place);
+			var textInput = document.getElementById("textInput" + place);
+			var displaySelect = document.getElementById("displaySelect" + place);
+
+			var divFilterContainer2 = document.getElementById("divFilterContainer2" + place);
+			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
+			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
+			var displaySelectInterval = document.getElementById("displaySelectInterval" + place);
+
 			var addButton = document.getElementById("addButton");
 			var saveButton = document.getElementById("buttonSave" + row);
 
-			divFilterContainer.classList.add("hidden");
-			divFilterContainer.classList.remove("inblock");
-			displaySelectButton.classList.remove("hidden");
-			textInput.classList.remove("hidden");
+			// divFilterContainer.classList.add("hidden");
+			// divFilterContainer.classList.remove("inblock");
+			// displaySelectButton.classList.remove("hidden");
+			// textInput.classList.remove("hidden");
+
+			//Si ve del senzill. Amagar el container i mostrar el text i el display
+			if (divFilterContainer.classList.contains("hidden")==false) {
+				divFilterContainer.classList.remove("inblock");
+				divFilterContainer.classList.add("hidden");
+				textInput.classList.add("inblock");
+				textInput.classList.remove("hidden");
+				displaySelect.classList.add("inblock");
+				displaySelect.classList.remove("hidden");
+			} else {//Si ve del Interval. Amagar el container i mostrar els textos i el display
+				divFilterContainer2.classList.remove("inblock");
+				divFilterContainer2.classList.add("hidden");
+				textInputInterval1.classList.add("inblock");
+				textInputInterval1.classList.remove("hidden");
+				textInputInterval2.classList.add("inblock");
+				textInputInterval2.classList.remove("hidden");
+				displaySelectInterval.classList.add("inblock");
+				displaySelectInterval.classList.remove("hidden");
+			}
+
+
+
+
+
 
 			addButton.disabled = false;
 			if (place != "_optionsRow") {
@@ -1575,15 +1605,41 @@
 
 		function changeWriteToSelect(nodeId, place, selector) {  //Que pugui recollir el text del input
 			event.preventDefault();
-			var textInput = document.getElementById("textInput" + place);
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
-			var displaySelectButton = document.getElementById("displaySelect" + place);
+			var textInput = document.getElementById("textInput" + place);
+			var displaySelect = document.getElementById("displaySelect" + place);
+
+			var divFilterContainer2 = document.getElementById("divFilterContainer2" + place);
+			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
+			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
+			var displaySelectInterval = document.getElementById("displaySelectInterval" + place);
+
 			var addButton = document.getElementById("addButton");
 
-			textInput.classList.add("hidden");
-			divFilterContainer.classList.remove("hidden");
-			divFilterContainer.classList.add("inblock");
-			displaySelectButton.classList.add("hidden");
+			//quin text està obert?
+			if (textInput.classList.contains("hidden")) { //està el interval
+				textInputInterval1.classList.remove("inblock");
+				textInputInterval2.classList.remove("inblock");
+				displaySelectInterval.classList.remove("inblock");
+				textInputInterval1.classList.add("hidden");
+				textInputInterval2.classList.add("hidden");
+				displaySelectInterval.classList.add("hidden");
+
+				divFilterContainer2.classList.remove("hidden");
+				divFilterContainer2.classList.add("inblock");
+
+			} else {//està el senzill
+				//amagar el text que toqui i els display i mostrar els divContainer que toca 
+				textInput.classList.remove("inblock");
+				displaySelect.classList.remove("inblock");
+				textInput.classList.add("hidden");
+				displaySelect.classList.add("hidden");
+				divFilterContainer.classList.remove("hidden");
+				divFilterContainer.classList.add("inblock");
+			}
+
+
+
 			addButton.disabled = true;
 
 			var table = document.getElementById("tableResult");
@@ -1802,18 +1858,6 @@
 				} //Si es mostra el FilterCOntains, no tocar 
 
 
-				// divFilterContainer2.classList.remove("hidden");
-				// textInputInterval1.classList.remove("hidden");
-				// textInputInterval2.classList.remove("hidden");
-				// displaySelectInterval.classList.remove("hidden");
-				// divFilterContainer2.classList.add("inblock");
-				// textInputInterval1.classList.add("inblock");
-				// textInputInterval2.classList.add("inblock");
-				// displaySelectInterval.classList.add("inblock");
-
-				// divFilterContainer.classList.add("hidden");
-				// textInput.classList.add("hidden");
-				// displaySelect.classList.add("hidden");
 
 			} else {
 				console.log("NO Interval");
@@ -1857,23 +1901,8 @@
 
 			}
 
-			//venint de l'interval
-
-
-
-			// divFilterContainer2.classList.add("hidden");
-			// textInputInterval1.classList.add("hidden");
-			// textInputInterval2.classList.add("hidden");
-			// displaySelectInterval.classList.add("hidden");
-
-			// divFilterContainer.classList.remove("hidden");
-			// textInput.classList.remove("hidden");
-			// displaySelect.classList.remove("hidden");
-			// divFilterContainer.classList.add("inblock");
-			// textInput.classList.add("inblock");
-			// displaySelect.classList.add("inblock");
 		}
-		
+
 
 
 
