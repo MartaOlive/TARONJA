@@ -1544,7 +1544,7 @@
 			}
 		}
 
-		function closeModalSelect(place, button, row) {
+		function closeModalSelect(place, button, row, selector) {
 			event.preventDefault();
 			var textInput = document.getElementById("textInput" + place);
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
@@ -1573,7 +1573,7 @@
 
 		}
 
-		function changeWriteToSelect(nodeId, place) {  //Que pugui recollir el text del input
+		function changeWriteToSelect(nodeId, place, selector) {  //Que pugui recollir el text del input
 			event.preventDefault();
 			var textInput = document.getElementById("textInput" + place);
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
@@ -1647,11 +1647,11 @@
 
 			createSelect(3, "_optionsRow", "optionsRow", nodeId, dataAttributes, "no", "initial", "no");
 
-			var instructions = document.createElement("div");
-			instructions.setAttribute("id", "instructions");
-			instructions.innerHTML = "Is not your value on the list? You can write it, click the button";
-			instructions.setAttribute("class", "instructions");
-			optionsRow.appendChild(instructions);
+			// var instructions = document.createElement("div");
+			// instructions.setAttribute("id", "instructions");
+			// instructions.innerHTML = "Is not your value on the list? You can write it, click the button";
+			// instructions.setAttribute("class", "instructions");
+			// optionsRow.appendChild(instructions);
 
 			var addButton = document.createElement("button");
 			addButton.setAttribute("id", "addButton");
@@ -1741,6 +1741,141 @@
 			drawTable(nodeId, tableContent, "add");
 
 		}
+		function showIntervalSelector(nodeId, place) {
+			event.preventDefault();
+			console.log(place);
+			var selectorCondition = document.getElementById("selectorCondition" + place);
+			var selectedValue = selectorCondition.options[selectorCondition.selectedIndex].value;
+
+			var divFilterContainer = document.getElementById("divFilterContainer" + place);
+			var textInput = document.getElementById("textInput" + place);
+			var displaySelect = document.getElementById("displaySelect" + place);
+
+			var divFilterContainer2 = document.getElementById("divFilterContainer2" + place);
+			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
+			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
+			var displaySelectInterval = document.getElementById("displaySelectInterval" + place);
+
+
+
+			if (selectedValue == "6" || selectedValue == "7" || selectedValue == "8" || selectedValue == "9") {
+				console.log("Interval");
+
+				if (divFilterContainer2.classList.contains("hidden") == true) { //No Es mostra 
+					if (textInputInterval1.classList.contains("hidden") == true) { //NO Es mostra (es mostra el senzill)
+						if (divFilterContainer.classList.contains("hidden") == true) { //s'estan mostrant el text i el display del senzill
+							//hidden al textoss i al diplay
+							textInput.classList.add("hidden");
+							displaySelect.classList.add("hidden");
+							if (textInput.classList.contains("inblock")) {
+								textInput.classList.remove("inblock");
+								displaySelect.classList.remove("inblock");
+							}
+
+							//mostrar el textInput i el display
+							textInputInterval1.classList.remove("hidden");
+							textInputInterval1.classList.add("inblock");
+							textInputInterval2.classList.remove("hidden");
+							textInputInterval2.classList.add("inblock");
+							displaySelectInterval.classList.remove("hidden");
+							displaySelectInterval.classList.add("inblock");
+
+
+						} else { //Es mostra el divContainer
+							//hidden al divFilterCOntainer
+							if (divFilterContainer.classList.contains("inblock")) {
+								divFilterContainer.classList.remove("inblock");
+							}
+							divFilterContainer.classList.add("hidden");
+							//mostrar els textInput i display de l'Interval
+							textInputInterval1.classList.remove("hidden");
+							textInputInterval1.classList.add("inblock");
+							textInputInterval2.classList.remove("hidden");
+							textInputInterval2.classList.add("inblock");
+							displaySelectInterval.classList.remove("hidden");
+							displaySelectInterval.classList.add("inblock");
+
+						}
+					} //Es mostra el text del senzill
+					//Res
+
+				} //Si es mostra el FilterCOntains, no tocar 
+
+
+				// divFilterContainer2.classList.remove("hidden");
+				// textInputInterval1.classList.remove("hidden");
+				// textInputInterval2.classList.remove("hidden");
+				// displaySelectInterval.classList.remove("hidden");
+				// divFilterContainer2.classList.add("inblock");
+				// textInputInterval1.classList.add("inblock");
+				// textInputInterval2.classList.add("inblock");
+				// displaySelectInterval.classList.add("inblock");
+
+				// divFilterContainer.classList.add("hidden");
+				// textInput.classList.add("hidden");
+				// displaySelect.classList.add("hidden");
+
+			} else {
+				console.log("NO Interval");
+
+				//venint d'ell
+				if (divFilterContainer.classList.contains("hidden") == true) { //No Es mostra 
+					if (textInput.classList.contains("hidden") == true) { //NO Es mostra (es mostra l'interval)
+						if (divFilterContainer2.classList.contains("hidden") == true) { //s'estan mostrant els textos i el display del interval
+							//hidden als dos textoss i al diplay
+							textInputInterval1.classList.add("hidden");
+							textInputInterval2.classList.add("hidden");
+							displaySelectInterval.classList.add("hidden");
+							if (textInputInterval1.classList.contains("inblock")) {
+								textInputInterval1.classList.remove("inblock");
+								textInputInterval2.classList.remove("inblock");
+								displaySelectInterval.classList.remove("inblock");
+							}
+
+							//mostrar el textInput i el display
+							textInput.classList.remove("hidden");
+							textInput.classList.add("inblock");
+							displaySelect.classList.remove("hidden");
+							displaySelect.classList.add("inblock");
+
+
+						} else { //Es mostra el divContainer2
+							//hidden al divFilterCOntainer2
+							if (divFilterContainer2.classList.contains("inblock")) {
+								divFilterContainer2.classList.remove("inblock");
+							}
+							divFilterContainer2.classList.add("hidden");
+							//mostrar el textInput i display
+							textInput.classList.add("inblock");
+							displaySelect.classList.add("inblock");
+
+						}
+					} //Es mostra el text del senzill
+					//Res
+
+				} //Si es mostra el FilterCOntains, no tocar 
+
+			}
+
+			//venint de l'interval
+
+
+
+			// divFilterContainer2.classList.add("hidden");
+			// textInputInterval1.classList.add("hidden");
+			// textInputInterval2.classList.add("hidden");
+			// displaySelectInterval.classList.add("hidden");
+
+			// divFilterContainer.classList.remove("hidden");
+			// textInput.classList.remove("hidden");
+			// displaySelect.classList.remove("hidden");
+			// divFilterContainer.classList.add("inblock");
+			// textInput.classList.add("inblock");
+			// displaySelect.classList.add("inblock");
+		}
+		
+
+
 
 		function createSelect(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent) {
 			var placeId = document.getElementById(place_Id);
@@ -1751,20 +1886,19 @@
 				var table = document.getElementById("tableResult");
 				var rowsNumbers = table.rows.length;
 			}
-			
 
 			if (dataAttributes === "no") {
 				dataAttributes2 = getDataAttributes(data);
 			} else {
 				dataAttributes2 = dataAttributes;
 			};
-			
+
 
 			var dataAttributesKeys = Object.keys(dataAttributes2); //Crear un array amb les keys de l'objecte
-			var dataAttributesFiltered = dataAttributesKeys.filter((element) => 
+			var dataAttributesFiltered = dataAttributesKeys.filter((element) =>
 				element != "@iot.selfLink"
 			);
-			console.log(dataAttributesFiltered);
+			// console.log(dataAttributesFiltered);
 			if (number == 1) {
 				select.setAttribute("id", "selectorProperty" + place);
 				select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + place + "')");
@@ -1787,6 +1921,7 @@
 				for (var i = 0; i < selectConditionContent.length; i++) { //crear les opcions del selector de condició
 					var opcioCondicio = document.createElement("option");
 					opcioCondicio.setAttribute("value", i);
+					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + place + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
 					opcioCondicio.innerHTML = selectConditionContent[i];
 
 					if (editRowContent !== 'undefined' & button == "edit") {
@@ -1801,6 +1936,8 @@
 
 			}
 			else if (number == 3) { //la caixa de select, ok i butó de canvi
+
+				//Select senzill
 				var divFilterContainer = document.createElement("div");
 				divFilterContainer.setAttribute("id", "divFilterContainer" + place);
 				divFilterContainer.setAttribute("class", "hidden");
@@ -1851,14 +1988,14 @@
 				var row = rowsNumbers - 1;
 
 				var okButton = document.createElement("button");
-				okButton.setAttribute("onclick", "closeModalSelect('" + place + "','ok'," + row + ")");
+				okButton.setAttribute("onclick", "closeModalSelect('" + place + "','ok'," + row + ",'simple')");
 				okButton.setAttribute("id", "okButton" + place);
 				okButton.innerHTML = "Ok";
 
 
 				divFilterContainer.appendChild(select);
 				var cancelButton = document.createElement("button");
-				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','cancel'," + row + ")");
+				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','cancel'," + row + ",'simple')");
 				cancelButton.setAttribute("id", "cancelButton" + place);
 				cancelButton.innerHTML = "Cancel";
 
@@ -1867,10 +2004,54 @@
 				var writeButton = document.createElement("button");
 				writeButton.innerHTML = "...";
 				writeButton.setAttribute("id", "displaySelect" + place);
-				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "')");
+				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "','simple')");
 				placeId.appendChild(writeButton);
 				divFilterContainer.appendChild(okButton);
 				divFilterContainer.appendChild(cancelButton);
+
+				//Selects dels intervals
+				var divFilterContainer2 = document.createElement("div");
+				divFilterContainer2.setAttribute("id", "divFilterContainer2" + place);
+				divFilterContainer2.setAttribute("class", "hidden");
+				placeId.appendChild(divFilterContainer2);
+
+				var selectorValueInterval1 = select.cloneNode(true); //així ja s'omple com l'altre
+				selectorValueInterval1.setAttribute("id", "selectorValueInterval1" + place);
+				var selectorValueInterval2 = select.cloneNode(true);
+				selectorValueInterval2.setAttribute("id", "selectorValueInterval2" + place);
+				divFilterContainer2.appendChild(selectorValueInterval1);
+				divFilterContainer2.appendChild(selectorValueInterval2);
+
+				var textInputInterval1 = textInput.cloneNode(true);
+				textInputInterval1.setAttribute("id", "textInputInterval1" + place);
+				var textInputInterval2 = textInput.cloneNode(true);
+				textInputInterval2.setAttribute("id", "textInputInterval2" + place);
+				textInputInterval1.setAttribute("class", "hidden");
+				textInputInterval2.setAttribute("class", "hidden");
+				placeId.appendChild(textInputInterval1);
+				placeId.appendChild(textInputInterval2);
+
+
+				var okButtonInterval = document.createElement("button");
+				okButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','ok'," + row + ",'interval')");
+				okButtonInterval.setAttribute("id", "okButtonInterval" + place);
+				okButtonInterval.innerHTML = "Ok";
+
+				var cancelButtonInterval = document.createElement("button");
+				cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','cancel'," + row + ",'interval')");
+				cancelButtonInterval.setAttribute("id", "cancelButtonInterval" + place);
+				cancelButtonInterval.innerHTML = "Cancel";
+
+				var writeButton2 = document.createElement("button");
+				writeButton2.innerHTML = "...";
+				writeButton2.setAttribute("id", "displaySelectInterval" + place);
+				writeButton2.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "','interval')");
+				writeButton2.setAttribute("class", "hidden");
+
+				placeId.appendChild(writeButton2);
+				divFilterContainer2.appendChild(okButtonInterval);
+				divFilterContainer2.appendChild(cancelButtonInterval);
+
 
 			}
 
@@ -1897,7 +2078,7 @@
 			//console.log("fila que s'ha de moure    " + rowValuesToKeep);
 
 			tableContent.splice((position), 4); //treure els valors
-			console.log("despres del splice    " + tableContent);
+			//console.log("despres del splice    " + tableContent);
 
 			if (arrow == "up") {
 				if (position - 4 < 0) {
@@ -1914,11 +2095,11 @@
 					position = position + 4;
 				}
 
-				console.log("position:  " + position);
+				//console.log("position:  " + position);
 				tableContent.splice((position), 0, ...rowValuesToKeep);
 			}
 
-			console.log(tableContent);
+			//console.log(tableContent);
 			//borrar taula
 			eraseTable();
 			//dibuixar taula
@@ -2008,7 +2189,7 @@
 								for (var s = 0; s < 3; s++) { //omplim select (3 opcions: and, or, not) FUNCIONA BÉ AMB ADD
 									var optionSelect = document.createElement("option");
 									if (s == 0) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save"||button=="insert"||button=="arrow") { //no insert 
+										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert" || button == "arrow") { //no insert 
 											if (tableContentNew[r] == "and") { //r= 0,3,7,11...
 												optionSelect.setAttribute("selected", true);
 											}
@@ -2017,7 +2198,7 @@
 										optionSelect.innerHTML = "And";
 									}
 									else if (s == 1) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save"||button=="insert"||button=="arrow") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert" || button == "arrow") {
 											if (tableContentNew[r] == "or") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -2027,13 +2208,13 @@
 										optionSelect.innerHTML = "Or";
 									}
 									else if (s == 2) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save"||button=="insert"||button=="arrow") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert" || button == "arrow") {
 											if (tableContentNew[r] == "not") {
 												optionSelect.setAttribute("selected", true);
 											}
 										}
 										optionSelect.setAttribute("value", "not");
-											optionSelect.innerHTML = "Not";
+										optionSelect.innerHTML = "Not";
 									}
 
 									selectAndOr.appendChild(optionSelect);
@@ -2089,7 +2270,7 @@
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
 								// 	//muntar input/select amb opicio seleccionada
-								console.log(tableContentNew[(r + 3)]);
+								//console.log(tableContentNew[(r + 3)]);
 								createSelect(3, "_tableResult", idValue, nodeId, "no", tableContentNew, button, editRowContent);
 
 
@@ -2146,7 +2327,7 @@
 
 		}
 
-		function eraseTable(){
+		function eraseTable() {
 			var table = document.getElementById("tableResult");
 			var a = 1;
 			var rowsNumbers = table.rows.length;
@@ -2158,12 +2339,13 @@
 		function insertRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);//agafar el contingut, i afegir " " en el lloc on toqui.Per ccrear una fila buida on somplirà amb selects
-			
+
 			var row2 = parseInt(row);
 			var position = (row2 - 1) * 4;
 
 			tableContent.splice(position, 0, "insertSelect", "insertSelect", "insertSelect", "insertSelect");
-			console.log(tableContent);
+			//console.log(tableContent);
+
 			//borrar taula
 			eraseTable();
 
