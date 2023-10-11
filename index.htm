@@ -1837,8 +1837,8 @@
 				tableContent.push(intervalValues);
 			}
 
-			console.log("despres d'afegir: " + tableContent);
-			console.log(tableContent);
+			// console.log("despres d'afegir: " + tableContent);
+			// console.log(tableContent);
 
 
 			//borrar taula
@@ -1849,7 +1849,6 @@
 		}
 		function showIntervalSelector(nodeId, place) {
 			event.preventDefault();
-			console.log(place);
 			var selectorCondition = document.getElementById("selectorCondition" + place);
 			var selectedValue = selectorCondition.options[selectorCondition.selectedIndex].value;
 
@@ -2190,7 +2189,7 @@
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
 			var rowsNumber = table.rows.length;
-			var property, propertyText, condition, conditionText, value, valueText, selectorProperty, selectorCondition, inputValue;
+			var property, propertyText, condition, conditionText, value, valueText, valueText2, selectorProperty, selectorCondition, inputValue;
 
 			if (rowsNumber > 1) {
 				for (var r = 1; r < rowsNumber; r++) {
@@ -2198,14 +2197,13 @@
 						r = row
 					}
 					property = document.getElementById("th_" + nodeId + "_" + (r) + "_property");
-					if (property.children.length > 0) {
+					if (property.children.length > 0) {//per la saveRow
 						selectorProperty = document.getElementById("selectorProperty_tableResult");
 						propertyText = selectorProperty.options[selectorProperty.selectedIndex].value;
 
 					} else {
 						propertyText = property.innerHTML;
 					}
-
 					condition = document.getElementById("th_" + nodeId + "_" + (r) + "_condition");
 					if (condition.children.length > 0) {
 						selectorCondition = document.getElementById("selectorCondition_tableResult");
@@ -2215,10 +2213,21 @@
 					}
 
 					value = document.getElementById("th_" + nodeId + "_" + (r) + "_value");
-					if (value.children.length > 0) {
-						inputValue = document.getElementById("textInput_tableResult");
-						valueText = inputValue.value;
-					} else {
+					if (value.children.length > 0) { //en el saveRow
+						if (conditionText == "6" || conditionText == "7" || conditionText == "8" || conditionText == "9") {
+							var inputText1 = document.getElementById("textInputInterval1_tableResult");
+							var inputText2 = document.getElementById("textInputInterval2_tableResult");
+							var arrayValors=[];
+							arrayValors.push(inputText1.value);
+							arrayValors.push(inputText2.value);
+							// value.setAttribute("value", inputText1.value+"---"+inputText2.value);
+						} else { //No interval
+							inputValue = document.getElementById("textInput_tableResult");
+							valueText = inputValue.value;
+						}
+
+
+					} else { //Els que no són el saveRow
 						valueText = value.innerHTML;
 					}
 
@@ -2230,7 +2239,12 @@
 					}
 					tableResults.push(propertyText);
 					tableResults.push(conditionText);
-					tableResults.push(valueText);
+					if (conditionText == "6" || conditionText == "7" || conditionText == "8" || conditionText == "9") { //interval
+						tableResults.push(arrayValors);
+					}else {
+						tableResults.push(valueText);
+					}
+					
 					// console.log("tableResults:  " + tableResults);
 					if (row !== 0) {
 						r = rowsNumber;
@@ -2238,6 +2252,7 @@
 				}
 
 			}
+			console.log(tableResults);
 			return tableResults;
 		}
 
