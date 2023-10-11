@@ -1480,38 +1480,57 @@
 			var select;
 			select = document.getElementById("selectorProperty" + place);
 			var selectedProperty = select.options[select.selectedIndex].value;
-			var selectedElement;
-			selectedElement = document.getElementById("selectorValue" + place);
-			selectedElement.innerHTML = "";
+			var selectorValue, selectorValueInterval, selectorValueInterval2;
+
+
+			selectorValue = document.getElementById("selectorValue" + place);
+			selectorValue.innerHTML = "";
+			selectorValueInterval = document.getElementById("selectorValueInterval1" + place);
+			selectorValueInterval.innerHTML = "";
+			selectorValueInterval2 = document.getElementById("selectorValueInterval2" + place);
+			selectorValueInterval2.innerHTML = "";
 
 			var valor;
 			var arrayValors = [];
 			var isAnObject;
 
 			// s'ha de filtrar
-			for (let index = 0; index < data.length; index++) {
+			for (var index = 0; index < data.length; index++) { //crear array de valors 
 				valor = data[index][selectedProperty];
 				// console.log(typeof valor);
 				if (typeof valor === "object") isAnObject = "yes";
 				if (!arrayValors.find(element => element == valor)) {
-					var opcio = document.createElement("option");
-					opcio.setAttribute("value", valor);
-					opcio.innerHTML = valor;
-					selectedElement.appendChild(opcio);
 					arrayValors.push(valor);
 				} else {
 					// console.log("en el else");
 				}
 			}
 
+			console.log(arrayValors);
+
+			for (var i = 0; i < arrayValors.length; i++) { //omplir selector simple
+				var opcio = document.createElement("option");
+				var opcio2 = document.createElement("option");
+				var opcio3 = document.createElement("option");
+				valor = arrayValors[i];
+				opcio.setAttribute("value", valor);
+				opcio2.setAttribute("value", valor);
+				opcio3.setAttribute("value", valor);
+				opcio.innerHTML = valor;
+				opcio2.innerHTML = valor;
+				opcio3.innerHTML = valor;
+				selectorValue.appendChild(opcio);
+				selectorValueInterval.appendChild(opcio2);
+				selectorValueInterval2.appendChild(opcio3);
+			}
 			var divIsAnObject = document.getElementById("divIsAnObject");
 			var addButton = document.getElementById("addButton");
 			var table = document.getElementById("tableResult");
 			var rowsNumbers = table.rows.length;
 			var buttonSave;
 
-			if (isAnObject === "yes") {
-				selectedElement.setAttribute("class", "objectInSelect");
+			if (isAnObject === "yes") { //no està acabat (falta interval i alguna cosa més)
+				selectorValue.setAttribute("class", "objectInSelect");
 				divIsAnObject.classList.remove("hidden");
 				addButton.disabled = true;
 
@@ -1526,11 +1545,8 @@
 					// }
 
 				}
-
-
-
 			} else {
-				selectedElement.classList.remove("objectInSelect");
+				selectorValue.classList.remove("objectInSelect");
 				divIsAnObject.classList.add("hidden");
 				addButton.disabled = false;
 				for (var i = 1; i < rowsNumbers; i++) {
@@ -1558,19 +1574,17 @@
 			var addButton = document.getElementById("addButton");
 			var saveButton = document.getElementById("buttonSave" + row);
 
-			// divFilterContainer.classList.add("hidden");
-			// divFilterContainer.classList.remove("inblock");
-			// displaySelectButton.classList.remove("hidden");
-			// textInput.classList.remove("hidden");
+			var interval;
 
 			//Si ve del senzill. Amagar el container i mostrar el text i el display
-			if (divFilterContainer.classList.contains("hidden")==false) {
+			if (divFilterContainer.classList.contains("hidden") == false) {
 				divFilterContainer.classList.remove("inblock");
 				divFilterContainer.classList.add("hidden");
 				textInput.classList.add("inblock");
 				textInput.classList.remove("hidden");
 				displaySelect.classList.add("inblock");
 				displaySelect.classList.remove("hidden");
+				interval = false;
 			} else {//Si ve del Interval. Amagar el container i mostrar els textos i el display
 				divFilterContainer2.classList.remove("inblock");
 				divFilterContainer2.classList.add("hidden");
@@ -1580,12 +1594,8 @@
 				textInputInterval2.classList.remove("hidden");
 				displaySelectInterval.classList.add("inblock");
 				displaySelectInterval.classList.remove("hidden");
+				interval = true;
 			}
-
-
-
-
-
 
 			addButton.disabled = false;
 			if (place != "_optionsRow") {
@@ -1595,9 +1605,19 @@
 
 			//Falta escriure l'opcio del select
 			if (button == "ok") {
-				var selectorValue = document.getElementById("selectorValue" + place);
-				textInput.value = selectorValue.options[selectorValue.selectedIndex].value;
-				adjustWidth(place);
+				if (interval == false) {
+					var selectorValue = document.getElementById("selectorValue" + place);
+					textInput.value = selectorValue.options[selectorValue.selectedIndex].value;
+					adjustWidth(place, "simple");
+				} else {
+					var selectorValueInterval1 = document.getElementById("selectorValueInterval1" + place);
+					var selectorValueInterval2 = document.getElementById("selectorValueInterval2" + place);
+					textInputInterval1.value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
+					textInputInterval2.value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
+					adjustWidth(place, "interval");
+
+				}
+
 			}
 
 
@@ -1617,28 +1637,24 @@
 			var addButton = document.getElementById("addButton");
 
 			//quin text està obert?
-			if (textInput.classList.contains("hidden")) { //està el interval
+			if (selector == "simple") {
+				textInput.classList.remove("inblock");
+				textInput.classList.add("hidden");
+				displaySelect.classList.remove("inblock");
+				displaySelect.classList.add("hidden");
+				divFilterContainer.classList.remove("hidden");
+				divFilterContainer.classList.add("inblock");
+
+			} else { //interval
 				textInputInterval1.classList.remove("inblock");
 				textInputInterval2.classList.remove("inblock");
 				displaySelectInterval.classList.remove("inblock");
 				textInputInterval1.classList.add("hidden");
 				textInputInterval2.classList.add("hidden");
 				displaySelectInterval.classList.add("hidden");
-
 				divFilterContainer2.classList.remove("hidden");
 				divFilterContainer2.classList.add("inblock");
-
-			} else {//està el senzill
-				//amagar el text que toqui i els display i mostrar els divContainer que toca 
-				textInput.classList.remove("inblock");
-				displaySelect.classList.remove("inblock");
-				textInput.classList.add("hidden");
-				displaySelect.classList.add("hidden");
-				divFilterContainer.classList.remove("hidden");
-				divFilterContainer.classList.add("inblock");
 			}
-
-
 
 			addButton.disabled = true;
 
@@ -1666,16 +1682,36 @@
 			// 	console.log(typeof selectOption);
 			// }
 		}
-		function adjustWidth(place) {
-			var textInput = document.getElementById("textInput" + place);
+		function adjustWidth(place, wichTextInput) {
+			var textInput, textInput2
+			if (wichTextInput == "simple") {
+				textInput = document.getElementById("textInput" + place);
+			} else {
+				textInput = document.getElementById("textInputInterval1" + place);
+				textInput2 = document.getElementById("textInputInterval2" + place);
+			}
+
 			var value1 = textInput.value;
 			var valueLength = value1.length;
 			var width = 100;
+
+			if (wichTextInput == "interval") {
+				var value2 = textInput2.value;
+				var valueLength2 = value2.length;
+			}
+
 			if (valueLength > 20) {
 				width = valueLength * 8; // 8px per character
 				textInput.style.width = width + "px";
+				if (wichTextInput == "interval") {
+					width = valueLength2 * 8; // 8px per character
+					textInput2.style.width = width + "px";
+				}
 			} else if (valueLength <= 20) {
 				textInput.style.width = "100px";
+				if (wichTextInput == "interval") {
+					textInput2.style.width = "100px";
+				}
 			}
 
 		}
@@ -1771,6 +1807,8 @@
 			var selectorProperty = document.getElementById("selectorProperty" + place);
 			var selectorCondition = document.getElementById("selectorCondition" + place);
 			var textInput = document.getElementById("textInput" + place);
+			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
+			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
 
 			//llegir taula
 			var tableContent = [];
@@ -1785,10 +1823,22 @@
 			else {
 				tableContent.push("and");
 			}
+
 			tableContent.push(selectorProperty.options[selectorProperty.selectedIndex].value);
 			tableContent.push(selectorCondition.options[selectorCondition.selectedIndex].value);
-			tableContent.push(textInput.value);
-			//console.log("despres d'afegir: " + tableContent);
+
+			if (textInput.classList.contains("hidden") == false) {
+				tableContent.push(textInput.value);
+			} else { //valors de l'interval
+				var intervalValues = [];
+
+				intervalValues.push(textInputInterval1.value);
+				intervalValues.push(textInputInterval2.value);
+				tableContent.push(intervalValues);
+			}
+
+			console.log("despres d'afegir: " + tableContent);
+			console.log(tableContent);
 
 
 			//borrar taula
@@ -2004,13 +2054,13 @@
 				textInput.setAttribute("id", "textInput" + place);
 				textInput.setAttribute("type", "text");
 				textInput.addEventListener("input", function () {
-					adjustWidth(place)
+					adjustWidth(place, "simple")
 				});
 
 				placeId.appendChild(textInput);
 				if (button == "edit") {
 					textInput.value = editRowContent[3];
-					adjustWidth(place);
+					adjustWidth(place, "simple");
 				}
 
 
@@ -2294,8 +2344,16 @@
 							tableTr.appendChild(tableTh);
 							tableTh.setAttribute("id", idValue);
 							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
-
+								if (Array.isArray(tableContentNew[(r + 3)]) == true) {
+									console.log(tableContentNew[(r + 3)]);
+									console.log("és un arraaay");
+									tableTh.setAttribute("value", tableContentNew[(r + 3)][0] + "---" + tableContentNew[(r + 3)][1]);
+									// tableTh.setAttribute("value", tableContentNew[(r + 3)]);
+								} else {
+									console.log("nop")
+								}
 								tableTh.innerHTML = tableContentNew[(r + 3)];
+
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
 								// 	//muntar input/select amb opicio seleccionada
