@@ -2213,29 +2213,31 @@
 					}
 
 					valor = document.getElementById("th_" + nodeId + "_" + (r) + "_value");
+					var arrayValors = [];
+					var valueOfValor;
 					if (valor.children.length > 0) { //en el saveRow
 						if (conditionText == "6" || conditionText == "7" || conditionText == "8" || conditionText == "9") {
 							var inputText1 = document.getElementById("textInputInterval1_tableResult");
 							var inputText2 = document.getElementById("textInputInterval2_tableResult");
-							var arrayValors = [];
-							arrayValors.push(inputText1.value);
-							arrayValors.push(inputText2.value);
+							// arrayValors.push(inputText1.value);
+							// arrayValors.push(inputText2.value);
 							valor.setAttribute("value", inputText1.value + "---" + inputText2.value);
+							valueOfValor=valor.getAttribute("value");
 						} else { //No interval
 							inputValue = document.getElementById("textInput_tableResult");
 							valueText = inputValue.value;
 						}
 
 
-					} else { //Els que no són el saveRow
+					} 
+					else { //Els que no són el saveRow
 						//mirar si és un interval (Conté ---al value)
-						var valueOfValor=valor.getAttribute("value")
+						valueOfValor=valor.getAttribute("value")
 						if (valueOfValor != null) {
 							if (valueOfValor.includes("---")) { //se que té un interval. 
 								//Agafar el abans i despres i posarlo en un array
 								valueText = valueOfValor;
 								console.log("inclou ---:    " + valueText);
-
 							}
 						} else {
 							valueText = valor.innerHTML;
@@ -2247,7 +2249,8 @@
 
 					if (r == 1) {
 						tableResults.push("nothing");
-					} else {
+					} 
+					else {
 						var selectAndOrNot = document.getElementById("select_" + nodeId + "_" + r);
 						tableResults.push(selectAndOrNot.options[selectAndOrNot.selectedIndex].value);
 					}
@@ -2257,10 +2260,9 @@
 
 					if (valueOfValor != null) {
 						if (valueOfValor.includes("---")) { //se que té un interval. 
-							var valueOfValorArray=[];
-							valueOfValorArray.push(valueOfValor.split("---")[0]);
-							valueOfValorArray.push(valueOfValor.split("---")[1]);
-							tableResults.push(valueOfValorArray);
+							arrayValors.push(valueOfValor.split("---")[0]);
+							arrayValors.push(valueOfValor.split("---")[1]);
+							tableResults.push(arrayValors);
 						}
 					} else {
 						tableResults.push(valueText);
