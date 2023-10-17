@@ -434,28 +434,28 @@
 	<script type="text/javascript">
 		"use strict"
 
-		/* 
-			This file is part of TAPIS. TAPIS is a web page and a Javascript code 
-			that builds queries and explore the STAplus content, saves it as CSV or 
-			GeoJSON and connects with the MiraMon Map Browser. While the project is 
-			completely independent from the Orange data mining software, it has been 
-			inspired by its GUI. The general idea of the application is to be able 
+		/*
+			This file is part of TAPIS. TAPIS is a web page and a Javascript code
+			that builds queries and explore the STAplus content, saves it as CSV or
+			GeoJSON and connects with the MiraMon Map Browser. While the project is
+			completely independent from the Orange data mining software, it has been
+			inspired by its GUI. The general idea of the application is to be able
 			to work with STA data as tables.
-		  
+
 			The TAPIS client is free software under the terms of the MIT License
-		
+
 			Copyright (c) 2023 Joan Masó
-		
+
 			Permission is hereby granted, free of charge, to any person obtaining a copy
 			of this software and associated documentation files (the "Software"), to deal
 			in the Software without restriction, including without limitation the rights
 			to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 			copies of the Software, and to permit persons to whom the Software is
 			furnished to do so, subject to the following conditions:
-		
+
 			The above copyright notice and this permission notice shall be included in all
 			copies or substantial portions of the Software.
-		
+
 			THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 			IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 			FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -463,19 +463,19 @@
 			LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 			OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 			SOFTWARE.
-		    
+
 			The TAPIS can be updated from https://github.com/joanma747/tapis.
-		
-			Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
-			dins del grup del MiraMon. MiraMon és un projecte del 
-			CREAF que elabora programari de Sistema d'Informació Geogràfica 
-			i de Teledetecció per a la visualització, consulta, edició i anàlisi 
+
+			Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat)
+			dins del grup del MiraMon. MiraMon és un projecte del
+			CREAF que elabora programari de Sistema d'Informació Geogràfica
+			i de Teledetecció per a la visualització, consulta, edició i anàlisi
 			de mapes ràsters i vectorials. Aquest progamari programari inclou
 			aplicacions d'escriptori i també servidors i clients per Internet.
-			No tots aquests productes són gratuïts o de codi obert. 
-		    
+			No tots aquests productes són gratuïts o de codi obert.
+
 			En particular, el TAPIS es distribueix sota els termes de la llicència MIT.
-		    
+
 			El TAPIS es pot actualitzar des de https://github.com/joanma747/tapis.
 		*/
 
@@ -1106,7 +1106,7 @@
 					showInfoMessage("Observation <a href='" + getUrlToId(url, "Observations", observationId) + "' target='_blank'>" + observationId + "</a> available in STA under Datastream <a href='" + getUrlToId(url, "Datastreams", datastreamIds[k]) + "' target='_blank'>" + datastreamIds[k] + "</a>");
 				}
 			}
-			return;  //value	
+			return;  //value
 		}
 
 		function UploadObservationsSTAURL(event) {
@@ -1130,7 +1130,7 @@
 					);
 			}
 		}
-		const selectConditionContent = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) '];
+		const selectConditionContent = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'with', 'without', 'contains', 'starts with', 'ends with'];
 		function GetSelectColumns(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectColumns").close();
@@ -1325,7 +1325,7 @@
 
 
 
-				//////////////////////////////////////////////Per treure el @iot. No borrar 
+				//////////////////////////////////////////////Per treure el @iot. No borrar
 				// var node = networkNodes.get(nodeids[0]);
 				// var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
 				// 	if (element.startsWith("@iot.")) {
@@ -1495,7 +1495,7 @@
 			var isAnObject;
 
 			// s'ha de filtrar
-			for (var index = 0; index < data.length; index++) { //crear array de valors 
+			for (var index = 0; index < data.length; index++) { //crear array de valors
 				valor = data[index][selectedProperty];
 				// console.log(typeof valor);
 				if (typeof valor === "object") isAnObject = "yes";
@@ -1560,7 +1560,7 @@
 			}
 		}
 
-		function closeModalSelect(place, button, row, selector) {
+		function closeModalSelect(place, placeId, button, row, selector, nodeId) {
 			event.preventDefault();
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
 			var textInput = document.getElementById("textInput" + place);
@@ -1608,13 +1608,13 @@
 				if (interval == false) {
 					var selectorValue = document.getElementById("selectorValue" + place);
 					textInput.value = selectorValue.options[selectorValue.selectedIndex].value;
-					adjustWidth(place, "simple");
+					adjustWidth(place, place_Id, "simple", nodeId);
 				} else {
 					var selectorValueInterval1 = document.getElementById("selectorValueInterval1" + place);
 					var selectorValueInterval2 = document.getElementById("selectorValueInterval2" + place);
 					textInputInterval1.value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
 					textInputInterval2.value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
-					adjustWidth(place, "interval");
+					adjustWidth(place, place_Id, "interval", nodeId);
 
 				}
 
@@ -1682,38 +1682,105 @@
 			// 	console.log(typeof selectOption);
 			// }
 		}
-		function adjustWidth(place, wichTextInput) {
-			var textInput, textInput2
+		function adjustWidth(place, placeId, wichTextInput, nodeId) { //and refill conditionSelect (interval if it is a number or a date)
+
+			var textInput, textIputInterval1, textIputInterval2;
+
 			if (wichTextInput == "simple") {
 				textInput = document.getElementById("textInput" + place);
 			} else {
-				textInput = document.getElementById("textInputInterval1" + place);
-				textInput2 = document.getElementById("textInputInterval2" + place);
+				textIputInterval1 = document.getElementById("textInputInterval1" + place);
+				textIputInterval2 = document.getElementById("textInputInterval2" + place);
 			}
 
-			var value1 = textInput.value;
-			var valueLength = value1.length;
-			var width = 100;
+			var value1, valueInput1, valueInput2;
+			var valueLength, valueLengthInterval1, valueLengthInterval2;
+			var width, withInterval1, withInterval2;
+
 
 			if (wichTextInput == "interval") {
-				var value2 = textInput2.value;
-				var valueLength2 = value2.length;
+
+				valueInput1 = textIputInterval1.value;
+				valueLengthInterval1 = valueInput1.length;
+				valueInput2 = textIputInterval2.value;
+				valueLengthInterval2 = valueInput2.length;
+			} else {
+				value1 = textInput.value;
+				valueLength = value1.length;
+
 			}
 
-			if (valueLength > 20) {
+			if (valueLength > 15) {
 				width = valueLength * 8; // 8px per character
 				textInput.style.width = width + "px";
 				if (wichTextInput == "interval") {
-					width = valueLength2 * 8; // 8px per character
-					textInput2.style.width = width + "px";
+					withInterval1 = valueLengthInterval1 * 8; // 8px per character
+					textIputInterval1.style.width = withInterval1 + "px";
+					withInterval2 = valueLengthInterval2 * 8; // 8px per character
+					textIputInterval2.style.width = withInterval2 + "px";
 				}
-			} else if (valueLength <= 20) {
+			} else if (valueLength <= 15) {
 				textInput.style.width = "100px";
 				if (wichTextInput == "interval") {
+					textInput1.style.width = "100px";
 					textInput2.style.width = "100px";
 				}
 			}
 
+
+			///////Select Condition
+			//(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent,interval)
+			//interval => Mirar si es un numero. En l'interval posar Interval o "no",
+			//En el editRowContent, crear un arrai on el tercer ([2]) valor sigui el q hi ha actual al condition. Si hi ha un d'interval quan no es pot selecciona, q aparegui el primer
+			//----------------Fet: El button era changeCondition
+			var interval;
+			var actualConditionSelected = [];
+			var selectCondition = document.getElementById("selectorCondition" + place);
+			// var value1, ValueInput1, valueInput2;
+
+			if (wichTextInput == "simple") {
+				console.log(value1);
+				console.log(typeof value1);
+				console.log(parseInt(value1));
+				// console.log(typeof parseInt(value1));
+
+
+				if (Number.isNaN(parseInt(value1)) != true) {
+					if (value1.length != parseInt(value1).toString().length) {
+						console.log("NaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaN");
+						console.log("value length:  "+value1.length+", parseIntLenght:  "+parseInt(value1).toString().length);
+					}else{
+						console.log("numeroooo");
+					}
+					
+				}else{
+					console.log("es text ")
+				}
+
+
+				// else if (wichTextInput == "interval") {
+				// 		console.log("aqui");
+				// 		if (typeof valueInput1 == "number" || typeof valueInput2 == "number"/*|| (((!valueInput1)|| (!valueInput2) )& (isNaN(valueInput1) || isNaN(valueInput2))) */) { //si un es res i l'altre es numero
+				// 			console.log("numeroInterval");
+				// 		}
+				// 	}
+
+
+
+				//if (isNaN(actualValue)) {
+				// 	console.log("numero");
+				// }
+
+
+				// if(){//mirar si es numero o data
+				// interval="interval";
+
+				// }else{
+				// 	interval="noInterval";
+				// }
+				// createSelect(2,place,placeId, nodeId, "no","no","changeCondition", actualConditionSelected, interval);
+
+			}
 		}
 
 		function createSelectorRowFilters(dataAttributes, nodeId) {
@@ -1843,7 +1910,7 @@
 
 			//borrar taula
 			eraseTable();
-			//pintar taula 
+			//pintar taula
 			drawTable(nodeId, tableContent, "add");
 
 		}
@@ -1866,7 +1933,7 @@
 			if (selectedValue == "6" || selectedValue == "7" || selectedValue == "8" || selectedValue == "9") {
 				console.log("Interval");
 
-				if (divFilterContainer2.classList.contains("hidden") == true) { //No Es mostra 
+				if (divFilterContainer2.classList.contains("hidden") == true) { //No Es mostra
 					if (textInputInterval1.classList.contains("hidden") == true) { //NO Es mostra (es mostra el senzill)
 						if (divFilterContainer.classList.contains("hidden") == true) { //s'estan mostrant el text i el display del senzill
 							//hidden al textoss i al diplay
@@ -1904,7 +1971,7 @@
 					} //Es mostra el text del senzill
 					//Res
 
-				} //Si es mostra el FilterCOntains, no tocar 
+				} //Si es mostra el FilterCOntains, no tocar
 
 
 
@@ -1912,7 +1979,7 @@
 				console.log("NO Interval");
 
 				//venint d'ell
-				if (divFilterContainer.classList.contains("hidden") == true) { //No Es mostra 
+				if (divFilterContainer.classList.contains("hidden") == true) { //No Es mostra
 					if (textInput.classList.contains("hidden") == true) { //NO Es mostra (es mostra l'interval)
 						if (divFilterContainer2.classList.contains("hidden") == true) { //s'estan mostrant els textos i el display del interval
 							//hidden als dos textoss i al diplay
@@ -1946,7 +2013,7 @@
 					} //Es mostra el text del senzill
 					//Res
 
-				} //Si es mostra el FilterCOntains, no tocar 
+				} //Si es mostra el FilterCOntains, no tocar
 
 			}
 
@@ -1996,13 +2063,21 @@
 			}
 			else if (number == 2) {
 				select.setAttribute("id", "selectorCondition" + place);
+				//que posar en funció de si es interval o no
+				var selectConditionContent2;
+				// if (interval) {
+
+				// } else {
+
+				// }
+				//al for canviarho pel 2
 				for (var i = 0; i < selectConditionContent.length; i++) { //crear les opcions del selector de condició
 					var opcioCondicio = document.createElement("option");
 					opcioCondicio.setAttribute("value", i);
 					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + place + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
 					opcioCondicio.innerHTML = selectConditionContent[i];
 
-					if (editRowContent !== 'undefined' & button == "edit") {
+					if (editRowContent !== 'undefined' & (button == "edit" || button == 'changeCondition')) {
 						console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
 						if (i == editRowContent[2]) {
 							option.setAttribute("selected", true);
@@ -2053,27 +2128,27 @@
 				textInput.setAttribute("id", "textInput" + place);
 				textInput.setAttribute("type", "text");
 				textInput.addEventListener("input", function () {
-					adjustWidth(place, "simple")
+					adjustWidth(place, place_Id, "simple", nodeId)
 				});
 
 				placeId.appendChild(textInput);
 				if (button == "edit") {
 					textInput.value = editRowContent[3];
-					adjustWidth(place, "simple");
+					adjustWidth(place, place_Id, "simple", nodeId);
 				}
 
 
 				var row = rowsNumbers - 1;
 
 				var okButton = document.createElement("button");
-				okButton.setAttribute("onclick", "closeModalSelect('" + place + "','ok'," + row + ",'simple')");
+				okButton.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','ok'," + row + ",'simple','" + nodeId + "')");
 				okButton.setAttribute("id", "okButton" + place);
 				okButton.innerHTML = "Ok";
 
 
 				divFilterContainer.appendChild(select);
 				var cancelButton = document.createElement("button");
-				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','cancel'," + row + ",'simple')");
+				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','cancel'," + row + ",'simple','" + nodeId + "')");
 				cancelButton.setAttribute("id", "cancelButton" + place);
 				cancelButton.innerHTML = "Cancel";
 
@@ -2106,17 +2181,23 @@
 				textInputInterval2.setAttribute("id", "textInputInterval2" + place);
 				textInputInterval1.setAttribute("class", "hidden");
 				textInputInterval2.setAttribute("class", "hidden");
+				textInputInterval1.addEventListener("input", function () {
+					adjustWidth(place, place_Id, "interval", nodeId)
+				});
+				textInputInterval2.addEventListener("input", function () {
+					adjustWidth(place, place_Id, "interval", nodeId)
+				});
 				placeId.appendChild(textInputInterval1);
 				placeId.appendChild(textInputInterval2);
 
 
 				var okButtonInterval = document.createElement("button");
-				okButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','ok'," + row + ",'interval')");
+				okButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','ok'," + row + ",'interval','" + nodeId + "')");
 				okButtonInterval.setAttribute("id", "okButtonInterval" + place);
 				okButtonInterval.innerHTML = "Ok";
 
 				var cancelButtonInterval = document.createElement("button");
-				cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','cancel'," + row + ",'interval')");
+				cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','cancel'," + row + ",'interval','" + nodeId + "')");
 				cancelButtonInterval.setAttribute("id", "cancelButtonInterval" + place);
 				cancelButtonInterval.innerHTML = "Cancel";
 
@@ -2214,7 +2295,7 @@
 
 					valor = document.getElementById("th_" + nodeId + "_" + (r) + "_value");
 					var arrayValors = [];
-					var valueOfValor;
+					var valueOfValor = valor.getAttribute("value");
 					if (valor.children.length > 0) { //en el saveRow
 						if (conditionText == "6" || conditionText == "7" || conditionText == "8" || conditionText == "9") {
 							var inputText1 = document.getElementById("textInputInterval1_tableResult");
@@ -2222,19 +2303,22 @@
 							// arrayValors.push(inputText1.value);
 							// arrayValors.push(inputText2.value);
 							valor.setAttribute("value", inputText1.value + "---" + inputText2.value);
-							valueOfValor=valor.getAttribute("value");
+							valueOfValor = valor.getAttribute("value");
 						} else { //No interval
 							inputValue = document.getElementById("textInput_tableResult");
 							valueText = inputValue.value;
+							if (valor.getAttribute("value") != null) {
+								valor.setAttribute("value", null);
+							}
 						}
 
 
-					} 
+					}
 					else { //Els que no són el saveRow
 						//mirar si és un interval (Conté ---al value)
-						valueOfValor=valor.getAttribute("value")
+						valueOfValor = valor.getAttribute("value")
 						if (valueOfValor != null) {
-							if (valueOfValor.includes("---")) { //se que té un interval. 
+							if (valueOfValor.includes("---")) { //se que té un interval.
 								//Agafar el abans i despres i posarlo en un array
 								valueText = valueOfValor;
 								console.log("inclou ---:    " + valueText);
@@ -2249,7 +2333,7 @@
 
 					if (r == 1) {
 						tableResults.push("nothing");
-					} 
+					}
 					else {
 						var selectAndOrNot = document.getElementById("select_" + nodeId + "_" + r);
 						tableResults.push(selectAndOrNot.options[selectAndOrNot.selectedIndex].value);
@@ -2259,7 +2343,7 @@
 
 
 					if (valueOfValor != null) {
-						if (valueOfValor.includes("---")) { //se que té un interval. 
+						if (valueOfValor.includes("---")) { //se que té un interval.
 							arrayValors.push(valueOfValor.split("---")[0]);
 							arrayValors.push(valueOfValor.split("---")[1]);
 							tableResults.push(arrayValors);
@@ -2267,7 +2351,7 @@
 					} else {
 						tableResults.push(valueText);
 					}
-					
+
 
 					// console.log("tableResults:  " + tableResults);
 					if (row !== 0) {
@@ -2307,7 +2391,7 @@
 								for (var s = 0; s < 3; s++) { //omplim select (3 opcions: and, or, not) FUNCIONA BÉ AMB ADD
 									var optionSelect = document.createElement("option");
 									if (s == 0) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert" || button == "arrow") { //no insert 
+										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert" || button == "arrow") { //no insert
 											if (tableContentNew[r] == "and") { //r= 0,3,7,11...
 												optionSelect.setAttribute("selected", true);
 											}
@@ -2347,7 +2431,7 @@
 							tableTr.appendChild(tableTh);
 
 							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
-								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7... 
+								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7...
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
 								// 	//muntar input/select amb opicio seleccionada
@@ -2631,7 +2715,7 @@
 		function GetSelectorsForRowFilter(nodeId) {
 			var divSelectorStructure;
 			divSelectorStructure = `<div id=selectorRowsContainer>
-		
+
 				<div id='divSelectorRowsFilter'></div></div>`;
 			return divSelectorStructure;
 		}
@@ -3451,7 +3535,7 @@
 		}
 
 		function SeparatePropertyIfNeeded(record, property, baseName) {
-			if (typeof property === "object" && property !== null)  //"arrays" and 'null' are also objects. 
+			if (typeof property === "object" && property !== null)  //"arrays" and 'null' are also objects.
 			{
 				if (Array.isArray(property)) {
 					//Array: creating multifields
