@@ -1684,57 +1684,118 @@
 			// }
 		}
 		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
-
 			var typeOfValues;
 			var selectCondition = document.getElementById("selectorCondition" + place);
 			var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
 
 			if (wichTextInput == "simple") {
-				if (Number.isNaN(parseInt(value1)) != true) { 
-					if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
-						typeOfValues = "text";
-					} else { typeOfValues = "number"; }
+				if (value1.includes("-") == true) {//inputText1
+					var value1Array = value1.split("-");
+					if (value1.includes("/")) {
+						if (value1Array.length == 5) {
+							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+								typeOfValues = "date";
+								console.log("és una data");
+							}
+						}
+					}else{
+						if (value1Array.length == 3) {
+							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+								typeOfValues = "date";
+								console.log("és una data");
+							}
+						}
+					}
+					
+				}
+				if (typeOfValues != "date") {
+					if (Number.isNaN(parseInt(value1)) != true) {
+						if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
+							typeOfValues = "text";
+						} else { typeOfValues = "number"; }
 
-				} else { typeOfValues = "text"; }
+					} else { typeOfValues = "text"; }
+				}
 
 			}
 			else {//interval
 				var inputText1 = "no";
 				var inputText2 = "no";
-				// console.log("intervalllllllll");
-				console.log(valueInput1);
-				console.log("input2:  "+valueInput2);
-				console.log("parseint:    "+parseInt(valueInput1));
-				if (Number.isNaN(parseInt(valueInput1)) != true) { //numero
-					if (valueInput1.length != parseInt(valueInput1).toString().length & valueInput1.length != parseFloat(valueInput1).toString().length) {
-						inputText1 = "text";
-					} else { //número en valueInput1
-						inputText1 = "number";
-					}
-				}else if (valueInput1.length==0){
-					inputText1 = "number";
-				}else {inputText1 = "text";}
 
-				if (Number.isNaN(parseInt(valueInput2)) != true) { //Si el primer no és número mirem el segon
-					if (valueInput2.length != parseInt(valueInput2).toString().length & valueInput2.length != parseFloat(valueInput2).toString().length) {
-						inputText2 = "text";
-					} else {
-						inputText2 = "number";
+				//es date
+				if (valueInput1.includes("-") == true) {//inputText1
+					var valueInput1Array = valueInput1.split("-");
+					if (valueInput1.includes("/")) {
+						if (valueInput1Array.length == 5) {
+							if (valueInput1Array[0].length == 4 & valueInput1Array[1].length == 2 & valueInput1Array[2][2] == "T" & valueInput1.endsWith("Z")) {
+								inputText1 = "date";
+								console.log("és una data");
+							}
+						}
+					}else{
+						if (valueInput1Array.length == 3) {
+							if (valueInput1Array[0].length == 4 & valueInput1Array[1].length == 2 & valueInput1Array[2][2] == "T" & valueInput1.endsWith("Z")) {
+								inputText1 = "date";
+								console.log("és una data");
+							}
+						}
 					}
-				}else if (valueInput2.length==0){
-					inputText2 = "number";
-				}else {inputText2 = "text";}
+					
+				}
+				if (valueInput2.includes("-") == true) {//inputText1
+					var valueInput2Array = valueInput2.split("-");
+					if (valueInput2.includes("/")) {
+						if (valueInput2Array.length == 5) {
+							if (valueInput2Array[0].length == 4 & valueInput2Array[1].length == 2 & valueInput2Array[2][2] == "T" & valueInput2.endsWith("Z")) {
+								inputText2 = "date";
+								console.log("és una data");
+							}
+						}
+					}else{
+						if (valueInput2Array.length == 3) {
+							if (valueInput2Array[0].length == 4 & valueInput2Array[1].length == 2 & valueInput2Array[2][2] == "T" & valueInput2.endsWith("Z")) {
+								inputText2 = "date";
+								console.log("és una data");
+							}
+						}
+					}
+					
+				}
+
+				if (inputText1 != "date") {
+					if (Number.isNaN(parseInt(valueInput1)) != true) { //numero
+						if (valueInput1.length != parseInt(valueInput1).toString().length & valueInput1.length != parseFloat(valueInput1).toString().length) {
+							inputText1 = "text";
+						} else { //número en valueInput1
+							inputText1 = "number";
+						}
+					} else if (valueInput1.length == 0) { //si està buit
+						inputText1 = "number";
+					} else { inputText1 = "text"; }
+				}
+
+				if (inputText2 != "date") {
+					if (Number.isNaN(parseInt(valueInput2)) != true) { //Si el primer no és número mirem el segon
+						if (valueInput2.length != parseInt(valueInput2).toString().length & valueInput2.length != parseFloat(valueInput2).toString().length) {
+							inputText2 = "text";
+						} else {
+							inputText2 = "number";
+						}
+					} else if (valueInput2.length == 0) {
+						inputText2 = "number";
+					} else { inputText2 = "text"; }
+				}
 
 
 				if (inputText1 == "text" || inputText2 == "text") {
 					typeOfValues = "text";
+				} else if (inputText1 == "date" & inputText2 == "date") {
+					typeOfValues = "date";
 				} else {
 					typeOfValues = "number";
 				}
 			}
 			console.log(typeOfValues);
-
-
 
 
 			//remove options (childs)
