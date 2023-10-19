@@ -1564,7 +1564,6 @@
 				}
 			}
 		}
-
 		function closeModalSelect(place, place_Id, button, row, selector, nodeId) {
 			event.preventDefault();
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
@@ -1607,7 +1606,6 @@
 				saveButton.disabled = false;
 			}
 
-
 			//Falta escriure l'opcio del select (???')')
 			if (button == "ok") {
 				if (interval == false) {
@@ -1627,7 +1625,6 @@
 
 
 		}
-
 		function changeWriteToSelect(nodeId, place, selector) {  //Que pugui recollir el text del input
 			event.preventDefault();
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
@@ -1675,7 +1672,6 @@
 			}
 
 		}
-
 		function isAnObject(nodeId, place) {
 			var select = document.getElementById("selectorValue" + place);
 			var selectOption = select.options[select.selectedIndex].value;
@@ -1687,53 +1683,61 @@
 			// 	console.log(typeof selectOption);
 			// }
 		}
-		function changeSelectConditionValues(place,wichTextInput,value1, valueInput1, valueInput2 ) {
-///////Select Condition
-			//(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent,interval)
-			//interval => Mirar si es un numero. En l'interval posar Interval o "no",
-			//En el editRowContent, crear un arrai on el tercer ([2]) valor sigui el q hi ha actual al condition. Si hi ha un d'interval quan no es pot selecciona, q aparegui el primer
-			//----------------Fet: El button era changeCondition
+		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
+
 			var typeOfValues;
 			var selectCondition = document.getElementById("selectorCondition" + place);
 			var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
 
-			var value1, ValueInput1, valueInput2;
-
-
-
-
 			if (wichTextInput == "simple") {
-				console.log(value1);
-				console.log(typeof value1);
-				console.log(parseInt(value1));
-
-
-
-				if (Number.isNaN(parseInt(value1)) != true) {
+				if (Number.isNaN(parseInt(value1)) != true) { 
 					if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
-						// console.log("NaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaN");
-						// console.log("value length:  "+value1.length+", parseIntLenght:  "+parseInt(value1).toString().length);
 						typeOfValues = "text";
-					} else {
-						typeOfValues = "number";
-						console.log("number")
-					}
+					} else { typeOfValues = "number"; }
 
-				} else {
-					typeOfValues = "text";
-					console.log("text")
-				}
-
-
-				// createSelect(2, place, placeId, nodeId, "no", "no", "changeCondition", actualConditionSelected, typeOfValues);
-
-			} else {//interval
+				} else { typeOfValues = "text"; }
 
 			}
+			else {//interval
+				var inputText1 = "no";
+				var inputText2 = "no";
+				// console.log("intervalllllllll");
+				console.log(valueInput1);
+				console.log("input2:  "+valueInput2);
+				console.log("parseint:    "+parseInt(valueInput1));
+				if (Number.isNaN(parseInt(valueInput1)) != true) { //numero
+					if (valueInput1.length != parseInt(valueInput1).toString().length & valueInput1.length != parseFloat(valueInput1).toString().length) {
+						inputText1 = "text";
+					} else { //número en valueInput1
+						inputText1 = "number";
+					}
+				}else if (valueInput1.length==0){
+					inputText1 = "number";
+				}else {inputText1 = "text";}
+
+				if (Number.isNaN(parseInt(valueInput2)) != true) { //Si el primer no és número mirem el segon
+					if (valueInput2.length != parseInt(valueInput2).toString().length & valueInput2.length != parseFloat(valueInput2).toString().length) {
+						inputText2 = "text";
+					} else {
+						inputText2 = "number";
+					}
+				}else if (valueInput2.length==0){
+					inputText2 = "number";
+				}else {inputText2 = "text";}
+
+
+				if (inputText1 == "text" || inputText2 == "text") {
+					typeOfValues = "text";
+				} else {
+					typeOfValues = "number";
+				}
+			}
+			console.log(typeOfValues);
+
+
+
 
 			//remove options (childs)
-
-			//e.firstElementChild can be used. 
 			var child = selectCondition.lastElementChild;
 			while (child) {
 				selectCondition.removeChild(child);
@@ -1741,36 +1745,25 @@
 			}
 
 			var selectContent;
-			if (typeOfValues == "number") {
-				selectContent = selectConditionContentNumber;
-			} else if (typeOfValues == "text") { //text
-				selectContent = selectConditionContentText;
-			} else { //data
-				selectContent = selectConditionContent;
-			}
+			if (typeOfValues == "number") { selectContent = selectConditionContentNumber; }
+			else if (typeOfValues == "text") { selectContent = selectConditionContentText; } //text
+			else { selectContent = selectConditionContent; }//data
 
 
 			for (var i = 0; i < selectContent.length; i++) { //crear les opcions del selector de condició
 				var opcioCondicio = document.createElement("option");
 				opcioCondicio.setAttribute("value", i);
-				// selectCondition.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + place + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
 				opcioCondicio.innerHTML = selectContent[i];
 				if (i == actualConditionSelected) {
 					opcioCondicio.setAttribute("selected", true);
 				}
-
 				selectCondition.appendChild(opcioCondicio);
 			}
 		}
-
-
 		function adjustWidth(place, placeId, wichTextInput, nodeId) { //and refill conditionSelect (interval if it is a number or a date)
-
 			var textInput, textIputInterval1, textIputInterval2;
-
-			if (wichTextInput == "simple") {
-				textInput = document.getElementById("textInput" + place);
-			} else {
+			if (wichTextInput == "simple") { textInput = document.getElementById("textInput" + place); }
+			else {
 				textIputInterval1 = document.getElementById("textInputInterval1" + place);
 				textIputInterval2 = document.getElementById("textInputInterval2" + place);
 			}
@@ -1781,7 +1774,6 @@
 
 
 			if (wichTextInput == "interval") {
-
 				valueInput1 = textIputInterval1.value;
 				valueLengthInterval1 = valueInput1.length;
 				valueInput2 = textIputInterval2.value;
@@ -1789,7 +1781,6 @@
 			} else {
 				value1 = textInput.value;
 				valueLength = value1.length;
-
 			}
 
 			if (valueLength > 15) {
@@ -1808,11 +1799,9 @@
 					textInput2.style.width = "100px";
 				}
 			}
-			changeSelectConditionValues(place,wichTextInput, value1, valueInput1, valueInput2 )
 
-			
+			changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2); //canviar les opcions del selector en funció del tipus de valor del inputText
 		}
-
 		function createSelectorRowFilters(dataAttributes, nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
 			var selectorStructureRow;
@@ -1869,9 +1858,6 @@
 			divIsAnObject.appendChild(imageIsAnObject);
 			divFilterBox.appendChild(divIsAnObject);
 
-
-
-
 			var table = document.createElement("table");
 			table.setAttribute("id", "tableResult");
 			table.setAttribute("class", "borderTable");
@@ -1895,8 +1881,6 @@
 
 
 		}
-
-
 		function addSelected(nodeId, place) {
 			event.preventDefault();
 			var table = document.getElementById("tableResult");
@@ -1931,6 +1915,7 @@
 
 				intervalValues.push(textInputInterval1.value);
 				intervalValues.push(textInputInterval2.value);
+
 				tableContent.push(intervalValues);
 			}
 
@@ -2048,10 +2033,6 @@
 			}
 
 		}
-
-
-
-
 		function createSelect(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent, typeOfValues) {
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
@@ -2165,6 +2146,16 @@
 				textInput.addEventListener("input", function () {
 					adjustWidth(place, place_Id, "simple", nodeId)
 				});
+				textInput.addEventListener("keypress", function (event) {
+					// If the user presses the "Enter" key on the keyboard
+					if (event.key === "Enter") {
+						event.preventDefault();
+						if (place == "_optionsRow") {
+							addSelected(nodeId, place);
+						}
+
+					}
+				});
 
 				placeId.appendChild(textInput);
 				if (button == "edit") {
@@ -2172,14 +2163,11 @@
 					adjustWidth(place, place_Id, "simple", nodeId);
 				}
 
-
 				var row = rowsNumbers - 1;
-
 				var okButton = document.createElement("button");
 				okButton.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','ok'," + row + ",'simple','" + nodeId + "')");
 				okButton.setAttribute("id", "okButton" + place);
 				okButton.innerHTML = "Ok";
-
 
 				divFilterContainer.appendChild(select);
 				var cancelButton = document.createElement("button");
@@ -2187,8 +2175,6 @@
 				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','cancel'," + row + ",'simple','" + nodeId + "')");
 				cancelButton.setAttribute("id", "cancelButton" + place);
 				cancelButton.innerHTML = "Cancel";
-
-
 
 				var writeButton = document.createElement("button");
 				writeButton.innerHTML = "...";
@@ -2300,8 +2286,6 @@
 			//dibuixar taula
 			drawTable(nodeId, tableContent, "arrow", row, "no");
 		}
-
-
 		function readTableFilterRow(nodeId, row) {
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
@@ -2399,8 +2383,6 @@
 			console.log(tableResults);
 			return tableResults;
 		}
-
-
 		function drawTable(nodeId, tableContentNew, button, row, editRowContent) {
 			var contador = 1;
 			var table = document.getElementById("tableResult");
@@ -2484,16 +2466,34 @@
 							tableTh.setAttribute("id", idCondition);
 							tableTr.appendChild(tableTh);
 
+							//mirar tipus de dada 
+							var typeOfValues;
+							var value1 = tableContentNew[(r + 3)];
+							if (Number.isNaN(parseInt(value1)) != true) {
+								if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
+									//console.log("NaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaN");
+									// console.log("value length:  "+value1.length+", parseIntLenght:  "+parseInt(value1).toString().length);
+									typeOfValues = "text";
+								} else { typeOfValues = "number"; }
+
+							} else { typeOfValues = "text"; }
+
+
+							var selectContent;
+							if (typeOfValues == "number") { selectContent = selectConditionContentNumber; }
+							else if (typeOfValues == "text") { selectContent = selectConditionContentText; } //text
+							else { selectContent = selectConditionContent; }//data
+
+
+
 							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
-								tableTh.innerHTML = selectConditionContent[tableContentNew[r + 2]];
+								tableTh.innerHTML = selectContent[tableContentNew[r + 2]];
 								tableTh.setAttribute("value", tableContentNew[r + 2]);
 
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
 								// 	//muntar input/select amb opicio seleccionada
-
 								createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, editRowContent);
-
 
 							}
 
@@ -2572,7 +2572,6 @@
 
 
 		}
-
 		function eraseTable() {
 			var table = document.getElementById("tableResult");
 			var a = 1;
@@ -2595,7 +2594,7 @@
 			//borrar taula
 			eraseTable();
 
-			//drawTable(....)
+
 			drawTable(nodeId, tableContent, "insert", row, "no");
 
 			//amagar els botons de edit,Insert, mostrar botó save i mantenir suprimir
@@ -2626,7 +2625,6 @@
 
 			}
 		}
-
 		function saveRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);
@@ -2660,8 +2658,6 @@
 			var addButton = document.getElementById("addButton");
 			addButton.disabled = false;
 		}
-
-
 		function editRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);
@@ -2707,8 +2703,6 @@
 
 			}
 		}
-
-
 		function deleteRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0); //agafar els valors de la taula
@@ -2741,13 +2735,12 @@
 			console.log(tableContent);
 			console.log(tableContentNew);
 			contador = 1;
-			//tornar a pintar la taula (drawTable)
+			//tornar a pintar la taula 
 			drawTable(nodeId, tableContentNew, "delete");
 
 
 
 		}
-
 		function GetSelectorsForRowFilter(nodeId) {
 			var divSelectorStructure;
 			divSelectorStructure = `<div id=selectorRowsContainer>
@@ -2755,7 +2748,6 @@
 				<div id='divSelectorRowsFilter'></div></div>`;
 			return divSelectorStructure;
 		}
-
 		function GetHTMLTable(data, dataAttributesInput, rowNumbers, rowChecks) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
 			var cdns = [], needhref = [], record, cell, dataAttribute;
@@ -2813,7 +2805,6 @@
 			cdns.push("</table>");
 			return cdns.join("");
 		}
-
 		function ShowTableDialog(nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
 
@@ -2826,7 +2817,6 @@
 				document.getElementById("ShowTableRowNumberDialogOK").checked ? true : false,
 				false);
 		}
-
 		function StringifyObjectElements(data, dataAttributesInput) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
 			var jsonTable = [];
@@ -2843,8 +2833,6 @@
 			}
 			return jsonTable;
 		}
-
-
 		function GetGeoJSON(data, selectedOptions) {
 			var dataSorted = JSON.parse(JSON.stringify(data)), geojson = { "type": "FeatureCollection", "features": [] };
 
