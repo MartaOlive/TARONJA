@@ -1443,6 +1443,132 @@
 			else
 				return "string";
 		}
+		function typeOfValueFromInput(wichTextInput, place, value1, value2) {
+			var typeOfValues;
+			if (wichTextInput == "simple") {
+				var textInput = document.getElementById("textInput" + place);
+			}
+			else {
+				var textIputInterval1 = document.getElementById("textInputInterval1" + place);
+				var textIputInterval2 = document.getElementById("textInputInterval2" + place);
+			}
+			if (wichTextInput == "simple") {
+				if (value1.includes("-") == true) {//inputText1
+					var value1Array = value1.split("-");
+					if (value1.includes("/")) {
+						if (value1Array.length == 5) {
+							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+								typeOfValues = "date";
+								console.log("és una data");
+							}
+						}
+					} else {
+						if (value1Array.length == 3) {
+							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+								typeOfValues = "date";
+								console.log("és una data");
+							}
+						}
+					}
+
+				}
+				if (typeOfValues != "date") {
+					if (Number.isNaN(parseInt(value1)) != true) {
+						if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
+							typeOfValues = "text";
+						} else {
+							typeOfValues = "number";
+						}
+
+					} else {
+						typeOfValues = "text";
+					}
+				}
+
+			}
+			else {//interval
+				var inputText1 = "no";
+				var inputText2 = "no";
+
+				//es date
+				if (value1.includes("-") == true) {//inputText1
+					var value1Array = value1.split("-");
+					if (value1.includes("/")) {
+						if (value1Array.length == 5) {
+							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+								inputText1 = "date";
+								console.log("és una data");
+							}
+						}
+					} else {
+						if (value1Array.length == 3) {
+							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+								inputText1 = "date";
+								console.log("és una data");
+							}
+						}
+					}
+
+				}
+
+				if (value2.includes("-") == true) {//inputText1
+					var value2Array = value2.split("-");
+					if (value2.includes("/")) {
+						if (value2Array.length == 5) {
+							if (value2Array[0].length == 4 & value2Array[1].length == 2 & value2Array[2][2] == "T" & value2.endsWith("Z")) {
+								inputText2 = "date";
+								console.log("és una data");
+							}
+						}
+					} else {
+						if (value2Array.length == 3) {
+							if (value2Array[0].length == 4 & value2Array[1].length == 2 & value2Array[2][2] == "T" & value2.endsWith("Z")) {
+								inputText2 = "date";
+								console.log("és una data");
+							}
+						}
+					}
+
+				}
+
+				if (inputText1 != "date") {
+					if (Number.isNaN(parseInt(value1)) != true) { //numero
+						if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
+							inputText1 = "text";
+						} else { //número en value1
+							inputText1 = "number";
+						}
+					} else if (value1.length == 0) { //si està buit
+						inputText1 = "number";
+					} else { inputText1 = "text"; }
+				}
+
+				if (inputText2 != "date") {
+					if (Number.isNaN(parseInt(value2)) != true) { //Si el primer no és número mirem el segon
+						if (value2.length != parseInt(value2).toString().length & value2.length != parseFloat(value2).toString().length) {
+							inputText2 = "text";
+						} else {
+							inputText2 = "number";
+						}
+					} else if (value2.length == 0) {
+						inputText2 = "number";
+					} else { inputText2 = "text"; }
+				}
+
+
+				if (inputText1 == "text" || inputText2 == "text") {
+					typeOfValues = "text";
+				} else if (inputText1 == "date" & inputText2 == "date") {
+					typeOfValues = "date";
+
+				} else {
+					typeOfValues = "number";
+				}
+			}
+			console.log(typeOfValues);
+			return typeOfValues;
+
+		}
 
 		function getDataAttributes(data) {
 			var dataAttributes = {}, dataAttribute, type;
@@ -1475,11 +1601,9 @@
 			}
 			return dataAttributes;
 		}
-
 		function isAttributeAnyURI(s) {
 			return (s == "url" || s == "definition" || s.endsWith("@iot.selfLink") || s.endsWith("@iot.navigationLink"));
 		}
-
 		function fillValueSelector(nodeId, place) {
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
@@ -1683,266 +1807,17 @@
 			// 	console.log(typeof selectOption);
 			// }
 		}
-		function typeOfValue(wichTextInput, value1,value2) {
-			var typeOfValue;
-			if (wichTextInput == "simple") {
-				if (value1.includes("-") == true) {//inputText1
-					var value1Array = value1.split("-");
-					if (value1.includes("/")) {
-						if (value1Array.length == 5) {
-							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
-								typeOfValues = "date";
-								textInput.setAttribute("name", "date");
-								console.log("és una data");
-							}
-						}
-					} else {
-						if (value1Array.length == 3) {
-							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
-								typeOfValues = "date";
-								textInput.setAttribute("name", "date");
-								console.log("és una data");
-							}
-						}
-					}
-
-				}
-				if (typeOfValues != "date") {
-					if (Number.isNaN(parseInt(value1)) != true) {
-						if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
-							typeOfValues = "text";
-							textInput.setAttribute("name", "text");
-						} else {
-							typeOfValues = "number";
-							textInput.setAttribute("name", "number");
-						}
-
-					} else {
-						typeOfValues = "text";
-						textInput.setAttribute("name", "text");
-					}
-				}
-
-			}
-			else {//interval
-				var inputText1 = "no";
-				var inputText2 = "no";
-
-				//es date
-				if (valueInput1.includes("-") == true) {//inputText1
-					var valueInput1Array = valueInput1.split("-");
-					if (valueInput1.includes("/")) {
-						if (valueInput1Array.length == 5) {
-							if (valueInput1Array[0].length == 4 & valueInput1Array[1].length == 2 & valueInput1Array[2][2] == "T" & valueInput1.endsWith("Z")) {
-								inputText1 = "date";
-								console.log("és una data");
-							}
-						}
-					} else {
-						if (valueInput1Array.length == 3) {
-							if (valueInput1Array[0].length == 4 & valueInput1Array[1].length == 2 & valueInput1Array[2][2] == "T" & valueInput1.endsWith("Z")) {
-								inputText1 = "date";
-								console.log("és una data");
-							}
-						}
-					}
-
-				}
-				if (valueInput2.includes("-") == true) {//inputText1
-					var valueInput2Array = valueInput2.split("-");
-					if (valueInput2.includes("/")) {
-						if (valueInput2Array.length == 5) {
-							if (valueInput2Array[0].length == 4 & valueInput2Array[1].length == 2 & valueInput2Array[2][2] == "T" & valueInput2.endsWith("Z")) {
-								inputText2 = "date";
-								console.log("és una data");
-							}
-						}
-					} else {
-						if (valueInput2Array.length == 3) {
-							if (valueInput2Array[0].length == 4 & valueInput2Array[1].length == 2 & valueInput2Array[2][2] == "T" & valueInput2.endsWith("Z")) {
-								inputText2 = "date";
-								console.log("és una data");
-							}
-						}
-					}
-
-				}
-
-				if (inputText1 != "date") {
-					if (Number.isNaN(parseInt(valueInput1)) != true) { //numero
-						if (valueInput1.length != parseInt(valueInput1).toString().length & valueInput1.length != parseFloat(valueInput1).toString().length) {
-							inputText1 = "text";
-						} else { //número en valueInput1
-							inputText1 = "number";
-						}
-					} else if (valueInput1.length == 0) { //si està buit
-						inputText1 = "number";
-					} else { inputText1 = "text"; }
-				}
-
-				if (inputText2 != "date") {
-					if (Number.isNaN(parseInt(valueInput2)) != true) { //Si el primer no és número mirem el segon
-						if (valueInput2.length != parseInt(valueInput2).toString().length & valueInput2.length != parseFloat(valueInput2).toString().length) {
-							inputText2 = "text";
-						} else {
-							inputText2 = "number";
-						}
-					} else if (valueInput2.length == 0) {
-						inputText2 = "number";
-					} else { inputText2 = "text"; }
-				}
-
-
-				if (inputText1 == "text" || inputText2 == "text") {
-					typeOfValues = "text";
-					textIputInterval1.setAttribute("name", "text");
-				} else if (inputText1 == "date" & inputText2 == "date") {
-					typeOfValues = "date";
-					textIputInterval1.setAttribute("name", "date");
-				} else {
-					typeOfValues = "number";
-					textIputInterval1.setAttribute("name", "number");
-				}
-			}
-			console.log(typeOfValues);
-			return typeOfValue;
-
-		}
-
 		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
 			var typeOfValues;
 			var selectCondition = document.getElementById("selectorCondition" + place);
 
-			if (wichTextInput == "simple") { var textInput = document.getElementById("textInput" + place); }
-			else {
-				var textIputInterval1 = document.getElementById("textInputInterval1" + place);
-				var textIputInterval2 = document.getElementById("textInputInterval2" + place);
+			if (wichTextInput == "simple") {
+				typeOfValues = typeOfValueFromInput(wichTextInput, place, value1);
+			} else {
+				typeOfValues = typeOfValueFromInput(wichTextInput, place, valueInput1, valueInput2);
 			}
 			var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
 
-			// if (wichTextInput == "simple") {
-			// 	if (value1.includes("-") == true) {//inputText1
-			// 		var value1Array = value1.split("-");
-			// 		if (value1.includes("/")) {
-			// 			if (value1Array.length == 5) {
-			// 				if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
-			// 					typeOfValues = "date";
-			// 					textInput.setAttribute("name", "date");
-			// 					console.log("és una data");
-			// 				}
-			// 			}
-			// 		} else {
-			// 			if (value1Array.length == 3) {
-			// 				if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
-			// 					typeOfValues = "date";
-			// 					textInput.setAttribute("name", "date");
-			// 					console.log("és una data");
-			// 				}
-			// 			}
-			// 		}
-
-			// 	}
-			// 	if (typeOfValues != "date") {
-			// 		if (Number.isNaN(parseInt(value1)) != true) {
-			// 			if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
-			// 				typeOfValues = "text";
-			// 				textInput.setAttribute("name", "text");
-			// 			} else {
-			// 				typeOfValues = "number";
-			// 				textInput.setAttribute("name", "number");
-			// 			}
-
-			// 		} else {
-			// 			typeOfValues = "text";
-			// 			textInput.setAttribute("name", "text");
-			// 		}
-			// 	}
-
-			// }
-			// else {//interval
-			// 	var inputText1 = "no";
-			// 	var inputText2 = "no";
-
-			// 	//es date
-			// 	if (valueInput1.includes("-") == true) {//inputText1
-			// 		var valueInput1Array = valueInput1.split("-");
-			// 		if (valueInput1.includes("/")) {
-			// 			if (valueInput1Array.length == 5) {
-			// 				if (valueInput1Array[0].length == 4 & valueInput1Array[1].length == 2 & valueInput1Array[2][2] == "T" & valueInput1.endsWith("Z")) {
-			// 					inputText1 = "date";
-			// 					console.log("és una data");
-			// 				}
-			// 			}
-			// 		} else {
-			// 			if (valueInput1Array.length == 3) {
-			// 				if (valueInput1Array[0].length == 4 & valueInput1Array[1].length == 2 & valueInput1Array[2][2] == "T" & valueInput1.endsWith("Z")) {
-			// 					inputText1 = "date";
-			// 					console.log("és una data");
-			// 				}
-			// 			}
-			// 		}
-
-			// 	}
-			// 	if (valueInput2.includes("-") == true) {//inputText1
-			// 		var valueInput2Array = valueInput2.split("-");
-			// 		if (valueInput2.includes("/")) {
-			// 			if (valueInput2Array.length == 5) {
-			// 				if (valueInput2Array[0].length == 4 & valueInput2Array[1].length == 2 & valueInput2Array[2][2] == "T" & valueInput2.endsWith("Z")) {
-			// 					inputText2 = "date";
-			// 					console.log("és una data");
-			// 				}
-			// 			}
-			// 		} else {
-			// 			if (valueInput2Array.length == 3) {
-			// 				if (valueInput2Array[0].length == 4 & valueInput2Array[1].length == 2 & valueInput2Array[2][2] == "T" & valueInput2.endsWith("Z")) {
-			// 					inputText2 = "date";
-			// 					console.log("és una data");
-			// 				}
-			// 			}
-			// 		}
-
-			// 	}
-
-			// 	if (inputText1 != "date") {
-			// 		if (Number.isNaN(parseInt(valueInput1)) != true) { //numero
-			// 			if (valueInput1.length != parseInt(valueInput1).toString().length & valueInput1.length != parseFloat(valueInput1).toString().length) {
-			// 				inputText1 = "text";
-			// 			} else { //número en valueInput1
-			// 				inputText1 = "number";
-			// 			}
-			// 		} else if (valueInput1.length == 0) { //si està buit
-			// 			inputText1 = "number";
-			// 		} else { inputText1 = "text"; }
-			// 	}
-
-			// 	if (inputText2 != "date") {
-			// 		if (Number.isNaN(parseInt(valueInput2)) != true) { //Si el primer no és número mirem el segon
-			// 			if (valueInput2.length != parseInt(valueInput2).toString().length & valueInput2.length != parseFloat(valueInput2).toString().length) {
-			// 				inputText2 = "text";
-			// 			} else {
-			// 				inputText2 = "number";
-			// 			}
-			// 		} else if (valueInput2.length == 0) {
-			// 			inputText2 = "number";
-			// 		} else { inputText2 = "text"; }
-			// 	}
-
-
-			// 	if (inputText1 == "text" || inputText2 == "text") {
-			// 		typeOfValues = "text";
-			// 		textIputInterval1.setAttribute("name", "text");
-			// 	} else if (inputText1 == "date" & inputText2 == "date") {
-			// 		typeOfValues = "date";
-			// 		textIputInterval1.setAttribute("name", "date");
-			// 	} else {
-			// 		typeOfValues = "number";
-			// 		textIputInterval1.setAttribute("name", "number");
-			// 	}
-			// }
-			// console.log(typeOfValues);
-
-
-			
 
 			//remove options (childs)
 			var child = selectCondition.lastElementChild;
@@ -2097,6 +1972,7 @@
 			var textInput = document.getElementById("textInput" + place);
 			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
 			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
+			var typeOfValues;
 
 			//llegir taula
 			var tableContent = [];
@@ -2116,7 +1992,8 @@
 
 			if (textInput.classList.contains("hidden") == false) {
 				tableContent.push(textInput.value);
-				tableContent.push(textInput.name);
+				typeOfValues = typeOfValueFromInput("simple", place, textInput.value);
+				tableContent.push(typeOfValues);
 			} else { //valors de l'interval
 				var intervalValues = [];
 
@@ -2124,7 +2001,8 @@
 				intervalValues.push(textInputInterval2.value);
 
 				tableContent.push(intervalValues);
-				tableContent.push(textInputInterval1.name); //afegir el tipus
+				typeOfValues = typeOfValueFromInput("interval", place, textInputInterval1.value, textInputInterval2.value);
+				tableContent.push(typeOfValues); //afegir el tipus
 			}
 
 
@@ -2453,37 +2331,38 @@
 
 			var row2 = parseInt(row);
 			console.log(typeof row2);
-			var position = (row2 - 1) * 4;
+			var position = (row2 - 1) * 5;
 
 			//Copiar la fila
 			var rowValuesToKeep = []
 
-			for (var i = 0; i < tableContent.length; i += 4) {
+			for (var i = 0; i < tableContent.length; i += 5) {
 				if (i == position) {
 					rowValuesToKeep.push(tableContent[i]);
 					rowValuesToKeep.push(tableContent[i + 1]);
 					rowValuesToKeep.push(tableContent[i + 2]);
 					rowValuesToKeep.push(tableContent[i + 3]);
+					rowValuesToKeep.push(tableContent[i + 4]);
 				}
 			}
 			//console.log("fila que s'ha de moure    " + rowValuesToKeep);
 
-			tableContent.splice((position), 4); //treure els valors
+			tableContent.splice((position), 5); //treure els valors
 			//console.log("despres del splice    " + tableContent);
 
 			if (arrow == "up") {
-				if (position - 4 < 0) {
+				if (position - 5 < 0) {
 					position = 0;
 				} else {
-					position = position - 4;
+					position = position - 5;
 				}
 				console.log("position:  " + position);
 				tableContent.splice((position), 0, ...rowValuesToKeep); //funciona
 			} else if (arrow == "down") {
-				if (position + 4 > tableContent.length) {
+				if (position + 5 > tableContent.length) {
 					position = position;
 				} else {
-					position = position + 4;
+					position = position + 5;
 				}
 
 				//console.log("position:  " + position);
@@ -2541,8 +2420,6 @@
 								valor.setAttribute("value", null);
 							}
 						}
-
-
 					}
 					else { //Els que no són el saveRow
 						//mirar si és un interval (Conté ---al value)
@@ -2557,8 +2434,6 @@
 							valueText = valor.innerHTML;
 							console.log("per aqui")
 						}
-
-
 					}
 
 					if (r == 1) {
@@ -2571,15 +2446,19 @@
 					tableResults.push(propertyText);
 					tableResults.push(conditionText);
 
-
-					if (valueOfValor != null) {
+					var type;
+					if (valueOfValor != null) { //interval
 						if (valueOfValor.includes("---")) { //se que té un interval.
 							arrayValors.push(valueOfValor.split("---")[0]);
 							arrayValors.push(valueOfValor.split("---")[1]);
 							tableResults.push(arrayValors);
+							type = typeOfValueFromInput("interval", "_tableResult", arrayValors[0], arrayValors[1]);
+							 tableResults.push(type);
 						}
-					} else {
+					} else {//simple
 						tableResults.push(valueText);
+						type = typeOfValueFromInput("simple", "_tableResult", valueText, "no");
+						tableResults.push(type);
 					}
 
 
@@ -2600,7 +2479,7 @@
 
 
 			if (tableContentNew.length != 0) {
-				for (var r = 0; r < tableContentNew.length; r += 5) { //recorrerem tot l'arrai dels elements guardats, de 4 en 4 (4valors a guardar per linea)
+				for (var r = 0; r < tableContentNew.length; r += 5) { //recorrerem tot l'arrai dels elements guardats, de 5 en 5 (5valors a guardar per linea)
 					var tableTr = document.createElement("tr");
 					tableTr.setAttribute("id", "tableTr_" + contador); //Fila 1, 2, 3, 4.. (contador suma 1 per volta)
 					table.appendChild(tableTr);
@@ -2608,7 +2487,6 @@
 					for (var a = 0; a < 5; a++) { //5 columnes (crearem cada fila, columna a columna. La a indica la columna)comença al 0 perque l'arrai comença en [0]
 						var tableTh = document.createElement("th");
 						tableTh.setAttribute("class", "borderTable");
-
 
 						if (a == 0) { //Columna del ar or not ()
 							tableTr.appendChild(tableTh);
@@ -2679,15 +2557,7 @@
 							//mirar tipus de dada 
 							var typeOfValues;
 							var value1 = tableContentNew[(r + 3)];
-							if (Number.isNaN(parseInt(value1)) != true) {
-								if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
-									//console.log("NaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaN");
-									// console.log("value length:  "+value1.length+", parseIntLenght:  "+parseInt(value1).toString().length);
-									typeOfValues = "text";
-								} else { typeOfValues = "number"; }
-
-							} else { typeOfValues = "text"; }
-
+							typeOfValues = tableContentNew[(r + 4)];
 
 							var selectContent;
 							if (typeOfValues == "number") { selectContent = selectConditionContentNumber; }
@@ -2796,9 +2666,9 @@
 			var tableContent = readTableFilterRow(nodeId, 0);//agafar el contingut, i afegir " " en el lloc on toqui.Per ccrear una fila buida on somplirà amb selects
 
 			var row2 = parseInt(row);
-			var position = (row2 - 1) * 4;
+			var position = (row2 - 1) * 5;
 
-			tableContent.splice(position, 0, "insertSelect", "insertSelect", "insertSelect", "insertSelect");
+			tableContent.splice(position, 0, "insertSelect", "insertSelect", "insertSelect", "insertSelect", "insertSelect");
 			//console.log(tableContent);
 
 			//borrar taula
@@ -2931,12 +2801,13 @@
 			var tableContentNew = [];
 			var contador = 1;
 
-			for (var i = 0; i < tableContent.length; i += 4) {
+			for (var i = 0; i < tableContent.length; i += 5) {
 				if (row != contador) {
 					tableContentNew.push(tableContent[i]);
 					tableContentNew.push(tableContent[i + 1]);
 					tableContentNew.push(tableContent[i + 2]);
 					tableContentNew.push(tableContent[i + 3]);
+					tableContentNew.push(tableContent[i + 4]);
 				}
 
 				contador++;
