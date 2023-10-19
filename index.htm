@@ -1683,11 +1683,8 @@
 			// 	console.log(typeof selectOption);
 			// }
 		}
-		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
-			var typeOfValues;
-			var selectCondition = document.getElementById("selectorCondition" + place);
-			var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
-
+		function typeOfValue(wichTextInput, value1,value2) {
+			var typeOfValue;
 			if (wichTextInput == "simple") {
 				if (value1.includes("-") == true) {//inputText1
 					var value1Array = value1.split("-");
@@ -1695,26 +1692,35 @@
 						if (value1Array.length == 5) {
 							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
 								typeOfValues = "date";
+								textInput.setAttribute("name", "date");
 								console.log("és una data");
 							}
 						}
-					}else{
+					} else {
 						if (value1Array.length == 3) {
 							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
 								typeOfValues = "date";
+								textInput.setAttribute("name", "date");
 								console.log("és una data");
 							}
 						}
 					}
-					
+
 				}
 				if (typeOfValues != "date") {
 					if (Number.isNaN(parseInt(value1)) != true) {
 						if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
 							typeOfValues = "text";
-						} else { typeOfValues = "number"; }
+							textInput.setAttribute("name", "text");
+						} else {
+							typeOfValues = "number";
+							textInput.setAttribute("name", "number");
+						}
 
-					} else { typeOfValues = "text"; }
+					} else {
+						typeOfValues = "text";
+						textInput.setAttribute("name", "text");
+					}
 				}
 
 			}
@@ -1732,7 +1738,7 @@
 								console.log("és una data");
 							}
 						}
-					}else{
+					} else {
 						if (valueInput1Array.length == 3) {
 							if (valueInput1Array[0].length == 4 & valueInput1Array[1].length == 2 & valueInput1Array[2][2] == "T" & valueInput1.endsWith("Z")) {
 								inputText1 = "date";
@@ -1740,7 +1746,7 @@
 							}
 						}
 					}
-					
+
 				}
 				if (valueInput2.includes("-") == true) {//inputText1
 					var valueInput2Array = valueInput2.split("-");
@@ -1751,7 +1757,7 @@
 								console.log("és una data");
 							}
 						}
-					}else{
+					} else {
 						if (valueInput2Array.length == 3) {
 							if (valueInput2Array[0].length == 4 & valueInput2Array[1].length == 2 & valueInput2Array[2][2] == "T" & valueInput2.endsWith("Z")) {
 								inputText2 = "date";
@@ -1759,7 +1765,7 @@
 							}
 						}
 					}
-					
+
 				}
 
 				if (inputText1 != "date") {
@@ -1789,14 +1795,154 @@
 
 				if (inputText1 == "text" || inputText2 == "text") {
 					typeOfValues = "text";
+					textIputInterval1.setAttribute("name", "text");
 				} else if (inputText1 == "date" & inputText2 == "date") {
 					typeOfValues = "date";
+					textIputInterval1.setAttribute("name", "date");
 				} else {
 					typeOfValues = "number";
+					textIputInterval1.setAttribute("name", "number");
 				}
 			}
 			console.log(typeOfValues);
+			return typeOfValue;
 
+		}
+
+		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
+			var typeOfValues;
+			var selectCondition = document.getElementById("selectorCondition" + place);
+
+			if (wichTextInput == "simple") { var textInput = document.getElementById("textInput" + place); }
+			else {
+				var textIputInterval1 = document.getElementById("textInputInterval1" + place);
+				var textIputInterval2 = document.getElementById("textInputInterval2" + place);
+			}
+			var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
+
+			// if (wichTextInput == "simple") {
+			// 	if (value1.includes("-") == true) {//inputText1
+			// 		var value1Array = value1.split("-");
+			// 		if (value1.includes("/")) {
+			// 			if (value1Array.length == 5) {
+			// 				if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+			// 					typeOfValues = "date";
+			// 					textInput.setAttribute("name", "date");
+			// 					console.log("és una data");
+			// 				}
+			// 			}
+			// 		} else {
+			// 			if (value1Array.length == 3) {
+			// 				if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+			// 					typeOfValues = "date";
+			// 					textInput.setAttribute("name", "date");
+			// 					console.log("és una data");
+			// 				}
+			// 			}
+			// 		}
+
+			// 	}
+			// 	if (typeOfValues != "date") {
+			// 		if (Number.isNaN(parseInt(value1)) != true) {
+			// 			if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
+			// 				typeOfValues = "text";
+			// 				textInput.setAttribute("name", "text");
+			// 			} else {
+			// 				typeOfValues = "number";
+			// 				textInput.setAttribute("name", "number");
+			// 			}
+
+			// 		} else {
+			// 			typeOfValues = "text";
+			// 			textInput.setAttribute("name", "text");
+			// 		}
+			// 	}
+
+			// }
+			// else {//interval
+			// 	var inputText1 = "no";
+			// 	var inputText2 = "no";
+
+			// 	//es date
+			// 	if (valueInput1.includes("-") == true) {//inputText1
+			// 		var valueInput1Array = valueInput1.split("-");
+			// 		if (valueInput1.includes("/")) {
+			// 			if (valueInput1Array.length == 5) {
+			// 				if (valueInput1Array[0].length == 4 & valueInput1Array[1].length == 2 & valueInput1Array[2][2] == "T" & valueInput1.endsWith("Z")) {
+			// 					inputText1 = "date";
+			// 					console.log("és una data");
+			// 				}
+			// 			}
+			// 		} else {
+			// 			if (valueInput1Array.length == 3) {
+			// 				if (valueInput1Array[0].length == 4 & valueInput1Array[1].length == 2 & valueInput1Array[2][2] == "T" & valueInput1.endsWith("Z")) {
+			// 					inputText1 = "date";
+			// 					console.log("és una data");
+			// 				}
+			// 			}
+			// 		}
+
+			// 	}
+			// 	if (valueInput2.includes("-") == true) {//inputText1
+			// 		var valueInput2Array = valueInput2.split("-");
+			// 		if (valueInput2.includes("/")) {
+			// 			if (valueInput2Array.length == 5) {
+			// 				if (valueInput2Array[0].length == 4 & valueInput2Array[1].length == 2 & valueInput2Array[2][2] == "T" & valueInput2.endsWith("Z")) {
+			// 					inputText2 = "date";
+			// 					console.log("és una data");
+			// 				}
+			// 			}
+			// 		} else {
+			// 			if (valueInput2Array.length == 3) {
+			// 				if (valueInput2Array[0].length == 4 & valueInput2Array[1].length == 2 & valueInput2Array[2][2] == "T" & valueInput2.endsWith("Z")) {
+			// 					inputText2 = "date";
+			// 					console.log("és una data");
+			// 				}
+			// 			}
+			// 		}
+
+			// 	}
+
+			// 	if (inputText1 != "date") {
+			// 		if (Number.isNaN(parseInt(valueInput1)) != true) { //numero
+			// 			if (valueInput1.length != parseInt(valueInput1).toString().length & valueInput1.length != parseFloat(valueInput1).toString().length) {
+			// 				inputText1 = "text";
+			// 			} else { //número en valueInput1
+			// 				inputText1 = "number";
+			// 			}
+			// 		} else if (valueInput1.length == 0) { //si està buit
+			// 			inputText1 = "number";
+			// 		} else { inputText1 = "text"; }
+			// 	}
+
+			// 	if (inputText2 != "date") {
+			// 		if (Number.isNaN(parseInt(valueInput2)) != true) { //Si el primer no és número mirem el segon
+			// 			if (valueInput2.length != parseInt(valueInput2).toString().length & valueInput2.length != parseFloat(valueInput2).toString().length) {
+			// 				inputText2 = "text";
+			// 			} else {
+			// 				inputText2 = "number";
+			// 			}
+			// 		} else if (valueInput2.length == 0) {
+			// 			inputText2 = "number";
+			// 		} else { inputText2 = "text"; }
+			// 	}
+
+
+			// 	if (inputText1 == "text" || inputText2 == "text") {
+			// 		typeOfValues = "text";
+			// 		textIputInterval1.setAttribute("name", "text");
+			// 	} else if (inputText1 == "date" & inputText2 == "date") {
+			// 		typeOfValues = "date";
+			// 		textIputInterval1.setAttribute("name", "date");
+			// 	} else {
+			// 		typeOfValues = "number";
+			// 		textIputInterval1.setAttribute("name", "number");
+			// 	}
+			// }
+			// console.log(typeOfValues);
+
+
+			
 
 			//remove options (childs)
 			var child = selectCondition.lastElementChild;
@@ -1958,7 +2104,6 @@
 			// console.log("abans d'afegir: " + tableContent);
 
 			//afegir els valors nous
-
 			if (tableContent.length == 0) {
 				tableContent.push("nothing");
 			}
@@ -1971,6 +2116,7 @@
 
 			if (textInput.classList.contains("hidden") == false) {
 				tableContent.push(textInput.value);
+				tableContent.push(textInput.name);
 			} else { //valors de l'interval
 				var intervalValues = [];
 
@@ -1978,10 +2124,13 @@
 				intervalValues.push(textInputInterval2.value);
 
 				tableContent.push(intervalValues);
+				tableContent.push(textInputInterval1.name); //afegir el tipus
 			}
 
+
+
 			// console.log("despres d'afegir: " + tableContent);
-			// console.log(tableContent);
+			console.log(tableContent);
 
 
 			//borrar taula
@@ -2351,7 +2500,7 @@
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
 			var rowsNumber = table.rows.length;
-			var property, propertyText, condition, conditionText, valor, valueText, valueText2, selectorProperty, selectorCondition, inputValue;
+			var property, propertyText, condition, conditionText, valor, valueText, valueText2, selectorProperty, selectorCondition, inputValue, typeOfValue;
 
 			if (rowsNumber > 1) {
 				for (var r = 1; r < rowsNumber; r++) {
@@ -2451,7 +2600,7 @@
 
 
 			if (tableContentNew.length != 0) {
-				for (var r = 0; r < tableContentNew.length; r += 4) { //recorrerem tot l'arrai dels elements guardats, de 4 en 4 (4valors a guardar per linea)
+				for (var r = 0; r < tableContentNew.length; r += 5) { //recorrerem tot l'arrai dels elements guardats, de 4 en 4 (4valors a guardar per linea)
 					var tableTr = document.createElement("tr");
 					tableTr.setAttribute("id", "tableTr_" + contador); //Fila 1, 2, 3, 4.. (contador suma 1 per volta)
 					table.appendChild(tableTr);
