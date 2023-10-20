@@ -1453,6 +1453,7 @@
 				var textIputInterval2 = document.getElementById("textInputInterval2" + place);
 			}
 			if (wichTextInput == "simple") {
+				
 				if (value1.includes("-") == true) {//inputText1
 					var value1Array = value1.split("-");
 					if (value1.includes("/")) {
@@ -1484,12 +1485,14 @@
 						typeOfValues = "text";
 					}
 				}
-
+				if (value1.length==0) {
+					typeOfValues = "empty";
+				}
 			}
 			else {//interval
 				var inputText1 = "no";
 				var inputText2 = "no";
-
+			
 				//es date
 				if (value1.includes("-") == true) {//inputText1
 					var value1Array = value1.split("-");
@@ -1539,7 +1542,7 @@
 							inputText1 = "number";
 						}
 					} else if (value1.length == 0) { //si està buit
-						inputText1 = "number";
+						inputText1 = "empty";
 					} else { inputText1 = "text"; }
 				}
 
@@ -1551,17 +1554,20 @@
 							inputText2 = "number";
 						}
 					} else if (value2.length == 0) {
-						inputText2 = "number";
+						inputText2 = "empty";
 					} else { inputText2 = "text"; }
 				}
-
+		
 
 				if (inputText1 == "text" || inputText2 == "text") {
 					typeOfValues = "text";
-				} else if (inputText1 == "date" & inputText2 == "date") {
+				} else if ((inputText1 == "date" & inputText2 == "empty") ||(inputText1 == "empty" & inputText2 == "date")||(inputText1 == "date" & inputText2 == "date")) {
 					typeOfValues = "date";
 
-				} else {
+				} else if (inputText1 == "empty" & inputText2 == "empty"){
+					typeOfValues = "empty";
+				}
+				else {
 					typeOfValues = "number";
 				}
 			}
@@ -2562,7 +2568,7 @@
 							var selectContent;
 							if (typeOfValues == "number") { selectContent = selectConditionContentNumber; }
 							else if (typeOfValues == "text") { selectContent = selectConditionContentText; } //text
-							else { selectContent = selectConditionContent; }//data
+							else { selectContent = selectConditionContent; }//data and empty
 
 
 
