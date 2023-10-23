@@ -1266,7 +1266,6 @@
 
 		function GetSelectRows(event) { //Al apretar el ok
 			event.preventDefault(); // We don't want to submit this form
-			document.getElementById("DialogSelectRows").close();
 
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
@@ -1297,38 +1296,17 @@
 			else { //El filter està seleccionat
 				var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
 				var table = document.getElementById("tableResult");
-				var tableResults = []; //on es guarden els valors de la taula
+				document.getElementById("DialogSelectRows").close();
+
+				var tableResults; //on es guarden els valors de la taula
 				var rowsNumber = table.rows.length;
+
 				if (rowsNumber > 1) {
-					for (var r = 1; r < rowsNumber; r++) {
-						var property = document.getElementById("th_" + nodeids + "_" + (r) + "_property");
-						var value = document.getElementById("th_" + nodeids + "_" + (r) + "_value");
-
-						if (r == 1) {
-							tableResults.push("0");
-							var propertyText = property.innerHTML;
-							var valueText = value.innerHTML;
-							tableResults.push(propertyText);
-							tableResults.push(valueText);
-						} else {
-							//resultat del select
-							var select = document.getElementById("select_" + nodeids + "_" + (r));
-							tableResults.push(select.options[select.selectedIndex].value);
-							var propertyText = property.innerHTML;
-							var valueText = value.innerHTML;
-							tableResults.push(propertyText);
-							tableResults.push(valueText);
-						}
-
-					}
+					tableResults = readTableFilterRow(nodeids, 0) //row=0?
 					console.log(tableResults);
 				} else { //cap selecció
 					alert("There is nothing selected! The filter will not be applied.");
 				}
-
-
-
-
 
 				//////////////////////////////////////////////Per treure el @iot. No borrar
 				// var node = networkNodes.get(nodeids[0]);
@@ -1342,25 +1320,87 @@
 				// console.log(selectInformationWithoutAt);
 				/////////////////////////////////////////////////////////////////////////////
 
-				// Es posa la info al STAURL
-				for (var i = 0; i < tableResults.length; i += 3) {  //o 3 o 6
-					if (i == 0) { //té segona opció And o or
-						currentNode.STAURL += "?$filter=" + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "' ";
+				// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
+				var condition, andOrNot, URL;
+				URL = currentNode.STAURL;
+				for (var i = 0; i < tableResults.length; i += 5) {  //
+					andOrNot = i;
+					condition = i + 2;// el primer "filtre" es segons la  condició seleccionada
+					if (andOrNot == 0) {
+						URL += "?$filter="
 					} else {
-						currentNode.STAURL += tableResults[i] + " " + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "'";
+						//URL += tableResults[i];
+						if (tableResults[andOrNot]=="and"|| tableResults[andOrNot]=="or"){
+							URL+= tableResults[andOrNot];
+						}else{ //not
+							URL+= "and ("+tableResults[andOrNot];
+						}
+						
+						//or
+						//not
 					}
 
+					if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
+						URL += tableResults[i + 1]
+						switch (tableResults[condition]) {
+							case ' = ':
+								URL += " eq '" + tableResults[i + 3] + "'";
+								break;
+							case ' &ne; ':
+								URL += " ne '" + tableResults[i + 3] + "'";
+								break;
+							case ' &ge; ':
+								URL += " ge '" + tableResults[i + 3] + "'";
+								break;
+							case ' > ':
+								URL += " gt '" + tableResults[i + 3] + "'";
+								break;
+							case ' &le; ':
+								URL += " le '" + tableResults[i + 3] + "'";
+								break;
+							case ' < ':
+								URL += " lt '" + tableResults[i + 3] + "'";
+								break;
+							default:
+								console.log("error en la condició")
+
+						}
+
+					} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
+
+					} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
+
+					} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
+						//URL+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
+					} else if (tableResults[condition] == 'min date time' || tableResults[condition] == 'max date time') {
+
+					}
+
+
+					if (tableResults[andOrNot]=="not"){
+						URL+=")";
+					}
+					// if (i != 0) { //té segona opció And o or
+
+					// 	//currentNode.STAURL += "?$filter=" + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "' ";
+					// }
+					// else {
+					// 	// 		currentNode.STAURL += tableResults[i] + " " + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "'";
+					// 	// 	}
+
+					// }
+					currentNode.STAURL=URL;
+					console.log(currentNode.STAURL);
+					console.log(URL);
 				}
+				currentNode.STAExpectedLength = node.STAExpectedLength;
+				networkNodes.update(currentNode);
+				showInfoMessage("Selecting STA rows...");
+				LoadJSONNodeSTAData(currentNode);
+				UpdateChildenSTAURL(currentNode);
 
-				console.log(currentNode.STAURL);
 			}
-			currentNode.STAExpectedLength = node.STAExpectedLength;
-			networkNodes.update(currentNode);
-			showInfoMessage("Selecting STA rows...");
-			LoadJSONNodeSTAData(currentNode);
-			UpdateChildenSTAURL(currentNode);
 		}
-
 
 		function IdOfSTAEntity(node) {
 			for (var i = 0; i < STAEntitiesArray.length; i++) {
@@ -1453,7 +1493,7 @@
 				var textIputInterval2 = document.getElementById("textInputInterval2" + place);
 			}
 			if (wichTextInput == "simple") {
-				
+
 				if (value1.includes("-") == true) {//inputText1
 					var value1Array = value1.split("-");
 					if (value1.includes("/")) {
@@ -1485,14 +1525,14 @@
 						typeOfValues = "text";
 					}
 				}
-				if (value1.length==0) {
+				if (value1.length == 0) {
 					typeOfValues = "empty";
 				}
 			}
 			else {//interval
 				var inputText1 = "no";
 				var inputText2 = "no";
-			
+
 				//es date
 				if (value1.includes("-") == true) {//inputText1
 					var value1Array = value1.split("-");
@@ -1557,14 +1597,14 @@
 						inputText2 = "empty";
 					} else { inputText2 = "text"; }
 				}
-		
+
 
 				if (inputText1 == "text" || inputText2 == "text") {
 					typeOfValues = "text";
-				} else if ((inputText1 == "date" & inputText2 == "empty") ||(inputText1 == "empty" & inputText2 == "date")||(inputText1 == "date" & inputText2 == "date")) {
+				} else if ((inputText1 == "date" & inputText2 == "empty") || (inputText1 == "empty" & inputText2 == "date") || (inputText1 == "date" & inputText2 == "date")) {
 					typeOfValues = "date";
 
-				} else if (inputText1 == "empty" & inputText2 == "empty"){
+				} else if (inputText1 == "empty" & inputText2 == "empty") {
 					typeOfValues = "empty";
 				}
 				else {
@@ -1819,28 +1859,29 @@
 
 			if (wichTextInput == "simple") {
 				typeOfValues = typeOfValueFromInput(wichTextInput, place, value1);
+
 			} else {
 				typeOfValues = typeOfValueFromInput(wichTextInput, place, valueInput1, valueInput2);
 			}
 			var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
-
-
-			//remove options (childs)
-			var child = selectCondition.lastElementChild;
-			while (child) {
-				selectCondition.removeChild(child);
-				child = selectCondition.lastElementChild;
+			if (wichTextInput == "simple") {
+				//remove options (childs)
+				var child = selectCondition.lastElementChild;
+				while (child) {
+					selectCondition.removeChild(child);
+					child = selectCondition.lastElementChild;
+				}
 			}
 
 			var selectContent;
 			if (typeOfValues == "number") { selectContent = selectConditionContentNumber; }
 			else if (typeOfValues == "text") { selectContent = selectConditionContentText; } //text
-			else { selectContent = selectConditionContent; }//data
+			else { selectContent = selectConditionContent; }//data and empty
 
 
 			for (var i = 0; i < selectContent.length; i++) { //crear les opcions del selector de condició
 				var opcioCondicio = document.createElement("option");
-				opcioCondicio.setAttribute("value", i);
+				opcioCondicio.setAttribute("value", selectContent[i]);
 				opcioCondicio.innerHTML = selectContent[i];
 				if (i == actualConditionSelected) {
 					opcioCondicio.setAttribute("selected", true);
@@ -1848,6 +1889,7 @@
 				selectCondition.appendChild(opcioCondicio);
 			}
 		}
+
 		function adjustWidth(place, placeId, wichTextInput, nodeId) { //and refill conditionSelect (interval if it is a number or a date)
 			var textInput, textIputInterval1, textIputInterval2;
 			if (wichTextInput == "simple") { textInput = document.getElementById("textInput" + place); }
@@ -1889,6 +1931,26 @@
 			}
 
 			changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2); //canviar les opcions del selector en funció del tipus de valor del inputText
+
+			//control del filter i el simple buit
+			var addButton = document.getElementById("addButton");
+			var typeOfValues;
+			if (wichTextInput == "interval") {
+				typeOfValues = typeOfValueFromInput(wichTextInput, place, valueInput1, valueInput2);
+				if (typeOfValues == "text" || typeOfValues == "empty") {
+					addButton.disabled = true;
+				} else {
+					addButton.disabled = false;
+				}
+			} else {
+				console.log("holi carquinyoli")
+				typeOfValues = typeOfValueFromInput(wichTextInput, place, value1);
+				if (typeOfValues == "empty") {
+					addButton.disabled = true;
+				} else {
+					addButton.disabled = false;
+				}
+			}
 		}
 		function createSelectorRowFilters(dataAttributes, nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
@@ -2039,7 +2101,7 @@
 
 
 
-			if (selectedValue == "6" || selectedValue == "7" || selectedValue == "8" || selectedValue == "9") {
+			if (selectedValue == " [a,b] " || selectedValue == " (a,b] " || selectedValue == " [a,b) " || selectedValue == " (a,b) ") {
 				console.log("Interval");
 
 				if (divFilterContainer2.classList.contains("hidden") == true) { //No Es mostra
@@ -2170,22 +2232,31 @@
 				select.setAttribute("id", "selectorCondition" + place);
 				var selectContent;
 				//que posar en funció de si es interval o no
-				// var selectConditionContent2;
-				// if (typeOfValues == "number") {
-				// 	selectContent = selectConditionContentNumber;
-				// } else if (typeOfValues == "text") { //text
-				// 	selectContent = selectConditionContentText;
-				// } else { //data
-				// 	selectContent = selectConditionContent;
-				// }
+
 
 
 				//al for canviarho pel 2
-				for (var i = 0; i < selectConditionContent.length; i++) { //crear les opcions del selector de condició
+				var selectConditionContent2;
+				if (button == "edit") {
+					var typeOfValues = typeOfValueFromInput("simple", place, editRowContent[2]);
+
+					if (typeOfValues == "number") {
+						selectConditionContent2 = selectConditionContentNumber;
+					} else if (typeOfValues == "text") { //text
+						selectConditionContent2 = selectConditionContentText;
+					} else { //data´and empty
+						selectConditionContent2 = selectConditionContent;
+					}
+				} else {
+					selectConditionContent2 = selectConditionContent;
+				}
+
+
+				for (var i = 0; i < selectConditionContent2.length; i++) { //crear les opcions del selector de condició
 					var opcioCondicio = document.createElement("option");
-					opcioCondicio.setAttribute("value", i);
+					opcioCondicio.setAttribute("value", selectConditionContent2[i]);
 					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + place + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
-					opcioCondicio.innerHTML = selectConditionContent[i];
+					opcioCondicio.innerHTML = selectConditionContent2[i];
 
 					if (editRowContent !== 'undefined' & (button == "edit" /*|| button == 'changeCondition'*/)) {
 						console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
@@ -2412,7 +2483,7 @@
 					var arrayValors = [];
 					var valueOfValor = valor.getAttribute("value");
 					if (valor.children.length > 0) { //en el saveRow
-						if (conditionText == "6" || conditionText == "7" || conditionText == "8" || conditionText == "9") {
+						if (conditionText == " [a,b] " || conditionText == " (a,b] " || conditionText == " [a,b) " || conditionText == " (a,b) ") {
 							var inputText1 = document.getElementById("textInputInterval1_tableResult");
 							var inputText2 = document.getElementById("textInputInterval2_tableResult");
 							// arrayValors.push(inputText1.value);
@@ -2459,7 +2530,7 @@
 							arrayValors.push(valueOfValor.split("---")[1]);
 							tableResults.push(arrayValors);
 							type = typeOfValueFromInput("interval", "_tableResult", arrayValors[0], arrayValors[1]);
-							 tableResults.push(type);
+							tableResults.push(type);
 						}
 					} else {//simple
 						tableResults.push(valueText);
@@ -2573,8 +2644,8 @@
 
 
 							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
-								tableTh.innerHTML = selectContent[tableContentNew[r + 2]];
-								tableTh.setAttribute("value", tableContentNew[r + 2]);
+								tableTh.innerHTML = [tableContentNew[r + 2]];
+								tableTh.setAttribute("value", [tableContentNew[r + 2]]);
 
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
