@@ -152,7 +152,7 @@
 	<dialog id="DialogContextMenu">
 		<form>
 			<p>
-				<button onclick='addCircularImage(event, "DialogContextMenu" "STAplus", "ogc.png");'><img src="ogc.png"
+				<button onclick='addCircularImage(event, "DialogContextMenu", "STAplus", "ogc.png");'><img src="ogc.png"
 						height="20" valign="middle"> Add STA service</button><br>
 				<span id="ButtonsContextMenuObjects"></span><br>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button><br>
@@ -626,7 +626,6 @@
 				}
 			}
 		}
-
 		async function LoadJSONNodeSTAData(node, callback, url) {
 			var response, jsonData, options = {};
 			try {
@@ -1280,7 +1279,6 @@
 			UpdateChildenSTAURL(currentNode);
 		}
 
-
 		function IdOfSTAEntity(node) {
 			for (var i = 0; i < STAEntitiesArray.length; i++) {
 				if (node.image == STAEntitiesArray[i] + ".png")
@@ -1398,6 +1396,174 @@
 		function isAttributeAnyURI(s) {
 			return (s == "url" || s == "definition" || s.endsWith("@iot.selfLink") || s.endsWith("@iot.navigationLink"));
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		function GetHTMLTable(data, dataAttributesInput, rowNumbers, selectedEntityId) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);

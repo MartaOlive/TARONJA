@@ -17,108 +17,6 @@
 	<script type="text/javascript" src="mmn_postmessage.js"></script>
 
 	<link rel="stylesheet" href="tapis.css">
-	<!-- <style type="text/css">
-		#mynetwork {
-			width: 100%;
-			height: 400px;
-			border: 1px solid lightgray;
-		}
-
-		body {
-			font-family: Arial
-		}
-
-		.tablesmall {
-			font-size: 0.5em;
-			border-collapse: collapse;
-			border-spacing: 0px;
-		}
-
-		.tablesmall th {
-			padding-top: 1px;
-			padding-bottom: 1px;
-		}
-
-		.tablesmall td {
-			padding-top: 1px;
-			padding-bottom: 1px;
-		}
-
-		.tablesmall tr:nth-child(even) {
-			background-color: #DCDCCA;
-		}
-
-		.tablesmall tr:nth-child(odd) {
-			background-color: #EEEEEB;
-		}
-
-		.center {
-			margin: 0 auto;
-			text-align: center;
-		}
-
-		#divSelectorRowsFilter {
-			min-width: 1750px;
-			height: 300px;
-			border: black 1px solid;
-
-		}
-
-		#selectorRowsContainer {
-			min-width: 1500px;
-			min-height: 400px;
-		}
-
-		.hidden {
-			display: none;
-		}
-
-		.instructions {
-			font-size: 12px;
-			font-style: italic;
-		}
-
-
-		.objectInSelect {
-			background-color: rgba(255, 153, 0, 0.87);
-		}
-
-		#imageIsAnObject {
-			display: block;
-			/* height:400; */
-			position: absolute;
-			/* left:20; */
-		}
-
-		.borderTable {
-			border: black 1px solid;
-		}
-
-		th.borderTable {
-			min-width: 100px;
-			padding-left: 10px;
-			padding-right: 10px;
-		}
-
-		#divSelectorRowsFilter {
-			margin-top: 20px;
-			min-height: 300px;
-			min-width: 800px;
-			border: black 1px solid;
-		}
-
-		.divResultBox {
-			margin-top: 20px;
-			height: 300px;
-			border: black 1px solid;
-		}
-
-
-
-		.inblock {
-			display: inline-block;
-		}
-	</style> -->
 	<link rel="stylesheet" href="vis.min.css">
 
 </head>
@@ -140,10 +38,15 @@
 				</table>
 			</td>
 			<td align="right" valign="top">
+
+				<label class=labelbotton><img src="login.png" height="20" valign="middle"> Open
+					<input type="file" id="actual-btn" hidden onchange='openNetwork(event);' />
+				</label>
+				<button onclick='saveNetwork(event);'><img src="login.png" height="20" valign="middle"> Save</button>
 				<button id="buttonOpenLogin" onclick='OpenLogin(event);'><img src="login.png" height="20"
 						valign="middle"> Login</button>
-				<button id="buttonOpenLogout" onclick='OpenLogout(event);' style="display: none" );'><img
-						src="login.png" height="20" valign="middle"> Logout</button>
+				<button id="buttonOpenLogout" onclick='OpenLogout(event)' style="display: none"><img src="login.png"
+						height="20" valign="middle"> Logout</button>
 				<button onclick='OpenConfiguration(event);'><img src="config.png" height="20"
 						valign="middle">Configuration</button><br>
 				<span style="font-size: 10px;"><a href="TermsOfUse.htm">Terms of Use</a><br>
@@ -177,6 +80,9 @@
 				<label>Table font size ratio:
 					<input type="text" id="DialogConfigurationFontSize" size="3" value="50"></input>%
 				</label>
+				<br>
+				<label><input type="checkbox" id="DialogConfigurationAddGeolocationHeader"></input>Add geolocation
+					header</label>
 			</p>
 			<div class="center">
 				<button value="default" onClick="ChangeConfiguration(event)">OK</button>
@@ -194,7 +100,7 @@
 				</label>
 			</p>
 			<div class="center">
-				<button value="default" onClick="GetSTAURL(event)">OK</button>
+				<button value="default" id="DialogSTAURLOk" onClick="GetSTAURL(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -253,7 +159,7 @@
 			<p>
 				<button onclick='addCircularImage(event, "DialogContextMenu", "STAplus", "ogc.png");'><img src="ogc.png"
 						height="20" valign="middle"> Add STA service</button><br>
-				<span id="ButtonsContextMenuObjects"></span>
+				<span id="ButtonsContextMenuObjects"></span><br>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button><br>
 				<button onclick='giveMeNodeInformation(event, "DialogContextMenu")'>Node Info</button><br>
 				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
@@ -520,10 +426,15 @@
 
 
 		window.onbeforeunload = function () { return "Your work will be lost."; }
+
 		function showInfoMessage(msg) {
 			var elem = document.getElementById("clarification");
 			elem.innerHTML += (msg + "<br>");
 			elem.scrollTop = elem.scrollHeight;  //https://stackoverflow.com/questions/11715646/scroll-automatically-to-the-bottom-of-the-page
+		}
+
+		function deapCopy(o) {
+			return JSON.parse(JSON.stringify(o));
 		}
 
 		function AddKVPToURL(url, kvp) {
@@ -553,6 +464,57 @@
 			return "";
 		}
 
+		var IdGPSPosition = 0;
+		function InitGPSPosition() {
+			if (navigator.geolocation)
+				IdGPSPosition = navigator.geolocation.watchPosition(UpdateGPSPosition, ErrorGPSPosition, { enableHighAccuracy: true, maximumAge: 8000 });
+			else {
+				showInfoMessage("Geolocation not supported by the web browser");
+				CancelGPSPosition();
+			}
+		}
+
+		var PreviousGPSPoint = null;
+
+		function CancelGPSPosition() {
+			if (IdGPSPosition) {
+				navigator.geolocation.clearWatch(IdGPSPosition);
+				IdGPSPosition = 0;
+			}
+			PreviousGPSPoint = null;
+		}
+
+		var GPSPositionReported = false;
+		function UpdateGPSPosition(position) {
+			PreviousGPSPoint = { long: position.coords.longitude, lat: position.coords.latitude };
+			if (!GPSPositionReported) {
+				showInfoMessage("Geolocation is long: " + PreviousGPSPoint.long + " lat: " + PreviousGPSPoint.lat);
+				GPSPositionReported = true;
+			}
+		}
+
+		function ErrorGPSPosition(error) {
+			switch (error.code) {
+				case error.PERMISSION_DENIED:
+					showInfoMessage("User denied request location.");
+					CancelGPSPosition();
+					break;
+				case error.POSITION_UNAVAILABLE:
+					showInfoMessage("Location information is unavailable.");
+					CancelGPSPosition();
+					break;
+				case error.TIMEOUT:
+					showInfoMessage("Request location timeOut.");
+					CancelGPSPosition();
+					break;
+				case error.UNKNOWN_ERROR:
+				default:
+					showInfoMessage("Unknown error obtaining Location (" + error.code + ").");
+					break;
+			}
+		}
+
+
 		var currentNode = null, connectionInProcess = false, startingNodeContextId = null;
 
 		function StartSTAPage() {
@@ -564,8 +526,9 @@
 
 			hello.init({ "authenix": "62df9d18-fc59-4626-98f0-989cdf170936" }, { redirect_uri: ((location.pathname.charAt(location.pathname.length - 1) == '/') ? location.pathname.substring(0, location.pathname.length - 1) : location.pathname) });
 
-			var s = "";
+			UpdateConfiguration();
 
+			var s = "";
 			for (var i = 0; i < STAEntitiesArray.length; i++)
 				s += "<button onclick='addCircularImage(null, null, \"" + STAEntitiesArray[i] + "\", \"" + STAEntitiesArray[i] + ".png\");'><img src='" + STAEntitiesArray[i] + ".png' height='20' valign='middle'> " + STAEntitiesArray[i] + "</button> ";
 			s += "<br>";
@@ -581,14 +544,20 @@
 			document.getElementById("ButtonsSTAEntities").innerHTML = s;
 
 			s = "";
-			for (var i = 0; i < STAEntitiesArray.length; i++)
-				s += "<button onclick='addCircularImage(event, \"DialogContextMenu\", \"" + STAEntitiesArray[i] + "\", \"" + STAEntitiesArray[i] + ".png\");'><img src='" + STAEntitiesArray[i] + ".png' height='20' valign='middle'> " + STAEntitiesArray[i] + "</button><br>";
+			for (var i = 0; i < STAEntitiesArray.length; i++) {
+				s += "<button onclick='addCircularImage(event, \"DialogContextMenu\", \"" + STAEntitiesArray[i] + "\", \"" + STAEntitiesArray[i] + ".png\");'><img src='" + STAEntitiesArray[i] + ".png' height='20' valign='middle'> " + STAEntitiesArray[i] + "</button>";
+				s += i % 2 || i == STAEntitiesArray.length - 1 ? "<br>" : " ";
+			}
 			s += "<br>";
-			for (var i = 0; i < STASpecialQueriesArray.length; i++)
-				s += "<button onclick='addCircularImage(event, \"DialogContextMenu\", \"" + STASpecialQueriesArray[i] + "\", \"" + STASpecialQueriesArray[i] + ".png\");'><img src='" + STASpecialQueriesArray[i] + ".png' height='20' valign='middle'> " + STASpecialQueries[STASpecialQueriesArray[i]].description + "</button><br>";
+			for (var i = 0; i < STASpecialQueriesArray.length; i++) {
+				s += "<button onclick='addCircularImage(event, \"DialogContextMenu\", \"" + STASpecialQueriesArray[i] + "\", \"" + STASpecialQueriesArray[i] + ".png\");'><img src='" + STASpecialQueriesArray[i] + ".png' height='20' valign='middle'> " + STASpecialQueries[STASpecialQueriesArray[i]].description + "</button>";
+				s += i % 2 || i == STASpecialQueriesArray.length - 1 ? "<br>" : " ";
+			}
 			s += "<br>";
-			for (var i = 0; i < TableOperationsArray.length; i++)
-				s += "<button onclick='addCircularImage(event, \"DialogContextMenu\", \"" + TableOperationsArray[i] + "\", \"" + TableOperationsArray[i] + ".png\");'><img src='" + TableOperationsArray[i] + ".png' height='20' valign='middle'> " + TableOperations[TableOperationsArray[i]].description + "</button><br>";
+			for (var i = 0; i < TableOperationsArray.length; i++) {
+				s += "<button onclick='addCircularImage(event, \"DialogContextMenu\", \"" + TableOperationsArray[i] + "\", \"" + TableOperationsArray[i] + ".png\");'><img src='" + TableOperationsArray[i] + ".png' height='20' valign='middle'> " + TableOperations[TableOperationsArray[i]].description + "</button>";
+				s += i % 2 || i == TableOperationsArray.length - 1 ? "<br>" : " ";
+			}
 
 			document.getElementById("ButtonsContextMenuObjects").innerHTML = s;
 		}
@@ -599,6 +568,18 @@
 				return contentType;
 			else
 				return contentType.substring(0, i);
+		} function AddHeadersIfNeeded(options) {
+			if (hello("authenix").getAuthResponse() &&
+				hello("authenix").getAuthResponse().access_token) {
+				if (!options.headers)
+					options.headers = {};
+				options.headers['Authorization'] = 'Bearer ' + hello("authenix").getAuthResponse().access_token;
+			}
+			if (PreviousGPSPoint) {
+				if (!options.headers)
+					options.headers = {};
+				options.headers['Geolocation'] = 'geo:' + PreviousGPSPoint.lat + ',' + PreviousGPSPoint.long;
+			}
 		}
 
 		//https://web.dev/fetch-api-error-handling/
@@ -608,9 +589,8 @@
 				if (method)
 					options.method = method;
 				options.headers = { 'Accept': 'application/json, */*;q=0.8' };
-				if (hello("authenix").getAuthResponse() &&
-					hello("authenix").getAuthResponse().access_token)
-					options.headers['Authorization'] = 'Bearer ' + hello("authenix").getAuthResponse().access_token;
+
+				AddHeadersIfNeeded(options);
 				if (obj) {
 					options.headers['Content-Type'] = 'application/json';
 					options.body = JSON.stringify(obj);
@@ -654,10 +634,8 @@
 			}
 		}
 
-
-
 		async function LoadJSONNodeSTAData(node, callback, url) {
-			var response, jsonData;
+			var response, jsonData, options = {};
 			try {
 				var url_fetch;
 				if (url)
@@ -667,14 +645,10 @@
 				else
 					url_fetch = AddKVPToURL(node.STAURL, "$top=" + node.STAExpectedLength);
 
-				if (hello("authenix").getAuthResponse() &&
-					hello("authenix").getAuthResponse().access_token)
-					response = await fetch(url_fetch, {
-						headers: {
-							'Authorization': 'Bearer ' + hello("authenix").getAuthResponse().access_token
-						}
-					}
-					);
+				AddHeadersIfNeeded(options);
+
+				if (options.headers)
+					response = await fetch(url_fetch, options);
 				else
 					response = await fetch(url_fetch);
 			}
@@ -853,11 +827,19 @@
 				});
 		}
 
+		function UpdateConfiguration() {
+			changeCSSStyle(".tablesmall", 'font-size', document.getElementById("DialogConfigurationFontSize").value / 100 + "em");
+
+			if (document.getElementById("DialogConfigurationAddGeolocationHeader").checked)
+				InitGPSPosition();
+			else
+				CancelGPSPosition();
+		}
+
 		function ChangeConfiguration(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogConfiguration").close(document.getElementById("DialogConfigurationFontSize").value);
-
-			changeCSSStyle(".tablesmall", 'font-size', document.getElementById("DialogConfigurationFontSize").value / 100 + "em");
+			UpdateConfiguration();
 		}
 
 		function GetSTAURL(event) {
@@ -1146,7 +1128,9 @@
 				if (node.STAURL)
 					currentNode.STAURL = node.STAURL;
 				if (node.STAdata)
-					currentNode.STAdata = node.STAdata;
+					currentNode.STAdata = deapCopy(node.STAdata);
+				if (node.STAdataAttributes)
+					currentNode.STAdataAttributes = deapCopy(node.STAdataAttributes);
 			}
 			currentNode.STASelectedColumns = [];
 			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
@@ -1183,7 +1167,7 @@
 				}
 				else {
 					//If there is no STA to query, the selection is done manually (table mode).
-					currentNode.STAdata = JSON.parse(JSON.stringify(currentNode.STAdata));
+					currentNode.STAdata = deapCopy(currentNode.STAdata);
 					for (var a = 0; a < dataAttributesArray.length; a++) {
 						if (document.getElementById("SelectColumn_" + a).checked)
 							currentNode.STASelectedColumns[a] = true;
@@ -1199,6 +1183,10 @@
 								delete record[dataAttributesArray[a]];
 							}
 						}
+					}
+					for (var a = 0; a < dataAttributesArray.length; a++) {
+						if (!currentNode.STASelectedColumns[a])
+							delete dataAttributes[dataAttributesArray[a]];
 					}
 					networkNodes.update(currentNode);
 				}
@@ -1218,7 +1206,7 @@
 
 			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
 			if (!currentNode.STASelectedExpands)
-				currentNode.STASelectedExpands = { STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: JSON.parse(JSON.stringify(dataAttributes)), selected: [] };
+				currentNode.STASelectedExpands = { STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: deapCopy(dataAttributes), selected: [] };
 			else
 				currentNode.STAURL = currentNode.STASelectedExpands.STAURLUnexpanded;
 
@@ -1291,6 +1279,7 @@
 						currentNode.STAURL += "(" + n + ")";
 					else
 						currentNode.STAURL += "(\"" + s + "\")";
+					currentNode.STAURLIdSelected = s;
 				}
 			}
 			else { //El filter està seleccionat
@@ -1330,12 +1319,12 @@
 						URL += "?$filter="
 					} else {
 						//URL += tableResults[i];
-						if (tableResults[andOrNot]=="and"|| tableResults[andOrNot]=="or"){
-							URL+= tableResults[andOrNot];
-						}else{ //not
-							URL+= "and ("+tableResults[andOrNot];
+						if (tableResults[andOrNot] == "and" || tableResults[andOrNot] == "or") {
+							URL += tableResults[andOrNot];
+						} else { //not
+							URL += "and (" + tableResults[andOrNot];
 						}
-						
+
 						//or
 						//not
 					}
@@ -1377,8 +1366,8 @@
 					}
 
 
-					if (tableResults[andOrNot]=="not"){
-						URL+=")";
+					if (tableResults[andOrNot] == "not") {
+						URL += ")";
 					}
 					// if (i != 0) { //té segona opció And o or
 
@@ -1389,7 +1378,7 @@
 					// 	// 	}
 
 					// }
-					currentNode.STAURL=URL;
+					currentNode.STAURL = URL;
 					console.log(currentNode.STAURL);
 					console.log(URL);
 				}
@@ -1398,7 +1387,6 @@
 				showInfoMessage("Selecting STA rows...");
 				LoadJSONNodeSTAData(currentNode);
 				UpdateChildenSTAURL(currentNode);
-
 			}
 		}
 
@@ -1650,6 +1638,7 @@
 		function isAttributeAnyURI(s) {
 			return (s == "url" || s == "definition" || s.endsWith("@iot.selfLink") || s.endsWith("@iot.navigationLink"));
 		}
+
 		function fillValueSelector(nodeId, place) {
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
@@ -1856,7 +1845,7 @@
 		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
 			var typeOfValues;
 			var selectCondition = document.getElementById("selectorCondition" + place);
-
+			
 			if (wichTextInput == "simple") {
 				typeOfValues = typeOfValueFromInput(wichTextInput, place, value1);
 
@@ -1882,8 +1871,9 @@
 			for (var i = 0; i < selectContent.length; i++) { //crear les opcions del selector de condició
 				var opcioCondicio = document.createElement("option");
 				opcioCondicio.setAttribute("value", selectContent[i]);
+
 				opcioCondicio.innerHTML = selectContent[i];
-				if (i == actualConditionSelected) {
+				if (selectContent[i] == actualConditionSelected){
 					opcioCondicio.setAttribute("selected", true);
 				}
 				selectCondition.appendChild(opcioCondicio);
@@ -2906,7 +2896,7 @@
 				<div id='divSelectorRowsFilter'></div></div>`;
 			return divSelectorStructure;
 		}
-		function GetHTMLTable(data, dataAttributesInput, rowNumbers, rowChecks) {
+		function GetHTMLTable(data, dataAttributesInput, rowNumbers, selectedEntityId) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
 			var cdns = [], needhref = [], record, cell, dataAttribute;
 			var dataAttributesArray = Object.keys(dataAttributes);
@@ -2914,7 +2904,7 @@
 			cdns.push("<table class='tablesmall'><tr>");
 			if (rowNumbers)
 				cdns.push("<th></th>");
-			if (rowChecks)
+			if (selectedEntityId !== null && typeof selectedEntityId !== "undefined")
 				cdns.push("<th></th>");
 			for (var a = 0; a < dataAttributesArray.length; a++) {
 				cdns.push("<th>");
@@ -2943,8 +2933,10 @@
 				cdns.push("<tr>");
 				if (rowNumbers)
 					cdns.push("<td align='right'>", i + 1, "</td>");
-				if (rowChecks)
-					cdns.push("<td><input type='radio' name='SelectRowRadio' id='SelectRow_", record["@iot.id"] ? record["@iot.id"] : i, "' ", i == 0 ? "checked='checked'" : "", "/></td>");
+				if (selectedEntityId !== null && typeof selectedEntityId !== "undefined") {
+					var s = record["@iot.id"] ? record["@iot.id"] : i;
+					cdns.push("<td><input type='radio' name='SelectRowRadio' id='SelectRow_", s, "' ", s == selectedEntityId ? "checked='checked'" : "", "/></td>");
+				}
 				for (var a = 0; a < dataAttributesArray.length; a++) {
 					cell = record[dataAttributesArray[a]];
 					cdns.push((dataAttributes[dataAttributesArray[a]].type == "number" || dataAttributes[dataAttributesArray[a]].type == "integer") ? "<td align='right'>" : "<td>");
@@ -2973,7 +2965,7 @@
 
 			document.getElementById("DialogOKHTML").innerHTML = GetHTMLTable(data, networkNodes.get(nodeId).STAdataAttributes,
 				document.getElementById("ShowTableRowNumberDialogOK").checked ? true : false,
-				false);
+				null);
 		}
 		function StringifyObjectElements(data, dataAttributesInput) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
@@ -2991,8 +2983,10 @@
 			}
 			return jsonTable;
 		}
+
+
 		function GetGeoJSON(data, selectedOptions) {
-			var dataSorted = JSON.parse(JSON.stringify(data)), geojson = { "type": "FeatureCollection", "features": [] };
+			var dataSorted = deapCopy(data), geojson = { "type": "FeatureCollection", "features": [] };
 
 			//Sorted by place, variable and date (older first).
 			dataSorted.sort(function (a, b) {
@@ -3075,6 +3069,7 @@
 		}
 
 		function GetGeoJSONPropertiesSchema(data, selectedOptions) {
+			var dataSorted = deapCopy(data);
 			var dataSorted = JSON.parse(JSON.stringify(data));
 
 			var attributes = {
@@ -3281,6 +3276,7 @@
 		}
 
 		function GetGeoJSONStyles(data, selectedOptions) {
+			var dataSorted = deapCopy(data), estil = [];
 			var dataSorted = JSON.parse(JSON.stringify(data)), estil = [];
 
 			//Sorted by variable.
@@ -3367,6 +3363,7 @@
 		}
 
 		function GetGeoJSONDates(data, selectedOptions) {
+			var dataSorted = deapCopy(data), datetimes = [];
 			var dataSorted = JSON.parse(JSON.stringify(data)), datetimes = [];
 
 			//Sorted by date (older first).
@@ -3622,8 +3619,10 @@
 		}
 
 		function ShowTableSelectColumnsDialog(parentNodeId, nodeId) {
-			var data = networkNodes.get(parentNodeId).STAdata,
-				selectedColumns = networkNodes.get(nodeId).STASelectedColumns;
+			var node = networkNodes.get(nodeId)
+
+			var data = networkNodes.get(parentNodeId).STAdata ? networkNodes.get(parentNodeId).STAdata : node.STAdata,
+				selectedColumns = node.STASelectedColumns;
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectColumnsHTML").innerHTML = "No data to show.";
@@ -3676,16 +3675,16 @@
 
 		}
 
-		function ShowTableSelectRowsDialog(nodeId) {
-			var data = networkNodes.get(nodeId).STAdata;
-			var dataAttributes = getDataAttributes(data);
+		function ShowTableSelectRowsDialog(parentNodeId, nodeId) {
+			var data = networkNodes.get(parentNodeId).STAdata;
+
 			if (!data || !data.length) {
-				document.getElementById("DialogSelectColumnsHTML").innerHTML = "No data to show.";
+				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
 				return;
 			}
 
 			document.getElementById("DialogSelectRowsTableRadio").checked = true;
-			document.getElementById("DialogSelectRowsTable").innerHTML = GetHTMLTable(data, networkNodes.get(nodeId).STAdataAttributes, false, true);
+			document.getElementById("DialogSelectRowsTable").innerHTML = GetHTMLTable(data, networkNodes.get(parentNodeId).STAdataAttributes, false, networkNodes.get(nodeId).STAURLIdSelected ? networkNodes.get(nodeId).STAURLIdSelected : 0);
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = false;
 			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
@@ -3693,7 +3692,8 @@
 
 		function ShowTableFilterRowsDialog(nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
-			var dataAttributes = getDataAttributes(data);
+			var dataAttributes = getDataAttributes(data);  //no borrar
+
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
@@ -3709,11 +3709,11 @@
 			createSelectorRowFilters(dataAttributes, nodeId); /////////////////////////////////////////////////////////
 		}
 
-		function ChangeTableFilterRowsDialog(nodeId) {
+		function ChangeTableFilterRowsDialog(parentNodeId, nodeId) {
 			if (document.getElementById("DialogSelectRowsTableRadio").checked)
-				ShowTableSelectRowsDialog(nodeId);
+				ShowTableSelectRowsDialog(parentNodeId, nodeId);
 			else
-				ShowTableFilterRowsDialog(nodeId);
+				ShowTableFilterRowsDialog(parentNodeId, nodeId);
 		}
 
 		function SeparatePropertyIfNeeded(record, property, baseName) {
@@ -3749,8 +3749,13 @@
 		}
 
 		function SeparateColumns(node, parentNode) {
-			var data = parentNode.STAdata, record, recordParent;
-			node.STAURL = parentNode.STAURL;
+			var record, recordParent, data = parentNode.STAdata;
+
+			if (!data)
+				showInfoMessage("No data loaded in the parent node.");
+			if (parentNode.STAURL)
+				node.STAURL = parentNode.STAURL;
+
 			node.STAExpectedLength = parentNode.STAExpectedLength;
 			node.STAdata = [];
 			for (var i = 0; i < data.length; i++) {
@@ -3759,6 +3764,13 @@
 				var keys = Object.keys(recordParent);
 				for (var k = 0; k < keys.length; k++)
 					SeparatePropertyIfNeeded(record, recordParent[keys[k]], keys[k]);
+			}
+			if (parentNode.STAdataAttributes) {
+				var dataAttributes = getDataAttributes(data);
+				var dataAttributesArray = Object.keys(dataAttributes);
+				for (var i = 0; i < dataAttributesArray.length; i++) {
+					node.STAdataAttributes[dataAttributesArray[i]] = deapCopy((parentNode.STAdataAttributes[dataAttributesArray[i]]) ? parentNode.STAdataAttributes[dataAttributesArray[i]] : dataAttributes[dataAttributesArray[i]]);
+				}
 			}
 			networkNodes.update(node);
 		}
@@ -3770,7 +3782,7 @@
 
 				networkNodes.update(nodeTo);
 				if (calUnir)
-					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id }]);
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				showInfoMessage("Requesting " + STAEntitiesArray[IdOfSTAEntity(nodeTo)] + " to STA...");
 				LoadJSONNodeSTAData(nodeTo);
 				return true;
@@ -3780,7 +3792,7 @@
 				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
 				networkNodes.update(nodeTo);
 				if (calUnir)
-					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id }]);
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				showInfoMessage("Requesting " + STASpecialQueriesArray[IdOfSTASpecialQueries(nodeTo)] + " to STA...");
 				LoadJSONNodeSTAData(nodeTo);
 				return true;
@@ -3788,16 +3800,30 @@
 			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumnsSTA.png" || nodeTo.image == "SelectRowsSTA.png")) {
 				nodeTo.STAURL = nodeFrom.STAURL;
 				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
+				if (nodeFrom.STAdata)
+					nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
+				if (nodeFrom.STAdataAttributes)
+					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
 				networkNodes.update(nodeTo);
 				if (calUnir)
-					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id }]);
-				showInfoMessage("Selecting " + (nodeTo.image == "SelectColumnsSTA.png" ? "columns" : "rows") + " to STA...");
-				LoadJSONNodeSTAData(nodeTo);
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				//showInfoMessage("Selecting " + (nodeTo.image == "SelectColumnsSTA.png" ? "columns" : "rows") + " to STA...");
+				//LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
-			if (nodeFrom.STAURL && (nodeTo.image == "SeparateColumns.png")) {
+			if (nodeFrom.STAdata && nodeTo.image == "SelectColumnsTable.png") {
+				nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
+				if (nodeFrom.STAdataAttributes)
+					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
+				networkNodes.update(nodeTo);
 				if (calUnir)
-					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id }]);
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				return true;
+			}
+			if (nodeTo.image == "SeparateColumns.png") {
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+
 				SeparateColumns(nodeTo, nodeFrom);
 				return true;
 			}
@@ -3810,27 +3836,28 @@
 		// create an array with edges
 		var networkEdges = new vis.DataSet([]);
 
+		var networkOptions = {
+			interaction: { hover: true },
+			manipulation: {  //https://stackoverflow.com/questions/39701703/add-edge-dynamically-visjs
+				enabled: false,
+				addEdge: function (data, callback) {
+					console.log('add edge', data);
+					if (data.from == data.to)
+						showInfoMessage("Connection to the same node is not allowed.");
+					else {
+						networkEdges.add([{ from: data.from, to: data.to, arrows: "from" }]);
+						showInfoMessage("Connected.");
+						StartCircularImage(networkNodes.get(data.to), networkNodes.get(data.from), false);
+					}
+					connectionInProcess = false;
+				}
+			}
+		};
+		
 		var network = new vis.Network(document.getElementById("mynetwork"), {
 			nodes: networkNodes,
 			edges: networkEdges
-		},
-			{
-				interaction: { hover: true },
-				manipulation: {  //https://stackoverflow.com/questions/39701703/add-edge-dynamically-visjs
-					enabled: false,
-					addEdge: function (data, callback) {
-						console.log('add edge', data);
-						if (data.from == data.to)
-							showInfoMessage("Connection to the same node is not allowed.");
-						else {
-							networkEdges.add([{ from: data.from, to: data.to }]);
-							StartCircularImage(networkNodes.get(data.to), networkNodes.get(data.from), false);
-						}
-						connectionInProcess = false;
-						// document.getElementById("clarification").innerHTML = "";
-					}
-				}
-			});
+		}, networkOptions);
 
 		/*network.on("click", function (params) {
 			params.event = "[original event]";
@@ -3838,7 +3865,7 @@
 			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
 			console.log("click event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
 		});*/
-		network.on("doubleClick", function (params) {
+		function networkDoubleClick(params) {
 			/*params.event = "[original event]";
 			document.getElementById("eventSpanHeading").innerText = "doubleClick event:";
 			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);*/
@@ -3847,9 +3874,10 @@
 				if (currentNode.image == "ogc.png") {
 					document.getElementById("DialogSTAURLInput").value = currentNode.STAURL;
 					document.getElementById("DialogSTAURLInput").readOnly = false;
+					document.getElementById("DialogSTAURLOk").style.display = "inline-block";
 					document.getElementById("DialogSTAURL").showModal();
 				}
-				else if (currentNode.image == "ViewQuery.png") {
+				else if (currentNode.image == "ViewQuerySTA.png") {
 					document.getElementById("DialogSTAURLInput").value = "";
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length) {
@@ -3857,6 +3885,7 @@
 							document.getElementById("DialogSTAURLInput").value = networkNodes.get(nodeids[0]).STAURL;
 					}
 					document.getElementById("DialogSTAURLInput").readOnly = true;
+					document.getElementById("DialogSTAURLOk").style.display = "none";
 					document.getElementById("DialogSTAURL").showModal();
 				}
 				else if (currentNode.image == "ImportCSV.png") {
@@ -3909,9 +3938,9 @@
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length) {
 						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
-							document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\")'/> Select an element:</label>";
-							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\")'/>  Filter:</label>";
-							ShowTableSelectRowsDialog(nodeids[0]);
+							document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/> Select an element:</label>";
+							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/>  Filter:</label>";
+							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
 						}
 						document.getElementById("DialogSelectRows").showModal();
 					}
@@ -3926,8 +3955,9 @@
 					document.getElementById("DialogSelectExpands").showModal();
 				}
 			}
-		});
-		network.on("oncontext", function (params) {
+		}
+		network.on("doubleClick", networkDoubleClick);
+		function networkContext(params) {
 			params.event.preventDefault();  //https://stackoverflow.com/questions/38258940/open-an-extension-popup-html-list-on-right-click-of-node-contextmenu-in-visj
 
 			var nodeId = network.getNodeAt(params.pointer.DOM); //params.nodes is not useful here as params.nodes are the selected ones and not the ones rightclicked.
@@ -3938,7 +3968,8 @@
 			/*params.event = "[original event]";
 			document.getElementById("eventSpanHeading").innerText = "oncontext (right click) event:";
 			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);*/
-		});
+		}
+		network.on("oncontext", networkContext);
 		/*network.on("dragStart", function (params) {
 			// There's no point in displaying this event on screen, it gets immediately overwritten
 			params.event = "[original event]";
@@ -4025,7 +4056,7 @@
 			}
 			else if (!startingNodeContextId || !StartCircularImage(node, networkNodes.get(startingNodeContextId), true)) {
 				networkNodes.add(node);
-				networkEdges.add([{ from: startingNodeContextId, to: newId }]);
+				networkEdges.add([{ from: startingNodeContextId, to: newId, arrows: "from" }]);
 			}
 
 			if (startingNodeContextId)
@@ -4048,8 +4079,53 @@
 		function addEdge() {
 			network.addEdgeMode();
 			connectionInProcess = true;
-			document.getElementById("clarification").innerHTML = "Press the mouse botton on the starting node, and drag and drop the mouse on the end node.";
+			showInfoMessage("Press the mouse botton on the starting node, and drag and drop the mouse on the end node.");
 		}
+
+		function openNetwork(event) {
+			var input = event.target;
+
+			var reader = new FileReader();
+			reader.onload = function () {
+				//Transform the JSON text in something in memory
+				try {
+					var data = JSON.parse(reader.result);
+					networkNodes = new vis.DataSet(data.nodes);
+					networkEdges = new vis.DataSet(data.edges);
+					network.destroy();
+					network = new vis.Network(document.getElementById("mynetwork"), {
+						nodes: networkNodes,
+						edges: networkEdges
+					}, networkOptions);
+					network.on("doubleClick", networkDoubleClick);
+					network.on("oncontext", networkContext);
+				}
+				catch (e) {
+					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
+					return;
+				}
+			};
+			reader.readAsText(input.files[0]);
+		}
+
+		function saveNetwork(event) {
+			var pos = network.getPositions()
+			var posArray = Object.keys(pos);
+			var data = { nodes: [], edges: [] };
+			for (var i = 0; i < posArray.length; i++) {
+				data.nodes.push(deapCopy(networkNodes._data[posArray[i]]));
+				data.nodes[i].x = pos[posArray[i]].x;
+				data.nodes[i].y = pos[posArray[i]].y;
+			}
+			var edgesArray = Object.keys(networkEdges._data);
+			for (var i = 0; i < edgesArray.length; i++) {
+				data.edges.push(deapCopy(networkEdges._data[edgesArray[i]]));
+				delete data.edges[i].id;
+			}
+			SaveLocalDataFile(JSON.stringify(data, null, "\t"), "network", ".json", "application/json");
+		}
+
+
 		function giveMeNodeInformation(event) {
 			console.log(event);
 			if (event)
