@@ -416,7 +416,7 @@
 			ViewQuerySTA: { description: "View Query" },
 			UploadObservations: { description: "Upload in STA" },
 			SelectColumnsTable: { description: "Select Columns" },
-			SelectRowsTable: {description: "Select Rows"},
+			SelectRowsTable: { description: "Select Rows" },
 			SeparateColumns: { description: "Separate Columns" },
 			SaveTable: { description: "Save Table" },
 			SaveLayer: { description: "Save Layer" },
@@ -1331,24 +1331,27 @@
 
 					if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
 						URL += tableResults[i + 1]
+						var typeOfValue = tableResults[i + 4];
+						var apostropheOrSpace;
+						(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
 						switch (tableResults[condition]) {
 							case ' = ':
-								URL += " eq '" + tableResults[i + 3] + "'";
+								URL += " eq" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
 								break;
 							case ' &ne; ':
-								URL += " ne '" + tableResults[i + 3] + "'";
+								URL += " ne " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
 								break;
 							case ' &ge; ':
-								URL += " ge '" + tableResults[i + 3] + "'";
+								URL += " ge " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
 								break;
 							case ' > ':
-								URL += " gt '" + tableResults[i + 3] + "'";
+								URL += " gt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
 								break;
 							case ' &le; ':
-								URL += " le '" + tableResults[i + 3] + "'";
+								URL += " le" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
 								break;
 							case ' < ':
-								URL += " lt '" + tableResults[i + 3] + "'";
+								URL += " lt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
 								break;
 							default:
 								console.log("error en la condició")
@@ -1356,7 +1359,21 @@
 						}
 
 					} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
-
+						URL += tableResults[i + 1];
+						switch (tableResults[condition]) {
+							case ' [a,b] ':
+								URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
+								break;
+							case ' (a,b] ':
+								URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
+								break;
+							case ' [a,b) ':
+								URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
+								break;
+							case ' (a,b) ':
+								URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
+								break;
+						}
 					} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
 
 					} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
@@ -1845,7 +1862,7 @@
 		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
 			var typeOfValues;
 			var selectCondition = document.getElementById("selectorCondition" + place);
-			
+
 			if (wichTextInput == "simple") {
 				typeOfValues = typeOfValueFromInput(wichTextInput, place, value1);
 
@@ -1873,7 +1890,7 @@
 				opcioCondicio.setAttribute("value", selectContent[i]);
 
 				opcioCondicio.innerHTML = selectContent[i];
-				if (selectContent[i] == actualConditionSelected){
+				if (selectContent[i] == actualConditionSelected) {
 					opcioCondicio.setAttribute("selected", true);
 				}
 				selectCondition.appendChild(opcioCondicio);
@@ -3853,7 +3870,7 @@
 				}
 			}
 		};
-		
+
 		var network = new vis.Network(document.getElementById("mynetwork"), {
 			nodes: networkNodes,
 			edges: networkEdges
