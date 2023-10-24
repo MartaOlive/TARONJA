@@ -36,6 +36,32 @@ body {
     margin: 0 auto;
     text-align: center;
 }
+
+.labelbotton {
+    appearance: auto;
+    text-rendering: auto;
+    color: buttontext;
+    text-align: center;
+    font-size: 13px;
+    align-items: flex-start;
+    cursor: default;
+    box-sizing: border-box;
+    background-color: buttonface;
+    border-radius: 0.2em;
+    padding-block: 1px;
+    padding-inline: 6px;
+    padding-top: 0.2em;
+    border-width: 1px;
+    border-style: outset;
+    border-color: buttonborder;
+    border-image: initial;
+}
+
+
+
+
+
+
 #divSelectorRowsFilter {
     min-width: 1750px;
     height: 300px;
