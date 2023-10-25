@@ -3704,7 +3704,7 @@
 		}
 
 		function ShowTableSelectRowsDialog(parentNodeId, nodeId) { //STA an element
-			var data = networkNodes.get(parentNodeId).STAdata;
+			var data = networkNodes.get(parentNodeId).STAdata; //a canviar segons si es csv o sta
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
@@ -3719,7 +3719,7 @@
 		}
 
 		function ShowTableFilterRowsDialog(nodeId) {  //STA Filter
-			var data = networkNodes.get(nodeId).STAdata;
+			var data = networkNodes.get(nodeId).STAdata; //a canviar segons si es csv o sta
 			var dataAttributes = getDataAttributes(data);  //no borrar
 
 
@@ -3839,7 +3839,7 @@
 				//LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
-			if (nodeFrom.STAdata && nodeTo.image == "SelectColumnsTable.png") { //afegir SelectRowsTable.png
+			if (nodeFrom.STAdata && (nodeTo.image == "SelectColumnsTable.png"||nodeTo.image == "SelectRowsTable.png")) { //afegir SelectRowsTable.png
 				nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
 				if (nodeFrom.STAdataAttributes)
 					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
@@ -3961,11 +3961,11 @@
 						document.getElementById("DialogSelectColumns").showModal();
 					}
 				}
-				else if (currentNode.image == "SelectRowsSTA.png") { //afegir el SelectRowsTable.png?
+				else if (currentNode.image == "SelectRowsSTA.png"||currentNode.image == "SelectRowsTable.png") { //afegir el SelectRowsTable.png?
 					//Determining the parent node.
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length) {
-						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
+						if (networkNodes.get(nodeids[0]) && (networkNodes.get(nodeids[0]).STAURL||networkNodes.get(nodeids[0]).STAdata)) {
 							document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/> Select an element:</label>";
 							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/>  Filter:</label>";
 							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
