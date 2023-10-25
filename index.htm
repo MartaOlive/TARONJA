@@ -1297,6 +1297,8 @@
 					alert("There is nothing selected! The filter will not be applied.");
 				}
 
+				currentNode.STASelectedRows = tableResults;
+				
 				//////////////////////////////////////////////Per treure el @iot. No borrar
 				// var node = networkNodes.get(nodeids[0]);
 				// var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
@@ -1324,9 +1326,6 @@
 						} else { //not
 							URL += "and (" + tableResults[andOrNot];
 						}
-
-						//or
-						//not
 					}
 
 					if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
@@ -1373,6 +1372,8 @@
 							case ' (a,b) ':
 								URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
 								break;
+							default:
+								console.log("error en la condició")
 						}
 					} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
 
@@ -1386,6 +1387,8 @@
 					if (tableResults[andOrNot] == "not") {
 						URL += ")";
 					}
+
+
 					// if (i != 0) { //té segona opció And o or
 
 					// 	//currentNode.STAURL += "?$filter=" + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "' ";
@@ -2035,6 +2038,13 @@
 			}
 
 			divResult.appendChild(table);
+
+			//omplir la taula si prèviament s'ha seleccionat algo
+			if (currentNode.STASelectedRows){
+				var elementsPreviouslySelected=currentNode.STASelectedRows;
+				drawTable(currentNode.id, elementsPreviouslySelected, "add");
+			}
+
 
 
 		}
