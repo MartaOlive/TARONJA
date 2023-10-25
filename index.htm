@@ -2982,6 +2982,7 @@
 			cdns.push("</table>");
 			return cdns.join("");
 		}
+
 		function ShowTableDialog(nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
 
@@ -3702,7 +3703,7 @@
 
 		}
 
-		function ShowTableSelectRowsDialog(parentNodeId, nodeId) {
+		function ShowTableSelectRowsDialog(parentNodeId, nodeId) { //STA an element
 			var data = networkNodes.get(parentNodeId).STAdata;
 
 			if (!data || !data.length) {
@@ -3717,7 +3718,7 @@
 			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
 		}
 
-		function ShowTableFilterRowsDialog(nodeId) {
+		function ShowTableFilterRowsDialog(nodeId) {  //STA Filter
 			var data = networkNodes.get(nodeId).STAdata;
 			var dataAttributes = getDataAttributes(data);  //no borrar
 
@@ -3838,7 +3839,7 @@
 				//LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
-			if (nodeFrom.STAdata && nodeTo.image == "SelectColumnsTable.png") {
+			if (nodeFrom.STAdata && nodeTo.image == "SelectColumnsTable.png") { //afegir SelectRowsTable.png
 				nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
 				if (nodeFrom.STAdataAttributes)
 					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
@@ -3960,7 +3961,7 @@
 						document.getElementById("DialogSelectColumns").showModal();
 					}
 				}
-				else if (currentNode.image == "SelectRowsSTA.png") {
+				else if (currentNode.image == "SelectRowsSTA.png") { //afegir el SelectRowsTable.png?
 					//Determining the parent node.
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length) {
