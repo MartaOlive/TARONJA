@@ -1253,6 +1253,9 @@
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
 
+		function hasToPassTheFilter(property, condition, value) {
+
+		}
 
 		function filterValuesFromRowCSV(STAdata, tableResults) {
 			console.log("STAdata: " + STAdata);
@@ -1262,19 +1265,19 @@
 			var generalArray = [];
 
 			for (var i = 0; i < tableResults.length; i += 5) {
-				if ((i - 5) > 0) { 
-					if (tableResults[i-5] == "or" & tableResults[i] != "or") { //si l'anterior era or i el present ja no, es reinicia
+				if ((i - 5) > 0) {
+					if (tableResults[i - 5] == "or" & tableResults[i] != "or") { //si l'anterior era or i el present ja no, es reinicia
 						arrayOfOr = [];
 					}
 				}
-				if (tableResults[i+5]!=null & tableResults[i+5]== "or") { //posar el present
+				if (tableResults[i + 5] != null & tableResults[i + 5] == "or") { //posar el present
 					arrayOfOr.push(tableResults[i]);
 					arrayOfOr.push(tableResults[i + 1]);
 					arrayOfOr.push(tableResults[i + 2]);
 					arrayOfOr.push(tableResults[i + 3]);
 					arrayOfOr.push(tableResults[i + 4]);
 
-				} else if ((tableResults[i] == "or" & (tableResults[i+5]) != "or")) { //si el següent es un or es copiarà en el if anterior. Si no hi ha cap més, es copia el present
+				} else if ((tableResults[i] == "or" & (tableResults[i + 5]) != "or")) { //si el següent es un or es copiarà en el if anterior. Si no hi ha cap més, es copia el present
 					arrayOfOr.push(tableResults[i]);
 					arrayOfOr.push(tableResults[i + 1]);
 					arrayOfOr.push(tableResults[i + 2]);
@@ -1290,8 +1293,106 @@
 					generalArray.push(tableResults[i + 4]);
 				}
 			}
-			console.log (generalArray);
+			console.log(generalArray);
+
+			// 
+			var resultsFiltered, resultsFiltered2;
+			for (var i = 0; i < generalArray.length; i++) { //i+2=condició, i+3 = valor
+				if (Array.isArray(generalArray[i]) == false) {
+					console.log("isNotAnArray");
+					if (i == 0) {
+						resultsFiltered2 = STAdata;
+					}
+					//filter
+					if (i == 0 || generalArray[i] == "and") {
+						console.log("dins el if")// STAdata.filter((generalArray[i+1], generalArray[i+2], generalArray[i+3]));
+						switch (generalArray[i + 2]) {
+							case ' = ':
+								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] == generalArray[i + 3]);
+								console.log(resultsFiltered);//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case ' &ne; ':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case ' &ge; ':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case ' > ':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case ' &le; ':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case ' < ':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case ' [a,b] ':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case ' (a,b] ':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case ' [a,b) ':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case ' (a,b) ':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'contains':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'no contains':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'starts with':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'ends with':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'year':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'month':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'day':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'hour':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'minute':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'date':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'time':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+						}
+					}
+					else if (generalArray[i] == "not") {
+
+					}
+
+
+					i += 4;
+				} else {
+					//Per passar tota la sèrie fins arribar a la següent
+					//filter
+					if (generalArray[i][0] == "nothing" || generalArray[i][0] == "and") { //si els dos de l'array
+
+					}
+					else if (generalArray[i][0] == "not") { //no els dos de l'array
+
+					}
+				}
+			}
+
 		}
+
 
 
 
@@ -1680,7 +1781,7 @@
 					typeOfValues = "number";
 				}
 			}
-			console.log(typeOfValues);
+			// console.log(typeOfValues);
 			return typeOfValues;
 
 		}
@@ -2153,7 +2254,7 @@
 
 
 			// console.log("despres d'afegir: " + tableContent);
-			console.log(tableContent);
+			// console.log(tableContent);
 
 
 			//borrar taula
@@ -2413,7 +2514,7 @@
 
 				divFilterContainer.appendChild(select);
 				var cancelButton = document.createElement("button");
-				console.log("inici place_id:  " + place_Id)
+				// console.log("inici place_id:  " + place_Id)
 				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','cancel'," + row + ",'simple','" + nodeId + "')");
 				cancelButton.setAttribute("id", "cancelButton" + place);
 				cancelButton.innerHTML = "Cancel";
