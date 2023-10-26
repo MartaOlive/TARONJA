@@ -1116,13 +1116,14 @@
 		const selectConditionContent = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date', 'time', 'min date time', 'max date time'];
 		const selectConditionContentText = [' = ', ' &ne; ', 'contains', 'no contains', 'starts with', 'ends with'];
 		const selectConditionContentNumber = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains']
-		// [0]' = ', ' &ne; ', [2]' &ge; ', ' > ', ' &le; ', ' < ', [6]' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', [10]'contains', 'no contains','starts with', 'ends with',[14]'year','month','day','hour','minute','date','time','min date time','max date time'
+
 
 		function GetSelectColumns(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectColumns").close();
 
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
+
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
 				var node = networkNodes.get(nodeids[0]);
 				if (node.STAURL)
@@ -1252,162 +1253,222 @@
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
 
+
+		function filterValuesFromRowCSV(STAdata, tableResults) {
+			console.log("STAdata: " + STAdata);
+			console.log(tableResults);
+			//agrupar els or
+			var arrayOfOr = [];
+			var generalArray = [];
+
+			for (var i = 0; i < tableResults.length; i += 5) {
+				if ((i - 5) > 0) { 
+					if (tableResults[i-5] == "or" & tableResults[i] != "or") { //si l'anterior era or i el present ja no, es reinicia
+						arrayOfOr = [];
+					}
+				}
+				if (tableResults[i+5]!=null & tableResults[i+5]== "or") { //posar el present
+					arrayOfOr.push(tableResults[i]);
+					arrayOfOr.push(tableResults[i + 1]);
+					arrayOfOr.push(tableResults[i + 2]);
+					arrayOfOr.push(tableResults[i + 3]);
+					arrayOfOr.push(tableResults[i + 4]);
+
+				} else if ((tableResults[i] == "or" & (tableResults[i+5]) != "or")) { //si el següent es un or es copiarà en el if anterior. Si no hi ha cap més, es copia el present
+					arrayOfOr.push(tableResults[i]);
+					arrayOfOr.push(tableResults[i + 1]);
+					arrayOfOr.push(tableResults[i + 2]);
+					arrayOfOr.push(tableResults[i + 3]);
+					arrayOfOr.push(tableResults[i + 4]);
+					generalArray.push(arrayOfOr);
+				}
+				else {
+					generalArray.push(tableResults[i]);
+					generalArray.push(tableResults[i + 1]);
+					generalArray.push(tableResults[i + 2]);
+					generalArray.push(tableResults[i + 3]);
+					generalArray.push(tableResults[i + 4]);
+				}
+			}
+			console.log (generalArray);
+		}
+
+
+
 		function GetSelectRows(event) { //Al apretar el ok
 			event.preventDefault(); // We don't want to submit this form
-
+			document.getElementById("DialogSelectRows").close();
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
+
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
 				var node = networkNodes.get(nodeids[0]);
 				if (node.STAURL)
 					currentNode.STAURL = node.STAURL;
-				if (node.STAdata)
-					currentNode.STAdata = node.STAdata;
+				if (node.STAdata) {
+					currentNode.STAdata = deapCopy(node.STAdata);
+				}
+
+				// if (node.STAdataAttributes)  //Està al GetSelecteColums i no se si ho necesito
+				// 	currentNode.STAdataAttributes = deapCopy(node.STAdataAttributes);
 			}
 			else
 				return;
 
-			if (document.getElementById("DialogSelectRowsTableRadio").checked) {
-				var elems = document.getElementsByName("SelectRowRadio");
-				for (var i = 0; i < elems.length; i++) {
-					if (elems[i].checked)
-						break;
-				}
-				if (i < elems.length) {
-					const s = elems[i].id.substring("SelectRow_".length);
-					const n = Number(s);
-					if (Number.isInteger(n))
-						currentNode.STAURL += "(" + n + ")";
-					else
-						currentNode.STAURL += "(\"" + s + "\")";
-					currentNode.STAURLIdSelected = s;
-				}
+			var table = document.getElementById("tableResult");
+			var tableResults; //on es guarden els valors de la taula
+			var rowsNumber = table.rows.length;
+
+			if (rowsNumber > 1) {
+				tableResults = readTableFilterRow(nodeids, 0) //row=0?
+				console.log(tableResults);
+			} else { //cap selecció
+				alert("There is nothing selected! The filter will not be applied.");
 			}
-			else { //El filter està seleccionat
-				var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-				var table = document.getElementById("tableResult");
-				document.getElementById("DialogSelectRows").close();
+			///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
 
-				var tableResults; //on es guarden els valors de la taula
-				var rowsNumber = table.rows.length;
-
-				if (rowsNumber > 1) {
-					tableResults = readTableFilterRow(nodeids, 0) //row=0?
-					console.log(tableResults);
-				} else { //cap selecció
-					alert("There is nothing selected! The filter will not be applied.");
+			if (currentNode.image == "SelectRowsSTA.png") {
+				if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
+					var elems = document.getElementsByName("SelectRowRadio");
+					for (var i = 0; i < elems.length; i++) {
+						if (elems[i].checked)
+							break;
+					}
+					if (i < elems.length) {
+						const s = elems[i].id.substring("SelectRow_".length);
+						const n = Number(s);
+						if (Number.isInteger(n))
+							currentNode.STAURL += "(" + n + ")";
+						else
+							currentNode.STAURL += "(\"" + s + "\")";
+						currentNode.STAURLIdSelected = s;
+					}
 				}
+				else { //El filter està seleccionat URL
+					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
+					currentNode.STASelectedRows = tableResults;
+					//////////////////////////////////////////////Per treure el @iot. No borrar
+					// var node = networkNodes.get(nodeids[0]);
+					// var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
+					// 	if (element.startsWith("@iot.")) {
+					// 		return element.substring(5);
+					// 	} else {
+					// 		return element.replace("@iot.", "/");
+					// 	}
+					// });
+					// console.log(selectInformationWithoutAt);
+					/////////////////////////////////////////////////////////////////////////////
 
-				currentNode.STASelectedRows = tableResults;
-				
-				//////////////////////////////////////////////Per treure el @iot. No borrar
-				// var node = networkNodes.get(nodeids[0]);
-				// var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
-				// 	if (element.startsWith("@iot.")) {
-				// 		return element.substring(5);
-				// 	} else {
-				// 		return element.replace("@iot.", "/");
-				// 	}
-				// });
-				// console.log(selectInformationWithoutAt);
-				/////////////////////////////////////////////////////////////////////////////
-
-				// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
-				var condition, andOrNot, URL;
-				URL = currentNode.STAURL;
-				for (var i = 0; i < tableResults.length; i += 5) {  //
-					andOrNot = i;
-					condition = i + 2;// el primer "filtre" es segons la  condició seleccionada
-					if (andOrNot == 0) {
-						URL += "?$filter="
-					} else {
-						//URL += tableResults[i];
-						if (tableResults[andOrNot] == "and" || tableResults[andOrNot] == "or") {
-							URL += tableResults[andOrNot];
-						} else { //not
-							URL += "and (" + tableResults[andOrNot];
+					// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
+					var condition, andOrNot, URL;
+					URL = currentNode.STAURL;
+					for (var i = 0; i < tableResults.length; i += 5) {  //
+						andOrNot = i;
+						condition = i + 2;// el primer "filtre" es segons la  condició seleccionada
+						if (andOrNot == 0) {
+							URL += "?$filter="
+						} else {
+							//URL += tableResults[i];
+							if (tableResults[andOrNot] == "and" || tableResults[andOrNot] == "or") {
+								URL += tableResults[andOrNot];
+							} else { //not
+								URL += "and (" + tableResults[andOrNot];
+							}
 						}
+						if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
+							URL += tableResults[i + 1]
+							var typeOfValue = tableResults[i + 4];
+							var apostropheOrSpace;
+							(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
+							switch (tableResults[condition]) {
+								case ' = ':
+									URL += " eq" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' &ne; ':
+									URL += " ne " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' &ge; ':
+									URL += " ge " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' > ':
+									URL += " gt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' &le; ':
+									URL += " le" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' < ':
+									URL += " lt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								default:
+									console.log("error en la condició")
+
+							}
+						} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
+							URL += tableResults[i + 1];
+							switch (tableResults[condition]) {
+								case ' [a,b] ':
+									URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
+									break;
+								case ' (a,b] ':
+									URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
+									break;
+								case ' [a,b) ':
+									URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
+									break;
+								case ' (a,b) ':
+									URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
+									break;
+								default:
+									console.log("error en la condició")
+							}
+						} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
+
+						} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
+							//URL+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
+						} else if (tableResults[condition] == 'min date time' || tableResults[condition] == 'max date time') {
+
+						}
+
+						if (tableResults[andOrNot] == "not") {
+							URL += ")";
+						}
+
+
+						// if (i != 0) { //té segona opció And o or
+
+						// 	//currentNode.STAURL += "?$filter=" + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "' ";
+						// }
+						// else {
+						// 	// 		currentNode.STAURL += tableResults[i] + " " + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "'";
+						// 	// 	}
+
+						// }
+						currentNode.STAURL = URL;
+						console.log(currentNode.STAURL);
+						console.log(URL);
 					}
 
-					if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
-						URL += tableResults[i + 1]
-						var typeOfValue = tableResults[i + 4];
-						var apostropheOrSpace;
-						(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
-						switch (tableResults[condition]) {
-							case ' = ':
-								URL += " eq" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-								break;
-							case ' &ne; ':
-								URL += " ne " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-								break;
-							case ' &ge; ':
-								URL += " ge " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-								break;
-							case ' > ':
-								URL += " gt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-								break;
-							case ' &le; ':
-								URL += " le" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-								break;
-							case ' < ':
-								URL += " lt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-								break;
-							default:
-								console.log("error en la condició")
 
-						}
-
-					} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
-						URL += tableResults[i + 1];
-						switch (tableResults[condition]) {
-							case ' [a,b] ':
-								URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
-								break;
-							case ' (a,b] ':
-								URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
-								break;
-							case ' [a,b) ':
-								URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
-								break;
-							case ' (a,b) ':
-								URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
-								break;
-							default:
-								console.log("error en la condició")
-						}
-					} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
-
-					} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
-						//URL+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
-					} else if (tableResults[condition] == 'min date time' || tableResults[condition] == 'max date time') {
-
-					}
-
-
-					if (tableResults[andOrNot] == "not") {
-						URL += ")";
-					}
-
-
-					// if (i != 0) { //té segona opció And o or
-
-					// 	//currentNode.STAURL += "?$filter=" + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "' ";
-					// }
-					// else {
-					// 	// 		currentNode.STAURL += tableResults[i] + " " + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "'";
-					// 	// 	}
-
-					// }
-					currentNode.STAURL = URL;
-					console.log(currentNode.STAURL);
-					console.log(URL);
 				}
 				currentNode.STAExpectedLength = node.STAExpectedLength;
-				networkNodes.update(currentNode);
+				networkNodes.update(currentNode); //important als dos
 				showInfoMessage("Selecting STA rows...");
-				LoadJSONNodeSTAData(currentNode);
-				UpdateChildenSTAURL(currentNode);
+				LoadJSONNodeSTAData(currentNode); //crida a la API
+				UpdateChildenSTAURL(currentNode);//important als dos 
 			}
+
+			///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
+
+			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+			//tableresults; //resultats de la taula del filter
+			//currentNode.STAdata; //Tota la taula CSV
+			if (currentNode.image == "SelectRowsTable.png") {
+				var filteredValues = filterValuesFromRowCSV(currentNode.STAdata, tableResults);
+				// currentNode.STAdata=filteredValues;
+			}
+
+
+			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+
 		}
 
 		function IdOfSTAEntity(node) {
@@ -1953,7 +2014,6 @@
 					addButton.disabled = false;
 				}
 			} else {
-				console.log("holi carquinyoli")
 				typeOfValues = typeOfValueFromInput(wichTextInput, place, value1);
 				if (typeOfValues == "empty") {
 					addButton.disabled = true;
@@ -2040,8 +2100,8 @@
 			divResult.appendChild(table);
 
 			//omplir la taula si prèviament s'ha seleccionat algo
-			if (currentNode.STASelectedRows){
-				var elementsPreviouslySelected=currentNode.STASelectedRows;
+			if (currentNode.STASelectedRows) {
+				var elementsPreviouslySelected = currentNode.STASelectedRows;
 				drawTable(currentNode.id, elementsPreviouslySelected, "add");
 			}
 
@@ -2477,7 +2537,7 @@
 
 			if (rowsNumber > 1) {
 				for (var r = 1; r < rowsNumber; r++) {
-					if (row !== 0) {
+					if (row != 0) {
 						r = row
 					}
 					property = document.getElementById("th_" + nodeId + "_" + (r) + "_property");
@@ -3839,7 +3899,7 @@
 				//LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
-			if (nodeFrom.STAdata && (nodeTo.image == "SelectColumnsTable.png"||nodeTo.image == "SelectRowsTable.png")) { //afegir SelectRowsTable.png
+			if (nodeFrom.STAdata && (nodeTo.image == "SelectColumnsTable.png" || nodeTo.image == "SelectRowsTable.png")) { //afegir SelectRowsTable.png
 				nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
 				if (nodeFrom.STAdataAttributes)
 					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
@@ -3961,11 +4021,11 @@
 						document.getElementById("DialogSelectColumns").showModal();
 					}
 				}
-				else if (currentNode.image == "SelectRowsSTA.png"||currentNode.image == "SelectRowsTable.png") { //afegir el SelectRowsTable.png?
+				else if (currentNode.image == "SelectRowsSTA.png" || currentNode.image == "SelectRowsTable.png") { //afegir el SelectRowsTable.png?
 					//Determining the parent node.
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length) {
-						if (networkNodes.get(nodeids[0]) && (networkNodes.get(nodeids[0]).STAURL||networkNodes.get(nodeids[0]).STAdata)) {
+						if (networkNodes.get(nodeids[0]) && (networkNodes.get(nodeids[0]).STAURL || networkNodes.get(nodeids[0]).STAdata)) {
 							document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/> Select an element:</label>";
 							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/>  Filter:</label>";
 							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
@@ -4163,7 +4223,6 @@
 			if (startingNodeContextId) {
 				console.log(startingNodeContextId);
 				console.log(currentNode);
-
 			}
 		}
 
