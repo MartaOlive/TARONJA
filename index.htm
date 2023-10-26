@@ -1274,22 +1274,41 @@
 					arrayOfOr.push(tableResults[i]);
 					arrayOfOr.push(tableResults[i + 1]);
 					arrayOfOr.push(tableResults[i + 2]);
-					arrayOfOr.push(tableResults[i + 3]);
+					if (tableResults[i + 4] == "number") {
+						if (Array.isArray(tableResults[i+3])){
+							arrayOfOr.push([parseInt(tableResults[i + 3][0]),parseInt(tableResults[i + 3][1])]);
+						}else{
+							arrayOfOr.push(parseInt(tableResults[i + 3]));
+						}
+					}
 					arrayOfOr.push(tableResults[i + 4]);
 
 				} else if ((tableResults[i] == "or" & (tableResults[i + 5]) != "or")) { //si el següent es un or es copiarà en el if anterior. Si no hi ha cap més, es copia el present
 					arrayOfOr.push(tableResults[i]);
 					arrayOfOr.push(tableResults[i + 1]);
 					arrayOfOr.push(tableResults[i + 2]);
-					arrayOfOr.push(tableResults[i + 3]);
+					if (tableResults[i + 4] == "number") {
+						if (Array.isArray(tableResults[i+3])){
+							arrayOfOr.push([parseInt(tableResults[i + 3][0]),parseInt(tableResults[i + 3][1])]);
+						}else{
+							arrayOfOr.push(parseInt(tableResults[i + 3]));
+						}
+					}
 					arrayOfOr.push(tableResults[i + 4]);
 					generalArray.push(arrayOfOr);
 				}
 				else {
+					var interval=[];
 					generalArray.push(tableResults[i]);
 					generalArray.push(tableResults[i + 1]);
 					generalArray.push(tableResults[i + 2]);
-					generalArray.push(tableResults[i + 3]);
+					if (tableResults[i + 4] == "number") {
+						if (Array.isArray(tableResults[i+3])){
+							generalArray.push([parseInt(tableResults[i + 3][0]),parseInt(tableResults[i + 3][1])]);
+						}else{
+							generalArray.push(parseInt(tableResults[i + 3]));
+						}
+					}
 					generalArray.push(tableResults[i + 4]);
 				}
 			}
@@ -1312,21 +1331,32 @@
 								console.log(resultsFiltered);//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 								break;
 							case ' &ne; ':
+								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] != generalArray[i + 3]);
+								console.log(resultsFiltered);
 								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 								break;
 							case ' &ge; ':
+								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] >= generalArray[i + 3]);
+								console.log(resultsFiltered);
 								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 								break;
 							case ' > ':
-								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] > generalArray[i + 3]);
+								console.log(resultsFiltered);//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 								break;
 							case ' &le; ':
-								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] <= generalArray[i + 3]);
+								console.log(resultsFiltered);//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 								break;
 							case ' < ':
-								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] < generalArray[i + 3]);
+								console.log(resultsFiltered);//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 								break;
 							case ' [a,b] ':
+								var interval;
+								interval= resultsFiltered2.filter(element => element[generalArray[i + 1]] >= generalArray[i + 3][0]);
+								resultsFiltered= interval.filter(element => element[generalArray[i + 1]] <= generalArray[i + 3][1]);
+								console.log(resultsFiltered);
 								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 								break;
 							case ' (a,b] ':
