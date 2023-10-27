@@ -1253,9 +1253,6 @@
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
 
-		function hasToPassTheFilter(property, condition, value) {
-
-		}
 
 		function filterValuesFromRowCSV(STAdata, tableResults) {
 			console.log("STAdata: " + STAdata);
@@ -1275,11 +1272,13 @@
 					arrayOfOr.push(tableResults[i + 1]);
 					arrayOfOr.push(tableResults[i + 2]);
 					if (tableResults[i + 4] == "number") {
-						if (Array.isArray(tableResults[i+3])){
-							arrayOfOr.push([parseInt(tableResults[i + 3][0]),parseInt(tableResults[i + 3][1])]);
-						}else{
+						if (Array.isArray(tableResults[i + 3])) {
+							arrayOfOr.push([parseInt(tableResults[i + 3][0]), parseInt(tableResults[i + 3][1])]);
+						} else {
 							arrayOfOr.push(parseInt(tableResults[i + 3]));
 						}
+					} else {
+						arrayOfOr.push(tableResults[i + 3]);
 					}
 					arrayOfOr.push(tableResults[i + 4]);
 
@@ -1288,85 +1287,126 @@
 					arrayOfOr.push(tableResults[i + 1]);
 					arrayOfOr.push(tableResults[i + 2]);
 					if (tableResults[i + 4] == "number") {
-						if (Array.isArray(tableResults[i+3])){
-							arrayOfOr.push([parseInt(tableResults[i + 3][0]),parseInt(tableResults[i + 3][1])]);
-						}else{
+						if (Array.isArray(tableResults[i + 3])) {
+							arrayOfOr.push([parseInt(tableResults[i + 3][0]), parseInt(tableResults[i + 3][1])]);
+						} else {
 							arrayOfOr.push(parseInt(tableResults[i + 3]));
 						}
+					}
+					else {
+						arrayOfOr.push(tableResults[i + 3]);
 					}
 					arrayOfOr.push(tableResults[i + 4]);
 					generalArray.push(arrayOfOr);
 				}
 				else {
-					var interval=[];
+					var interval = [];
 					generalArray.push(tableResults[i]);
 					generalArray.push(tableResults[i + 1]);
 					generalArray.push(tableResults[i + 2]);
 					if (tableResults[i + 4] == "number") {
-						if (Array.isArray(tableResults[i+3])){
-							generalArray.push([parseInt(tableResults[i + 3][0]),parseInt(tableResults[i + 3][1])]);
-						}else{
+						if (Array.isArray(tableResults[i + 3])) {
+							generalArray.push([parseInt(tableResults[i + 3][0]), parseInt(tableResults[i + 3][1])]);
+						} else {
 							generalArray.push(parseInt(tableResults[i + 3]));
 						}
+					} else {
+						generalArray.push(tableResults[i + 3]);
 					}
 					generalArray.push(tableResults[i + 4]);
 				}
 			}
-			console.log(generalArray);
 
-			// 
+			//És un sol array amb ors?
+			// var thereAreArrays = "no";
+			// var allIsOrCondition = false;
+			// for (var i = 0; i < generalArray.length; i++) {
+			// 	if (Array.isArray(generalArray[i] == true)) {
+			// 		thereAreArrays = "yes";
+			// 	}
+			// }
+			// if (thereAreArrays == "no") {
+			// 	console.log("no arrays");
+			// 	var numbeOfOr = 0;
+			// 	var numberOfConditions = generalArray.length / 5;
+			// 	for (var i = 0; i < generalArray.length; i += 5) {
+			// 		console.log(generalArray);
+			// 		if (generalArray[i] == "or") {
+			// 			numbeOfOr++;
+			// 			console.log("conté or")
+
+			// 		}
+			// 	}
+			// 	if ((numbeOfOr + 1) == numberOfConditions) {
+			// 		allIsOrCondition = true;
+			// 		console.log("tot son ors");
+			// 	}
+			// }
+
+
+
+			// aplicació del filtre
 			var resultsFiltered, resultsFiltered2;
-			for (var i = 0; i < generalArray.length; i++) { //i+2=condició, i+3 = valor
-				if (Array.isArray(generalArray[i]) == false) {
-					console.log("isNotAnArray");
-					if (i == 0) {
-						resultsFiltered2 = STAdata;
-					}
+			for (var i = 0; i < generalArray.length; i++) { //i+2=condició, i+3 = valor (si no es un array saltarà 5 is)
+				if (i == 0) {
+					resultsFiltered2 = STAdata;
+				} else {
+					resultsFiltered2 = resultsFiltered;
+				}
+				if (Array.isArray(generalArray[i]) == false /*& allIsOrCondition == false*/) {
 					//filter
 					if (i == 0 || generalArray[i] == "and") {
-						console.log("dins el if")// STAdata.filter((generalArray[i+1], generalArray[i+2], generalArray[i+3]));
 						switch (generalArray[i + 2]) {
 							case ' = ':
 								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] == generalArray[i + 3]);
-								console.log(resultsFiltered);//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								console.log(resultsFiltered);
 								break;
 							case ' &ne; ':
 								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] != generalArray[i + 3]);
 								console.log(resultsFiltered);
-								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+
 								break;
 							case ' &ge; ':
 								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] >= generalArray[i + 3]);
 								console.log(resultsFiltered);
-								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+
 								break;
 							case ' > ':
 								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] > generalArray[i + 3]);
-								console.log(resultsFiltered);//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								console.log(resultsFiltered);
 								break;
 							case ' &le; ':
 								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] <= generalArray[i + 3]);
-								console.log(resultsFiltered);//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								console.log(resultsFiltered);
 								break;
 							case ' < ':
 								resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i + 1]] < generalArray[i + 3]);
-								console.log(resultsFiltered);//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								console.log(resultsFiltered);
 								break;
 							case ' [a,b] ':
 								var interval;
-								interval= resultsFiltered2.filter(element => element[generalArray[i + 1]] >= generalArray[i + 3][0]);
-								resultsFiltered= interval.filter(element => element[generalArray[i + 1]] <= generalArray[i + 3][1]);
+								interval = resultsFiltered2.filter(element => element[generalArray[i + 1]] >= generalArray[i + 3][0]);
+								resultsFiltered = interval.filter(element => element[generalArray[i + 1]] <= generalArray[i + 3][1]);
 								console.log(resultsFiltered);
-								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+
 								break;
 							case ' (a,b] ':
-								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								var interval;
+								interval = resultsFiltered2.filter(element => element[generalArray[i + 1]] > generalArray[i + 3][0]);
+								resultsFiltered = interval.filter(element => element[generalArray[i + 1]] <= generalArray[i + 3][1]);
+								console.log(resultsFiltered);
 								break;
 							case ' [a,b) ':
-								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								var interval;
+								interval = resultsFiltered2.filter(element => element[generalArray[i + 1]] >= generalArray[i + 3][0]);
+								resultsFiltered = interval.filter(element => element[generalArray[i + 1]] < generalArray[i + 3][1]);
+								console.log(resultsFiltered);
 								break;
 							case ' (a,b) ':
-								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								var interval;
+								interval = resultsFiltered2.filter(element => element[generalArray[i + 1]] > generalArray[i + 3][0]);
+								resultsFiltered = interval.filter(element => element[generalArray[i + 1]] < generalArray[i + 3][1]);
+								console.log(resultsFiltered);
 								break;
 							case 'contains':
 								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
@@ -1404,16 +1444,194 @@
 						}
 					}
 					else if (generalArray[i] == "not") {
+						switch (generalArray[i + 2]) {
+							case ' = ':
+								resultsFiltered = resultsFiltered2.filter(element => (element[generalArray[i + 1]] != generalArray[i + 3]));
+								console.log(resultsFiltered);
+								break;
+							case ' &ne; ':
+								resultsFiltered = resultsFiltered2.filter(element => (element[generalArray[i + 1]] == generalArray[i + 3]));
+								console.log(resultsFiltered);
 
+								break;
+							case ' &ge; ':
+								resultsFiltered = resultsFiltered2.filter(element => (element[generalArray[i + 1]] < generalArray[i + 3]));
+								console.log(resultsFiltered);
+
+								break;
+							case ' > ':
+								resultsFiltered = resultsFiltered2.filter(element => (element[generalArray[i + 1]] <= generalArray[i + 3]));
+								console.log(resultsFiltered);
+								break;
+							case ' &le; ':
+								resultsFiltered = resultsFiltered2.filter(element => (element[generalArray[i + 1]] > generalArray[i + 3]));
+								console.log(resultsFiltered);
+								break;
+							case ' < ':
+								resultsFiltered = resultsFiltered2.filter(element => (element[generalArray[i + 1]] >= generalArray[i + 3]));
+								console.log(resultsFiltered);
+								break;
+							case ' [a,b] ':
+								var interval;
+								interval = resultsFiltered2.filter(element => (element[generalArray[i + 1]] < generalArray[i + 3][0]));
+								resultsFiltered = interval.filter(element => (element[generalArray[i + 1]] > generalArray[i + 3][1]));
+								console.log(resultsFiltered);
+
+								break;
+							case ' (a,b] ':
+								var interval;
+								interval = resultsFiltered2.filter(element => (element[generalArray[i + 1]] <= generalArray[i + 3][0]));
+								resultsFiltered = interval.filter(element => (element[generalArray[i + 1]] > generalArray[i + 3][1]));
+								console.log(resultsFiltered);
+								break;
+							case ' [a,b) ':
+								var interval;
+								interval = resultsFiltered2.filter(element => (element[generalArray[i + 1]] < generalArray[i + 3][0]));
+								resultsFiltered = interval.filter(element => (element[generalArray[i + 1]] >= generalArray[i + 3][1]));
+								console.log(resultsFiltered);
+								break;
+							case ' (a,b) ':
+								var interval;
+								interval = resultsFiltered2.filter(element => (element[generalArray[i + 1]] <= generalArray[i + 3][0]));
+								resultsFiltered = interval.filter(element => (element[generalArray[i + 1]] >= generalArray[i + 3][1]));
+								console.log(resultsFiltered);
+								break;
+							case 'contains':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'no contains':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'starts with':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'ends with':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'year':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'month':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'day':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'hour':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'minute':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'date':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+							case 'time':
+								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+								break;
+						}
 					}
-
-
 					i += 4;
-				} else {
-					//Per passar tota la sèrie fins arribar a la següent
+				} else { //array dels ors (múltiple de 5). SI hi ha Or sempre hi haurà array
 					//filter
-					if (generalArray[i][0] == "nothing" || generalArray[i][0] == "and") { //si els dos de l'array
 
+					if (generalArray[i][0] == "nothing" || generalArray[i][0] == "and") {
+						var temporalArray = [];
+						var finalArray;
+						console.log(generalArray[i]);
+						for (var a = 0; a < generalArray[i].length; a += 5) { //for amb and
+							switch (generalArray[i][a + 2]) {
+								case ' = ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] == generalArray[i][a + 3]);
+									console.log(resultsFiltered)
+									break;
+								case ' &ne; ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] != generalArray[i][a + 3]);
+
+
+									break;
+								case ' &ge; ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] >= generalArray[i][a + 3]);
+
+
+									break;
+								case ' > ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] > generalArray[i][a + 3]);
+
+									break;
+								case ' &le; ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] <= generalArray[i][a + 3]);
+
+									break;
+								case ' < ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] < generalArray[i][a + 3]);
+
+									break;
+								case ' [a,b] ':
+									var interval;
+									interval = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] >= generalArray[i][a + 3][0]);
+									resultsFiltered = interval.filter(element => element[generalArray[i][a + 1]] <= generalArray[i][a + 3][1]);
+
+
+									break;
+								case ' (a,b] ':
+									var interval;
+									interval = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] > generalArray[i][a + 3][0]);
+									resultsFiltered = interval.filter(element => element[generalArray[i][a + 1]] <= generalArray[i][a + 3][1]);
+
+									break;
+								case ' [a,b) ':
+									var interval;
+									interval = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] >= generalArray[i][a + 3][0]);
+									resultsFiltered = interval.filter(element => element[generalArray[i][a + 1]] < generalArray[i][a + 3][1]);
+
+									break;
+								case ' (a,b) ':
+									var interval;
+									interval = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] > generalArray[i][a + 3][0]);
+									resultsFiltered = interval.filter(element => element[generalArray[i][a + 1]] < generalArray[i][a + 3][1]);
+
+									break;
+								case 'contains':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'no contains':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'starts with':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'ends with':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'year':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'month':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'day':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'hour':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'minute':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'date':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'time':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+							}
+							temporalArray.push(...resultsFiltered);
+						}
+
+
+						resultsFiltered = temporalArray
+						console.log(resultsFiltered);
 					}
 					else if (generalArray[i][0] == "not") { //no els dos de l'array
 
@@ -1428,7 +1646,7 @@
 
 		function GetSelectRows(event) { //Al apretar el ok
 			event.preventDefault(); // We don't want to submit this form
-			document.getElementById("DialogSelectRows").close();
+
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
 
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
@@ -1455,9 +1673,12 @@
 			} else { //cap selecció
 				alert("There is nothing selected! The filter will not be applied.");
 			}
+
+
 			///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
 
 			if (currentNode.image == "SelectRowsSTA.png") {
+				currentNode.STASelectedRows = tableResults;
 				if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
 					var elems = document.getElementsByName("SelectRowRadio");
 					for (var i = 0; i < elems.length; i++) {
@@ -1476,7 +1697,7 @@
 				}
 				else { //El filter està seleccionat URL
 					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-					currentNode.STASelectedRows = tableResults;
+
 					//////////////////////////////////////////////Per treure el @iot. No borrar
 					// var node = networkNodes.get(nodeids[0]);
 					// var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
@@ -1563,16 +1784,6 @@
 							URL += ")";
 						}
 
-
-						// if (i != 0) { //té segona opció And o or
-
-						// 	//currentNode.STAURL += "?$filter=" + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "' ";
-						// }
-						// else {
-						// 	// 		currentNode.STAURL += tableResults[i] + " " + tableResults[i + 1] + " eq '" + tableResults[i + 2] + "'";
-						// 	// 	}
-
-						// }
 						currentNode.STAURL = URL;
 						console.log(currentNode.STAURL);
 						console.log(URL);
@@ -1585,21 +1796,31 @@
 				showInfoMessage("Selecting STA rows...");
 				LoadJSONNodeSTAData(currentNode); //crida a la API
 				UpdateChildenSTAURL(currentNode);//important als dos 
+
+
+				///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
 			}
-
-			///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
-
 			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
-			//tableresults; //resultats de la taula del filter
-			//currentNode.STAdata; //Tota la taula CSV
-			if (currentNode.image == "SelectRowsTable.png") {
+			else if (currentNode.image == "SelectRowsTable.png") {
+				//tableresults; //resultats de la taula del filter
+				//currentNode.STAdata; //Tota la taula CSV
+
+				currentNode.STASelectedRowsTable = tableResults; //no ho crea
+				console.log(currentNode.id);
 				var filteredValues = filterValuesFromRowCSV(currentNode.STAdata, tableResults);
 				// currentNode.STAdata=filteredValues;
 			}
 
 
-			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
 
+
+
+
+
+
+
+			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+			document.getElementById("DialogSelectRows").close();
 		}
 
 		function IdOfSTAEntity(node) {
@@ -2231,8 +2452,13 @@
 			divResult.appendChild(table);
 
 			//omplir la taula si prèviament s'ha seleccionat algo
-			if (currentNode.STASelectedRows) {
-				var elementsPreviouslySelected = currentNode.STASelectedRows;
+			if (currentNode.STASelectedRows || currentNode.STASelectedRowsTable) {
+				var elementsPreviouslySelected;
+				if (currentNode.STASelectedRows) {
+					elementsPreviouslySelected = currentNode.STASelectedRows;
+				} else if (currentNode.STASelectedRowsTable) {
+					elementsPreviouslySelected = currentNode.STASelectedRowsTable;
+				}
 				drawTable(currentNode.id, elementsPreviouslySelected, "add");
 			}
 
@@ -2717,7 +2943,7 @@
 							}
 						} else {
 							valueText = valor.innerHTML;
-							console.log("per aqui")
+
 						}
 					}
 
@@ -2754,7 +2980,7 @@
 				}
 
 			}
-			console.log(tableResults);
+			// console.log(tableResults);
 			return tableResults;
 		}
 		function drawTable(nodeId, tableContentNew, button, row, editRowContent) {
@@ -2874,7 +3100,7 @@
 									tableTh.setAttribute("value", tableContentNew[(r + 3)][0] + "---" + tableContentNew[(r + 3)][1]);
 									// tableTh.setAttribute("value", tableContentNew[(r + 3)]);
 								} else {
-									console.log("nop")
+									// console.log("nop")
 								}
 								tableTh.innerHTML = tableContentNew[(r + 3)];
 

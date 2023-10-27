@@ -19,7 +19,7 @@ event.preventDefault();
 			 tableResults.push(selectorValue.options[selectorValue.selectedIndex].value);
 
 			
-			 var table = document.getElementById("tableResult");
+			 var table = document.getElementById("tableResult_"+nodeId);
 			 var tableTr = document.createElement("tr");
 			 tableTr.setAttribute("id", "tableTr" + valueButtonInt);
 			 tableTr.setAttribute("class", "borderTable");

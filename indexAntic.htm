@@ -642,7 +642,7 @@
 			}
 			else { //El filter està seleccionat
 				var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-				var table = document.getElementById("tableResult");
+				var table = document.getElementById("tableResult_"+nodeId);
 				var tableResults = []; //on es guarden els valors de la taula
 				var rowsNumber = table.rows.length;
 				if (rowsNumber > 1) {
@@ -851,7 +851,7 @@
 
 			var divIsAnObject = document.getElementById("divIsAnObject");
 			var addButton = document.getElementById("addButton");
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			var rowsNumbers = table.rows.length;
 			var buttonSave;
 
@@ -931,7 +931,7 @@
 			displaySelectButton.classList.add("hidden");
 			addButton.disabled = true;
 
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			var rowsNumbers = table.rows.length;
 			var saveButton;
 
@@ -1055,7 +1055,7 @@
 
 		function addSelected(nodeId, place) {
 			event.preventDefault();
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			// var señectorAndOrNot=document.getElementById("select_"+nodeId+"_"+(table.length-1));
 			var selectorProperty = document.getElementById("selectorProperty" + place);
 			var selectorCondition = document.getElementById("selectorCondition" + place);
@@ -1099,7 +1099,7 @@
 			var data = networkNodes.get(nodeId).STAdata;
 			var dataAttributes2;
 			if (button != "initial") {
-				var table = document.getElementById("tableResult");
+				var table = document.getElementById("tableResult_"+nodeId);
 				var rowsNumbers = table.rows.length;
 			}
 
@@ -1273,7 +1273,7 @@
 
 			console.log(tableContent);
 			//borrar taula
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			var a = 1;
 			var rowsNumbers = table.rows.length;
 			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
@@ -1286,7 +1286,7 @@
 
 
 		function readTableFilterRow(nodeId, row) {
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			var tableResults = []; //on es guarden els valors de la taula
 			var rowsNumber = table.rows.length;
 			var property, propertyText, condition, conditionText, value, valueText, selectorProperty, selectorCondition, inputValue;
@@ -1343,7 +1343,7 @@
 
 		function drawTable(nodeId, tableContentNew, button, row, editRowContent) {
 			var contador = 1;
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			// console.log("el q escriu: " + tableContentNew);
 
 
@@ -1516,7 +1516,7 @@
 			tableContent.splice(position, 0, "insertSelect", "insertSelect", "insertSelect", "insertSelect");
 			console.log(tableContent);
 			//borrar taula
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			var a = 1;
 			var rowsNumbers = table.rows.length;
 			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
@@ -1557,7 +1557,7 @@
 		function saveRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			var a = 1;
 			var rowsNumbers = table.rows.length;
 			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
@@ -1600,7 +1600,7 @@
 			console.log("editRowContent: " + editRowContent);
 
 			//borrar taula
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			var a = 1;
 			var rowsNumbers = table.rows.length;
 			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
@@ -1646,7 +1646,7 @@
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0); //agafar els valors de la taula
 
-			var table = document.getElementById("tableResult");
+			var table = document.getElementById("tableResult_"+nodeId);
 			var a = 1;
 			var rowsNumbers2 = table.rows.length;
 
