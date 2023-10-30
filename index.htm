@@ -1353,7 +1353,7 @@
 				} else {
 					resultsFiltered2 = resultsFiltered;
 				}
-				if (Array.isArray(generalArray[i]) == false /*& allIsOrCondition == false*/) {
+				if (Array.isArray(generalArray[i]) == false) {
 					//filter
 					if (i == 0 || generalArray[i] == "and") {
 						switch (generalArray[i + 2]) {
@@ -1626,11 +1626,22 @@
 									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 									break;
 							}
+
 							temporalArray.push(...resultsFiltered);
 						}
 
+						//eliminar repetits: 
+						var arrayWithoutDuplicates = [];
+						for (var e = 0; e < temporalArray.length; e++) {
+							console.log(temporalArray[e]["@iot.id"]);
 
-						resultsFiltered = temporalArray
+							if (!arrayWithoutDuplicates.find(object => object["@iot.id"] == temporalArray[e]["@iot.id"])) {
+								arrayWithoutDuplicates.push(temporalArray[e]);
+							} else {
+								// console.log("duplicat")
+							}
+						}
+						resultsFiltered = arrayWithoutDuplicates //actualitzem resultsFiltered sense repetits
 						console.log(resultsFiltered);
 					}
 					else if (generalArray[i][0] == "not") { //no els dos de l'array
@@ -1727,21 +1738,11 @@
 							temporalArray.push(...resultsFiltered);
 						}
 
-						//borrar duplicats
-						console.log(temporalArray);
-						var arrayWithoutDuplicates = [];
-						for (var e = 0; e < temporalArray.length; e++) {
-							console.log(temporalArray[e]["@iot.id"]);
-
-							if (!arrayWithoutDuplicates.find(object => object["@iot.id"] == temporalArray[e]["@iot.id"])) {
-								arrayWithoutDuplicates.push(temporalArray[e]);
-							} else {
-								console.log("duplicat")
-							}
-
-
-						}
-						resultsFiltered = arrayWithoutDuplicates;
+						//Quyedar-se amb els duplicats
+						var arrayWithDuplicates = temporalArray.filter((elemento, index) => {
+							return temporalArray.indexOf(elemento) != index;
+						})
+						resultsFiltered = arrayWithDuplicates //actualitzem resultsFiltered sense repetits
 						console.log(resultsFiltered);
 					}
 				}
