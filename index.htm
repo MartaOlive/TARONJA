@@ -1892,14 +1892,6 @@
 				// currentNode.STAdata=filteredValues;
 			}
 
-
-
-
-
-
-
-
-
 			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
 			document.getElementById("DialogSelectRows").close();
 		}
@@ -2708,6 +2700,7 @@
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data = networkNodes.get(nodeId).STAdata;
+			console.log (button)
 			var dataAttributes2;
 			if (button != "initial") {
 				var table = document.getElementById("tableResult");
@@ -2716,7 +2709,8 @@
 
 			if (dataAttributes === "no") {
 				dataAttributes2 = getDataAttributes(data);
-			} else {
+			} 
+			else {
 				dataAttributes2 = dataAttributes;
 			};
 
@@ -2754,7 +2748,7 @@
 				var selectConditionContent2;
 				if (button == "edit") {
 					var typeOfValues = typeOfValueFromInput("simple", place, editRowContent[2]);
-
+					console.log(typeOfValues);
 					if (typeOfValues == "number") {
 						selectConditionContent2 = selectConditionContentNumber;
 					} else if (typeOfValues == "text") { //text
@@ -2763,6 +2757,7 @@
 						selectConditionContent2 = selectConditionContent;
 					}
 				} else {
+					console.log("no entra al edit")
 					selectConditionContent2 = selectConditionContent;
 				}
 
@@ -2772,10 +2767,10 @@
 					opcioCondicio.setAttribute("value", selectConditionContent2[i]);
 					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + place + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
 					opcioCondicio.innerHTML = selectConditionContent2[i];
-
-					if (editRowContent !== 'undefined' & (button == "edit" /*|| button == 'changeCondition'*/)) {
+					// console.log(selectConditionContent2[i])
+					if (editRowContent !== 'undefined' & (button == "edit")) {
 						console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
-						if (i == editRowContent[2]) {
+						if (selectConditionContent2[i] == editRowContent[2]) { //no acaba d'anar (xq ja no es i)
 							opcioCondicio.setAttribute("selected", true);
 						}
 					}
@@ -3132,7 +3127,7 @@
 								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7...
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
-								// 	//muntar input/select amb opicio seleccionada
+								//muntar input/select amb opicio seleccionada
 
 								// console.log(tableContentNew[(r + 1)]);
 
@@ -3164,8 +3159,8 @@
 
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
-								// 	//muntar input/select amb opicio seleccionada
-								createSelect(2, "_tableResult", idCondition, nodeId, tableContentNew, button, editRowContent);
+								//muntar input/select amb opicio seleccionada
+								createSelect(2, "_tableResult", idCondition, nodeId,"no", tableContentNew, button, editRowContent);
 
 							}
 
@@ -3343,6 +3338,7 @@
 			//borrar taula
 			eraseTable();
 			//pintar la taula canviat els valors pels selects i tenint la seleccio del select posada al input
+
 			drawTable(nodeId, tableContent, "edit", row, editRowContent);
 			var table = document.getElementById("tableResult");
 			var rowsNumbers = table.rows.length;
