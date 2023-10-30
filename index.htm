@@ -1634,7 +1634,115 @@
 						console.log(resultsFiltered);
 					}
 					else if (generalArray[i][0] == "not") { //no els dos de l'array
+						var temporalArray = [];
+						var finalArray;
+						console.log(generalArray[i]);
+						for (var a = 0; a < generalArray[i].length; a += 5) { //for amb and
+							switch (generalArray[i][a + 2]) {
+								case ' = ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] != generalArray[i][a + 3]);
+									console.log(resultsFiltered)
+									break;
+								case ' &ne; ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] == generalArray[i][a + 3]);
 
+
+									break;
+								case ' &ge; ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] < generalArray[i][a + 3]);
+
+
+									break;
+								case ' > ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] <= generalArray[i][a + 3]);
+
+									break;
+								case ' &le; ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] > generalArray[i][a + 3]);
+
+									break;
+								case ' < ':
+									resultsFiltered = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] >= generalArray[i][a + 3]);
+
+									break;
+								case ' [a,b] ':
+									var interval;
+									interval = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] < generalArray[i][a + 3][0]);
+									resultsFiltered = interval.filter(element => element[generalArray[i][a + 1]] > generalArray[i][a + 3][1]);
+
+
+									break;
+								case ' (a,b] ':
+									var interval;
+									interval = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] <= generalArray[i][a + 3][0]);
+									resultsFiltered = interval.filter(element => element[generalArray[i][a + 1]] > generalArray[i][a + 3][1]);
+
+									break;
+								case ' [a,b) ':
+									var interval;
+									interval = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] < generalArray[i][a + 3][0]);
+									resultsFiltered = interval.filter(element => element[generalArray[i][a + 1]] >= generalArray[i][a + 3][1]);
+
+									break;
+								case ' (a,b) ':
+									var interval;
+									interval = resultsFiltered2.filter(element => element[generalArray[i][a + 1]] <= generalArray[i][a + 3][0]);
+									resultsFiltered = interval.filter(element => element[generalArray[i][a + 1]] >= generalArray[i][a + 3][1]);
+
+									break;
+								case 'contains':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'no contains':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'starts with':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'ends with':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'year':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'month':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'day':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'hour':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'minute':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'date':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+								case 'time':
+									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									break;
+							}
+							temporalArray.push(...resultsFiltered);
+						}
+
+						//borrar duplicats
+						console.log(temporalArray);
+						var arrayWithoutDuplicates = [];
+						for (var e = 0; e < temporalArray.length; e++) {
+							console.log(temporalArray[e]["@iot.id"]);
+
+							if (!arrayWithoutDuplicates.find(object => object["@iot.id"] == temporalArray[e]["@iot.id"])) {
+								arrayWithoutDuplicates.push(temporalArray[e]);
+							} else {
+								console.log("duplicat")
+							}
+
+
+						}
+						resultsFiltered = arrayWithoutDuplicates;
+						console.log(resultsFiltered);
 					}
 				}
 			}
