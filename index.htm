@@ -1254,7 +1254,7 @@
 		}
 
 
-function IdOfSTAEntity(node) {
+		function IdOfSTAEntity(node) {
 			for (var i = 0; i < STAEntitiesArray.length; i++) {
 				if (node.image == STAEntitiesArray[i] + ".png")
 					return i;
@@ -1843,10 +1843,14 @@ function IdOfSTAEntity(node) {
 		function GetSelectRows(event) { //Al apretar el ok
 			event.preventDefault(); // We don't want to submit this form
 
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
+			console.log(event);
 
-			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
-				var node = networkNodes.get(nodeids[0]);
+
+			var nodeids = currentNode.id;
+			console.log(nodeids);
+
+			if (nodeids && nodeids.length && networkNodes.get(nodeids)) {
+				var node = networkNodes.get(nodeids);
 				if (node.STAURL)
 					currentNode.STAURL = node.STAURL;
 				if (node.STAdata) {
@@ -1871,7 +1875,7 @@ function IdOfSTAEntity(node) {
 			}
 
 
-			///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
+			// ///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
 
 			if (currentNode.image == "SelectRowsSTA.png") {
 				currentNode.STASelectedRows = tableResults;
@@ -1897,7 +1901,7 @@ function IdOfSTAEntity(node) {
 					// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
 					var condition, andOrNot, URL;
 					URL = currentNode.STAURL;
-					for (var i = 0; i < tableResults.length; i += 5) {  //
+					for (var i = 0; i < tableResults.length; i += 5) {
 						andOrNot = i;
 						condition = i + 2;// el primer "filtre" es segons la  condició seleccionada
 						if (andOrNot == 0) {
@@ -1992,16 +1996,19 @@ function IdOfSTAEntity(node) {
 				currentNode.STASelectedRowsTable = tableResults; //no ho crea
 				console.log(currentNode.id);
 				var filteredValues = filterValuesFromRowCSV(currentNode.STAdata, tableResults);
-				currentNode.STAdata=filteredValues;
+				currentNode.STAdata = filteredValues;
+
 
 				//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir. 
 				//currentNode.STASelectedRowsTable = tableResults;
+				//networkNodes.update(currentNode); //important als dos
+				//UpdateChildenSTAURL(currentNode);//important als dos
 			}
 
 			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
 			document.getElementById("DialogSelectRows").close();
 		}
-		
+
 		function typeOfValueFromInput(wichTextInput, place, value1, value2) {
 			var typeOfValues;
 			if (wichTextInput == "simple") {
@@ -2219,7 +2226,7 @@ function IdOfSTAEntity(node) {
 				}
 			}
 		}
-		
+
 		function closeModalSelect(place, place_Id, button, row, selector, nodeId) {
 			event.preventDefault();
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
@@ -2281,7 +2288,7 @@ function IdOfSTAEntity(node) {
 
 
 		}
-		
+
 		function changeWriteToSelect(nodeId, place, selector) {  //Que pugui recollir el text del input
 			event.preventDefault();
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
@@ -2329,7 +2336,7 @@ function IdOfSTAEntity(node) {
 			}
 
 		}
-		
+
 		function isAnObject(nodeId, place) {
 			var select = document.getElementById("selectorValue" + place);
 			var selectOption = select.options[select.selectedIndex].value;
@@ -2341,7 +2348,7 @@ function IdOfSTAEntity(node) {
 			// 	console.log(typeof selectOption);
 			// }
 		}
-		
+
 		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
 			var typeOfValues;
 			var selectCondition = document.getElementById("selectorCondition" + place);
@@ -2441,9 +2448,15 @@ function IdOfSTAEntity(node) {
 				}
 			}
 		}
-		
+
 		function createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId) {
+			//actualitzar STAdata del node
+			networkNodes.get(paramsNodeId).STAdata = networkNodes.get(nodeId).STAdata;
+			currentNode.id = paramsNodeId;
+			networkNodes.update(networkNodes.get(paramsNodeId));
+
 			var data = networkNodes.get(paramsNodeId).STAdata;
+
 			var selectorStructureRow;
 			var divFilterBox = document.getElementById("divSelectorRowsFilter");
 
@@ -2520,9 +2533,9 @@ function IdOfSTAEntity(node) {
 			divResult.appendChild(table);
 
 			//omplir la taula si prèviament s'ha seleccionat algo
-			console.log("currentNode: "+currentNode);
-			console.log("paramsNodeId: "+paramsNodeId);
-			var thisNode= networkNodes.get(paramsNodeId);
+			console.log("currentNode: " + currentNode);
+			console.log("paramsNodeId: " + paramsNodeId);
+			var thisNode = networkNodes.get(paramsNodeId);
 			if (thisNode.STASelectedRows || thisNode.STASelectedRowsTable) {
 				var elementsPreviouslySelected;
 				if (thisNode.STASelectedRows) {
@@ -2536,7 +2549,7 @@ function IdOfSTAEntity(node) {
 
 
 		}
-		
+
 		function addSelected(nodeId, place) {
 			event.preventDefault();
 			var table = document.getElementById("tableResult");
@@ -2591,7 +2604,7 @@ function IdOfSTAEntity(node) {
 			drawTable(nodeId, tableContent, "add");
 
 		}
-		
+
 		function showIntervalSelector(nodeId, place) {
 			event.preventDefault();
 			var selectorCondition = document.getElementById("selectorCondition" + place);
@@ -2696,12 +2709,29 @@ function IdOfSTAEntity(node) {
 			}
 
 		}
-		
+
 		function createSelect(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent, typeOfValues) {
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
-			var data = networkNodes.get(nodeId).STAdata;
-			console.log(button)
+			var data, previousNode;
+
+			var actualNode = networkNodes.get(nodeId);
+			if (actualNode.image == "SelectRowsTable.png") { //actualitzar el STAdata del Node actual amb la info del previ
+
+				previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
+				console.log(previousNode);
+				// data = previousNode.STAdata;
+					actualNode.STAdata = previousNode[0].STAdata;
+					networkNodes.update(actualNode);
+					data = actualNode.STAdata;
+				
+			} else {
+				data = networkNodes.get(nodeId).STAdata;
+			}
+
+
+
+			console.log(nodeId)
 			var dataAttributes2;
 			if (button != "initial") {
 				var table = document.getElementById("tableResult");
@@ -2913,7 +2943,7 @@ function IdOfSTAEntity(node) {
 			}
 
 		}
-		
+
 		function movingRow(row, nodeId, arrow) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);
@@ -2964,7 +2994,7 @@ function IdOfSTAEntity(node) {
 			//dibuixar taula
 			drawTable(nodeId, tableContent, "arrow", row, "no");
 		}
-		
+
 		function readTableFilterRow(nodeId, row) {
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
@@ -3062,7 +3092,7 @@ function IdOfSTAEntity(node) {
 			// console.log(tableResults);
 			return tableResults;
 		}
-		
+
 		function drawTable(nodeId, tableContentNew, button, row, editRowContent) {
 			var contador = 1;
 			var table = document.getElementById("tableResult");
@@ -3243,7 +3273,7 @@ function IdOfSTAEntity(node) {
 
 
 		}
-		
+
 		function eraseTable() {
 			var table = document.getElementById("tableResult");
 			var a = 1;
@@ -3253,7 +3283,7 @@ function IdOfSTAEntity(node) {
 				rowsNumbers = table.rows.length;
 			}
 		}
-		
+
 		function insertRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);//agafar el contingut, i afegir " " en el lloc on toqui.Per ccrear una fila buida on somplirà amb selects
@@ -3298,7 +3328,7 @@ function IdOfSTAEntity(node) {
 
 			}
 		}
-		
+
 		function saveRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);
@@ -3332,7 +3362,7 @@ function IdOfSTAEntity(node) {
 			var addButton = document.getElementById("addButton");
 			addButton.disabled = false;
 		}
-		
+
 		function editRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);
@@ -3379,7 +3409,7 @@ function IdOfSTAEntity(node) {
 
 			}
 		}
-		
+
 		function deleteRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0); //agafar els valors de la taula
@@ -3419,7 +3449,7 @@ function IdOfSTAEntity(node) {
 
 
 		}
-		
+
 		function GetSelectorsForRowFilter(nodeId) {
 			var divSelectorStructure;
 			divSelectorStructure = `<div id=selectorRowsContainer>
@@ -3427,7 +3457,7 @@ function IdOfSTAEntity(node) {
 				<div id='divSelectorRowsFilter'></div></div>`;
 			return divSelectorStructure;
 		}
-		
+
 		function GetHTMLTable(data, dataAttributesInput, rowNumbers, selectedEntityId) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
 			var cdns = [], needhref = [], record, cell, dataAttribute;
@@ -4472,7 +4502,7 @@ function IdOfSTAEntity(node) {
 					if (nodeids && nodeids.length) {
 						if (networkNodes.get(nodeids[0]) && (networkNodes.get(nodeids[0]).STAURL || networkNodes.get(nodeids[0]).STAdata)) {
 							document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/> Select an element:</label>";
-							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\", \""+params["nodes"][0]+ "\")'/>  Filter:</label>";
+							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\", \"" + params["nodes"][0] + "\")'/>  Filter:</label>";
 							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
 						}
 						document.getElementById("DialogSelectRows").showModal();
