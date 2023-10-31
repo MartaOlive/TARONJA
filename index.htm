@@ -1254,6 +1254,124 @@
 		}
 
 
+function IdOfSTAEntity(node) {
+			for (var i = 0; i < STAEntitiesArray.length; i++) {
+				if (node.image == STAEntitiesArray[i] + ".png")
+					return i;
+			}
+			return -1;
+		}
+
+		function IdOfSTASpecialQueries(node) {
+			for (var i = 0; i < STASpecialQueriesArray.length; i++) {
+				if (node.image == STASpecialQueriesArray[i] + ".png")
+					return i;
+			}
+			return -1;
+		}
+
+		function UpdateChildenSTAURL(parentNode, currentSTAURLroot, previousSTAURLroot) {
+			var nodeIds = network.getConnectedNodes(parentNode.id, 'to');
+			for (var i = 0; i < nodeIds.length; i++) {
+				var node = networkNodes.get(nodeIds[i])
+				if (node.STAURL && currentSTAURLroot && previousSTAURLroot) {
+					if (node.STAURL.substring(0, previousSTAURLroot.length) == previousSTAURLroot)
+						node.STAURL = currentSTAURLroot + node.STAURL.substring(previousSTAURLroot.length);
+					if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node) != -1 || node.image == "SelectColumnsSTA.png" || node.image == "SelectRowsSTA.png") {
+						networkNodes.update(node);
+						showInfoMessage("Updating STA child node...");
+						LoadJSONNodeSTAData(node);
+					}
+				}
+				UpdateChildenSTAURL(node);
+			}
+		}
+
+		function UpdateChildenLoadJSONCallback(parentNode) {
+			var nodeIds = network.getConnectedNodes(parentNode.id, 'to');
+			for (var i = 0; i < nodeIds.length; i++) {
+				var node = networkNodes.get(nodeIds[i])
+				if (node.image == "SeparateColumns.png")
+					SeparateColumns(node, parentNode);
+			}
+		}
+
+		function getCSVWTypeFromAttributeType(t) {
+			if (t == "array" || t == "null" || t == "object" || t == "undefined")
+				return "json";
+			return t;
+		}
+
+		function getAttributeTypeFromCSVWType(t) {
+			if (t == "json")
+				return "object";
+			return t;
+		}
+
+
+		function getJSONSchemaTypeFromAttributeType(t) {
+			if (t == "anyURI")
+				return "string";
+			return t;
+		}
+
+		function getJSONType(a) {
+			if (typeof a === "string")
+				return "string";
+			if (typeof a === "boolean")
+				return "boolean";
+			if (Array.isArray(a))
+				return "array";
+			if (a === null)
+				return "null";
+			if (typeof a === "object")
+				return "object";
+			if (typeof a === "undefined")
+				return "undefined";
+			if (Number.isInteger(a))
+				return "integer";
+			if (parseFloat(a))
+				return "number"
+			else
+				return "string";
+		}
+		function getDataAttributes(data) {
+			var dataAttributes = {}, dataAttribute, type;
+
+			for (var i = 0; i < data.length; i++) {
+				var keys = Object.keys(data[i]);
+				for (var k = 0; k < keys.length; k++) {
+					if (dataAttributes[keys[k]]) {
+						dataAttribute = dataAttributes[keys[k]];
+						if (!isAttributeAnyURI(keys[k])) {
+							type = getJSONType(data[i][keys[k]]);
+							if (dataAttribute.type == "null" || dataAttribute.type == "undefined")
+								dataAttribute.type = type;
+							if (type != "null" && type != "undefined") {
+								if ((dataAttribute.type == "boolean" && type != "boolean") ||
+									((dataAttribute.type == "integer" || dataAttribute.type == "number") && (type == "object" || type == "array" || type == "string")) ||
+									(dataAttribute.type == "string" && (type == "object" || type == "array")) ||
+									(dataAttribute.type == "array" && type == "object"))
+									dataAttribute.type = type;
+								else if (dataAttribute.type == "integer" && type == "number")
+									dataAttribute.type = "number";
+							}
+						}
+					}
+					else
+						dataAttributes[keys[k]] = {
+							type: isAttributeAnyURI(keys[k]) ? "anyURI" : getJSONType(data[i][keys[k]])
+						};
+				}
+			}
+			return dataAttributes;
+		}
+		function isAttributeAnyURI(s) {
+			return (s == "url" || s == "definition" || s.endsWith("@iot.selfLink") || s.endsWith("@iot.navigationLink"));
+		}
+
+
+
 		function filterValuesFromRowCSV(STAdata, tableResults) {
 			console.log("STAdata: " + STAdata);
 			console.log(tableResults);
@@ -1719,11 +1837,8 @@
 					}
 				}
 			}
-
+			return resultsFiltered;
 		}
-
-
-
 
 		function GetSelectRows(event) { //Al apretar el ok
 			event.preventDefault(); // We don't want to submit this form
@@ -1778,18 +1893,6 @@
 				}
 				else { //El filter està seleccionat URL
 					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-
-					//////////////////////////////////////////////Per treure el @iot. No borrar
-					// var node = networkNodes.get(nodeids[0]);
-					// var selectInformationWithoutAt = selectInformation.map((element) => { //Falla en el SelfLink, observations/navigationLink... Amb l'@tampoc funciona
-					// 	if (element.startsWith("@iot.")) {
-					// 		return element.substring(5);
-					// 	} else {
-					// 		return element.replace("@iot.", "/");
-					// 	}
-					// });
-					// console.log(selectInformationWithoutAt);
-					/////////////////////////////////////////////////////////////////////////////
 
 					// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
 					var condition, andOrNot, URL;
@@ -1889,94 +1992,16 @@
 				currentNode.STASelectedRowsTable = tableResults; //no ho crea
 				console.log(currentNode.id);
 				var filteredValues = filterValuesFromRowCSV(currentNode.STAdata, tableResults);
-				// currentNode.STAdata=filteredValues;
+				currentNode.STAdata=filteredValues;
+
+				//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir. 
+				//currentNode.STASelectedRowsTable = tableResults;
 			}
 
 			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
 			document.getElementById("DialogSelectRows").close();
 		}
-
-		function IdOfSTAEntity(node) {
-			for (var i = 0; i < STAEntitiesArray.length; i++) {
-				if (node.image == STAEntitiesArray[i] + ".png")
-					return i;
-			}
-			return -1;
-		}
-
-		function IdOfSTASpecialQueries(node) {
-			for (var i = 0; i < STASpecialQueriesArray.length; i++) {
-				if (node.image == STASpecialQueriesArray[i] + ".png")
-					return i;
-			}
-			return -1;
-		}
-
-		function UpdateChildenSTAURL(parentNode, currentSTAURLroot, previousSTAURLroot) {
-			var nodeIds = network.getConnectedNodes(parentNode.id, 'to');
-			for (var i = 0; i < nodeIds.length; i++) {
-				var node = networkNodes.get(nodeIds[i])
-				if (node.STAURL && currentSTAURLroot && previousSTAURLroot) {
-					if (node.STAURL.substring(0, previousSTAURLroot.length) == previousSTAURLroot)
-						node.STAURL = currentSTAURLroot + node.STAURL.substring(previousSTAURLroot.length);
-					if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node) != -1 || node.image == "SelectColumnsSTA.png" || node.image == "SelectRowsSTA.png") {
-						networkNodes.update(node);
-						showInfoMessage("Updating STA child node...");
-						LoadJSONNodeSTAData(node);
-					}
-				}
-				UpdateChildenSTAURL(node);
-			}
-		}
-
-		function UpdateChildenLoadJSONCallback(parentNode) {
-			var nodeIds = network.getConnectedNodes(parentNode.id, 'to');
-			for (var i = 0; i < nodeIds.length; i++) {
-				var node = networkNodes.get(nodeIds[i])
-				if (node.image == "SeparateColumns.png")
-					SeparateColumns(node, parentNode);
-			}
-		}
-
-		function getCSVWTypeFromAttributeType(t) {
-			if (t == "array" || t == "null" || t == "object" || t == "undefined")
-				return "json";
-			return t;
-		}
-
-		function getAttributeTypeFromCSVWType(t) {
-			if (t == "json")
-				return "object";
-			return t;
-		}
-
-
-		function getJSONSchemaTypeFromAttributeType(t) {
-			if (t == "anyURI")
-				return "string";
-			return t;
-		}
-
-		function getJSONType(a) {
-			if (typeof a === "string")
-				return "string";
-			if (typeof a === "boolean")
-				return "boolean";
-			if (Array.isArray(a))
-				return "array";
-			if (a === null)
-				return "null";
-			if (typeof a === "object")
-				return "object";
-			if (typeof a === "undefined")
-				return "undefined";
-			if (Number.isInteger(a))
-				return "integer";
-			if (parseFloat(a))
-				return "number"
-			else
-				return "string";
-		}
+		
 		function typeOfValueFromInput(wichTextInput, place, value1, value2) {
 			var typeOfValues;
 			if (wichTextInput == "simple") {
@@ -2110,41 +2135,6 @@
 
 		}
 
-		function getDataAttributes(data) {
-			var dataAttributes = {}, dataAttribute, type;
-
-			for (var i = 0; i < data.length; i++) {
-				var keys = Object.keys(data[i]);
-				for (var k = 0; k < keys.length; k++) {
-					if (dataAttributes[keys[k]]) {
-						dataAttribute = dataAttributes[keys[k]];
-						if (!isAttributeAnyURI(keys[k])) {
-							type = getJSONType(data[i][keys[k]]);
-							if (dataAttribute.type == "null" || dataAttribute.type == "undefined")
-								dataAttribute.type = type;
-							if (type != "null" && type != "undefined") {
-								if ((dataAttribute.type == "boolean" && type != "boolean") ||
-									((dataAttribute.type == "integer" || dataAttribute.type == "number") && (type == "object" || type == "array" || type == "string")) ||
-									(dataAttribute.type == "string" && (type == "object" || type == "array")) ||
-									(dataAttribute.type == "array" && type == "object"))
-									dataAttribute.type = type;
-								else if (dataAttribute.type == "integer" && type == "number")
-									dataAttribute.type = "number";
-							}
-						}
-					}
-					else
-						dataAttributes[keys[k]] = {
-							type: isAttributeAnyURI(keys[k]) ? "anyURI" : getJSONType(data[i][keys[k]])
-						};
-				}
-			}
-			return dataAttributes;
-		}
-		function isAttributeAnyURI(s) {
-			return (s == "url" || s == "definition" || s.endsWith("@iot.selfLink") || s.endsWith("@iot.navigationLink"));
-		}
-
 		function fillValueSelector(nodeId, place) {
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
@@ -2229,6 +2219,7 @@
 				}
 			}
 		}
+		
 		function closeModalSelect(place, place_Id, button, row, selector, nodeId) {
 			event.preventDefault();
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
@@ -2290,6 +2281,7 @@
 
 
 		}
+		
 		function changeWriteToSelect(nodeId, place, selector) {  //Que pugui recollir el text del input
 			event.preventDefault();
 			var divFilterContainer = document.getElementById("divFilterContainer" + place);
@@ -2337,6 +2329,7 @@
 			}
 
 		}
+		
 		function isAnObject(nodeId, place) {
 			var select = document.getElementById("selectorValue" + place);
 			var selectOption = select.options[select.selectedIndex].value;
@@ -2348,6 +2341,7 @@
 			// 	console.log(typeof selectOption);
 			// }
 		}
+		
 		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
 			var typeOfValues;
 			var selectCondition = document.getElementById("selectorCondition" + place);
@@ -2447,8 +2441,9 @@
 				}
 			}
 		}
-		function createSelectorRowFilters(dataAttributes, nodeId) {
-			var data = networkNodes.get(nodeId).STAdata;
+		
+		function createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId) {
+			var data = networkNodes.get(paramsNodeId).STAdata;
 			var selectorStructureRow;
 			var divFilterBox = document.getElementById("divSelectorRowsFilter");
 
@@ -2460,15 +2455,15 @@
 			optionsRow.appendChild(label1);
 
 
-			createSelect(1, "_optionsRow", "optionsRow", nodeId, dataAttributes, "no", "initial", "no");
-			createSelect(2, "_optionsRow", "optionsRow", nodeId, dataAttributes, "no", "initial", "no");
+			createSelect(1, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
+			createSelect(2, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
 
 			var label2 = document.createElement("label");
 			label2.setAttribute("id", "label2");
 			label2.innerHTML = "a Value";
 			optionsRow.appendChild(label2);
 
-			createSelect(3, "_optionsRow", "optionsRow", nodeId, dataAttributes, "no", "initial", "no");
+			createSelect(3, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
 
 			// var instructions = document.createElement("div");
 			// instructions.setAttribute("id", "instructions");
@@ -2478,7 +2473,7 @@
 
 			var addButton = document.createElement("button");
 			addButton.setAttribute("id", "addButton");
-			addButton.setAttribute("onclick", "addSelected('" + nodeId + "','_optionsRow')");
+			addButton.setAttribute("onclick", "addSelected('" + paramsNodeId + "','_optionsRow')");
 			addButton.innerHTML = "add";
 			optionsRow.appendChild(addButton);
 
@@ -2525,19 +2520,23 @@
 			divResult.appendChild(table);
 
 			//omplir la taula si prèviament s'ha seleccionat algo
-			if (currentNode.STASelectedRows || currentNode.STASelectedRowsTable) {
+			console.log("currentNode: "+currentNode);
+			console.log("paramsNodeId: "+paramsNodeId);
+			var thisNode= networkNodes.get(paramsNodeId);
+			if (thisNode.STASelectedRows || thisNode.STASelectedRowsTable) {
 				var elementsPreviouslySelected;
-				if (currentNode.STASelectedRows) {
-					elementsPreviouslySelected = currentNode.STASelectedRows;
-				} else if (currentNode.STASelectedRowsTable) {
-					elementsPreviouslySelected = currentNode.STASelectedRowsTable;
+				if (thisNode.STASelectedRows) {
+					elementsPreviouslySelected = thisNode.STASelectedRows;
+				} else if (thisNode.STASelectedRowsTable) {
+					elementsPreviouslySelected = thisNode.STASelectedRowsTable;
 				}
-				drawTable(currentNode.id, elementsPreviouslySelected, "add");
+				drawTable(paramsNodeId, elementsPreviouslySelected, "add");
 			}
 
 
 
 		}
+		
 		function addSelected(nodeId, place) {
 			event.preventDefault();
 			var table = document.getElementById("tableResult");
@@ -2592,6 +2591,7 @@
 			drawTable(nodeId, tableContent, "add");
 
 		}
+		
 		function showIntervalSelector(nodeId, place) {
 			event.preventDefault();
 			var selectorCondition = document.getElementById("selectorCondition" + place);
@@ -2696,11 +2696,12 @@
 			}
 
 		}
+		
 		function createSelect(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent, typeOfValues) {
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data = networkNodes.get(nodeId).STAdata;
-			console.log (button)
+			console.log(button)
 			var dataAttributes2;
 			if (button != "initial") {
 				var table = document.getElementById("tableResult");
@@ -2709,7 +2710,7 @@
 
 			if (dataAttributes === "no") {
 				dataAttributes2 = getDataAttributes(data);
-			} 
+			}
 			else {
 				dataAttributes2 = dataAttributes;
 			};
@@ -2912,6 +2913,7 @@
 			}
 
 		}
+		
 		function movingRow(row, nodeId, arrow) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);
@@ -2962,6 +2964,7 @@
 			//dibuixar taula
 			drawTable(nodeId, tableContent, "arrow", row, "no");
 		}
+		
 		function readTableFilterRow(nodeId, row) {
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
@@ -3059,6 +3062,7 @@
 			// console.log(tableResults);
 			return tableResults;
 		}
+		
 		function drawTable(nodeId, tableContentNew, button, row, editRowContent) {
 			var contador = 1;
 			var table = document.getElementById("tableResult");
@@ -3160,7 +3164,7 @@
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
 								//muntar input/select amb opicio seleccionada
-								createSelect(2, "_tableResult", idCondition, nodeId,"no", tableContentNew, button, editRowContent);
+								createSelect(2, "_tableResult", idCondition, nodeId, "no", tableContentNew, button, editRowContent);
 
 							}
 
@@ -3239,6 +3243,7 @@
 
 
 		}
+		
 		function eraseTable() {
 			var table = document.getElementById("tableResult");
 			var a = 1;
@@ -3248,6 +3253,7 @@
 				rowsNumbers = table.rows.length;
 			}
 		}
+		
 		function insertRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);//agafar el contingut, i afegir " " en el lloc on toqui.Per ccrear una fila buida on somplirà amb selects
@@ -3292,6 +3298,7 @@
 
 			}
 		}
+		
 		function saveRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);
@@ -3325,6 +3332,7 @@
 			var addButton = document.getElementById("addButton");
 			addButton.disabled = false;
 		}
+		
 		function editRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0);
@@ -3371,6 +3379,7 @@
 
 			}
 		}
+		
 		function deleteRow(row, nodeId) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0); //agafar els valors de la taula
@@ -3410,6 +3419,7 @@
 
 
 		}
+		
 		function GetSelectorsForRowFilter(nodeId) {
 			var divSelectorStructure;
 			divSelectorStructure = `<div id=selectorRowsContainer>
@@ -3417,6 +3427,7 @@
 				<div id='divSelectorRowsFilter'></div></div>`;
 			return divSelectorStructure;
 		}
+		
 		function GetHTMLTable(data, dataAttributesInput, rowNumbers, selectedEntityId) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
 			var cdns = [], needhref = [], record, cell, dataAttribute;
@@ -4212,7 +4223,7 @@
 			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
 		}
 
-		function ShowTableFilterRowsDialog(nodeId) {  //STA Filter
+		function ShowTableFilterRowsDialog(nodeId, paramsNodeId) {  //STA Filter
 			var data = networkNodes.get(nodeId).STAdata; //a canviar segons si es csv o sta
 			var dataAttributes = getDataAttributes(data);  //no borrar
 
@@ -4228,14 +4239,14 @@
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
 			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
 
-			createSelectorRowFilters(dataAttributes, nodeId); /////////////////////////////////////////////////////////
+			createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId); /////////////////////////////////////////////////////////
 		}
 
-		function ChangeTableFilterRowsDialog(parentNodeId, nodeId) {
+		function ChangeTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId) {
 			if (document.getElementById("DialogSelectRowsTableRadio").checked)
 				ShowTableSelectRowsDialog(parentNodeId, nodeId);
 			else
-				ShowTableFilterRowsDialog(parentNodeId, nodeId);
+				ShowTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId);
 		}
 
 		function SeparatePropertyIfNeeded(record, property, baseName) {
@@ -4461,7 +4472,7 @@
 					if (nodeids && nodeids.length) {
 						if (networkNodes.get(nodeids[0]) && (networkNodes.get(nodeids[0]).STAURL || networkNodes.get(nodeids[0]).STAdata)) {
 							document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/> Select an element:</label>";
-							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/>  Filter:</label>";
+							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\", \""+params["nodes"][0]+ "\")'/>  Filter:</label>";
 							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
 						}
 						document.getElementById("DialogSelectRows").showModal();
