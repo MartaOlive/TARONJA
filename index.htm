@@ -38,15 +38,17 @@
 				</table>
 			</td>
 			<td align="right" valign="top">
-
+				<button id="buttonReloadSTA" onclick='reloadSTA(event);'><img src="login.png" height="20"
+						valign="middle"> Reload</button>
 				<label class=labelbotton><img src="login.png" height="20" valign="middle"> Open
-					<input type="file" id="actual-btn" hidden onchange='openNetwork(event);' />
+					<input type="file" id="openNetworkFileName" hidden onchange='openNetwork(event);' />
 				</label>
+				<!-- https://dev.to/faddalibrahim/how-to-create-a-custom-file-upload-button-using-html-css-and-javascript-1c03 -->
 				<button onclick='saveNetwork(event);'><img src="login.png" height="20" valign="middle"> Save</button>
 				<button id="buttonOpenLogin" onclick='OpenLogin(event);'><img src="login.png" height="20"
 						valign="middle"> Login</button>
-				<button id="buttonOpenLogout" onclick='OpenLogout(event)' style="display: none"><img src="login.png"
-						height="20" valign="middle"> Logout</button>
+				<button id="buttonOpenLogout" onclick='OpenLogout(event);' style="display: none" );'><img
+						src="login.png" height="20" valign="middle"> Logout</button>
 				<button onclick='OpenConfiguration(event);'><img src="config.png" height="20"
 						valign="middle">Configuration</button><br>
 				<span style="font-size: 10px;"><a href="TermsOfUse.htm">Terms of Use</a><br>
@@ -100,7 +102,7 @@
 				</label>
 			</p>
 			<div class="center">
-				<button value="default" id="DialogSTAURLOk" onClick="GetSTAURL(event)">OK</button>
+				<button value="default" id="DialogSTAURLOk" onClick="GetSTAURLEvent(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -136,6 +138,29 @@
 		</form>
 	</dialog>
 
+	<dialog id="DialogSelectSortBy">
+		<form>
+			<fieldset id="DialogSelectSortByHTML">
+				<legend>Select the criteria for sorting:</legend>
+				<span id="DialogSelectSortByRadioButtons">
+				</span>
+			</fieldset>
+			<br>
+			<label>
+				<input type="radio" id="SelectSortByAsc" name="SelectSortByArcDesc" checked />ascending
+				<input type="radio" id="SelectSortByDesc" name="SelectSortByArcDesc" />descending
+			</label>
+			<br>
+			<label>Number records to request:
+				<input type="text" id="SelectSortByNumberOfRecords" size="6" maxlength="6" value="100"></input>
+			</label>
+			<div class="center">
+				<button value="default" onClick="GetSelectSortBy(event)">OK</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
 	<dialog id="DialogSelectRows">
 		<form>
 			<span id="DialogSelectRowsTableInputSpan">
@@ -161,7 +186,6 @@
 						height="20" valign="middle"> Add STA service</button><br>
 				<span id="ButtonsContextMenuObjects"></span><br>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button><br>
-				<button onclick='giveMeNodeInformation(event, "DialogContextMenu")'>Node Info</button><br>
 				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
 			</p>
 			<div class="center">
@@ -187,7 +211,10 @@
 			Import CSV file table.
 			<br>
 			<label>CSV delimiter:
-				<input type="text" id="DialogImportCSVDelimiter" size="2" maxlength="1" value=";"></input>
+				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText"
+						checked></input> <input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1"
+						value=";"></input></label> <label><input type="radio" name="DialogImportCSVDelimiter"
+						id="DialogImportCSVDelimiterTab"></input> Tab</label>
 			</label>
 			<br>
 			<label><input type="checkbox" id="DialogImportCSVHeader"></input>First line contains names of the
@@ -215,7 +242,6 @@
 				<input type="text" id="DialogSaveTableDelimiter" size="2" maxlength="1" value=";"></input>
 			</label>
 			<!--span id="DialogSaveTableOptions"></span--><br>
-			<!-- </span> -->
 			<div class="center">
 				<button value="default" onClick="SaveTable(event)">Save CSV</button>
 				<button value="csvw" onClick="SaveCSVW(event)">Save CSVW</button>
@@ -276,6 +302,7 @@
 					</fieldset>
 					<br>
 				</span>
+				<br>
 				<label>Value:
 					<span id="DialogSaveLayerValue"></span>
 				</label>
@@ -287,6 +314,38 @@
 			</div>
 		</form>
 	</dialog>
+
+	<dialog id="DialogScatterPlot">
+		<table border="0">
+			<tr>
+				<td>
+					<form>
+						<span id="DialogScatterPlotTitle"></span>
+
+						<fieldset>
+							<legend>Axes:</legend>
+							<label>Axis x:
+								<span id="DialogScatterPlotAxisX"></span>
+							</label>
+							<br>
+							<label>Axis y:
+								<span id="DialogScatterPlotAxisY"></span>
+							</label>
+						</fieldset>
+						<br>
+						<div class="center">
+							<button value="draw" onClick="DrawScatterPlot(event)">Draw</button>
+							<button value="ok" onClick="CloseDialogScatterPlot(event)" formmethod="dialog">Ok</button>
+						</div>
+					</form>
+				</td>
+				<td>
+					<div id="DialogScatterPlotVisualization" style="width:600px; height:500px;"></div>
+				</td>
+			</tr>
+			<table>
+	</dialog>
+
 
 	<dialog id="UploadObservations">
 		<div id="UploadObservationsLoginFirst" style="display: none;">
@@ -323,6 +382,14 @@
 			</fieldset>
 			<label>Date and time:
 				<span id="DialogUploadObservationsTime"></span>
+			</label>
+			<br>
+			<label>Sensor instance id or name:
+				<span id="DialogUploadObservationsSensorName"></span>
+			</label>
+			<br>
+			<label>Sensor reference or type:
+				<span id="DialogUploadObservationsSensorType"></span>
 			</label>
 			<br>
 			<label>STA service URL:
@@ -411,13 +478,15 @@
 		const TableOperations = {
 			ImportCSV: { description: "Import CSV file" },
 			Table: { description: "View Table" },
-			SelectColumnsSTA: { description: "Select Columns" },
-			SelectRowsSTA: { description: "Select Rows" },
+			SelectColumnsSTA: { description: "Select Columns", callSTALoad: true },
+			SelectRowsSTA: { description: "Select Rows", callSTALoad: true },
+			SortBySTA: { description: "Sort by", callSTALoad: true },
 			ViewQuerySTA: { description: "View Query" },
 			UploadObservations: { description: "Upload in STA" },
 			SelectColumnsTable: { description: "Select Columns" },
 			SelectRowsTable: { description: "Select Rows" },
 			SeparateColumns: { description: "Separate Columns" },
+			ScatterPlot: { description: "Scatter Plot" },
 			SaveTable: { description: "Save Table" },
 			SaveLayer: { description: "Save Layer" },
 			OpenMap: { description: "Open Map" }
@@ -435,6 +504,29 @@
 
 		function deapCopy(o) {
 			return JSON.parse(JSON.stringify(o));
+		}
+
+		//from the MiraMon Map Browser DonaAdrecaAbsoluta(url)
+		function getAbsoluteURL(url) {
+			if (url.length > 8 && (url.substring(0, 7) == "http://" || url.substring(0, 8) == "https://"))
+				return url;
+			if (url.charAt(0) == "/")
+				return location.protocol + "//" + location.host + url;
+			return location.protocol + "//" + location.host + DonaAdreca(location.pathname) + url;
+		}
+
+		function removeExtension(name) {
+			var i = name.lastIndexOf(".");
+			if (i == -1)
+				return name;
+			return name.substring(0, i);
+		}
+
+
+		function getLang() {
+			if (navigator.languages != undefined)
+				return navigator.languages[0];
+			return navigator.language;
 		}
 
 		function AddKVPToURL(url, kvp) {
@@ -568,8 +660,11 @@
 				return contentType;
 			else
 				return contentType.substring(0, i);
-		} function AddHeadersIfNeeded(options) {
-			if (hello("authenix").getAuthResponse() &&
+		}
+
+		function AddHeadersIfNeeded(options) {
+			if (CriptoName &&
+				hello("authenix").getAuthResponse() &&
 				hello("authenix").getAuthResponse().access_token) {
 				if (!options.headers)
 					options.headers = {};
@@ -695,10 +790,10 @@
 				node.STAdata = (typeof jsonData.value !== "undefined") ? jsonData.value : [jsonData];
 			networkNodes.update(node);
 			if (jsonData.value && node.STAExpectedLength && node.STAdata.length < node.STAExpectedLength && jsonData["@iot.nextLink"])
-				LoadJSONNodeSTAData(node, callback, jsonData["@iot.nextLink"]);
+				await LoadJSONNodeSTAData(node, callback, jsonData["@iot.nextLink"]);
 			else {
 				showInfoMessage("Completed.");
-				UpdateChildenLoadJSONCallback(node);
+				await UpdateChildenLoadJSONCallback(node);
 				if (callback)
 					callback(node);  //The callback function is never used yet.
 			}
@@ -753,7 +848,7 @@
 				//Transform the JSON text in something in memory
 				try {
 					var result = Papa.parse(reader.result, {
-						delimiter: document.getElementById("DialogImportCSVDelimiter").value,
+						delimiter: (document.getElementById("DialogImportCSVDelimiterText").checked ? document.getElementById("DialogImportCSVDelimiter").value : '\t'),
 						header: document.getElementById("DialogImportCSVHeader").checked,
 						skipEmptyLines: true
 					});
@@ -801,17 +896,19 @@
 			return JSON.parse(atob(base64));
 		};
 
-		var CriptoName = "";
-
+		var CriptoName = null;
 		function OpenLogin(event) {
-			hello("authenix").login({ redirect_uri: location.pathname, scope: "openid citiobs.secd.eu%23read citiobs.secd.eu%23create citiobs.secd.eu%23update citiobs.secd.eu%23delete", display: "popup" }).then(
+			hello("authenix").login({ redirect_uri: location.pathname, lang: getLang(), scope: "openid citiobs.secd.eu%23read citiobs.secd.eu%23create citiobs.secd.eu%23update citiobs.secd.eu%23delete", display: "popup" }).then(
 				function (success) {
 					document.getElementById("buttonOpenLogin").style.display = "none";
 					document.getElementById("buttonOpenLogout").style.display = "inline-block";
 					CriptoName = parseJwt(success.authResponse.id_token).sub;
+					if (!CriptoName)
+						CriptoName == "Anonymous"
 				},
 				function (e) {
 					alert("Signin error: " + e.error.message);
+					CriptoName = null;
 				}
 			);
 		}
@@ -822,8 +919,10 @@
 					document.getElementById("buttonOpenLogin").style.display = "inline-block";
 					document.getElementById("buttonOpenLogout").style.display = "none";
 					alert("Signed out from" + " " + "authenix" + ". ");
+					CriptoName = null;
 				}, function (e) {
 					alert("Signed out error: " + e.error.message);
+					CriptoName = null;
 				});
 		}
 
@@ -842,7 +941,7 @@
 			UpdateConfiguration();
 		}
 
-		function GetSTAURL(event) {
+		function GetSTAURLEvent(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSTAURL").close(document.getElementById("DialogSTAURLInput").value);
 
@@ -853,20 +952,21 @@
 			if (currentNode.STAURL.charAt(currentNode.STAURL.length - 1) == '/')
 				currentNode.STAURL = currentNode.STAURL.slice(0, -1);  //remove last character
 			networkNodes.update(currentNode);	//https://visjs.github.io/vis-data/data/dataset.html#Data_Manipulation
-			showInfoMessage("Getting STA home page...");
-			LoadJSONNodeSTAData(currentNode);
+			// showInfoMessage("Getting STA home page...");
+			// LoadJSONNodeSTAData(currentNode);
 
 			//if childen nodes have also STAURL
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
+			LoadJSONNodeSTAData(currentNode);
 		}
 
 		function ShowUploadObservationsDialog(nodeId) {
-			if (hello("authenix").getAuthResponse() &&
-				hello("authenix").getAuthResponse().access_token &&
-				CriptoName) {
+			if (CriptoName &&
+				hello("authenix").getAuthResponse() &&
+				hello("authenix").getAuthResponse().access_token) {
 				document.getElementById("UploadObservationsLoginFirst").style.display = "none";
 				document.getElementById("UploadObservationsForm").style.display = "inline-block";
-				document.getElementById("DialogSTAUploadURLInput").value = nodeId.STAURL ? nodeId.STAURL : STAurl;
+				document.getElementById("DialogSTAUploadURLInput").value = nodeId.STAURL ? nodeId.STAURL : config.STAurl;
 				ShowUploadObservationsSelects(nodeId);
 			}
 			else {
@@ -1244,7 +1344,36 @@
 			showInfoMessage("Expanding STA columns...");
 			showInfoNodeSTAMessage("Expanding STA columns...");
 			LoadJSONNodeSTAData(currentNode);
-			UpdateChildenSTAURL(currentNode);
+		}
+
+		function GetSelectSortBy(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectSortBy").close();
+
+			var previousSTAURL = currentNode.STAURL;
+			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
+			var dataAttributesArray = Object.keys(dataAttributes)
+
+			if (document.getElementById("DialogSelectSortByHTML").style.display != "none") {
+				for (var a = 0; a < dataAttributesArray.length; a++) {
+					if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0) != '@') {
+						if (document.getElementById("SelectSortByEntity_" + a) && document.getElementById("SelectSortByEntity_" + a).checked)
+							break;
+					}
+				}
+
+				if (a < dataAttributesArray.length) //A checked attribute has been found ("for" breaks before ending).
+				{
+					var s;
+					currentNode.STAURL = AddKVPToURL(currentNode.STAURL, "$orderby=" + dataAttributesArray[a] + " " + ((document.getElementById("SelectSortByDesc") && document.getElementById("SelectSortByDesc").checked) ? "desc" : "asc"));
+				}
+			}
+			if (!isNaN(parseInt(document.getElementById("SelectExpandsNumberOfRecords").value)))
+				currentNode.STAExpectedLength = parseInt(document.getElementById("SelectSortByNumberOfRecords").value);
+			networkNodes.update(currentNode);
+			showInfoMessage("Sorting STA by " + dataAttributesArray[a] + " ...");
+			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
+			LoadJSONNodeSTAData(currentNode);
 		}
 
 		function isNumeric(str) {
@@ -1252,7 +1381,180 @@
 			return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
+		function GetSelectRows(event) { //Al apretar el ok
+			event.preventDefault(); // We don't want to submit this form
 
+			console.log(event);
+
+			//var previousSTAURL = currentNode.STAURL; JOAN
+			//var nodeids = network.getConnectedNodes(currentNode.id, "from"); JOAN
+			var nodeids = currentNode.id;
+
+			// 
+			// console.log(nodeids);
+
+			if (nodeids && nodeids.length && networkNodes.get(nodeids)) {
+				var node = networkNodes.get(nodeids);
+				if (node.STAURL)
+					currentNode.STAURL = node.STAURL;
+				if (node.STAdata) {
+					currentNode.STAdata = deapCopy(node.STAdata);
+				}
+
+				///// if (node.STAdataAttributes)  //Està al GetSelecteColums i no se si ho necesito
+				///// 	currentNode.STAdataAttributes = deapCopy(node.STAdataAttributes);
+			}
+			else
+				return;
+
+			if (document.getElementById("DialogSelectRowsTableRadio").checked == false) {
+				var table = document.getElementById("tableResult");
+				var tableResults; //on es guarden els valors de la taula
+				var rowsNumber = table.rows.length;
+
+				if (rowsNumber > 1) {
+					tableResults = readTableFilterRow(nodeids, 0) //row=0?
+					console.log(tableResults);
+				} else { //cap selecció
+					alert("There is nothing selected! The filter will not be applied.");
+				}
+
+			}
+
+
+			// ///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
+
+			if (currentNode.image == "SelectRowsSTA.png") {
+				currentNode.STASelectedRows = tableResults;
+				if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
+					var elems = document.getElementsByName("SelectRowRadio");
+					for (var i = 0; i < elems.length; i++) {
+						if (elems[i].checked)
+							break;
+					}
+					if (i < elems.length) {
+						const s = elems[i].id.substring("SelectRow_".length);
+						const n = Number(s);
+						if (Number.isInteger(n))
+							currentNode.STAURL += "(" + n + ")";
+						else
+							currentNode.STAURL += "(\"" + s + "\")";
+						currentNode.STAURLIdSelected = s;
+					}
+				}
+				else { //El filter està seleccionat URL
+					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
+
+					// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
+					var condition, andOrNot, URL;
+					URL = currentNode.STAURL;
+					for (var i = 0; i < tableResults.length; i += 5) {
+						andOrNot = i;
+						condition = i + 2;// el primer "filtre" es segons la  condició seleccionada
+						if (andOrNot == 0) {
+							URL += "?$filter="
+						} else {
+							//URL += tableResults[i];
+							if (tableResults[andOrNot] == "and" || tableResults[andOrNot] == "or") {
+								URL += tableResults[andOrNot];
+							} else { //not
+								URL += "and (" + tableResults[andOrNot];
+							}
+						}
+						if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
+							URL += tableResults[i + 1]
+							var typeOfValue = tableResults[i + 4];
+							var apostropheOrSpace;
+							(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
+							switch (tableResults[condition]) {
+								case ' = ':
+									URL += " eq" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' &ne; ':
+									URL += " ne " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' &ge; ':
+									URL += " ge " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' > ':
+									URL += " gt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' &le; ':
+									URL += " le" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								case ' < ':
+									URL += " lt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+									break;
+								default:
+									console.log("error en la condició")
+
+							}
+						} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
+							URL += tableResults[i + 1];
+							switch (tableResults[condition]) {
+								case ' [a,b] ':
+									URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
+									break;
+								case ' (a,b] ':
+									URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
+									break;
+								case ' [a,b) ':
+									URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
+									break;
+								case ' (a,b) ':
+									URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
+									break;
+								default:
+									console.log("error en la condició")
+							}
+						} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
+
+						} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
+							//URL+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
+						} else if (tableResults[condition] == 'min date time' || tableResults[condition] == 'max date time') {
+
+						}
+
+						if (tableResults[andOrNot] == "not") {
+							URL += ")";
+						}
+
+						currentNode.STAURL = URL;
+						console.log(currentNode.STAURL);
+						console.log(URL);
+					}
+
+
+				}
+				currentNode.STAExpectedLength = node.STAExpectedLength;
+				networkNodes.update(currentNode); //important als dos
+				showInfoMessage("Selecting STA rows...");
+				LoadJSONNodeSTAData(currentNode); //crida a la API
+				UpdateChildenSTAURL(currentNode);//important als dos 
+
+
+				///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
+			}
+			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+			else if (currentNode.image == "SelectRowsTable.png") {
+				//tableresults; //resultats de la taula del filter
+				//currentNode.STAdata; //Tota la taula CSV
+
+				currentNode.STASelectedRowsTable = tableResults; //no ho crea
+				console.log(currentNode.id);
+				var filteredValues = filterValuesFromRowCSV(currentNode.STAdata, tableResults);
+				currentNode.STAdata = filteredValues;
+
+
+				//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir. 
+				currentNode.STASelectedRowsTable = tableResults;
+				networkNodes.update(currentNode);
+				UpdateChildenSTAURL(currentNode);
+			}
+
+			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+			document.getElementById("DialogSelectRows").close();
+		}
 
 		function IdOfSTAEntity(node) {
 			for (var i = 0; i < STAEntitiesArray.length; i++) {
@@ -1840,174 +2142,7 @@
 			return resultsFiltered;
 		}
 
-		function GetSelectRows(event) { //Al apretar el ok
-			event.preventDefault(); // We don't want to submit this form
 
-			console.log(event);
-
-
-			var nodeids = currentNode.id;
-			console.log(nodeids);
-
-			if (nodeids && nodeids.length && networkNodes.get(nodeids)) {
-				var node = networkNodes.get(nodeids);
-				if (node.STAURL)
-					currentNode.STAURL = node.STAURL;
-				if (node.STAdata) {
-					currentNode.STAdata = deapCopy(node.STAdata);
-				}
-
-				// if (node.STAdataAttributes)  //Està al GetSelecteColums i no se si ho necesito
-				// 	currentNode.STAdataAttributes = deapCopy(node.STAdataAttributes);
-			}
-			else
-				return;
-
-			var table = document.getElementById("tableResult");
-			var tableResults; //on es guarden els valors de la taula
-			var rowsNumber = table.rows.length;
-
-			if (rowsNumber > 1) {
-				tableResults = readTableFilterRow(nodeids, 0) //row=0?
-				console.log(tableResults);
-			} else { //cap selecció
-				alert("There is nothing selected! The filter will not be applied.");
-			}
-
-
-			// ///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
-
-			if (currentNode.image == "SelectRowsSTA.png") {
-				currentNode.STASelectedRows = tableResults;
-				if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
-					var elems = document.getElementsByName("SelectRowRadio");
-					for (var i = 0; i < elems.length; i++) {
-						if (elems[i].checked)
-							break;
-					}
-					if (i < elems.length) {
-						const s = elems[i].id.substring("SelectRow_".length);
-						const n = Number(s);
-						if (Number.isInteger(n))
-							currentNode.STAURL += "(" + n + ")";
-						else
-							currentNode.STAURL += "(\"" + s + "\")";
-						currentNode.STAURLIdSelected = s;
-					}
-				}
-				else { //El filter està seleccionat URL
-					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-
-					// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
-					var condition, andOrNot, URL;
-					URL = currentNode.STAURL;
-					for (var i = 0; i < tableResults.length; i += 5) {
-						andOrNot = i;
-						condition = i + 2;// el primer "filtre" es segons la  condició seleccionada
-						if (andOrNot == 0) {
-							URL += "?$filter="
-						} else {
-							//URL += tableResults[i];
-							if (tableResults[andOrNot] == "and" || tableResults[andOrNot] == "or") {
-								URL += tableResults[andOrNot];
-							} else { //not
-								URL += "and (" + tableResults[andOrNot];
-							}
-						}
-						if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
-							URL += tableResults[i + 1]
-							var typeOfValue = tableResults[i + 4];
-							var apostropheOrSpace;
-							(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
-							switch (tableResults[condition]) {
-								case ' = ':
-									URL += " eq" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' &ne; ':
-									URL += " ne " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' &ge; ':
-									URL += " ge " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' > ':
-									URL += " gt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' &le; ':
-									URL += " le" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' < ':
-									URL += " lt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								default:
-									console.log("error en la condició")
-
-							}
-						} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
-							URL += tableResults[i + 1];
-							switch (tableResults[condition]) {
-								case ' [a,b] ':
-									URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
-									break;
-								case ' (a,b] ':
-									URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
-									break;
-								case ' [a,b) ':
-									URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
-									break;
-								case ' (a,b) ':
-									URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
-									break;
-								default:
-									console.log("error en la condició")
-							}
-						} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
-
-						} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
-							//URL+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
-						} else if (tableResults[condition] == 'min date time' || tableResults[condition] == 'max date time') {
-
-						}
-
-						if (tableResults[andOrNot] == "not") {
-							URL += ")";
-						}
-
-						currentNode.STAURL = URL;
-						console.log(currentNode.STAURL);
-						console.log(URL);
-					}
-
-
-				}
-				currentNode.STAExpectedLength = node.STAExpectedLength;
-				networkNodes.update(currentNode); //important als dos
-				showInfoMessage("Selecting STA rows...");
-				LoadJSONNodeSTAData(currentNode); //crida a la API
-				UpdateChildenSTAURL(currentNode);//important als dos 
-
-
-				///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
-			}
-			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
-			else if (currentNode.image == "SelectRowsTable.png") {
-				//tableresults; //resultats de la taula del filter
-				//currentNode.STAdata; //Tota la taula CSV
-
-				currentNode.STASelectedRowsTable = tableResults; //no ho crea
-				console.log(currentNode.id);
-				var filteredValues = filterValuesFromRowCSV(currentNode.STAdata, tableResults);
-				currentNode.STAdata = filteredValues;
-
-
-				//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir. 
-				currentNode.STASelectedRowsTable = tableResults;
-				networkNodes.update(currentNode);
-				UpdateChildenSTAURL(currentNode);
-			}
-
-			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
-			document.getElementById("DialogSelectRows").close();
-		}
 
 		function typeOfValueFromInput(wichTextInput, place, value1, value2) {
 			var typeOfValues;
@@ -4686,19 +4821,6 @@
 				delete data.edges[i].id;
 			}
 			SaveLocalDataFile(JSON.stringify(data, null, "\t"), "network", ".json", "application/json");
-		}
-
-
-		function giveMeNodeInformation(event) {
-			console.log(event);
-			if (event)
-				event.preventDefault(); // We don't want to submit this form
-			document.getElementById("DialogSelectColumns").close();
-
-			if (startingNodeContextId) {
-				console.log(startingNodeContextId);
-				console.log(currentNode);
-			}
 		}
 
 		function giveMeNetworkInformation(event) {
