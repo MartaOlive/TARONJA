@@ -920,7 +920,7 @@
 		};
 
 		var CriptoName = null;
-document.getElementById("UserInfoText").innerHTML = "";
+		document.getElementById("UserInfoText").innerHTML = "";
 		function OpenLogin(event) {
 			hello("authenix").login({ redirect_uri: location.pathname, lang: getLang(), scope: "openid profile idp citiobs.secd.eu%23read citiobs.secd.eu%23create citiobs.secd.eu%23update citiobs.secd.eu%23delete", display: "popup" }).then(
 				function (success) {
@@ -930,11 +930,11 @@ document.getElementById("UserInfoText").innerHTML = "";
 					CriptoName = jwt_elems.sub;
 					if (!CriptoName)
 						CriptoName == "Anonymous"
-document.getElementById("UserInfoText").innerHTML = jwt_elems.preferred_username + " at " + jwt_elems.idp_name;
+					document.getElementById("UserInfoText").innerHTML = jwt_elems.preferred_username + " at " + jwt_elems.idp_name;
 				},
 				function (e) {
 					alert("Signin error: " + e.error.message);
-document.getElementById("UserInfoText").innerHTML = "";
+					document.getElementById("UserInfoText").innerHTML = "";
 					CriptoName = null;
 				}
 			);
@@ -946,11 +946,11 @@ document.getElementById("UserInfoText").innerHTML = "";
 					document.getElementById("buttonOpenLogin").style.display = "inline-block";
 					document.getElementById("buttonOpenLogout").style.display = "none";
 					alert("Signed out from" + " " + "authenix" + ". ");
-document.getElementById("UserInfoText").innerHTML = "";
+					document.getElementById("UserInfoText").innerHTML = "";
 					CriptoName = null;
 				}, function (e) {
 					alert("Signed out error: " + e.error.message);
-document.getElementById("UserInfoText").innerHTML = "";
+					document.getElementById("UserInfoText").innerHTML = "";
 					CriptoName = null;
 				});
 		}
@@ -1011,7 +1011,7 @@ document.getElementById("UserInfoText").innerHTML = "";
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsLongitude", dataAttributes, "long");
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsLatitude", dataAttributes, "lat");
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsTime", dataAttributes, "phenomenonTime");
-PopulateSelectSaveLayerDialog("DialogUploadObservationsSensorName", dataAttributes, "sensor_id");
+				PopulateSelectSaveLayerDialog("DialogUploadObservationsSensorName", dataAttributes, "sensor_id");
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsSensorType", dataAttributes, "sensor_type");
 			}
 		}
@@ -1022,7 +1022,7 @@ PopulateSelectSaveLayerDialog("DialogUploadObservationsSensorName", dataAttribut
 			selectedOptions.longitude = document.getElementById("DialogUploadObservationsLongitudeSelect").value;
 			selectedOptions.latitude = document.getElementById("DialogUploadObservationsLatitudeSelect").value;
 			selectedOptions.time = document.getElementById("DialogUploadObservationsTimeSelect").value;
-selectedOptions.sensorName = document.getElementById("DialogUploadObservationsSensorNameSelect").value;
+			selectedOptions.sensorName = document.getElementById("DialogUploadObservationsSensorNameSelect").value;
 			selectedOptions.sensorType = document.getElementById("DialogUploadObservationsSensorTypeSelect").value;
 
 			/*selectedOptions.variable=document.getElementById("DialogSaveLayerVariableSelect").value;
@@ -1507,23 +1507,20 @@ selectedOptions.sensorName = document.getElementById("DialogUploadObservationsSe
 		}
 		function GetSelectRows(event) { //Al apretar el ok
 			event.preventDefault(); // We don't want to submit this form
-
-			console.log(event);
-
 			//var previousSTAURL = currentNode.STAURL; JOAN
 			//var nodeids = network.getConnectedNodes(currentNode.id, "from"); JOAN
 			var nodeids = currentNode.id;
 
-			//el STARUL que agafarem sempre és el del node previ
+			//el STARUL que agafarem sempre és el del node previ perque borri el $filter... si hi ha hagut una crida prèvia 
 			var previousId = network.getConnectedNodes(nodeids, "from");
 			console.log(previousId);
 			var previouSTAURL = networkNodes.get(previousId[0]);
-			console.log(previouSTAURL);
+			
 
 			if (nodeids && nodeids.length && networkNodes.get(nodeids)) {
 				var node = networkNodes.get(nodeids);
 				if (node.STAURL)
-					currentNode.STAURL = previouSTAURL.STAURL; //previous perque borri el $filter... si hi ha hagut una crida prèvia 
+					currentNode.STAURL = previouSTAURL.STAURL;
 				if (node.STAdata) {
 					currentNode.STAdata = deapCopy(node.STAdata);
 				}
@@ -1583,9 +1580,9 @@ selectedOptions.sensorName = document.getElementById("DialogUploadObservationsSe
 						} else {
 							//URL += tableResults[i];
 							if (tableResults[andOrNot] == "and" || tableResults[andOrNot] == "or") {
-								URL += tableResults[andOrNot];
+								URL += " " + tableResults[andOrNot];
 							} else { //not
-								URL += "and (" + tableResults[andOrNot];
+								URL += " and (" + tableResults[andOrNot];
 							}
 						}
 						if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
@@ -1666,11 +1663,25 @@ selectedOptions.sensorName = document.getElementById("DialogUploadObservationsSe
 			else if (currentNode.image == "SelectRowsTable.png") {
 				//tableresults; //resultats de la taula del filter
 				//currentNode.STAdata; //Tota la taula CSV
+				var arraySTAdata=[];
+				if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
+					var elems = document.getElementsByName("SelectRowRadio");
+					for (var i = 0; i < elems.length; i++) { //comprobar quin està seleccionat
+						if (elems[i].checked){
+							arraySTAdata.push(previouSTAURL.STAdata[i]);
+						currentNode.STAdata=arraySTAdata;
+						console.log(previouSTAURL.STAdata[i]);
+						}					
+					}
 
-				currentNode.STASelectedRowsTable = tableResults; //no ho crea
-				console.log(currentNode.id);
-				var filteredValues = filterValuesFromRowCSV(currentNode.STAdata, tableResults);
-				currentNode.STAdata = filteredValues;
+						
+				} else { //seleccionat el filter
+					currentNode.STASelectedRowsTable = tableResults;
+					console.log(currentNode.id);
+					var filteredValues = filterValuesFromRowCSV(previouSTAURL.STAdata, tableResults);
+					currentNode.STAdata = filteredValues;
+				}
+
 
 
 				//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir. 
@@ -4780,7 +4791,7 @@ selectedOptions.sensorName = document.getElementById("DialogUploadObservationsSe
 				else if (currentNode.image == "UploadObservations.png") {
 					ShowUploadObservationsDialog(currentNode.id);
 					document.getElementById("DialogUploadObservations").showModal();
-}
+				}
 				else if (currentNode.image == "UploadTimeAverages.png") {
 					ShowUploadTimeAveragesDialog(currentNode.id);
 					document.getElementById("UploadTimeAverages").showModal();
@@ -4963,10 +4974,10 @@ selectedOptions.sensorName = document.getElementById("DialogUploadObservationsSe
 			if (dialog)
 				document.getElementById(dialog).close();
 			if (startingNodeContextId) {
-var node = networkNodes.get(startingNodeContextId);
+				var node = networkNodes.get(startingNodeContextId);
 				if (confirm("Do you want to remove the node '" + node.label + "'?")) {
-				networkNodes.remove(startingNodeContextId);
-startingNodeContextId = null;
+					networkNodes.remove(startingNodeContextId);
+					startingNodeContextId = null;
 				}
 			}
 		}
