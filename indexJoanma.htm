@@ -33,13 +33,15 @@
 				</table>
 			</td>
 			<td align="right" valign="top">
+				<span id="UserInfoText"></span>
 				<button id="buttonReloadSTA" onclick='reloadSTA(event);'><img src="login.png" height="20"
-						valign="middle"> Reload</button>
-				<label class=labelbotton><img src="login.png" height="20" valign="middle"> Open
+						valign="middle"> Refresh</button>
+				<label class=labelbotton><img src="OpenNetwork.png" height="20" valign="middle"> Open
 					<input type="file" id="openNetworkFileName" hidden onchange='openNetwork(event);' />
 				</label>
 				<!-- https://dev.to/faddalibrahim/how-to-create-a-custom-file-upload-button-using-html-css-and-javascript-1c03 -->
-				<button onclick='saveNetwork(event);'><img src="login.png" height="20" valign="middle"> Save</button>
+				<button onclick='saveNetwork(event);'><img src="SaveNetwork.png" height="20" valign="middle">
+					Save</button>
 				<button id="buttonOpenLogin" onclick='OpenLogin(event);'><img src="login.png" height="20"
 						valign="middle"> Login</button>
 				<button id="buttonOpenLogout" onclick='OpenLogout(event);' style="display: none" );'><img
@@ -180,7 +182,8 @@
 				<button onclick='addCircularImage(event, "DialogContextMenu", "STAplus", "ogc.png");'><img src="ogc.png"
 						height="20" valign="middle"> Add STA service</button><br>
 				<span id="ButtonsContextMenuObjects"></span><br>
-				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button><br>
+				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button>
+				<button onclick='renameCircularImage(event, "DialogContextMenu")'>Rename</button><br>
 			</p>
 			<div class="center">
 				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
@@ -313,9 +316,8 @@
 		<table border="0">
 			<tr>
 				<td>
+					<span id="DialogScatterPlotTitle"></span>
 					<form>
-						<span id="DialogScatterPlotTitle"></span>
-
 						<fieldset>
 							<legend>Axes:</legend>
 							<label>Axis x:
@@ -337,12 +339,12 @@
 					<div id="DialogScatterPlotVisualization" style="width:600px; height:500px;"></div>
 				</td>
 			</tr>
-			<table>
+		</table>
 	</dialog>
 
 
-	<dialog id="UploadObservations">
-		<div id="UploadObservationsLoginFirst" style="display: none;">
+	<dialog id="DialogUploadObservations">
+		<div id="DialogUploadObservationsLoginFirst" style="display: none;">
 			<form>
 				To upload data in a STA server, you should Login first.<br>
 				<div class="center">
@@ -350,16 +352,16 @@
 				</div>
 			</form>
 		</div>
-		<form id="UploadObservationsForm">
+		<form id="DialogUploadObservationsForm">
 			Upload table as STA observations
 			<br>
-			<label><input type="radio" name="UploadObservationsRadio" id="UploadObservationsObsPropsInARow"
+			<label><input type="radio" name="DialogUploadObservationsRadio" id="DialogUploadObservationsObsPropsInARow"
 					checked="checked"></input>Each row represents a feature of interest with several observed
 				properties</label>
 			<br>
-			<label><input type="radio" name="UploadObservationsRadio" id="UploadObservationsObsPropsInAColumn"
-					disabled></input>Several observed properties of the same feature in a single column and in multiple
-				rows</label>
+			<label><input type="radio" name="DialogUploadObservationsRadio"
+					id="DialogUploadObservationsObsPropsInAColumn" disabled></input>Several observed properties of the
+				same feature in a single column and in multiple rows</label>
 			<fieldset>
 				<legend>Position:</legend>
 				<label>Place description:
@@ -501,13 +503,23 @@
 			return JSON.parse(JSON.stringify(o));
 		}
 
+		//from the MiraMon Map Browser DonaAdreca(s)
+		function getAddressPath(s) {
+			if (s.charAt(s.length - 1) == '/')
+				return s;
+			var i = s.lastIndexOf('/');
+			if (i == -1)
+				return "";
+			return s.substring(0, i);
+		}
+
 		//from the MiraMon Map Browser DonaAdrecaAbsoluta(url)
 		function getAbsoluteURL(url) {
 			if (url.length > 8 && (url.substring(0, 7) == "http://" || url.substring(0, 8) == "https://"))
 				return url;
 			if (url.charAt(0) == "/")
 				return location.protocol + "//" + location.host + url;
-			return location.protocol + "//" + location.host + DonaAdreca(location.pathname) + url;
+			return location.protocol + "//" + location.host + getAddressPath(location.pathname) + url;
 		}
 
 		function removeExtension(name) {
@@ -603,7 +615,6 @@
 
 		var currentNode = null, connectionInProcess = false, startingNodeContextId = null;
 
-
 		function StartSTAPage() {
 
 			var s_protocol = getProtocol(location.href);
@@ -611,7 +622,7 @@
 			if (s_protocol && s_protocol.toLowerCase() != "https:")
 				location.replace("https:" + location.href.substring(s_protocol.length));
 
-			hello.init({ "authenix": "62df9d18-fc59-4626-98f0-989cdf170936" }, { redirect_uri: ((location.pathname.charAt(location.pathname.length - 1) == '/') ? location.pathname.substring(0, location.pathname.length - 1) : location.pathname) });
+			hello.init({ "authenix": "1cc09d67-8ce1-48c2-872a-6e2f03dba835" }, { redirect_uri: ((location.pathname.charAt(location.pathname.length - 1) == '/') ? location.pathname.substring(0, location.pathname.length - 1) : location.pathname) });
 
 			UpdateConfiguration();
 
@@ -903,17 +914,21 @@
 		};
 
 		var CriptoName = null;
+		document.getElementById("UserInfoText").innerHTML = "";
 		function OpenLogin(event) {
-			hello("authenix").login({ redirect_uri: location.pathname, lang: getLang(), scope: "openid citiobs.secd.eu%23read citiobs.secd.eu%23create citiobs.secd.eu%23update citiobs.secd.eu%23delete", display: "popup" }).then(
+			hello("authenix").login({ redirect_uri: location.pathname, lang: getLang(), scope: "openid profile idp citiobs.secd.eu%23read citiobs.secd.eu%23create citiobs.secd.eu%23update citiobs.secd.eu%23delete", display: "popup" }).then(
 				function (success) {
 					document.getElementById("buttonOpenLogin").style.display = "none";
 					document.getElementById("buttonOpenLogout").style.display = "inline-block";
-					CriptoName = parseJwt(success.authResponse.id_token).sub;
+					var jwt_elems = parseJwt(success.authResponse.id_token)
+					CriptoName = jwt_elems.sub;
 					if (!CriptoName)
 						CriptoName == "Anonymous"
+					document.getElementById("UserInfoText").innerHTML = jwt_elems.preferred_username + " at " + jwt_elems.idp_name;
 				},
 				function (e) {
 					alert("Signin error: " + e.error.message);
+					document.getElementById("UserInfoText").innerHTML = "";
 					CriptoName = null;
 				}
 			);
@@ -925,9 +940,11 @@
 					document.getElementById("buttonOpenLogin").style.display = "inline-block";
 					document.getElementById("buttonOpenLogout").style.display = "none";
 					alert("Signed out from" + " " + "authenix" + ". ");
+					document.getElementById("UserInfoText").innerHTML = "";
 					CriptoName = null;
 				}, function (e) {
 					alert("Signed out error: " + e.error.message);
+					document.getElementById("UserInfoText").innerHTML = "";
 					CriptoName = null;
 				});
 		}
@@ -968,14 +985,14 @@
 			if (CriptoName &&
 				hello("authenix").getAuthResponse() &&
 				hello("authenix").getAuthResponse().access_token) {
-				document.getElementById("UploadObservationsLoginFirst").style.display = "none";
-				document.getElementById("UploadObservationsForm").style.display = "inline-block";
+				document.getElementById("DialogUploadObservationsLoginFirst").style.display = "none";
+				document.getElementById("DialogUploadObservationsForm").style.display = "inline-block";
 				document.getElementById("DialogSTAUploadURLInput").value = nodeId.STAURL ? nodeId.STAURL : config.STAurl;
 				ShowUploadObservationsSelects(nodeId);
 			}
 			else {
-				document.getElementById("UploadObservationsLoginFirst").style.display = "inline-block";
-				document.getElementById("UploadObservationsForm").style.display = "none";
+				document.getElementById("DialogUploadObservationsLoginFirst").style.display = "inline-block";
+				document.getElementById("DialogUploadObservationsForm").style.display = "none";
 			}
 		}
 
@@ -1291,7 +1308,7 @@
 
 		function UploadObservationsSTAURL(event) {
 			event.preventDefault(); // We don't want to submit this form
-			document.getElementById("UploadObservations").close();
+			document.getElementById("DialogUploadObservations").close();
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
 				var url = document.getElementById("DialogSTAUploadURLInput").value;
@@ -2617,7 +2634,6 @@
 
 		// create an array with edges	
 		var networkEdges = new vis.DataSet([]);
-
 		var networkOptions = {
 			interaction: { hover: true },
 			manipulation: {  //https://stackoverflow.com/questions/39701703/add-edge-dynamically-visjs
@@ -2691,7 +2707,11 @@
 				}
 				else if (currentNode.image == "UploadObservations.png") {
 					ShowUploadObservationsDialog(currentNode.id);
-					document.getElementById("UploadObservations").showModal();
+					document.getElementById("DialogUploadObservations").showModal();
+				}
+				else if (currentNode.image == "UploadTimeAverages.png") {
+					ShowUploadTimeAveragesDialog(currentNode.id);
+					document.getElementById("UploadTimeAverages").showModal();
 				}
 				else if (currentNode.image == "SaveTable.png") {
 					//ShowSaveTableDialog(currentNode.id);
@@ -2871,7 +2891,23 @@
 			if (dialog)
 				document.getElementById(dialog).close();
 			if (startingNodeContextId) {
-				networkNodes.remove(startingNodeContextId);
+				var node = networkNodes.get(startingNodeContextId);
+				if (confirm("Do you want to remove the node '" + node.label + "'?")) {
+					networkNodes.remove(startingNodeContextId);
+					startingNodeContextId = null;
+				}
+			}
+		}
+
+		function renameCircularImage(event, dialog) {
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			if (dialog)
+				document.getElementById(dialog).close();
+			if (startingNodeContextId) {
+				var node = networkNodes.get(startingNodeContextId);
+				node.label = prompt("Change node label to:", node.label);
+				networkNodes.update(node);
 				startingNodeContextId = null;
 			}
 		}
