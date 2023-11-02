@@ -606,8 +606,8 @@
 			}
 		}
 
-
 		var currentNode = null, connectionInProcess = false, startingNodeContextId = null;
+
 
 		function StartSTAPage() {
 
@@ -1126,10 +1126,13 @@
 		}
 
 		async function GetObservationId(url, datastreamId, FoIId, time, result) {
+			var d = new Date(time);
+			var t = d.toISOString();
+
 			return GetObjectId(url, "Observations", {
 				"result": result,
-				"resultTime": time,
-				"phenomenonTime": time,
+				"resultTime": t,
+				"phenomenonTime": t,
 				"FeatureOfInterest": { "@iot.id": FoIId },
 				"Datastream": { "@iot.id": datastreamId }
 			});
@@ -1146,21 +1149,28 @@
 			partyId = await GetPartyId(url, CriptoName);
 			if (!partyId && partyId !== 0)
 				return;
-
+			record = data[0];  //to be able to extract a constant value (the sensor name)
 			for (var i = 0; i < dataAttributesArray.length; i++) {
 				if (dataAttributesArray[i] == selectedOptions.place ||
 					dataAttributesArray[i] == selectedOptions.longitude ||
 					dataAttributesArray[i] == selectedOptions.latitude ||
-					dataAttributesArray[i] == selectedOptions.time)
+					dataAttributesArray[i] == selectedOptions.time ||
+					dataAttributesArray[i] == selectedOptions.sensorName ||
+					dataAttributesArray[i] == selectedOptions.sensorType)
 					continue;
+				if (!dataAttributes[dataAttributesArray[i]].description ||
+					!dataAttributes[dataAttributesArray[i]].definition) {
+					datastreamIds[i] = null;
+					continue;
+				}
 				obsPropId = await GetObservedPropertyId(url, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
 				if (!obsPropId && obsPropId !== 0)
 					return;
-				sensorId = await GetSensorId(url, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
+				sensorId = await GetSensorId(url, dataAttributesArray[i], (selectedOptions.sensorType && record[selectedOptions.sensorType]) ? record[selectedOptions.sensorType] : dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
 				if (!sensorId && sensorId !== 0)
 					return;
 
-				thingId = await GetThingId(url, partyId, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description);
+				thingId = await GetThingId(url, partyId, dataAttributesArray[i], (selectedOptions.sensorName && record[selectedOptions.sensorName]) ? record[selectedOptions.sensorName] : dataAttributes[dataAttributesArray[i]].description);
 				if (!thingId && thingId !== 0)
 					return;
 
@@ -1180,6 +1190,8 @@
 						keys[k] == selectedOptions.longitude ||
 						keys[k] == selectedOptions.latitude ||
 						keys[k] == selectedOptions.time)
+						continue;
+					if (!datastreamIds[k])
 						continue;
 
 					var observationId = await GetObservationId(url, datastreamIds[k], FoIId, record[selectedOptions.time], record[keys[k]]);
@@ -1222,12 +1234,14 @@
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectColumns").close();
 
+			var previousSTAURL = null;
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
 				var node = networkNodes.get(nodeids[0]);
-				if (node.STAURL)
+				if (node.STAURL) {
+					previousSTAURL = currentNode.STAURL;
 					currentNode.STAURL = node.STAURL;
+				}
 				if (node.STAdata)
 					currentNode.STAdata = deapCopy(node.STAdata);
 				if (node.STAdataAttributes)
@@ -1264,11 +1278,12 @@
 					currentNode.STAExpectedLength = node.STAExpectedLength;
 					networkNodes.update(currentNode);
 					showInfoMessage("Selecting STA columns...");
+					UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 					LoadJSONNodeSTAData(currentNode);
 				}
 				else {
 					//If there is no STA to query, the selection is done manually (table mode).
-					currentNode.STAdata = deapCopy(currentNode.STAdata);
+					//currentNode.STAdata = deapCopy(currentNode.STAdata);
 					for (var a = 0; a < dataAttributesArray.length; a++) {
 						if (document.getElementById("SelectColumn_" + a).checked)
 							currentNode.STASelectedColumns[a] = true;
@@ -1291,7 +1306,6 @@
 					}
 					networkNodes.update(currentNode);
 				}
-				UpdateChildenSTAURL(currentNode);
 			}
 			else   //If no selected collumn has been found, no filter is done and all collumns are selected
 			{
@@ -1305,6 +1319,7 @@
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectExpands").close();
 
+			var previousSTAURL = currentNode.STAURL;
 			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
 			if (!currentNode.STASelectedExpands)
 				currentNode.STASelectedExpands = { STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: deapCopy(dataAttributes), selected: [] };
@@ -1313,7 +1328,7 @@
 
 			if (document.getElementById("DialogSelectExpandsHTML").style.display != "none") {
 				var dataAttr = currentNode.STASelectedExpands.dataAttributesUnexpanded;
-				var dataAttrArray = Array.keys(dataAttr)
+				var dataAttrArray = Object.keys(dataAttr)
 				for (var a = 0; a < dataAttrArray.length; a++) {
 					if (document.getElementById("SelectExpand_" + a) && document.getElementById("SelectExpand_" + a).checked)
 						break;
@@ -1342,7 +1357,7 @@
 				currentNode.STAExpectedLength = parseInt(document.getElementById("SelectExpandsNumberOfRecords").value);
 			networkNodes.update(currentNode);
 			showInfoMessage("Expanding STA columns...");
-			showInfoNodeSTAMessage("Expanding STA columns...");
+			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
 		}
 
@@ -1577,24 +1592,34 @@
 			for (var i = 0; i < nodeIds.length; i++) {
 				var node = networkNodes.get(nodeIds[i])
 				if (node.STAURL && currentSTAURLroot && previousSTAURLroot) {
-					if (node.STAURL.substring(0, previousSTAURLroot.length) == previousSTAURLroot)
+					if (node.STAURL.substring(0, previousSTAURLroot.length) == previousSTAURLroot) {
 						node.STAURL = currentSTAURLroot + node.STAURL.substring(previousSTAURLroot.length);
-					if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node) != -1 || node.image == "SelectColumnsSTA.png" || node.image == "SelectRowsSTA.png") {
+						networkNodes.update(node);
+					}
+					/*if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node)!=-1 || TableOperations[node.image.substring(0, node.image.length-4)].callSTALoad) {
 						networkNodes.update(node);
 						showInfoMessage("Updating STA child node...");
 						LoadJSONNodeSTAData(node);
-					}
+}*/
 				}
-				UpdateChildenSTAURL(node);
+				UpdateChildenSTAURL(node, currentSTAURLroot, previousSTAURLroot);
 			}
 		}
 
-		function UpdateChildenLoadJSONCallback(parentNode) {
+		async function UpdateChildenLoadJSONCallback(parentNode) {
 			var nodeIds = network.getConnectedNodes(parentNode.id, 'to');
 			for (var i = 0; i < nodeIds.length; i++) {
 				var node = networkNodes.get(nodeIds[i])
 				if (node.image == "SeparateColumns.png")
 					SeparateColumns(node, parentNode);
+				else if (node.image == "SelectColumnsTable.png") {
+					//pensar com es podria fer.
+					showInfoMessage("Automatic update of SelectColumns not implemented for table nodes.");
+				}
+				else if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node) != -1 || TableOperations[removeExtension(node.image)].callSTALoad) {
+					showInfoMessage("Updating " + removeExtension(node.image) + " ...");
+					await LoadJSONNodeSTAData(node);
+				}
 			}
 		}
 
@@ -1637,6 +1662,7 @@
 			else
 				return "string";
 		}
+
 		function getDataAttributes(data) {
 			var dataAttributes = {}, dataAttribute, type;
 
@@ -1668,6 +1694,7 @@
 			}
 			return dataAttributes;
 		}
+
 		function isAttributeAnyURI(s) {
 			return (s == "url" || s == "definition" || s.endsWith("@iot.selfLink") || s.endsWith("@iot.navigationLink"));
 		}
@@ -3665,6 +3692,7 @@
 				document.getElementById("ShowTableRowNumberDialogOK").checked ? true : false,
 				null);
 		}
+
 		function StringifyObjectElements(data, dataAttributesInput) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
 			var jsonTable = [];
@@ -3768,7 +3796,7 @@
 
 		function GetGeoJSONPropertiesSchema(data, selectedOptions) {
 			var dataSorted = deapCopy(data);
-			var dataSorted = JSON.parse(JSON.stringify(data));
+			// var dataSorted = JSON.parse(JSON.stringify(data));
 
 			var attributes = {
 				"Place": {
@@ -3975,7 +4003,7 @@
 
 		function GetGeoJSONStyles(data, selectedOptions) {
 			var dataSorted = deapCopy(data), estil = [];
-			var dataSorted = JSON.parse(JSON.stringify(data)), estil = [];
+			// var dataSorted = JSON.parse(JSON.stringify(data)), estil = [];
 
 			//Sorted by variable.
 			dataSorted.sort(function (a, b) {
@@ -4062,7 +4090,7 @@
 
 		function GetGeoJSONDates(data, selectedOptions) {
 			var dataSorted = deapCopy(data), datetimes = [];
-			var dataSorted = JSON.parse(JSON.stringify(data)), datetimes = [];
+			// var dataSorted = JSON.parse(JSON.stringify(data)), datetimes = [];
 
 			//Sorted by date (older first).
 			dataSorted.sort(function (a, b) {
@@ -4086,9 +4114,17 @@
 	}*/
 
 		function PopulateSelectSaveLayerDialog(id, dataAttributes, selectedOption) {
+			var thereIsSelectionOption = false;
 			var dataAttributesArray = Object.keys(dataAttributes);
 
 			var s = "<select id=\"" + id + "Select" + "\">";
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (dataAttributesArray[a] == selectedOption) {
+					thereIsSelectionOption = true;
+					break;
+				}
+			}
+			s += "<option value=\"\"" + (!thereIsSelectionOption ? "selected=\"selected\"" : "") + "></option>";
 			for (var a = 0; a < dataAttributesArray.length; a++)
 				s += "<option value=\"" + dataAttributesArray[a] + "\"" + (dataAttributesArray[a] == selectedOption ? "selected=\"selected\"" : "") + ">" + dataAttributesArray[a] + "</option>";
 			s += "</select>";
@@ -4373,8 +4409,34 @@
 
 		}
 
-		function ShowTableSelectRowsDialog(parentNodeId, nodeId) { //STA an element
-			var data = networkNodes.get(parentNodeId).STAdata; //a canviar segons si es csv o sta
+		function ShowTableSelectSortByDialog(nodeId) {
+			var node = networkNodes.get(nodeId);
+			var data = node.STAdata;
+
+			if (!data || !data.length) {
+				document.getElementById("DialogSelectSortByRadioButtons").innerHTML = "No data to show.";
+				return;
+			}
+
+			var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
+
+			const dataAttributesArray = Object.keys(dataAttributes);
+
+			var s = "";
+			var first = true;
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0) != '@') {
+					s += "<label><input type='radio'" + (first ? "checked='checked'" : "") + " id='SelectSortByEntity_" + a + "' name='SelectSortByEntity'/> " + dataAttributesArray[a] + "</label><br>";
+					first = false;
+				}
+			}
+			document.getElementById("DialogSelectSortByRadioButtons").innerHTML = s;
+			//document.getElementById("DialogSelectSortByHTML").style.display = "inline-block";
+			document.getElementById("SelectSortByNumberOfRecords").value = node.STAExpectedLength;
+		}
+
+		function ShowTableSelectRowsDialog(parentNodeId, nodeId) {
+			var data = networkNodes.get(parentNodeId).STAdata;
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
@@ -4389,7 +4451,7 @@
 		}
 
 		function ShowTableFilterRowsDialog(nodeId, paramsNodeId) {  //STA Filter
-			var data = networkNodes.get(nodeId).STAdata; //a canviar segons si es csv o sta
+			var data = networkNodes.get(nodeId).STAdata;
 			var dataAttributes = getDataAttributes(data);  //no borrar
 
 
@@ -4613,6 +4675,16 @@
 					//ShowSaveTableDialog(currentNode.id);
 					document.getElementById("DialogSaveTable").showModal();
 				}
+				else if (currentNode.image == "ScatterPlot.png") {
+					//Determining the parent node.
+					var nodeids = network.getConnectedNodes(currentNode.id, "from");
+					if (nodeids && nodeids.length) {
+						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
+							ShowScatterPlotDialog(nodeids[0], currentNode.id);
+						}
+						document.getElementById("DialogScatterPlot").showModal();
+					}
+				}
 				else if (currentNode.image == "SaveLayer.png") {
 					ShowSaveLayerDialog(currentNode.id);
 					document.getElementById("DialogSaveLayer").showModal();
@@ -4641,6 +4713,14 @@
 							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
 						}
 						document.getElementById("DialogSelectRows").showModal();
+					}
+				}
+				else if (currentNode.image == "SortBySTA.png") {
+					var nodeids = network.getConnectedNodes(currentNode.id, "from");
+					if (nodeids && nodeids.length) {
+						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL)
+							ShowTableSelectSortByDialog(nodeids[0]);
+						document.getElementById("DialogSelectSortBy").showModal();
 					}
 				}
 				else if (IdOfSTAEntity(currentNode) != -1) {
@@ -4788,15 +4868,16 @@
 				//Transform the JSON text in something in memory
 				try {
 					var data = JSON.parse(reader.result);
+					network.destroy();
 					networkNodes = new vis.DataSet(data.nodes);
 					networkEdges = new vis.DataSet(data.edges);
-					network.destroy();
 					network = new vis.Network(document.getElementById("mynetwork"), {
 						nodes: networkNodes,
 						edges: networkEdges
 					}, networkOptions);
 					network.on("doubleClick", networkDoubleClick);
 					network.on("oncontext", networkContext);
+					document.getElementById("openNetworkFileName").value = null;  //https://stackoverflow.com/questions/3528359/html-input-type-file-file-selection-event
 				}
 				catch (e) {
 					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
@@ -4823,6 +4904,19 @@
 			SaveLocalDataFile(JSON.stringify(data, null, "\t"), "network", ".json", "application/json");
 		}
 
+		async function reloadSTA(event) {
+			var nodesArray = Object.keys(networkNodes._data);
+			for (var i = 0; i < nodesArray.length; i++) {
+				var node = networkNodes._data[nodesArray[i]];
+				if (node.image == "ogc.png") {
+					showInfoMessage("Reload STA home page and dependencies...");
+					showInfoMessage("Requesting STA page...");
+					await LoadJSONNodeSTAData(node, function () {
+						showInfoMessage("Reload STA home page and dependencies completed.");
+					});
+				}
+			}
+		}
 		function giveMeNetworkInformation(event) {
 			if (event)
 				event.preventDefault(); // We don't want to submit this form
@@ -4833,5 +4927,6 @@
 	</script>
 
 </body>
+
 
 </html>
