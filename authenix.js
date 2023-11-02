@@ -47,10 +47,12 @@
 			// Refresh the access_token once expired
 			refresh: true,
 
-			// OAuth2 standard defines SPACE as scope delimiter, hello.js defaults to ','
-			scope_delim: " ",
+			locale: 'es_ES',
 
-			// Changed according to: https://github.com/MrSwitch/hello.js/issues/167
+			// OAuth2 standard defines SPACE as scope delimiter, hello.js defaults to ','
+			scope_delim: " "/*,
+
+			//Changed according to: https://github.com/MrSwitch/hello.js/issues/167
 			xhr: function (p) {
 				var token = p.query.access_token;
 				delete p.query.access_token;
@@ -62,7 +64,7 @@
 				}
 
 				return true;
-			}
+			}*/
 		}
 	});
 

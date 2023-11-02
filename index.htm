@@ -2001,8 +2001,8 @@
 
 				//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir. 
 				currentNode.STASelectedRowsTable = tableResults;
-				networkNodes.update(currentNode); //important als dos
-				UpdateChildenSTAURL(currentNode);//important als dos
+				networkNodes.update(currentNode);
+				UpdateChildenSTAURL(currentNode);
 			}
 
 			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
@@ -2721,10 +2721,10 @@
 				previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
 				console.log(previousNode);
 				// data = previousNode.STAdata;
-					actualNode.STAdata = previousNode[0].STAdata;
-					networkNodes.update(actualNode);
-					data = actualNode.STAdata;
-				
+				actualNode.STAdata = previousNode[0].STAdata;
+				networkNodes.update(actualNode);
+				data = actualNode.STAdata;
+
 			} else {
 				data = networkNodes.get(nodeId).STAdata;
 			}

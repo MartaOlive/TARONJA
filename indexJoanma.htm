@@ -33,10 +33,12 @@
 				</table>
 			</td>
 			<td align="right" valign="top">
-
+				<button id="buttonReloadSTA" onclick='reloadSTA(event);'><img src="login.png" height="20"
+						valign="middle"> Reload</button>
 				<label class=labelbotton><img src="login.png" height="20" valign="middle"> Open
-					<input type="file" id="actual-btn" hidden onchange='openNetwork(event);' />
+					<input type="file" id="openNetworkFileName" hidden onchange='openNetwork(event);' />
 				</label>
+				<!-- https://dev.to/faddalibrahim/how-to-create-a-custom-file-upload-button-using-html-css-and-javascript-1c03 -->
 				<button onclick='saveNetwork(event);'><img src="login.png" height="20" valign="middle"> Save</button>
 				<button id="buttonOpenLogin" onclick='OpenLogin(event);'><img src="login.png" height="20"
 						valign="middle"> Login</button>
@@ -95,7 +97,7 @@
 				</label>
 			</p>
 			<div class="center">
-				<button value="default" id="DialogSTAURLOk" onClick="GetSTAURL(event)">OK</button>
+				<button value="default" id="DialogSTAURLOk" onClick="GetSTAURLEvent(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -126,6 +128,29 @@
 			</label>
 			<div class="center">
 				<button value="default" onClick="GetSelectExpands(event)">OK</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
+	<dialog id="DialogSelectSortBy">
+		<form>
+			<fieldset id="DialogSelectSortByHTML">
+				<legend>Select the criteria for sorting:</legend>
+				<span id="DialogSelectSortByRadioButtons">
+				</span>
+			</fieldset>
+			<br>
+			<label>
+				<input type="radio" id="SelectSortByAsc" name="SelectSortByArcDesc" checked />ascending
+				<input type="radio" id="SelectSortByDesc" name="SelectSortByArcDesc" />descending
+			</label>
+			<br>
+			<label>Number records to request:
+				<input type="text" id="SelectSortByNumberOfRecords" size="6" maxlength="6" value="100"></input>
+			</label>
+			<div class="center">
+				<button value="default" onClick="GetSelectSortBy(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -180,7 +205,10 @@
 			Import CSV file table.
 			<br>
 			<label>CSV delimiter:
-				<input type="text" id="DialogImportCSVDelimiter" size="2" maxlength="1" value=";"></input>
+				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText"
+						checked></input> <input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1"
+						value=";"></input></label> <label><input type="radio" name="DialogImportCSVDelimiter"
+						id="DialogImportCSVDelimiterTab"></input> Tab</label>
 			</label>
 			<br>
 			<label><input type="checkbox" id="DialogImportCSVHeader"></input>First line contains names of the
@@ -268,6 +296,7 @@
 					</fieldset>
 					<br>
 				</span>
+				<br>
 				<label>Value:
 					<span id="DialogSaveLayerValue"></span>
 				</label>
@@ -279,6 +308,38 @@
 			</div>
 		</form>
 	</dialog>
+
+	<dialog id="DialogScatterPlot">
+		<table border="0">
+			<tr>
+				<td>
+					<form>
+						<span id="DialogScatterPlotTitle"></span>
+
+						<fieldset>
+							<legend>Axes:</legend>
+							<label>Axis x:
+								<span id="DialogScatterPlotAxisX"></span>
+							</label>
+							<br>
+							<label>Axis y:
+								<span id="DialogScatterPlotAxisY"></span>
+							</label>
+						</fieldset>
+						<br>
+						<div class="center">
+							<button value="draw" onClick="DrawScatterPlot(event)">Draw</button>
+							<button value="ok" onClick="CloseDialogScatterPlot(event)" formmethod="dialog">Ok</button>
+						</div>
+					</form>
+				</td>
+				<td>
+					<div id="DialogScatterPlotVisualization" style="width:600px; height:500px;"></div>
+				</td>
+			</tr>
+			<table>
+	</dialog>
+
 
 	<dialog id="UploadObservations">
 		<div id="UploadObservationsLoginFirst" style="display: none;">
@@ -315,6 +376,14 @@
 			</fieldset>
 			<label>Date and time:
 				<span id="DialogUploadObservationsTime"></span>
+			</label>
+			<br>
+			<label>Sensor instance id or name:
+				<span id="DialogUploadObservationsSensorName"></span>
+			</label>
+			<br>
+			<label>Sensor reference or type:
+				<span id="DialogUploadObservationsSensorType"></span>
 			</label>
 			<br>
 			<label>STA service URL:
@@ -377,9 +446,10 @@
 			El TAPIS es pot actualitzar des de https://github.com/joanma747/tapis.
 		*/
 
+		var config;
 		//var STAurl = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
-		var STAurl = "https://citiobs.demo.secure-dimensions.de/staplus/v1.1";
-		var MMNpath = "../osm";
+		//var STAurl="https://citiobs.demo.secure-dimensions.de/staplus/v1.1";
+		//var MMNpath="../osm";
 
 		const STAEntities = {
 			ObservedProperties: { singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"] },
@@ -403,13 +473,15 @@
 		const TableOperations = {
 			ImportCSV: { description: "Import CSV file" },
 			Table: { description: "View Table" },
-			SelectColumnsSTA: { description: "Select Columns" },
-			SelectRowsSTA: { description: "Select Rows" },
+			SelectColumnsSTA: { description: "Select Columns", callSTALoad: true },
+			SelectRowsSTA: { description: "Select Rows", callSTALoad: true },
+			SortBySTA: { description: "Sort by", callSTALoad: true },
 			ViewQuerySTA: { description: "View Query" },
 			UploadObservations: { description: "Upload in STA" },
 			SelectColumnsTable: { description: "Select Columns" },
 			/*SelectRowsTable: {description: "Select Rows"},*/
 			SeparateColumns: { description: "Separate Columns" },
+			ScatterPlot: { description: "Scatter Plot" },
 			SaveTable: { description: "Save Table" },
 			SaveLayer: { description: "Save Layer" },
 			OpenMap: { description: "Open Map" }
@@ -427,6 +499,29 @@
 
 		function deapCopy(o) {
 			return JSON.parse(JSON.stringify(o));
+		}
+
+		//from the MiraMon Map Browser DonaAdrecaAbsoluta(url)
+		function getAbsoluteURL(url) {
+			if (url.length > 8 && (url.substring(0, 7) == "http://" || url.substring(0, 8) == "https://"))
+				return url;
+			if (url.charAt(0) == "/")
+				return location.protocol + "//" + location.host + url;
+			return location.protocol + "//" + location.host + DonaAdreca(location.pathname) + url;
+		}
+
+		function removeExtension(name) {
+			var i = name.lastIndexOf(".");
+			if (i == -1)
+				return name;
+			return name.substring(0, i);
+		}
+
+
+		function getLang() {
+			if (navigator.languages != undefined)
+				return navigator.languages[0];
+			return navigator.language;
 		}
 
 		function AddKVPToURL(url, kvp) {
@@ -508,6 +603,7 @@
 
 		var currentNode = null, connectionInProcess = false, startingNodeContextId = null;
 
+
 		function StartSTAPage() {
 
 			var s_protocol = getProtocol(location.href);
@@ -518,6 +614,17 @@
 			hello.init({ "authenix": "62df9d18-fc59-4626-98f0-989cdf170936" }, { redirect_uri: ((location.pathname.charAt(location.pathname.length - 1) == '/') ? location.pathname.substring(0, location.pathname.length - 1) : location.pathname) });
 
 			UpdateConfiguration();
+
+			InitSTAPage();  //promise
+		}
+
+		async function InitSTAPage() {
+			var response = await HTTPJSONData("config.json");
+			config = (response && response.obj) ? response.obj : null;
+			if (!config) {
+				showInfoMessage("Error loading \'config.json\'");
+				return;
+			}
 
 			var s = "";
 			for (var i = 0; i < STAEntitiesArray.length; i++)
@@ -562,7 +669,8 @@
 		}
 
 		function AddHeadersIfNeeded(options) {
-			if (hello("authenix").getAuthResponse() &&
+			if (CriptoName &&
+				hello("authenix").getAuthResponse() &&
 				hello("authenix").getAuthResponse().access_token) {
 				if (!options.headers)
 					options.headers = {};
@@ -626,6 +734,7 @@
 				}
 			}
 		}
+
 		async function LoadJSONNodeSTAData(node, callback, url) {
 			var response, jsonData, options = {};
 			try {
@@ -687,10 +796,10 @@
 				node.STAdata = (typeof jsonData.value !== "undefined") ? jsonData.value : [jsonData];
 			networkNodes.update(node);
 			if (jsonData.value && node.STAExpectedLength && node.STAdata.length < node.STAExpectedLength && jsonData["@iot.nextLink"])
-				LoadJSONNodeSTAData(node, callback, jsonData["@iot.nextLink"]);
+				await LoadJSONNodeSTAData(node, callback, jsonData["@iot.nextLink"]);
 			else {
 				showInfoMessage("Completed.");
-				UpdateChildenLoadJSONCallback(node);
+				await UpdateChildenLoadJSONCallback(node);
 				if (callback)
 					callback(node);  //The callback function is never used yet.
 			}
@@ -745,7 +854,7 @@
 				//Transform the JSON text in something in memory
 				try {
 					var result = Papa.parse(reader.result, {
-						delimiter: document.getElementById("DialogImportCSVDelimiter").value,
+						delimiter: (document.getElementById("DialogImportCSVDelimiterText").checked ? document.getElementById("DialogImportCSVDelimiter").value : '\t'),
 						header: document.getElementById("DialogImportCSVHeader").checked,
 						skipEmptyLines: true
 					});
@@ -793,17 +902,19 @@
 			return JSON.parse(atob(base64));
 		};
 
-		var CriptoName = "";
-
+		var CriptoName = null;
 		function OpenLogin(event) {
-			hello("authenix").login({ redirect_uri: location.pathname, scope: "openid citiobs.secd.eu%23read citiobs.secd.eu%23create citiobs.secd.eu%23update citiobs.secd.eu%23delete", display: "popup" }).then(
+			hello("authenix").login({ redirect_uri: location.pathname, lang: getLang(), scope: "openid citiobs.secd.eu%23read citiobs.secd.eu%23create citiobs.secd.eu%23update citiobs.secd.eu%23delete", display: "popup" }).then(
 				function (success) {
 					document.getElementById("buttonOpenLogin").style.display = "none";
 					document.getElementById("buttonOpenLogout").style.display = "inline-block";
 					CriptoName = parseJwt(success.authResponse.id_token).sub;
+					if (!CriptoName)
+						CriptoName == "Anonymous"
 				},
 				function (e) {
 					alert("Signin error: " + e.error.message);
+					CriptoName = null;
 				}
 			);
 		}
@@ -814,8 +925,10 @@
 					document.getElementById("buttonOpenLogin").style.display = "inline-block";
 					document.getElementById("buttonOpenLogout").style.display = "none";
 					alert("Signed out from" + " " + "authenix" + ". ");
+					CriptoName = null;
 				}, function (e) {
 					alert("Signed out error: " + e.error.message);
+					CriptoName = null;
 				});
 		}
 
@@ -834,7 +947,7 @@
 			UpdateConfiguration();
 		}
 
-		function GetSTAURL(event) {
+		function GetSTAURLEvent(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSTAURL").close(document.getElementById("DialogSTAURLInput").value);
 
@@ -845,20 +958,19 @@
 			if (currentNode.STAURL.charAt(currentNode.STAURL.length - 1) == '/')
 				currentNode.STAURL = currentNode.STAURL.slice(0, -1);  //remove last character
 			networkNodes.update(currentNode);	//https://visjs.github.io/vis-data/data/dataset.html#Data_Manipulation
-			showInfoMessage("Getting STA home page...");
-			LoadJSONNodeSTAData(currentNode);
 
 			//if childen nodes have also STAURL
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
+			LoadJSONNodeSTAData(currentNode);
 		}
 
 		function ShowUploadObservationsDialog(nodeId) {
-			if (hello("authenix").getAuthResponse() &&
-				hello("authenix").getAuthResponse().access_token &&
-				CriptoName) {
+			if (CriptoName &&
+				hello("authenix").getAuthResponse() &&
+				hello("authenix").getAuthResponse().access_token) {
 				document.getElementById("UploadObservationsLoginFirst").style.display = "none";
 				document.getElementById("UploadObservationsForm").style.display = "inline-block";
-				document.getElementById("DialogSTAUploadURLInput").value = nodeId.STAURL ? nodeId.STAURL : STAurl;
+				document.getElementById("DialogSTAUploadURLInput").value = nodeId.STAURL ? nodeId.STAURL : config.STAurl;
 				ShowUploadObservationsSelects(nodeId);
 			}
 			else {
@@ -876,6 +988,8 @@
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsLongitude", dataAttributes, "long");
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsLatitude", dataAttributes, "lat");
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsTime", dataAttributes, "phenomenonTime");
+				PopulateSelectSaveLayerDialog("DialogUploadObservationsSensorName", dataAttributes, "sensor_id");
+				PopulateSelectSaveLayerDialog("DialogUploadObservationsSensorType", dataAttributes, "sensor_type");
 			}
 		}
 
@@ -885,6 +999,8 @@
 			selectedOptions.longitude = document.getElementById("DialogUploadObservationsLongitudeSelect").value;
 			selectedOptions.latitude = document.getElementById("DialogUploadObservationsLatitudeSelect").value;
 			selectedOptions.time = document.getElementById("DialogUploadObservationsTimeSelect").value;
+			selectedOptions.sensorName = document.getElementById("DialogUploadObservationsSensorNameSelect").value;
+			selectedOptions.sensorType = document.getElementById("DialogUploadObservationsSensorTypeSelect").value;
 
 			/*selectedOptions.variable=document.getElementById("DialogSaveLayerVariableSelect").value;
 			if (descripUoM){
@@ -897,6 +1013,84 @@
 			selectedOptions.value=document.getElementById("DialogSaveLayerValueSelect").value;*/
 			return selectedOptions;
 		}
+
+		function ShowScatterPlotDialog(parentNodeId, nodeId) {
+			var data = networkNodes.get(parentNodeId).STAdata;
+
+			if (!data || !data.length) {
+				document.getElementById("DialogScatterPlotTitle").innerHTML = "No data to show.";
+				return;
+			}
+			document.getElementById("DialogScatterPlotTitle").innerHTML = "Scatter Plot";
+
+			var dataAttributes = networkNodes.get(parentNodeId).STAdataAttributes ? networkNodes.get(parentNodeId).STAdataAttributes : getDataAttributes(data);
+			PopulateSelectSaveLayerDialog("DialogScatterPlotAxisX", dataAttributes, "phenomenonTime");
+			PopulateSelectSaveLayerDialog("DialogScatterPlotAxisY", dataAttributes, "result");
+		}
+
+		function AdaptValueAxisY(value) {
+			return '' + value.toPrecision(5);
+		}
+
+		var ScatterPlotGraph2d = null;
+		function DrawScatterPlot(event) {
+			event.preventDefault(); // We don't want to submit this form
+			var selectedOptions = {};
+			selectedOptions.AxisX = document.getElementById("DialogScatterPlotAxisXSelect").value;
+			selectedOptions.AxisY = document.getElementById("DialogScatterPlotAxisYSelect").value;
+
+			var nodeids = network.getConnectedNodes(currentNode.id, "from");
+			if (nodeids && nodeids.length) {
+				if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
+					var items = [], minx, maxx, miny, maxy, record, node = networkNodes.get(nodeids[0]);
+					var data = node.STAdata;
+					var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
+
+					if (ScatterPlotGraph2d)
+						ScatterPlotGraph2d.destroy();
+					for (var i = 0; i < data.length; i++) {
+						record = data[i];
+						if (i == 0) {
+							minx = maxx = record[selectedOptions.AxisX];
+							miny = maxy = record[selectedOptions.AxisY];
+						} else {
+							if (minx > record[selectedOptions.AxisX])
+								minx = record[selectedOptions.AxisX];
+							if (maxx < record[selectedOptions.AxisX])
+								maxx = record[selectedOptions.AxisX];
+							if (miny > record[selectedOptions.AxisY])
+								miny = record[selectedOptions.AxisY];
+							if (maxy < record[selectedOptions.AxisY])
+								maxy = record[selectedOptions.AxisY];
+						}
+						items.push({ x: record[selectedOptions.AxisX], y: record[selectedOptions.AxisY], group: 0 })
+					}
+					var dataset = new vis.DataSet(items);
+					var groups = new vis.DataSet();
+					groups.add({
+						id: 0,
+						content: "Results",
+						interpolation: {
+							parametrization: 'chordal'
+						}
+					});
+					var options = {
+						dataAxis: { left: { range: { min: miny, max: maxy }, title: { text: "Values" }, format: AdaptValueAxisY } },
+						drawPoints: { size: 1 }, /*
+						legend: {left:{position:"bottom-left"}},*/
+						start: minx,
+						end: maxx
+					};
+					ScatterPlotGraph2d = new vis.Graph2d(document.getElementById('DialogScatterPlotVisualization'), dataset, groups, options);
+				}
+			}
+		}
+
+		function CloseDialogScatterPlot(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogScatterPlot").close();
+		}
+
 
 		//From iNat2STA
 		function ExtractIdFromURL(url) {
@@ -1018,10 +1212,13 @@
 		}
 
 		async function GetObservationId(url, datastreamId, FoIId, time, result) {
+			var d = new Date(time);
+			var t = d.toISOString();
+
 			return GetObjectId(url, "Observations", {
 				"result": result,
-				"resultTime": time,
-				"phenomenonTime": time,
+				"resultTime": t,
+				"phenomenonTime": t,
 				"FeatureOfInterest": { "@iot.id": FoIId },
 				"Datastream": { "@iot.id": datastreamId }
 			});
@@ -1038,21 +1235,28 @@
 			partyId = await GetPartyId(url, CriptoName);
 			if (!partyId && partyId !== 0)
 				return;
-
+			record = data[0];  //to be able to extract a constant value (the sensor name)
 			for (var i = 0; i < dataAttributesArray.length; i++) {
 				if (dataAttributesArray[i] == selectedOptions.place ||
 					dataAttributesArray[i] == selectedOptions.longitude ||
 					dataAttributesArray[i] == selectedOptions.latitude ||
-					dataAttributesArray[i] == selectedOptions.time)
+					dataAttributesArray[i] == selectedOptions.time ||
+					dataAttributesArray[i] == selectedOptions.sensorName ||
+					dataAttributesArray[i] == selectedOptions.sensorType)
 					continue;
+				if (!dataAttributes[dataAttributesArray[i]].description ||
+					!dataAttributes[dataAttributesArray[i]].definition) {
+					datastreamIds[i] = null;
+					continue;
+				}
 				obsPropId = await GetObservedPropertyId(url, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
 				if (!obsPropId && obsPropId !== 0)
 					return;
-				sensorId = await GetSensorId(url, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
+				sensorId = await GetSensorId(url, dataAttributesArray[i], (selectedOptions.sensorType && record[selectedOptions.sensorType]) ? record[selectedOptions.sensorType] : dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
 				if (!sensorId && sensorId !== 0)
 					return;
 
-				thingId = await GetThingId(url, partyId, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description);
+				thingId = await GetThingId(url, partyId, dataAttributesArray[i], (selectedOptions.sensorName && record[selectedOptions.sensorName]) ? record[selectedOptions.sensorName] : dataAttributes[dataAttributesArray[i]].description);
 				if (!thingId && thingId !== 0)
 					return;
 
@@ -1072,6 +1276,8 @@
 						keys[k] == selectedOptions.longitude ||
 						keys[k] == selectedOptions.latitude ||
 						keys[k] == selectedOptions.time)
+						continue;
+					if (!datastreamIds[k])
 						continue;
 
 					var observationId = await GetObservationId(url, datastreamIds[k], FoIId, record[selectedOptions.time], record[keys[k]]);
@@ -1109,11 +1315,14 @@
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectColumns").close();
 
+			var previousSTAURL = null;
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
 				var node = networkNodes.get(nodeids[0]);
-				if (node.STAURL)
+				if (node.STAURL) {
+					previousSTAURL = currentNode.STAURL;
 					currentNode.STAURL = node.STAURL;
+				}
 				if (node.STAdata)
 					currentNode.STAdata = deapCopy(node.STAdata);
 				if (node.STAdataAttributes)
@@ -1150,11 +1359,12 @@
 					currentNode.STAExpectedLength = node.STAExpectedLength;
 					networkNodes.update(currentNode);
 					showInfoMessage("Selecting STA columns...");
+					UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 					LoadJSONNodeSTAData(currentNode);
 				}
 				else {
 					//If there is no STA to query, the selection is done manually (table mode).
-					currentNode.STAdata = deapCopy(currentNode.STAdata);
+					//currentNode.STAdata = deapCopy(currentNode.STAdata);
 					for (var a = 0; a < dataAttributesArray.length; a++) {
 						if (document.getElementById("SelectColumn_" + a).checked)
 							currentNode.STASelectedColumns[a] = true;
@@ -1177,7 +1387,6 @@
 					}
 					networkNodes.update(currentNode);
 				}
-				UpdateChildenSTAURL(currentNode);
 			}
 			else   //If no selected collumn has been found, no filter is done and all collumns are selected
 			{
@@ -1191,6 +1400,7 @@
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectExpands").close();
 
+			var previousSTAURL = currentNode.STAURL;
 			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
 			if (!currentNode.STASelectedExpands)
 				currentNode.STASelectedExpands = { STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: deapCopy(dataAttributes), selected: [] };
@@ -1199,7 +1409,7 @@
 
 			if (document.getElementById("DialogSelectExpandsHTML").style.display != "none") {
 				var dataAttr = currentNode.STASelectedExpands.dataAttributesUnexpanded;
-				var dataAttrArray = Array.keys(dataAttr)
+				var dataAttrArray = Object.keys(dataAttr)
 				for (var a = 0; a < dataAttrArray.length; a++) {
 					if (document.getElementById("SelectExpand_" + a) && document.getElementById("SelectExpand_" + a).checked)
 						break;
@@ -1228,8 +1438,38 @@
 				currentNode.STAExpectedLength = parseInt(document.getElementById("SelectExpandsNumberOfRecords").value);
 			networkNodes.update(currentNode);
 			showInfoMessage("Expanding STA columns...");
+			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
-			UpdateChildenSTAURL(currentNode);
+		}
+
+		function GetSelectSortBy(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectSortBy").close();
+
+			var previousSTAURL = currentNode.STAURL;
+			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
+			var dataAttributesArray = Object.keys(dataAttributes)
+
+			if (document.getElementById("DialogSelectSortByHTML").style.display != "none") {
+				for (var a = 0; a < dataAttributesArray.length; a++) {
+					if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0) != '@') {
+						if (document.getElementById("SelectSortByEntity_" + a) && document.getElementById("SelectSortByEntity_" + a).checked)
+							break;
+					}
+				}
+
+				if (a < dataAttributesArray.length) //A checked attribute has been found ("for" breaks before ending).
+				{
+					var s;
+					currentNode.STAURL = AddKVPToURL(currentNode.STAURL, "$orderby=" + dataAttributesArray[a] + " " + ((document.getElementById("SelectSortByDesc") && document.getElementById("SelectSortByDesc").checked) ? "desc" : "asc"));
+				}
+			}
+			if (!isNaN(parseInt(document.getElementById("SelectExpandsNumberOfRecords").value)))
+				currentNode.STAExpectedLength = parseInt(document.getElementById("SelectSortByNumberOfRecords").value);
+			networkNodes.update(currentNode);
+			showInfoMessage("Sorting STA by " + dataAttributesArray[a] + " ...");
+			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
+			LoadJSONNodeSTAData(currentNode);
 		}
 
 		function isNumeric(str) {
@@ -1242,6 +1482,7 @@
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectRows").close();
 
+			var previousSTAURL = currentNode.STAURL;
 			var nodeids = network.getConnectedNodes(currentNode.id, "from");
 			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
 				var node = networkNodes.get(nodeids[0]);
@@ -1265,7 +1506,7 @@
 					if (Number.isInteger(n))
 						currentNode.STAURL += "(" + n + ")";
 					else
-						currentNode.STAURL += "(\"" + s + "\")";
+						currentNode.STAURL += "('" + s + "')";
 					currentNode.STAURLIdSelected = s;
 				}
 			}
@@ -1275,9 +1516,10 @@
 			currentNode.STAExpectedLength = node.STAExpectedLength;
 			networkNodes.update(currentNode);
 			showInfoMessage("Selecting STA rows...");
+			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
-			UpdateChildenSTAURL(currentNode);
 		}
+
 
 		function IdOfSTAEntity(node) {
 			for (var i = 0; i < STAEntitiesArray.length; i++) {
@@ -1300,24 +1542,34 @@
 			for (var i = 0; i < nodeIds.length; i++) {
 				var node = networkNodes.get(nodeIds[i])
 				if (node.STAURL && currentSTAURLroot && previousSTAURLroot) {
-					if (node.STAURL.substring(0, previousSTAURLroot.length) == previousSTAURLroot)
+					if (node.STAURL.substring(0, previousSTAURLroot.length) == previousSTAURLroot) {
 						node.STAURL = currentSTAURLroot + node.STAURL.substring(previousSTAURLroot.length);
-					if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node) != -1 || node.image == "SelectColumnsSTA.png" || node.image == "SelectRowsSTA.png") {
+						networkNodes.update(node);
+					}
+					/*if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node)!=-1 || TableOperations[node.image.substring(0, node.image.length-4)].callSTALoad) {
 						networkNodes.update(node);
 						showInfoMessage("Updating STA child node...");
 						LoadJSONNodeSTAData(node);
-					}
+					}*/
 				}
-				UpdateChildenSTAURL(node);
+				UpdateChildenSTAURL(node, currentSTAURLroot, previousSTAURLroot);
 			}
 		}
 
-		function UpdateChildenLoadJSONCallback(parentNode) {
+		async function UpdateChildenLoadJSONCallback(parentNode) {
 			var nodeIds = network.getConnectedNodes(parentNode.id, 'to');
 			for (var i = 0; i < nodeIds.length; i++) {
 				var node = networkNodes.get(nodeIds[i])
 				if (node.image == "SeparateColumns.png")
 					SeparateColumns(node, parentNode);
+				else if (node.image == "SelectColumnsTable.png") {
+					//pensar com es podria fer.
+					showInfoMessage("Automatic update of SelectColumns not implemented for table nodes.");
+				}
+				else if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node) != -1 || TableOperations[removeExtension(node.image)].callSTALoad) {
+					showInfoMessage("Updating " + removeExtension(node.image) + " ...");
+					await LoadJSONNodeSTAData(node);
+				}
 			}
 		}
 
@@ -1396,174 +1648,6 @@
 		function isAttributeAnyURI(s) {
 			return (s == "url" || s == "definition" || s.endsWith("@iot.selfLink") || s.endsWith("@iot.navigationLink"));
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 		function GetHTMLTable(data, dataAttributesInput, rowNumbers, selectedEntityId) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
@@ -2056,9 +2140,17 @@
 		}*/
 
 		function PopulateSelectSaveLayerDialog(id, dataAttributes, selectedOption) {
+			var thereIsSelectionOption = false;
 			var dataAttributesArray = Object.keys(dataAttributes);
 
 			var s = "<select id=\"" + id + "Select" + "\">";
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (dataAttributesArray[a] == selectedOption) {
+					thereIsSelectionOption = true;
+					break;
+				}
+			}
+			s += "<option value=\"\"" + (!thereIsSelectionOption ? "selected=\"selected\"" : "") + "></option>";
 			for (var a = 0; a < dataAttributesArray.length; a++)
 				s += "<option value=\"" + dataAttributesArray[a] + "\"" + (dataAttributesArray[a] == selectedOption ? "selected=\"selected\"" : "") + ">" + dataAttributesArray[a] + "</option>";
 			s += "</select>";
@@ -2230,7 +2322,7 @@
 			if (nodeids && nodeids.length) {
 				if (networkNodes.get(nodeids[0])) {
 					var selectedOptionsSaveLayer = GetSelectedOptionsSaveLayer(true);
-					OpenMapMMN(location.href.substring(0, location.href.lastIndexOf("/")) + "/" + MMNpath + (MMNpath.indexOf('?') > 0 ? "&" : "?") + "reset=1", GetGeoJSON(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer), GetGeoJSONPropertiesSchema(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer), GetGeoJSONStyles(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer), GetGeoJSONDates(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer));
+					OpenMapMMN(getAbsoluteURL(config.MMNpath) + (config.MMNpath.indexOf('?') > 0 ? "&" : "?") + "reset=1", GetGeoJSON(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer), GetGeoJSONPropertiesSchema(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer), GetGeoJSONStyles(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer), GetGeoJSONDates(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer));
 				}
 			}
 		}
@@ -2341,6 +2433,32 @@
 				document.getElementById("DialogSelectExpandsHTML").style.display = "none";
 			document.getElementById("SelectExpandsNumberOfRecords").value = node.STAExpectedLength;
 
+		}
+
+		function ShowTableSelectSortByDialog(nodeId) {
+			var node = networkNodes.get(nodeId);
+			var data = node.STAdata;
+
+			if (!data || !data.length) {
+				document.getElementById("DialogSelectSortByRadioButtons").innerHTML = "No data to show.";
+				return;
+			}
+
+			var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
+
+			const dataAttributesArray = Object.keys(dataAttributes);
+
+			var s = "";
+			var first = true;
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0) != '@') {
+					s += "<label><input type='radio'" + (first ? "checked='checked'" : "") + " id='SelectSortByEntity_" + a + "' name='SelectSortByEntity'/> " + dataAttributesArray[a] + "</label><br>";
+					first = false;
+				}
+			}
+			document.getElementById("DialogSelectSortByRadioButtons").innerHTML = s;
+			//document.getElementById("DialogSelectSortByHTML").style.display = "inline-block";
+			document.getElementById("SelectSortByNumberOfRecords").value = node.STAExpectedLength;
 		}
 
 		function ShowTableSelectRowsDialog(parentNodeId, nodeId) {
@@ -2462,7 +2580,7 @@
 				LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
-			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumnsSTA.png" || nodeTo.image == "SelectRowsSTA.png")) {
+			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumnsSTA.png" || nodeTo.image == "SelectRowsSTA.png" || nodeTo.image == "SortBySTA.png")) {
 				nodeTo.STAURL = nodeFrom.STAURL;
 				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
 				if (nodeFrom.STAdata)
@@ -2578,6 +2696,16 @@
 					//ShowSaveTableDialog(currentNode.id);
 					document.getElementById("DialogSaveTable").showModal();
 				}
+				else if (currentNode.image == "ScatterPlot.png") {
+					//Determining the parent node.
+					var nodeids = network.getConnectedNodes(currentNode.id, "from");
+					if (nodeids && nodeids.length) {
+						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
+							ShowScatterPlotDialog(nodeids[0], currentNode.id);
+						}
+						document.getElementById("DialogScatterPlot").showModal();
+					}
+				}
 				else if (currentNode.image == "SaveLayer.png") {
 					ShowSaveLayerDialog(currentNode.id);
 					document.getElementById("DialogSaveLayer").showModal();
@@ -2606,6 +2734,14 @@
 							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
 						}
 						document.getElementById("DialogSelectRows").showModal();
+					}
+				}
+				else if (currentNode.image == "SortBySTA.png") {
+					var nodeids = network.getConnectedNodes(currentNode.id, "from");
+					if (nodeids && nodeids.length) {
+						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL)
+							ShowTableSelectSortByDialog(nodeids[0]);
+						document.getElementById("DialogSelectSortBy").showModal();
 					}
 				}
 				else if (IdOfSTAEntity(currentNode) != -1) {
@@ -2711,7 +2847,7 @@
 			var node = { id: newId, label: label, image: image, shape: "circularImage" };
 
 			if (image == "ogc.png") {
-				node.STAURL = STAurl;
+				node.STAURL = config.STAurl;
 				node.STAExpectedLength = 100;
 				networkNodes.add(node);
 				showInfoMessage("Requesting STA landing page");
@@ -2753,15 +2889,16 @@
 				//Transform the JSON text in something in memory
 				try {
 					var data = JSON.parse(reader.result);
+					network.destroy();
 					networkNodes = new vis.DataSet(data.nodes);
 					networkEdges = new vis.DataSet(data.edges);
-					network.destroy();
 					network = new vis.Network(document.getElementById("mynetwork"), {
 						nodes: networkNodes,
 						edges: networkEdges
 					}, networkOptions);
 					network.on("doubleClick", networkDoubleClick);
 					network.on("oncontext", networkContext);
+					document.getElementById("openNetworkFileName").value = null;  //https://stackoverflow.com/questions/3528359/html-input-type-file-file-selection-event
 				}
 				catch (e) {
 					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
@@ -2788,8 +2925,22 @@
 			SaveLocalDataFile(JSON.stringify(data, null, "\t"), "network", ".json", "application/json");
 		}
 
+		async function reloadSTA(event) {
+			var nodesArray = Object.keys(networkNodes._data);
+			for (var i = 0; i < nodesArray.length; i++) {
+				var node = networkNodes._data[nodesArray[i]];
+				if (node.image == "ogc.png") {
+					showInfoMessage("Reload STA home page and dependencies...");
+					showInfoMessage("Requesting STA page...");
+					await LoadJSONNodeSTAData(node, function () {
+						showInfoMessage("Reload STA home page and dependencies completed.");
+					});
+				}
+			}
+		}
 	</script>
 
 </body>
+
 
 </html>
