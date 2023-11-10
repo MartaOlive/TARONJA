@@ -1515,7 +1515,7 @@
 			var previousId = network.getConnectedNodes(nodeids, "from");
 			console.log(previousId);
 			var previouSTAURL = networkNodes.get(previousId[0]);
-			
+
 
 			if (nodeids && nodeids.length && networkNodes.get(nodeids)) {
 				var node = networkNodes.get(nodeids);
@@ -1663,18 +1663,18 @@
 			else if (currentNode.image == "SelectRowsTable.png") {
 				//tableresults; //resultats de la taula del filter
 				//currentNode.STAdata; //Tota la taula CSV
-				var arraySTAdata=[];
+				var arraySTAdata = [];
 				if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
 					var elems = document.getElementsByName("SelectRowRadio");
 					for (var i = 0; i < elems.length; i++) { //comprobar quin està seleccionat
-						if (elems[i].checked){
+						if (elems[i].checked) {
 							arraySTAdata.push(previouSTAURL.STAdata[i]);
-						currentNode.STAdata=arraySTAdata;
-						console.log(previouSTAURL.STAdata[i]);
-						}					
+							currentNode.STAdata = arraySTAdata;
+							console.log(previouSTAURL.STAdata[i]);
+						}
 					}
 
-						
+
 				} else { //seleccionat el filter
 					currentNode.STASelectedRowsTable = tableResults;
 					console.log(currentNode.id);
@@ -1951,6 +1951,23 @@
 								console.log(resultsFiltered);
 								break;
 							case 'contains':
+								console.log("contains")
+								var textToCompare = generalArray[i + 3].toLowerCase();
+								var textInData;
+								resultsFiltered = [];
+								for (var a = 0; a < resultsFiltered2; a++) {
+									console.log(resultsFiltered2[a]);
+									textInData=resultsFiltered2[a][generalArray[i + 1]].toLowerCase();
+									// console.log(textToCompare+" : "+textInData);
+
+									if (textInData.includes(textToCompare)) {
+										resultsFiltered.push(resultsFiltered2[a]);
+									}
+								}
+								
+								console.log(resultsFiltered);
+
+
 								//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 								break;
 							case 'no contains':
