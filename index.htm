@@ -496,6 +496,81 @@
 		};
 		const TableOperationsArray = Object.keys(TableOperations);
 
+		//If the two nodes cannot connect it returns null. It transforms a plural to singular if needed.
+		function transformToSingularIfNeededSTAEntity(parentEntity, entityName) {
+			//Determinino si ha de ser singular o plural
+			for (var i = 0; i < parentEntity.entities.length; i++) {
+				if (parentEntity.entities[i] == entityName)
+					return entityName;
+				else if (parentEntity.entities[i] == STAEntities[entityName].singular)
+					return STAEntities[nextEntity].singular;
+			}
+			return null;
+		}
+
+		function getConnectionSTAEntity(parentNode, node) {
+			var parentPlural, parentEntity;
+			var idNode = IdOfSTAEntity(node);
+			if (idNode == -1)
+				return { error: "Parent node is not a STA entity" };
+			var parentLastEntity = getSTAURLLastEntity(parentNode.STAURL);
+			if (STAEntities[parentLastEntity]) {
+				parentPlural = true;
+				parentEntity = STAEntities[parentLastEntity];
+			} else {
+				for (var i = 0; i < STAEntitiesArray.length; i++) {
+					if (STAEntities[STAEntitiesArray[i]].singular == parentLastEntity) {
+						parentPlural = false;
+						parentEntity = STAEntities[STAEntitiesArray[i]];
+						break;
+					}
+				}
+				if (i == parentEntity.entities.length)
+					return { error: "Parent node is not a STA entity" };
+			}
+
+			var nextEntity = removeExtension(node.image);
+
+			if (!STAEntities[nextEntity])
+				return { error: "Child node is not a STA entity" };
+
+			if (parentPlural) {
+				if (null != getSTAURLSelectingARow(parentNode.STAURL)) {
+					//Determinino si ha de ser singular o plural
+					var entityName = transformToSingularIfNeededSTAEntity(parentEntity, nextEntity)
+					if (entityName)
+						return { entity: entityName };
+					else
+						return { error: "The node connection does not match the STA data model. Use one of the following: " + JSON.stringify(parentEntity.entities) };
+				}
+				else {
+					//Is parentNode plural? Everything is incompatible
+					return { error: "A plural parent node requires selecting a row before being connectable to another STA entity" };
+				}
+			}
+			//else
+			//Is parentNode singular?
+			var entityName = transformToSingularIfNeededSTAEntity(parentEntity, nextEntity);
+			if (entityName)
+				return { entity: entityName };
+			else
+				return { error: "The node connection does not match the STA data model. Use one of the following: " + JSON.stringify(parentEntity.entities) };
+		}
+
+		//Return null if there is no reason (and there is a "fit").
+		// function reasonNodeDoesNotFitWithPrevious(node, parentNode) {
+		// 	if (parentNode.image == "ogc.png")
+		// 		return null;
+		// 	var idNode = IdOfSTAEntity(node);
+		// 	var parentLastEntity = getSTAURLLastEntity(parentNode.STAURL);
+		// 	if (idNode < 0)
+		// 		return null;
+		// 	var getCon = getConnectionSTAEntity(parentNode, node)
+		// 	if (getCon.error)
+		// 		return getCon.error;
+		// 	return null;
+		// }
+
 
 		window.onbeforeunload = function () { return "Your work will be lost."; }
 
@@ -508,6 +583,52 @@
 		function deapCopy(o) {
 			return JSON.parse(JSON.stringify(o));
 		}
+
+		// function getURLWithoutQueryParams(s) {
+		// 	var i = s.indexOf('?')
+		// 	if (i == -1)
+		// 		return s;
+		// 	return s.substring(0, i);
+		// }
+
+		//Returns the id of the selected resource in the last part of the path. So extracts in the "entities(id)" extracts the id
+		function getSTAURLSelectingARow(url) {
+			var s = getURLWithoutQueryParams(url);
+			var i = (s.charAt(s.length - 1) == '/') ? s.length - 2 : s.length - 1
+
+			if (s.charAt(i) != ')')
+				return null;
+			var ii = s.lastIndexOf('(');
+			if (ii == -1)
+				return null;
+			if (ii > s.lastIndexOf('/') + 2) {
+				var id = s.substring(ii + 1, i);
+				if (id.charAt(0) == '\'' && id.charAt(id.length - 1) == '\'')
+					return id.substring(1, id.length - 1);
+				return id;
+			}
+			return null;
+		}
+
+		//Get the last entity of the path (without the filter or selection of a single entity by using (id))
+		// function getSTAURLLastEntity(url) {
+		// 	var s = getURLWithoutQueryParams(url);
+		// 	var i = (s.charAt(s.length - 1) == '/') ? s.length - 2 : s.length - 1
+
+		// 	if (s.charAt(i) != ')') {
+		// 		i = s.lastIndexOf('/')
+		// 		if (-1 != s)
+		// 			return s.substring(i + 1);
+		// 		return s;
+		// 	}
+		// 	i = s.lastIndexOf('(');
+		// 	if (i == -1)
+		// 		return s;
+		// 	var ii = s.lastIndexOf('/');
+		// 	if (i > ii + 2)
+		// 		return s.substring(ii + 1, i);
+		// 	return s.substring(ii + 1);
+		// }
 
 		//from the MiraMon Map Browser DonaAdreca(s)
 		function getAddressPath(s) {
@@ -1562,7 +1683,7 @@
 						if (Number.isInteger(n))
 							currentNode.STAURL += "(" + n + ")";
 						else
-							currentNode.STAURL += "(\"" + s + "\")";
+							currentNode.STAURL += "('" + s + "')";
 						currentNode.STAURLIdSelected = s;
 					}
 				}
@@ -1955,16 +2076,16 @@
 								var textToCompare = generalArray[i + 3].toLowerCase();
 								var textInData;
 								resultsFiltered = [];
-								for (var a = 0; a < resultsFiltered2; a++) {
-									console.log(resultsFiltered2[a]);
-									textInData=resultsFiltered2[a][generalArray[i + 1]].toLowerCase();
+								console.log(resultsFiltered2);
+								for (var e = 0; e < resultsFiltered2.length; e++) {
+									textInData = resultsFiltered2[e][generalArray[i + 1]].toLowerCase();
 									// console.log(textToCompare+" : "+textInData);
 
 									if (textInData.includes(textToCompare)) {
-										resultsFiltered.push(resultsFiltered2[a]);
+										resultsFiltered.push(resultsFiltered2[e]);
 									}
 								}
-								
+
 								console.log(resultsFiltered);
 
 
@@ -4675,7 +4796,16 @@
 			networkNodes.update(node);
 		}
 
-		function StartCircularImage(nodeTo, nodeFrom, calUnir) {
+		/*return 
+					null means connection should not be done.
+					true means all done
+					false means pending.*/
+		function StartCircularImage(nodeTo, nodeFrom, calUnir) { //DESCOMENTAR LINES SEGÜENTS
+			//var errorText = reasonNodeDoesNotFitWithPrevious(nodeTo, nodeFrom);
+			// if (errorText) {
+			// 	alert("Node incompatible. " + errorText + " It has not been added.");
+			// 	return null;
+			// }
 			if (nodeFrom.STAURL && IdOfSTAEntity(nodeTo) != -1) {
 				nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAEntity(nodeTo)];
 				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
@@ -4697,7 +4827,7 @@
 				LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
-			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumnsSTA.png" || nodeTo.image == "SelectRowsSTA.png")) {
+			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumnsSTA.png" || nodeTo.image == "SelectRowsSTA.png" || nodeTo.image == "SortBySTA.png")) {
 				nodeTo.STAURL = nodeFrom.STAURL;
 				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
 				if (nodeFrom.STAdata)
@@ -4726,6 +4856,7 @@
 				SeparateColumns(nodeTo, nodeFrom);
 				return true;
 			}
+
 			return false;
 		}
 
@@ -4960,6 +5091,7 @@
 
 
 		function addCircularImage(event, dialog, label, image) {
+			var returnStart = false;
 			if (event)
 				event.preventDefault(); // We don't want to submit this form
 			if (dialog)
@@ -4974,9 +5106,18 @@
 				showInfoMessage("Requesting STA landing page");
 				LoadJSONNodeSTAData(node);
 			}
-			else if (!startingNodeContextId || !StartCircularImage(node, networkNodes.get(startingNodeContextId), true)) {
-				networkNodes.add(node);
-				networkEdges.add([{ from: startingNodeContextId, to: newId, arrows: "from" }]);
+			else {
+				if (!startingNodeContextId)
+					networkNodes.add(node);
+				else {
+					returnStart = StartCircularImage(node, networkNodes.get(startingNodeContextId), true);
+					if (returnStart == null)
+						return;
+					if (!returnStart) {
+						networkNodes.add(node);
+						networkEdges.add([{ from: startingNodeContextId, to: newId, arrows: "from" }]);
+					}
+				}
 			}
 
 			if (startingNodeContextId)
