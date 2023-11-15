@@ -3067,7 +3067,7 @@
 
 
 			var divGraphicOrder2 = document.createElement("div");
-			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2_" + paramsNodeId);
+			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2");
 			divGraphicOrder.appendChild(divGraphicOrder2);
 
 			var divGraphicOrder3 = document.createElement("div");
@@ -3153,17 +3153,21 @@
 			else {
 				tableContent.push("and");
 			}
+			var property, condition, valueTextInput;
+			property = selectorProperty.options[selectorProperty.selectedIndex].value;
+			condition = selectorCondition.options[selectorCondition.selectedIndex].value;
 
-			tableContent.push(selectorProperty.options[selectorProperty.selectedIndex].value);
-			tableContent.push(selectorCondition.options[selectorCondition.selectedIndex].value);
+			tableContent.push(property);
+			tableContent.push(condition);
 
 			if (textInput.classList.contains("hidden") == false) {
-				tableContent.push(textInput.value);
-				typeOfValues = typeOfValueFromInput("simple", place, textInput.value);
+				valueTextInput = textInput.value
+				tableContent.push(valueTextInput);
+				typeOfValues = typeOfValueFromInput("simple", place, valueTextInput);
 				tableContent.push(typeOfValues);
 			} else { //valors de l'interval
 				var intervalValues = [];
-
+				valueTextInput = textInputInterval1.value + "-" + textInputInterval2.value;
 				intervalValues.push(textInputInterval1.value);
 				intervalValues.push(textInputInterval2.value);
 
@@ -3182,6 +3186,20 @@
 			eraseTable();
 			//pintar taula
 			drawTable(nodeId, tableContent, "add");
+
+			//afegir a la part gràfica
+			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2");
+			var newDiv = document.createElement("div");
+			newDiv.className = "divInSelectedGraphic";
+			newDiv.innerHTML = property + " " + condition + " " + valueTextInput;
+
+			if (divGraphicOrder_2.children.length) {
+				var divCondition = document.createElement("div");
+				divCondition.innerHTML = "And";
+				divCondition.className="divInSelectedGraphic_condition"
+				divGraphicOrder_2.appendChild(divCondition);
+			}
+			divGraphicOrder_2.appendChild(newDiv);
 
 		}
 

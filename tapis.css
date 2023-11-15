@@ -140,7 +140,19 @@ height: fit-content;
     border: black 1px solid;
     height: 50px;
 }
-
+.divInSelectedGraphic{
+    border: black 1px solid;
+    display: inline-block;
+    margin-left:5px;
+    margin-right:5px;
+}
+.divInSelectedGraphic_condition{
+     border: black 1px solid;
+    display: inline-block;
+    margin-left:5px;
+    margin-right:5px;
+    background-color: aqua;
+}
 
 
 
