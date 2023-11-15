@@ -107,17 +107,27 @@ th.borderTable {
 
 #divSelectorRowsFilter {
     margin-top: 20px;
-    min-height: 300px;
+height: fit-content;
     min-width: 800px;
     border: black 1px solid;
 }
 
-.divResultBox {
+#divResult{
     margin-top: 20px;
+    width:55%;
     height: 300px;
+    float:left;
     border: black 1px solid;
 }
 
+#divGraphicOrder {
+    border: black 1px solid;
+    margin-top: 20px;
+    width: 40%;
+    height: 300px;
+    float:right;
+    
+}
 
 
 .inblock {

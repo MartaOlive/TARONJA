@@ -3023,11 +3023,20 @@
 			addButton.innerHTML = "add";
 			optionsRow.appendChild(addButton);
 
+			var divLine=document.createElement("div");
+			divLine.setAttribute("id", "divLine");
+			divFilterBox.appendChild(divLine);
+
 			var divResult = document.createElement("div");
 			divResult.setAttribute("id", "divResult");
-			divResult.setAttribute("class", "divResultBox")
+			// divResult.setAttribute("class", "inblock");
 			divResult.innerHTML = "These are your values selected to filter ";
-			divFilterBox.appendChild(divResult);
+			divLine.appendChild(divResult);
+
+			var divGraphicOrder = document.createElement("div");
+			divGraphicOrder.setAttribute("id", "divGraphicOrder");
+			// divGraphicOrder.setAttribute("class", "inblock");
+			divLine.appendChild(divGraphicOrder);
 
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
 			divIsAnObject.setAttribute("id", "divIsAnObject");
