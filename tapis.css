@@ -145,6 +145,7 @@ height: fit-content;
     display: inline-block;
     margin-left:5px;
     margin-right:5px;
+    text-align: center;
 }
 .divInSelectedGraphic_condition{
      border: black 1px solid;

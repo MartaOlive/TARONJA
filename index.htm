@@ -3073,7 +3073,14 @@
 			var divGraphicOrder3 = document.createElement("div");
 			divGraphicOrder3.setAttribute("id", "divGraphicOrder_3");
 			divGraphicOrder.appendChild(divGraphicOrder3);
-
+			var buttonDelete=document.createElement("button");
+			buttonDelete.id="graphicButtonDelete";
+			buttonDelete.innerHTML="Delete";
+			var buttonEdit=document.createElement("button");
+			buttonEdit.id="graphicButtonEdit";
+			buttonEdit.innerHTML="Edit";
+			divGraphicOrder3.appendChild(buttonEdit);
+			divGraphicOrder3.appendChild(buttonDelete);
 
 
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
@@ -3190,17 +3197,20 @@
 			//afegir a la part gràfica
 			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2");
 			var newDiv = document.createElement("div");
+			var character=tableCharacters[(tableContent.length / 5)-1];
+			newDiv.dataset.rowValue=tableContent.length / 5;
 			newDiv.className = "divInSelectedGraphic";
-			newDiv.innerHTML = property + " " + condition + " " + valueTextInput;
+			newDiv.innerHTML = character +"<br>"+property + " " + condition + " " + valueTextInput;
+			newDiv.draggable=true;
 
 			if (divGraphicOrder_2.children.length) {
 				var divCondition = document.createElement("div");
 				divCondition.innerHTML = "And";
-				divCondition.className="divInSelectedGraphic_condition"
+				divCondition.className = "divInSelectedGraphic_condition"
 				divGraphicOrder_2.appendChild(divCondition);
+				divCondition.draggable=true;
 			}
 			divGraphicOrder_2.appendChild(newDiv);
-
 		}
 
 		function showIntervalSelector(nodeId, place) {
@@ -3691,6 +3701,7 @@
 			return tableResults;
 		}
 
+		const tableCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 		function drawTable(nodeId, tableContentNew, button, row, editRowContent) {
 			var contador = 1;
 			var table = document.getElementById("tableResult");
@@ -3703,7 +3714,7 @@
 					tableTr.setAttribute("id", "tableTr_" + contador); //Fila 1, 2, 3, 4.. (contador suma 1 per volta)
 					table.appendChild(tableTr);
 
-					for (var a = 0; a < 5; a++) { //5 columnes (crearem cada fila, columna a columna. La a indica la columna)comença al 0 perque l'arrai comença en [0]
+					for (var a = 0; a < 6; a++) { //6 columnes (crearem cada fila, columna a columna. La a indica la columna)comença al 0 perque l'arrai comença en [0]
 						var tableTh = document.createElement("th");
 						tableTh.setAttribute("class", "borderTable");
 
@@ -3822,7 +3833,8 @@
 							}
 
 
-						} else if (a == 4) {
+						}
+						else if (a == 4) {
 							tableTr.appendChild(tableTh);
 							var buttonDelete = document.createElement("button");
 							buttonDelete.setAttribute("value", contador);
@@ -3861,6 +3873,12 @@
 							tableTh.appendChild(buttonDown);
 
 
+						}
+						else if (a == 5) {
+							tableTr.appendChild(tableTh);
+							var idCharacter = "th_" + nodeId + "_" + (contador) + "_character";
+							tableTh.setAttribute("id", idCharacter);
+							tableTh.innerHTML = tableCharacters[contador - 1];
 						}
 
 					}
