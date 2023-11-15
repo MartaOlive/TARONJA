@@ -3552,57 +3552,6 @@
 
 		}
 
-		function movingRow(row, nodeId, arrow) {
-			event.preventDefault();
-			var tableContent = readTableFilterRow(nodeId, 0);
-
-			var row2 = parseInt(row);
-			console.log(typeof row2);
-			var position = (row2 - 1) * 5;
-
-			//Copiar la fila
-			var rowValuesToKeep = []
-
-			for (var i = 0; i < tableContent.length; i += 5) {
-				if (i == position) {
-					rowValuesToKeep.push(tableContent[i]);
-					rowValuesToKeep.push(tableContent[i + 1]);
-					rowValuesToKeep.push(tableContent[i + 2]);
-					rowValuesToKeep.push(tableContent[i + 3]);
-					rowValuesToKeep.push(tableContent[i + 4]);
-				}
-			}
-			//console.log("fila que s'ha de moure    " + rowValuesToKeep);
-
-			tableContent.splice((position), 5); //treure els valors
-			//console.log("despres del splice    " + tableContent);
-
-			if (arrow == "up") {
-				if (position - 5 < 0) {
-					position = 0;
-				} else {
-					position = position - 5;
-				}
-				console.log("position:  " + position);
-				tableContent.splice((position), 0, ...rowValuesToKeep); //funciona
-			} else if (arrow == "down") {
-				if (position + 5 > tableContent.length) {
-					position = position;
-				} else {
-					position = position + 5;
-				}
-
-				//console.log("position:  " + position);
-				tableContent.splice((position), 0, ...rowValuesToKeep);
-			}
-
-			//console.log(tableContent);
-			//borrar taula
-			eraseTable();
-			//dibuixar taula
-			drawTable(nodeId, tableContent, "arrow", row, "no");
-		}
-
 		function readTableFilterRow(nodeId, row) {
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
@@ -3727,7 +3676,7 @@
 								for (var s = 0; s < 3; s++) { //omplim select (3 opcions: and, or, not) FUNCIONA BÉ AMB ADD
 									var optionSelect = document.createElement("option");
 									if (s == 0) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert" || button == "arrow") { //no insert
+										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert") { //no insert
 											if (tableContentNew[r] == "and") { //r= 0,3,7,11...
 												optionSelect.setAttribute("selected", true);
 											}
@@ -3736,7 +3685,7 @@
 										optionSelect.innerHTML = "And";
 									}
 									else if (s == 1) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert" || button == "arrow") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert") {
 											if (tableContentNew[r] == "or") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -3746,7 +3695,7 @@
 										optionSelect.innerHTML = "Or";
 									}
 									else if (s == 2) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert" || button == "arrow") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert") {
 											if (tableContentNew[r] == "not") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -3766,7 +3715,7 @@
 
 							tableTr.appendChild(tableTh);
 
-							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
+							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")) {
 								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7...
 							}
 							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
@@ -3796,7 +3745,7 @@
 
 
 
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")) {
 								tableTh.innerHTML = [tableContentNew[r + 2]];
 								tableTh.setAttribute("value", [tableContentNew[r + 2]]);
 
@@ -3812,7 +3761,7 @@
 							var idValue = "th_" + nodeId + "_" + (contador) + "_value";
 							tableTr.appendChild(tableTh);
 							tableTh.setAttribute("id", idValue);
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect") || button == "arrow") {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")) {
 								if (Array.isArray(tableContentNew[(r + 3)]) == true) {
 									console.log(tableContentNew[(r + 3)]);
 									console.log("és un arraaay");
@@ -3861,16 +3810,6 @@
 							buttonSave.setAttribute("onclick", "saveRow(" + (contador) + ",'" + nodeId + "')");
 							buttonSave.innerHTML = "Save ";
 							tableTh.appendChild(buttonSave);
-							var buttonUp = document.createElement("button");
-							buttonUp.setAttribute("id", "buttonUp" + contador);
-							buttonUp.setAttribute("onclick", "movingRow(" + (contador) + ",'" + nodeId + "','up')");
-							buttonUp.innerHTML = "&#9650;";
-							tableTh.appendChild(buttonUp);
-							var buttonDown = document.createElement("button");
-							buttonDown.setAttribute("id", "buttonDown" + contador);
-							buttonDown.setAttribute("onclick", "movingRow(" + (contador) + ",'" + nodeId + "','down')");
-							buttonDown.innerHTML = "&#9660;";
-							tableTh.appendChild(buttonDown);
 
 
 						}
