@@ -2072,7 +2072,6 @@
 								console.log(resultsFiltered);
 								break;
 							case 'contains':
-								console.log("contains")
 								var textToCompare = generalArray[i + 3].toLowerCase();
 								var textInData;
 								resultsFiltered = [];
@@ -2357,14 +2356,12 @@
 
 									break;
 								case 'contains':
-									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-									console.log("contains")
-									var textToCompare = generalArray[i + 3].toLowerCase();
+									var textToCompare = generalArray[i][a + 3].toLowerCase();
 									var textInData;
 									resultsFiltered = [];
 									console.log(resultsFiltered2);
 									for (var e = 0; e < resultsFiltered2.length; e++) {
-										textInData = resultsFiltered2[e][generalArray[i + 1]].toLowerCase();
+										textInData = resultsFiltered2[e][generalArray[i][a + 1]].toLowerCase();
 										// console.log(textToCompare+" : "+textInData);
 
 										if (textInData.includes(textToCompare)) {
@@ -2372,10 +2369,24 @@
 										}
 									}
 
-									console.log(resultsFiltered);
+
 									break;
 								case 'no contains':
 									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+									var textToCompare = generalArray[i][a + 3].toLowerCase();
+									var textInData;
+									resultsFiltered = [];
+									console.log(resultsFiltered2);
+									for (var e = 0; e < resultsFiltered2.length; e++) {
+										textInData = resultsFiltered2[e][generalArray[i][a + 1]].toLowerCase();
+										// console.log(textToCompare+" : "+textInData);
+
+										if (!textInData.includes(textToCompare)) {
+											resultsFiltered.push(resultsFiltered2[e]);
+										}
+									}
+
+
 									break;
 								case 'starts with':
 									//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
