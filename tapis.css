@@ -124,10 +124,24 @@ height: fit-content;
     border: black 1px solid;
     margin-top: 20px;
     width: 40%;
-    height: 300px;
-    float:right;
-    
+    height: content;
+    float:right; 
 }
+
+#divGraphicOrder_1{
+    border: black 1px solid;
+    height: 50px;
+}
+#divGraphicOrder_2{
+    border: black 1px solid;
+    height: 200px;
+}
+#divGraphicOrder_3{
+    border: black 1px solid;
+    height: 50px;
+}
+
+
 
 
 .inblock {

@@ -2981,6 +2981,11 @@
 				}
 			}
 		}
+		function addCondition(condition, nodeId) {
+			event.preventDefault();
+			console.log(condition);
+		}
+
 
 		function createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId) {
 			//actualitzar STAdata del node
@@ -3023,20 +3028,53 @@
 			addButton.innerHTML = "add";
 			optionsRow.appendChild(addButton);
 
-			var divLine=document.createElement("div");
+			var divLine = document.createElement("div");
 			divLine.setAttribute("id", "divLine");
 			divFilterBox.appendChild(divLine);
 
-			var divResult = document.createElement("div");
-			divResult.setAttribute("id", "divResult");
+			var divResult = document.createElement("div"); //Taula de resultats
+			divResult.id = "divResult";
 			// divResult.setAttribute("class", "inblock");
 			divResult.innerHTML = "These are your values selected to filter ";
 			divLine.appendChild(divResult);
 
-			var divGraphicOrder = document.createElement("div");
+			var divGraphicOrder = document.createElement("div"); //Elements gràfics
 			divGraphicOrder.setAttribute("id", "divGraphicOrder");
+			divGraphicOrder.innerHTML = ""
 			// divGraphicOrder.setAttribute("class", "inblock");
 			divLine.appendChild(divGraphicOrder);
+
+			var divGraphicOrder1 = document.createElement("div"); //Fila1
+			divGraphicOrder1.setAttribute("id", "divGraphicOrder_1");
+			divGraphicOrder.appendChild(divGraphicOrder1);
+			var graphicButtonAnd = document.createElement("button");
+			graphicButtonAnd.id = "graphicButtonAnd";
+			graphicButtonAnd.innerHTML = "add And";
+			graphicButtonAnd.setAttribute("onclick", "addCondition('and', '" + paramsNodeId + "')");
+			var graphicButtonOr = document.createElement("button");
+			graphicButtonOr.id = "graphicButtonOr";
+			graphicButtonOr.innerHTML = "add Or";
+			graphicButtonOr.setAttribute("onclick", "addCondition('or', '" + paramsNodeId + "')");
+			var graphicButtonNot = document.createElement("button");
+			graphicButtonNot.id = "graphicButtonNot";
+			graphicButtonNot.innerHTML = "add Not";
+			graphicButtonNot.setAttribute("onclick", "addCondition('not', '" + paramsNodeId + "')");
+			divGraphicOrder1.appendChild(graphicButtonAnd);
+			divGraphicOrder1.appendChild(graphicButtonOr);
+			divGraphicOrder1.appendChild(graphicButtonNot);
+
+
+
+
+			var divGraphicOrder2 = document.createElement("div");
+			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2_" + paramsNodeId);
+			divGraphicOrder.appendChild(divGraphicOrder2);
+
+			var divGraphicOrder3 = document.createElement("div");
+			divGraphicOrder3.setAttribute("id", "divGraphicOrder_3");
+			divGraphicOrder.appendChild(divGraphicOrder3);
+
+
 
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
 			divIsAnObject.setAttribute("id", "divIsAnObject");
