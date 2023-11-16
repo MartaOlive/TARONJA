@@ -3198,7 +3198,7 @@
 			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2");
 			var newDiv = document.createElement("div");
 			var character=tableCharacters[(tableContent.length / 5)-1];
-			newDiv.dataset.rowValue=tableContent.length / 5;
+			newDiv.id="divInGraphic_"+tableContent.length / 5;
 			newDiv.className = "divInSelectedGraphic";
 			newDiv.innerHTML = character +"<br>"+property + " " + condition + " " + valueTextInput;
 			newDiv.draggable=true;
@@ -3207,6 +3207,7 @@
 				var divCondition = document.createElement("div");
 				divCondition.innerHTML = "And";
 				divCondition.className = "divInSelectedGraphic_condition"
+				divCondition.value="and";
 				divGraphicOrder_2.appendChild(divCondition);
 				divCondition.draggable=true;
 			}
@@ -3861,20 +3862,18 @@
 			//desabilitar el add
 			var addButton = document.getElementById("addButton");
 			addButton.disabled = true;
-			var buttonEdit, buttonDelete, buttonInsert, buttonSave, buttonUp, buttonDown;
+			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
 
 			for (var i = 1; i < rowsNumbers; i++) {
 				buttonEdit = document.getElementById("buttonEdit" + i);
 				buttonDelete = document.getElementById("buttonDelete" + i);
 				buttonInsert = document.getElementById("buttonInsert" + i);
-				buttonUp = document.getElementById("buttonUp" + i);
-				buttonDown = document.getElementById("buttonDown" + i);
+
 
 				buttonEdit.classList.add("hidden");
 				buttonDelete.classList.add("hidden");
 				buttonInsert.classList.add("hidden");
-				buttonUp.classList.add("hidden");
-				buttonDown.classList.add("hidden");
+
 
 				if (row == i) {
 					buttonSave = document.getElementById("buttonSave" + i);
@@ -3900,19 +3899,17 @@
 			//amagar i mostrar botons
 
 			var rowsNumbers = table.rows.length;
-			var buttonEdit, buttonDelete, buttonInsert, buttonSave, buttonUp, buttonDown;
+			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
 			for (var i = 1; i < rowsNumbers; i++) {
 				buttonEdit = document.getElementById("buttonEdit" + i);
 				buttonDelete = document.getElementById("buttonDelete" + i);
 				buttonInsert = document.getElementById("buttonInsert" + i);
-				buttonUp = document.getElementById("buttonUp" + i);
-				buttonDown = document.getElementById("buttonDown" + i);
+
 
 				buttonEdit.classList.remove("hidden");
 				buttonDelete.classList.remove("hidden");
 				buttonInsert.classList.remove("hidden");
-				buttonUp.classList.remove("hidden");
-				buttonDown.classList.remove("hidden");
+
 			}
 			var addButton = document.getElementById("addButton");
 			addButton.disabled = false;
@@ -3942,19 +3939,17 @@
 
 			//amagar els botons de edit,Insert, mostrar botó save i mantenir suprimir
 
-			var buttonEdit, buttonDelete, buttonInsert, buttonSave, buttonUp, buttonDown;
+			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
 			for (var i = 1; i < rowsNumbers; i++) {
 				buttonEdit = document.getElementById("buttonEdit" + i);
 				buttonDelete = document.getElementById("buttonDelete" + i);
 				buttonInsert = document.getElementById("buttonInsert" + i);
-				buttonUp = document.getElementById("buttonUp" + i);
-				buttonDown = document.getElementById("buttonDown" + i);
+
 
 				buttonEdit.classList.add("hidden");
 				buttonDelete.classList.add("hidden");
 				buttonInsert.classList.add("hidden");
-				buttonUp.classList.add("hidden");
-				buttonDown.classList.add("hidden");
+
 
 
 				if (row == i) {
@@ -4000,6 +3995,28 @@
 			contador = 1;
 			//tornar a pintar la taula 
 			drawTable(nodeId, tableContentNew, "delete");
+
+			//Eliminar l'element de la part gràfica
+			var divGraphicOrder_2=document.getElementById("divGraphicOrder_2");
+			var divToDelete=document.getElementById("divInGraphic_"+row);
+			divGraphicOrder_2.removeChild(divToDelete);
+			var previousIsAnd=false;
+			for (var i=0;i<divGraphicOrder_2.children.length;i++){
+				console.log(divGraphicOrder_2.children[i].value);
+				if (previousIsAnd==true & divGraphicOrder_2.children[i].value =="and"){
+					divGraphicOrder_2.removeChild(divGraphicOrder_2.children[i]);
+				}
+				if (divGraphicOrder_2.children[i].value =="and"){
+					previousIsAnd=true;
+				}else{
+					previousIsAnd=false;
+				}
+
+
+			}
+			
+
+
 
 
 
