@@ -3225,7 +3225,12 @@
 			//afegir a la part gràfica --> S'haurà de modificar el tablecharacters blabla
 			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
 			var newDiv = document.createElement("div");
-			var character = tableCharacters[(tableContent.length / 5) - 1];
+			var character;
+			if (tableContent.length==6){
+				character=tableCharacters[0];
+			} else{
+				character=tableCharacters[numberCharacter+1];
+			}
 			newDiv.id = "divInGraphic_" + tableContent.length / 5;
 			newDiv.className = "divInSelectedGraphic";
 			newDiv.innerHTML = character + "<br>" + property + " " + condition + " " + valueTextInput;
