@@ -107,16 +107,16 @@ th.borderTable {
 
 #divSelectorRowsFilter {
     margin-top: 20px;
-height: fit-content;
+    height: fit-content;
     min-width: 800px;
     border: black 1px solid;
 }
 
-#divResult{
+#divResult {
     margin-top: 20px;
-    width:55%;
+    width: 55%;
     height: 300px;
-    float:left;
+    float: left;
     border: black 1px solid;
 }
 
@@ -125,33 +125,37 @@ height: fit-content;
     margin-top: 20px;
     width: 40%;
     height: content;
-    float:right; 
+    float: right;
 }
 
-#divGraphicOrder_1{
+#divGraphicOrder_1 {
     border: black 1px solid;
     height: 50px;
 }
-#divGraphicOrder_2{
+
+#divGraphicOrder_2 {
     border: black 1px solid;
     height: 200px;
 }
-#divGraphicOrder_3{
+
+#divGraphicOrder_3 {
     border: black 1px solid;
     height: 50px;
 }
-.divInSelectedGraphic{
+
+.divInSelectedGraphic {
     border: black 1px solid;
     display: inline-block;
-    margin-left:5px;
-    margin-right:5px;
+    margin-left: 5px;
+    margin-right: 5px;
     text-align: center;
 }
-.divInSelectedGraphic_condition{
-     border: black 1px solid;
+
+.divInSelectedGraphic_condition {
+    border: black 1px solid;
     display: inline-block;
-    margin-left:5px;
-    margin-right:5px;
+    margin-left: 5px;
+    margin-right: 5px;
     background-color: aqua;
 }
 
@@ -159,4 +163,12 @@ height: fit-content;
 
 .inblock {
     display: inline-block;
+}
+
+.trash {
+    background-image: url("trash.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 40px;
+
 }

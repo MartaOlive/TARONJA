@@ -2981,10 +2981,6 @@
 				}
 			}
 		}
-		function addCondition(condition, nodeId) {
-			event.preventDefault();
-			console.log(condition);
-		}
 
 
 		function createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId) {
@@ -3049,15 +3045,15 @@
 			divGraphicOrder.appendChild(divGraphicOrder1);
 			var graphicButtonAnd = document.createElement("button");
 			graphicButtonAnd.id = "graphicButtonAnd";
-			graphicButtonAnd.innerHTML = "add And";
+			graphicButtonAnd.innerHTML = "add and";
 			graphicButtonAnd.setAttribute("onclick", "addCondition('and', '" + paramsNodeId + "')");
 			var graphicButtonOr = document.createElement("button");
 			graphicButtonOr.id = "graphicButtonOr";
-			graphicButtonOr.innerHTML = "add Or";
+			graphicButtonOr.innerHTML = "add or";
 			graphicButtonOr.setAttribute("onclick", "addCondition('or', '" + paramsNodeId + "')");
 			var graphicButtonNot = document.createElement("button");
 			graphicButtonNot.id = "graphicButtonNot";
-			graphicButtonNot.innerHTML = "add Not";
+			graphicButtonNot.innerHTML = "add not";
 			graphicButtonNot.setAttribute("onclick", "addCondition('not', '" + paramsNodeId + "')");
 			divGraphicOrder1.appendChild(graphicButtonAnd);
 			divGraphicOrder1.appendChild(graphicButtonOr);
@@ -3067,20 +3063,25 @@
 
 
 			var divGraphicOrder2 = document.createElement("div");
-			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2");
+			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2_" + paramsNodeId);
 			divGraphicOrder.appendChild(divGraphicOrder2);
 
 			var divGraphicOrder3 = document.createElement("div");
 			divGraphicOrder3.setAttribute("id", "divGraphicOrder_3");
 			divGraphicOrder.appendChild(divGraphicOrder3);
-			var buttonDelete=document.createElement("button");
-			buttonDelete.id="graphicButtonDelete";
-			buttonDelete.innerHTML="Delete";
-			var buttonEdit=document.createElement("button");
-			buttonEdit.id="graphicButtonEdit";
-			buttonEdit.innerHTML="Edit";
+			// var buttonDelete = document.createElement("button");
+			// buttonDelete.id = "graphicButtonDelete";
+			// buttonDelete.innerHTML = "Delete";
+			var deleteDiv = document.createElement("div");
+			deleteDiv.id = "deleteDiv_" + paramsNodeId;
+			deleteDiv.setAttribute("class", "trash");
+
+			var buttonEdit = document.createElement("button");
+			buttonEdit.id = "graphicButtonEdit";
+			buttonEdit.innerHTML = "Edit";
+			divGraphicOrder3.appendChild(deleteDiv);
 			divGraphicOrder3.appendChild(buttonEdit);
-			divGraphicOrder3.appendChild(buttonDelete);
+			// divGraphicOrder3.appendChild(buttonDelete);
 
 
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
@@ -3137,6 +3138,24 @@
 
 		}
 
+		///Elements per el filtre en l'àrea gràfica
+		//var 
+
+
+		function addCondition(condition, nodeId) {
+			event.preventDefault();
+			console.log(condition);
+			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
+			var divCondition = document.createElement("div");
+			divCondition.innerHTML = condition;
+			divCondition.className = "divInSelectedGraphic_condition"
+			divCondition.value = condition;
+			divGraphicOrder_2.appendChild(divCondition);
+			divCondition.draggable = true;
+			divGraphicOrder_2.appendChild(newDiv);
+
+		}
+
 		function addSelected(nodeId, place) {
 			event.preventDefault();
 			var table = document.getElementById("tableResult");
@@ -3153,14 +3172,19 @@
 			tableContent = readTableFilterRow(nodeId, 0);
 			// console.log("abans d'afegir: " + tableContent);
 
-			//afegir els valors nous
+			//afegir els valors nous --> ixò es canviarà al borrar els and/or/not de la taula
+			var property, condition, valueTextInput, numberCharacter;
+			
 			if (tableContent.length == 0) {
 				tableContent.push("nothing");
 			}
 			else {
+				numberCharacter=tableContent[tableContent.length-1];
+				console.log(numberCharacter);
 				tableContent.push("and");
 			}
-			var property, condition, valueTextInput;
+
+			
 			property = selectorProperty.options[selectorProperty.selectedIndex].value;
 			condition = selectorCondition.options[selectorCondition.selectedIndex].value;
 
@@ -3183,7 +3207,11 @@
 				tableContent.push(typeOfValues); //afegir el tipus
 			}
 
-
+			if (tableContent.length == 5) {
+				tableContent.push(0);
+			}else{
+				tableContent.push(numberCharacter+1);
+			}
 
 			// console.log("despres d'afegir: " + tableContent);
 			// console.log(tableContent);
@@ -3194,22 +3222,22 @@
 			//pintar taula
 			drawTable(nodeId, tableContent, "add");
 
-			//afegir a la part gràfica
-			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2");
+			//afegir a la part gràfica --> S'haurà de modificar el tablecharacters blabla
+			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
 			var newDiv = document.createElement("div");
-			var character=tableCharacters[(tableContent.length / 5)-1];
-			newDiv.id="divInGraphic_"+tableContent.length / 5;
+			var character = tableCharacters[(tableContent.length / 5) - 1];
+			newDiv.id = "divInGraphic_" + tableContent.length / 5;
 			newDiv.className = "divInSelectedGraphic";
-			newDiv.innerHTML = character +"<br>"+property + " " + condition + " " + valueTextInput;
-			newDiv.draggable=true;
+			newDiv.innerHTML = character + "<br>" + property + " " + condition + " " + valueTextInput;
+			newDiv.draggable = true;
 
 			if (divGraphicOrder_2.children.length) {
 				var divCondition = document.createElement("div");
-				divCondition.innerHTML = "And";
+				divCondition.innerHTML = "and";
 				divCondition.className = "divInSelectedGraphic_condition"
-				divCondition.value="and";
+				divCondition.value = "and";
 				divGraphicOrder_2.appendChild(divCondition);
-				divCondition.draggable=true;
+				divCondition.draggable = true;
 			}
 			divGraphicOrder_2.appendChild(newDiv);
 		}
@@ -3340,7 +3368,7 @@
 
 
 
-			console.log(nodeId)
+			//console.log(nodeId)
 			var dataAttributes2;
 			if (button != "initial") {
 				var table = document.getElementById("tableResult");
@@ -3397,7 +3425,7 @@
 						selectConditionContent2 = selectConditionContent;
 					}
 				} else {
-					console.log("no entra al edit")
+					//console.log("no entra al edit")
 					selectConditionContent2 = selectConditionContent;
 				}
 
@@ -3614,7 +3642,7 @@
 						}
 					}
 
-					if (r == 1) {
+					if (r == 1) { //primera fila: Es borrarà al treure els ands i tal
 						tableResults.push("nothing");
 					}
 					else {
@@ -3640,14 +3668,21 @@
 					}
 
 
-					// console.log("tableResults:  " + tableResults);
+					
+					var character = document.getElementById("th_" + nodeId + "_" + r + "_character");
+
+					tableResults.push(parseInt(character.getAttribute("value")));
+
+					console.log("character: "+parseInt(character.getAttribute("value")))
+					console.log("function readTable tableResults:  " + tableResults);
 					if (row !== 0) {
 						r = rowsNumber;
 					}
+
 				}
 
 			}
-			// console.log(tableResults);
+
 			return tableResults;
 		}
 
@@ -3659,7 +3694,7 @@
 
 
 			if (tableContentNew.length != 0) {
-				for (var r = 0; r < tableContentNew.length; r += 5) { //recorrerem tot l'arrai dels elements guardats, de 5 en 5 (5valors a guardar per linea)
+				for (var r = 0; r < tableContentNew.length; r += 6) { //recorrerem tot l'arrai dels elements guardats, de 5 en 5 (5valors a guardar per linea)
 					var tableTr = document.createElement("tr");
 					tableTr.setAttribute("id", "tableTr_" + contador); //Fila 1, 2, 3, 4.. (contador suma 1 per volta)
 					table.appendChild(tableTr);
@@ -3816,9 +3851,30 @@
 						}
 						else if (a == 5) {
 							tableTr.appendChild(tableTh);
+							var index;
+
+
+
+							// if (r != 0 & ((r + 7) > tableContentNew.length)) { //per l'ultim, els que ja estan es posen directament.
+							// 	index = tableContentNew[(r + 5)]; //+5 xq en el +4 hi ha el tipus de value
+							// 	console.log(tableContentNew[(r + 5)]);
+							// 	console.log(index);
+							// 	console.log("últim")
+							// 	tableTh.innerHTML = tableCharacters[index+1];//tableCharacters[index + 1];
+							// 	tableTh.setAttribute("value",index+1);
+
+							// } else {
+
+
+								console.log(tableContentNew[(r + 5)]);
+								tableTh.innerHTML = tableCharacters[tableContentNew[(r + 5)]] //El guardat al llegir la taula
+								tableTh.setAttribute("value",tableContentNew[(r + 5)]);
+							//}
+
+
 							var idCharacter = "th_" + nodeId + "_" + (contador) + "_character";
 							tableTh.setAttribute("id", idCharacter);
-							tableTh.innerHTML = tableCharacters[contador - 1];
+
 						}
 
 					}
@@ -3997,24 +4053,24 @@
 			drawTable(nodeId, tableContentNew, "delete");
 
 			//Eliminar l'element de la part gràfica
-			var divGraphicOrder_2=document.getElementById("divGraphicOrder_2");
-			var divToDelete=document.getElementById("divInGraphic_"+row);
+			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
+			var divToDelete = document.getElementById("divInGraphic_" + row);
 			divGraphicOrder_2.removeChild(divToDelete);
-			var previousIsAnd=false;
-			for (var i=0;i<divGraphicOrder_2.children.length;i++){
+			var previousIsAnd = false;
+			for (var i = 0; i < divGraphicOrder_2.children.length; i++) {
 				console.log(divGraphicOrder_2.children[i].value);
-				if (previousIsAnd==true & divGraphicOrder_2.children[i].value =="and"){
+				if (previousIsAnd == true & divGraphicOrder_2.children[i].value == "and") {
 					divGraphicOrder_2.removeChild(divGraphicOrder_2.children[i]);
 				}
-				if (divGraphicOrder_2.children[i].value =="and"){
-					previousIsAnd=true;
-				}else{
-					previousIsAnd=false;
+				if (divGraphicOrder_2.children[i].value == "and") {
+					previousIsAnd = true;
+				} else {
+					previousIsAnd = false;
 				}
 
 
 			}
-			
+
 
 
 
