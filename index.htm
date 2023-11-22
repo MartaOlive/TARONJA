@@ -4039,13 +4039,14 @@
 			var tableContentNew = [];
 			var contador = 1;
 
-			for (var i = 0; i < tableContent.length; i += 5) {
+			for (var i = 0; i < tableContent.length; i += 6) {
 				if (row != contador) {
 					tableContentNew.push(tableContent[i]);
 					tableContentNew.push(tableContent[i + 1]);
 					tableContentNew.push(tableContent[i + 2]);
 					tableContentNew.push(tableContent[i + 3]);
 					tableContentNew.push(tableContent[i + 4]);
+					tableContentNew.push(tableContent[i + 5]);
 				}
 
 				contador++;
