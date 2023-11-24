@@ -143,13 +143,23 @@ th.borderTable {
     height: 50px;
 }
 
-.divInSelectedGraphic {
+.divInSelectedGraphicElement {
+    border: black 1px solid;
+   
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+/* .divInSelectedGraphicBox {
     border: black 1px solid;
     display: inline-block;
     margin-left: 5px;
     margin-right: 5px;
-    text-align: center;
-}
+    width: content;
+
+} */
 
 .divInSelectedGraphic_condition {
     border: black 1px solid;

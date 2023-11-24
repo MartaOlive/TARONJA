@@ -3064,6 +3064,7 @@
 
 			var divGraphicOrder2 = document.createElement("div");
 			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2_" + paramsNodeId);
+			divGraphicOrder2.setAttribute("class", "divGraphicOrder2")
 			divGraphicOrder.appendChild(divGraphicOrder2);
 
 			var divGraphicOrder3 = document.createElement("div");
@@ -3138,8 +3139,14 @@
 
 		}
 
-		///Elements per el filtre en l'àrea gràfica
-		//var 
+		///Elements per el filtre en l'àrea gràfica (draggables)
+		// //var dragg
+		// var draggableContainer = "divGraphicOrder_2_" + currentNode;
+		// var idDraggableElement;
+
+
+
+
 
 
 		function addCondition(condition, nodeId) {
@@ -3148,13 +3155,91 @@
 			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
 			var divCondition = document.createElement("div");
 			divCondition.innerHTML = condition;
-			divCondition.className = "divInSelectedGraphic_condition"
+			divCondition.setAttribute("class", "divInSelectedGraphic_condition divInSelectedGraphic");
 			divCondition.value = condition;
 			divGraphicOrder_2.appendChild(divCondition);
 			divCondition.draggable = true;
 			divGraphicOrder_2.appendChild(newDiv);
 
 		}
+
+		//Elements draggables (Part gràfica del FilterRow)
+		var draggedElement = null;
+		var items;
+
+		function addDraggableFunctions() {
+			items = document.querySelectorAll(".divGraphicOrder2 .divInSelectedGraphic");
+
+			items.forEach(function (item) {
+				item.addEventListener("dragstart", handleDragStart);
+				item.addEventListener("dragenter", handleDragEnter);
+				item.addEventListener("dragover", handleDragOver);
+				item.addEventListener("dragleave", handleDragLeave);
+				item.addEventListener("drop", handleDrop);
+				item.addEventListener("dragend", handleDragEnd);
+			});
+		}
+
+		function handleDragStart(e) {
+			//this.style.opacity = "0.8";
+			draggedElement = this; //This es el Div sencer
+			console.log(this);
+
+			e.dataTransfer.effectAllowed = "move"; //https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
+			e.dataTransfer.setData("text", this.innerHTML); //
+			e.dataTransfer.setData("id", this.id); //data-id
+			e.dataTransfer.setData("value", this.value); //data-value
+		}
+
+		function handleDragOver(e) {
+			e.preventDefault();
+
+			e.dataTransfer.dropEffect = "move";
+			return false;
+		}
+
+		function handleDragEnter(e) {
+			//this.classList.add("dragover");
+		}
+
+		function handleDragLeave(e) {
+			//this.classList.remove("dragover");
+		}
+
+		function handleDrop(e) {
+			// if (e.stopPropagation)
+			// 	e.stopPropagation();
+
+			if (draggedElement != this) {
+				draggedElement.innerHTML = this.innerHTML;
+				draggedElement.setAttribute("text", this.innerHTML);
+				draggedElement.setAttribute("id", this.id);
+				draggedElement.setAttribute("value", this.value);
+
+				var replacedItem = e.dataTransfer.getData("text");
+				var replacedValue= e.dataTransfer.getData("value");
+				var replacedId= e.dataTransfer.getData("id");
+
+				this.innerHTML = replacedItem;
+
+				this.setAttribute("text", replacedItem);
+				this.setAttribute("id",replacedId);
+				this.setAttribute("value", replacedValue);
+			}
+
+			return false;
+		}
+
+		function handleDragEnd(e) {
+			this.style.opacity = "1";
+
+			items.forEach(function (item) {
+				item.classList.remove("dragover");
+			});
+		}
+
+
+		////Fi draggables
 
 		function addSelected(nodeId, place) {
 			event.preventDefault();
@@ -3174,17 +3259,17 @@
 
 			//afegir els valors nous --> ixò es canviarà al borrar els and/or/not de la taula
 			var property, condition, valueTextInput, numberCharacter;
-			
+
 			if (tableContent.length == 0) {
 				tableContent.push("nothing");
 			}
 			else {
-				numberCharacter=tableContent[tableContent.length-1];
+				numberCharacter = tableContent[tableContent.length - 1];
 				console.log(numberCharacter);
 				tableContent.push("and");
 			}
 
-			
+
 			property = selectorProperty.options[selectorProperty.selectedIndex].value;
 			condition = selectorCondition.options[selectorCondition.selectedIndex].value;
 
@@ -3209,8 +3294,8 @@
 
 			if (tableContent.length == 5) {
 				tableContent.push(0);
-			}else{
-				tableContent.push(numberCharacter+1);
+			} else {
+				tableContent.push(numberCharacter + 1);
 			}
 
 			// console.log("despres d'afegir: " + tableContent);
@@ -3224,19 +3309,35 @@
 
 			//afegir a la part gràfica --> S'haurà de modificar el tablecharacters blabla
 			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
+			var newDivBox = document.createElement("div");
 			var newDiv = document.createElement("div");
 			var character;
-			if (tableContent.length==6){
-				character=tableCharacters[0];
-			} else{
-				character=tableCharacters[numberCharacter+1];
+			var idDivToMove;
+
+			if (tableContent.length == 6) {
+				character = tableCharacters[0];
+				newDiv.setAttribute("value", 0);
+				newDiv.setAttribute("id", "divInGraphic_0");
+				idDivToMove = "divInGraphic_0";
+
+			} else {
+				character = tableCharacters[numberCharacter + 1];
+				newDiv.setAttribute("value", numberCharacter + 1);
+				newDiv.setAttribute("id", "divInGraphic_" + (numberCharacter + 1));
+				idDivToMove = "divInGraphic_" + (numberCharacter + 1);
 			}
-			newDiv.id = "divInGraphic_" + tableContent.length / 5;
-			newDiv.className = "divInSelectedGraphic";
+
+			newDiv.setAttribute("class", "divInSelectedGraphicElement divInSelectedGraphic");
+			newDivBox.className = "divInSelectedGraphicBox";
 			newDiv.innerHTML = character + "<br>" + property + " " + condition + " " + valueTextInput;
 			newDiv.draggable = true;
 
-			if (divGraphicOrder_2.children.length) {
+
+			addDraggableFunctions();
+
+
+
+			if (divGraphicOrder_2.children.length) { //Afegir un And abans si ja hi ha un altre element
 				var divCondition = document.createElement("div");
 				divCondition.innerHTML = "and";
 				divCondition.className = "divInSelectedGraphic_condition"
@@ -3244,8 +3345,13 @@
 				divGraphicOrder_2.appendChild(divCondition);
 				divCondition.draggable = true;
 			}
-			divGraphicOrder_2.appendChild(newDiv);
+			newDivBox.appendChild(newDiv);
+			divGraphicOrder_2.appendChild(newDivBox);
 		}
+
+
+
+
 
 		function showIntervalSelector(nodeId, place) {
 			event.preventDefault();
@@ -3673,13 +3779,12 @@
 					}
 
 
-					
+
 					var character = document.getElementById("th_" + nodeId + "_" + r + "_character");
 
 					tableResults.push(parseInt(character.getAttribute("value")));
 
-					console.log("character: "+parseInt(character.getAttribute("value")))
-					console.log("function readTable tableResults:  " + tableResults);
+
 					if (row !== 0) {
 						r = rowsNumber;
 					}
@@ -3871,9 +3976,9 @@
 							// } else {
 
 
-								console.log(tableContentNew[(r + 5)]);
-								tableTh.innerHTML = tableCharacters[tableContentNew[(r + 5)]] //El guardat al llegir la taula
-								tableTh.setAttribute("value",tableContentNew[(r + 5)]);
+							console.log(tableContentNew[(r + 5)]);
+							tableTh.innerHTML = tableCharacters[tableContentNew[(r + 5)]] //El guardat al llegir la taula
+							tableTh.setAttribute("value", tableContentNew[(r + 5)]);
 							//}
 
 
@@ -4029,6 +4134,46 @@
 			var a = 1;
 			var rowsNumbers2 = table.rows.length;
 
+
+
+			//Eliminar l'element de la part gràfica
+			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
+			var elementToDelete = document.getElementById("th_" + nodeId + "_" + row + "_character");
+			var valueOfElementToDelete = elementToDelete.getAttribute("value");
+			console.log(valueOfElementToDelete);
+			var divToDelete = document.getElementById("divInGraphic_" + valueOfElementToDelete);
+
+			divGraphicOrder_2.removeChild(divToDelete);
+			var previousIsAnd = false;
+			var previousIsNot = false;
+			for (var i = 0; i < divGraphicOrder_2.children.length; i++) { //borrar dos and seguits
+				if (previousIsAnd == true & divGraphicOrder_2.children[i].value == "and") {
+					divGraphicOrder_2.removeChild(divGraphicOrder_2.children[i]);
+				}
+				if (divGraphicOrder_2.children[i].value == "and") {
+					previousIsAnd = true;
+				}
+				else {
+					previousIsAnd = false;
+				}
+			}
+			for (var i = 0; i < divGraphicOrder_2.children.length; i++) { //borrar dos not seguits
+				if (previousIsAnd == true & divGraphicOrder_2.children[i].value == "not") {
+					divGraphicOrder_2.removeChild(divGraphicOrder_2.children[i]);
+				}
+				if (divGraphicOrder_2.children[i].value == "not") {
+					previousIsAnd = true;
+				}
+				else {
+					previousIsAnd = false;
+				}
+			}
+
+			if (divGraphicOrder_2.children[0].value == "and" || divGraphicOrder_2.children[0].value == "not") { //eliminar si queda un and al principi
+				divGraphicOrder_2.removeChild(divGraphicOrder_2.children[0]);
+			}
+
+			///Borrar la taula
 			while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
 				table.deleteRow(a);
 				rowsNumbers2 = table.rows.length;
@@ -4052,33 +4197,9 @@
 				contador++;
 			}
 
-			console.log(tableContent);
-			console.log(tableContentNew);
 			contador = 1;
 			//tornar a pintar la taula 
 			drawTable(nodeId, tableContentNew, "delete");
-
-			//Eliminar l'element de la part gràfica
-			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
-			var divToDelete = document.getElementById("divInGraphic_" + row);
-			divGraphicOrder_2.removeChild(divToDelete);
-			var previousIsAnd = false;
-			for (var i = 0; i < divGraphicOrder_2.children.length; i++) {
-				console.log(divGraphicOrder_2.children[i].value);
-				if (previousIsAnd == true & divGraphicOrder_2.children[i].value == "and") {
-					divGraphicOrder_2.removeChild(divGraphicOrder_2.children[i]);
-				}
-				if (divGraphicOrder_2.children[i].value == "and") {
-					previousIsAnd = true;
-				} else {
-					previousIsAnd = false;
-				}
-
-
-			}
-
-
-
 
 
 

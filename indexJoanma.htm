@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>TAPIS: Tables from APIs for Sensors (Sensor Things API plus Explorer)</title>
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<script type="text/javascript" src="vis.min.js"></script>
@@ -19,59 +19,35 @@
 <body onLoad="StartSTAPage();">
 	<table border="0" style="width:100%">
 		<tr>
-			<td>
-				<table>
-					<tr>
-						<td><img src="logo.png" height="70"></td>
-						<td>
-							<div style="font-size: 30px; font-weight: bold;">TAPIS</div>
-							<div style="font-size: 20px; font-weight: bold;">Tables from OGC APIs for Sensors</div>
-							<div style="font-size: 10px; font-weight: normal;"> or a Sensor Things API plus Explorer
-							</div>
-						</td>
-					</tr>
-				</table>
-			</td>
+			<td><table>
+				<tr><td><img src="logo.png" height="70"></td><td><div style="font-size: 30px; font-weight: bold;">TAPIS</div><div style="font-size: 20px; font-weight: bold;">Tables from OGC APIs for Sensors</div><div style="font-size: 10px; font-weight: normal;"> or a Sensor Things API plus Explorer</div></td></tr></table></td>
 			<td align="right" valign="top">
 				<span id="UserInfoText"></span>
-				<button id="buttonReloadSTA" onclick='reloadSTA(event);'><img src="login.png" height="20"
-						valign="middle"> Refresh</button>
+				<button id="buttonReloadSTA" onclick='reloadSTA(event);'><img src="login.png" height="20" valign="middle"> Refresh</button>
 				<label class=labelbotton><img src="OpenNetwork.png" height="20" valign="middle"> Open
-					<input type="file" id="openNetworkFileName" hidden onchange='openNetwork(event);' />
-				</label>
-				<!-- https://dev.to/faddalibrahim/how-to-create-a-custom-file-upload-button-using-html-css-and-javascript-1c03 -->
-				<button onclick='saveNetwork(event);'><img src="SaveNetwork.png" height="20" valign="middle">
-					Save</button>
-				<button id="buttonOpenLogin" onclick='OpenLogin(event);'><img src="login.png" height="20"
-						valign="middle"> Login</button>
-				<button id="buttonOpenLogout" onclick='OpenLogout(event);' style="display: none" );'><img
-						src="login.png" height="20" valign="middle"> Logout</button>
-				<button onclick='OpenConfiguration(event);'><img src="config.png" height="20"
-						valign="middle">Configuration</button><br>
+				<input type="file" id="openNetworkFileName" hidden onchange='openNetwork(event);'/>
+				</label> <!-- https://dev.to/faddalibrahim/how-to-create-a-custom-file-upload-button-using-html-css-and-javascript-1c03 -->
+				<button onclick='saveNetwork(event);'><img src="SaveNetwork.png" height="20" valign="middle"> Save</button>
+				<button id="buttonOpenLogin" onclick='OpenLogin(event);'><img src="login.png" height="20" valign="middle"> Login</button>
+				<button id="buttonOpenLogout" onclick='OpenLogout(event);' style="display: none");'><img src="login.png" height="20" valign="middle"> Logout</button>
+				<button onclick='OpenConfiguration(event);'><img src="config.png" height="20" valign="middle">Configuration</button><br>
 				<span style="font-size: 10px;"><a href="TermsOfUse.htm">Terms of Use</a><br>
-					<a href="PrivacyStatement.htm">Privacy Statement</a><br>
-					<a href="AccessPolicy.htm">Access Policy</a><br></span>
+				<a href="PrivacyStatement.htm">Privacy Statement</a><br>
+				<a href="AccessPolicy.htm">Access Policy</a><br></span>
 			</td>
 		</tr>
 	</table>
 
 	<button onclick='addCircularImage(null, null, "STAplus", "ogc.png");'><img src="ogc.png" height="20"
-			valign="middle"> Add STA service</button><br>
+		valign="middle"> Add STA service</button><br>
 	<span id="ButtonsSTAEntities"></span>
 	<button onclick="addEdge();">Connect two nodes</button><br>
 
 
-	<table width="100%">
-		<tr>
-			<td width="60%">
-				<div id="mynetwork"></div>
-			</td>
-			<td width="40%">
-				<div id="clarification" style="width: 100%; height: 400px; border: 1px solid gray; overflow: auto;">
-				</div>
-			</td>
-		</tr>
-	</table>
+	<table width="100%"><tr>
+	<td width="60%"><div id="mynetwork"></div></td>
+	<td width="40%"><div id="clarification" style="width: 100%; height: 400px; border: 1px solid gray; overflow: auto;"></div></td>
+	</tr></table>
 
 	<dialog id="DialogConfiguration">
 		<form>
@@ -80,8 +56,7 @@
 					<input type="text" id="DialogConfigurationFontSize" size="3" value="50"></input>%
 				</label>
 				<br>
-				<label><input type="checkbox" id="DialogConfigurationAddGeolocationHeader"></input>Add geolocation
-					header</label>
+				<label><input type="checkbox" id="DialogConfigurationAddGeolocationHeader"></input>Add geolocation header</label>
 			</p>
 			<div class="center">
 				<button value="default" onClick="ChangeConfiguration(event)">OK</button>
@@ -143,10 +118,8 @@
 				</span>
 			</fieldset>
 			<br>
-			<label>
-				<input type="radio" id="SelectSortByAsc" name="SelectSortByArcDesc" checked />ascending
-				<input type="radio" id="SelectSortByDesc" name="SelectSortByArcDesc" />descending
-			</label>
+			<label><input type="radio" id="SelectSortByAsc" name="SelectSortByArcDesc" checked />ascending</label>
+			<label><input type="radio" id="SelectSortByDesc" name="SelectSortByArcDesc" />descending</label>
 			<br>
 			<label>Number records to request:
 				<input type="text" id="SelectSortByNumberOfRecords" size="6" maxlength="6" value="100"></input>
@@ -208,14 +181,10 @@
 			Import CSV file table.
 			<br>
 			<label>CSV delimiter:
-				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText"
-						checked></input> <input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1"
-						value=";"></input></label> <label><input type="radio" name="DialogImportCSVDelimiter"
-						id="DialogImportCSVDelimiterTab"></input> Tab</label>
+				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked></input> <input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=";"></input></label> <label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterTab"></input> Tab</label>
 			</label>
 			<br>
-			<label><input type="checkbox" id="DialogImportCSVHeader"></input>First line contains names of the
-				fields</label>
+			<label><input type="checkbox" id="DialogImportCSVHeader"></input>First line contains names of the fields</label>
 			<br>
 			<label>Choose a CSVW:
 				<input type="file" accept=".csvw,.json" onChange="ReadFileImportCSVW(event)"></input>
@@ -251,7 +220,7 @@
 		<form>
 			<span id="DialogSaveLayerTitle"></span>
 			<fieldset>
-				<legend>Position:</legend>
+    				<legend>Position:</legend>
 				<label>Place description:
 					<span id="DialogSaveLayerPlace"></span>
 				</label>
@@ -269,7 +238,7 @@
 				<span id="DialogSaveLayerTime"></span>
 			</label>
 			<fieldset>
-				<legend>Observed properties:</legend>
+    				<legend>Observed properties:</legend>
 				<label>Name:
 					<span id="DialogSaveLayerVariable"></span>
 				</label>
@@ -284,7 +253,7 @@
 					</label>
 					<br>
 					<fieldset>
-						<legend>Units of measurement:</legend>
+    						<legend>Units of measurement:</legend>
 						<label>Name:
 							<span id="DialogSaveLayerVariableUoM"></span>
 						</label>
@@ -297,7 +266,7 @@
 							<span id="DialogSaveLayerVariableUoMDefinition"></span>
 						</label>
 					</fieldset>
-					<br>
+					<br>	
 				</span>
 				<br>
 				<label>Value:
@@ -313,57 +282,48 @@
 	</dialog>
 
 	<dialog id="DialogScatterPlot">
-		<table border="0">
-			<tr>
-				<td>
-					<span id="DialogScatterPlotTitle"></span>
-					<form>
-						<fieldset>
-							<legend>Axes:</legend>
-							<label>Axis x:
-								<span id="DialogScatterPlotAxisX"></span>
-							</label>
-							<br>
-							<label>Axis y:
-								<span id="DialogScatterPlotAxisY"></span>
-							</label>
-						</fieldset>
-						<br>
-						<div class="center">
-							<button value="draw" onClick="DrawScatterPlot(event)">Draw</button>
-							<button value="ok" onClick="CloseDialogScatterPlot(event)" formmethod="dialog">Ok</button>
-						</div>
-					</form>
-				</td>
-				<td>
-					<div id="DialogScatterPlotVisualization" style="width:600px; height:500px;"></div>
-				</td>
-			</tr>
-		</table>
+		<table border="0"><tr><td>
+			<span id="DialogScatterPlotTitle"></span>
+			<form>
+			<fieldset>
+    				<legend>Axes:</legend>
+				<label>Axis x:
+					<span id="DialogScatterPlotAxisX"></span>
+				</label>
+				<br>
+				<label>Axis y:
+					<span id="DialogScatterPlotAxisY"></span>
+				</label>
+			</fieldset>
+			<br>
+			<div class="center">
+				<button value="draw" onClick="DrawScatterPlot(event)">Draw</button>
+				<button value="ok" onClick="CloseDialogScatterPlot(event)" formmethod="dialog">Close</button>
+			</div>
+			</form>
+		</td>
+		<td><div id="DialogScatterPlotVisualization" style="width:600px; height:500px;"></div></td>
+		</tr></table>
 	</dialog>
 
 
 	<dialog id="DialogUploadObservations">
 		<div id="DialogUploadObservationsLoginFirst" style="display: none;">
-			<form>
-				To upload data in a STA server, you should Login first.<br>
-				<div class="center">
-					<button value="cancel" formmethod="dialog">Cancel</button>
-				</div>
-			</form>
+		<form>
+			To upload data in a STA server, you should Login first.<br>
+			<div class="center">
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
 		</div>
 		<form id="DialogUploadObservationsForm">
 			Upload table as STA observations
 			<br>
-			<label><input type="radio" name="DialogUploadObservationsRadio" id="DialogUploadObservationsObsPropsInARow"
-					checked="checked"></input>Each row represents a feature of interest with several observed
-				properties</label>
+			<label><input type="radio" name="DialogUploadObservationsRadio" id="DialogUploadObservationsObsPropsInARow" checked="checked"></input>Each row represents a feature of interest with several observed properties</label>
 			<br>
-			<label><input type="radio" name="DialogUploadObservationsRadio"
-					id="DialogUploadObservationsObsPropsInAColumn" disabled></input>Several observed properties of the
-				same feature in a single column and in multiple rows</label>
+			<label><input type="radio" name="DialogUploadObservationsRadio" id="DialogUploadObservationsObsPropsInAColumn" disabled></input>Several observed properties of the same feature in a single column and in multiple rows</label>
 			<fieldset>
-				<legend>Position:</legend>
+    				<legend>Position:</legend>
 				<label>Place description:
 					<span id="DialogUploadObservationsPlace"></span>
 				</label>
@@ -403,163 +363,168 @@
 	<script type="text/javascript">
 		"use strict"
 
-		/* 
-			This file is part of TAPIS. TAPIS is a web page and a Javascript code 
-			that builds queries and explore the STAplus content, saves it as CSV or 
-			GeoJSON and connects with the MiraMon Map Browser. While the project is 
-			completely independent from the Orange data mining software, it has been 
-			inspired by its GUI. The general idea of the application is to be able 
-			to work with STA data as tables.
-		  
-			The TAPIS client is free software under the terms of the MIT License
-		
-			Copyright (c) 2023 Joan Masó
-		
-			Permission is hereby granted, free of charge, to any person obtaining a copy
-			of this software and associated documentation files (the "Software"), to deal
-			in the Software without restriction, including without limitation the rights
-			to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-			copies of the Software, and to permit persons to whom the Software is
-			furnished to do so, subject to the following conditions:
-		
-			The above copyright notice and this permission notice shall be included in all
-			copies or substantial portions of the Software.
-		
-			THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-			IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-			FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-			AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-			LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-			OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-			SOFTWARE.
-		    
-			The TAPIS can be updated from https://github.com/joanma747/tapis.
-		
-			Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
-			dins del grup del MiraMon. MiraMon és un projecte del 
-			CREAF que elabora programari de Sistema d'Informació Geogràfica 
-			i de Teledetecció per a la visualització, consulta, edició i anàlisi 
-			de mapes ràsters i vectorials. Aquest progamari programari inclou
-			aplicacions d'escriptori i també servidors i clients per Internet.
-			No tots aquests productes són gratuïts o de codi obert. 
-		    
-			En particular, el TAPIS es distribueix sota els termes de la llicència MIT.
-		    
-			El TAPIS es pot actualitzar des de https://github.com/joanma747/tapis.
-		*/
+/* 
+    This file is part of TAPIS. TAPIS is a web page and a Javascript code 
+    that builds queries and explore the STAplus content, saves it as CSV or 
+    GeoJSON and connects with the MiraMon Map Browser. While the project is 
+    completely independent from the Orange data mining software, it has been 
+    inspired by its GUI. The general idea of the application is to be able 
+    to work with STA data as tables.
+  
+    The TAPIS client is free software under the terms of the MIT License
+
+    Copyright (c) 2023 Joan Masó
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+    
+    The TAPIS can be updated from https://github.com/joanma747/tapis.
+
+    Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
+    dins del grup del MiraMon. MiraMon és un projecte del 
+    CREAF que elabora programari de Sistema d'Informació Geogràfica 
+    i de Teledetecció per a la visualització, consulta, edició i anàlisi 
+    de mapes ràsters i vectorials. Aquest progamari programari inclou
+    aplicacions d'escriptori i també servidors i clients per Internet.
+    No tots aquests productes són gratuïts o de codi obert. 
+    
+    En particular, el TAPIS es distribueix sota els termes de la llicència MIT.
+    
+    El TAPIS es pot actualitzar des de https://github.com/joanma747/tapis.
+*/
 
 		var config;
 		//var STAurl = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
 		//var STAurl="https://citiobs.demo.secure-dimensions.de/staplus/v1.1";
 		//var MMNpath="../osm";
 
-		const STAEntities = {
-			ObservedProperties: { singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"] },
-			Observations: { singular: "Observation", entities: ["Datastream", "MultiDatastream", "FeatureOfInterest", "ObservationGroups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"] },
-			FeaturesOfInterest: { singular: "FeatureOfInterest", entities: ["Observations"], properties: ["name", "description", "encodingType", "feature", "properties"] },
-			Sensors: { singular: "Sensor", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "description", "encodingType", "metadata", "properties"] },
-			Things: { singular: "Thing", entities: ["Datastreams", "MultiDatastreams", "Party", "Locations", "HistoricalLocations"], properties: ["name", "description", "properties"] },
-			Locations: { singular: "Location", entities: ["Things", "HistoricalLocations"], properties: ["name", "description", "encodingType", "location", "properties"] },
-			HistoricalLocations: { singular: "HistoricalLocation", entities: ["Things", "Location"], properties: ["time"] },
-			Datastreams: { singular: "Datastream", entities: ["Party", "Sensor", "ObservedProperty", "Campaigns", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurement", "observationType", "observedArea", "phenomenonTime", "resultTime", "properties"] },
-			MultiDatastreams: { singular: "MultiDatastream", entities: ["Party", "Sensor", "ObservedProperties", "Campaigns", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurements", "observationType", "observedArea", "phenomenonTime", "resultTime", "multiObservationDataTypes", "properties"] },
-			Parties: { singular: "Party", entities: ["Datastreams", "MultiDatastreams", "Campaigns", "ObservationGroups", "Things"], properties: ["description", "authId", "role", "displayName"] },
-			Campaigns: { singular: "Campaign", entities: ["Datastreams", "MultiDatastreams", "Party", "License"], properties: ["name", "description", "classification", "termsOfUse", "privacyPolicy", "creationTime", "startTime", "endTime", "url", "properties"] },
-			Licenses: { singular: "License", entities: ["Datastreams", "MultiDatastreams", "Campaigns", "ObservationGroups"], properties: ["name", "description", "definition", "logo", "attributionText"] },
-			ObservationGroups: { singular: "ObservationGroup", entities: ["Party", "Campaigns", "License", "Observations", "Relations"], properties: ["name", "description", "purpose", "creationTime", "endTime", "termsOfUsed", "privacyPolicy", "properties", "dataQuality"] },
-			Relations: { singular: "Relation", entities: ["Object", "Subject", "ObservationGroups"], properties: ["role", "description", "externalObject", "properties"] }
-		};
+		const STAEntities = {ObservedProperties: {singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"]}, 
+				Observations: {singular: "Observation", entities: ["Datastream", "MultiDatastream", "FeatureOfInterest", "ObservationGroups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"]}, 
+      				FeaturesOfInterest: {singular: "FeatureOfInterest", entities: ["Observations"], properties: ["name", "description", "encodingType", "feature", "properties"]}, 
+				Sensors: {singular: "Sensor", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "description", "encodingType", "metadata", "properties"]}, 
+				Things: {singular: "Thing", entities: ["Datastreams", "MultiDatastreams", "Party", "Locations", "HistoricalLocations"], properties: ["name", "description", "properties"]},     
+				Locations: {singular: "Location", entities: ["Things", "HistoricalLocations"], properties: ["name", "description", "encodingType", "location", "properties"]}, 
+				HistoricalLocations: {singular: "HistoricalLocation", entities: ["Things", "Location"], properties: ["time"]}, 
+				Datastreams: {singular: "Datastream", entities: ["Party", "Sensor", "ObservedProperty", "Campaigns", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurement", "observationType", "observedArea", "phenomenonTime", "resultTime", "properties"]}, 
+				MultiDatastreams: {singular: "MultiDatastream", entities: ["Party", "Sensor", "ObservedProperties", "Campaigns", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurements", "observationType", "observedArea", "phenomenonTime", "resultTime", "multiObservationDataTypes", "properties"]},
+				Parties: {singular: "Party", entities: ["Datastreams", "MultiDatastreams", "Campaigns", "ObservationGroups", "Things"], properties: ["description", "authId", "role", "displayName"]}, 
+				Campaigns: {singular: "Campaign", entities: ["Datastreams", "MultiDatastreams", "Party", "License"], properties: ["name", "description", "classification", "termsOfUse", "privacyPolicy", "creationTime", "startTime", "endTime", "url", "properties"]}, 
+				Licenses: {singular: "License", entities: ["Datastreams", "MultiDatastreams", "Campaigns", "ObservationGroups"], properties: ["name", "description", "definition", "logo", "attributionText"]}, 
+				ObservationGroups: {singular: "ObservationGroup", entities: ["Party", "Campaigns", "License", "Observations", "Relations"], properties: ["name", "description", "purpose", "creationTime", "endTime", "termsOfUsed", "privacyPolicy", "properties", "dataQuality"]}, 
+				Relations: {singular: "Relation", entities: ["Object", "Subject", "ObservationGroups"], properties: ["role", "description", "externalObject", "properties"]}};
 		const STAEntitiesArray = Object.keys(STAEntities);
-		const STASpecialQueries = { ObsLayer: { description: "Observations Layer", query: "Observations?$orderby=phenomenonTime%20desc&$expand=Datastream($select=unitOfMeasurement),Datastream/ObservedProperty($select=name,description,definition),FeatureOfInterest($select=description,feature)&$select=phenomenonTime,result" } }
+		const STASpecialQueries = {ObsLayer: {description: "Observations Layer", query: "Observations?$orderby=phenomenonTime%20desc&$expand=Datastream($select=unitOfMeasurement),Datastream/ObservedProperty($select=name,description,definition),FeatureOfInterest($select=description,feature)&$select=phenomenonTime,result"}}
 		const STASpecialQueriesArray = Object.keys(STASpecialQueries);
-		const TableOperations = {
-			ImportCSV: { description: "Import CSV file" },
-			Table: { description: "View Table" },
-			SelectColumnsSTA: { description: "Select Columns", callSTALoad: true },
-			SelectRowsSTA: { description: "Select Rows", callSTALoad: true },
-			SortBySTA: { description: "Sort by", callSTALoad: true },
-			ViewQuerySTA: { description: "View Query" },
-			UploadObservations: { description: "Upload in STA" },
-			SelectColumnsTable: { description: "Select Columns" },
-			/*SelectRowsTable: {description: "Select Rows"},*/
-			SeparateColumns: { description: "Separate Columns" },
-			ScatterPlot: { description: "Scatter Plot" },
-			SaveTable: { description: "Save Table" },
-			SaveLayer: { description: "Save Layer" },
-			OpenMap: { description: "Open Map" }
-		};
+		const TableOperations = {ImportCSV: {description: "Import CSV file"},
+					Table: {description: "View Table", leafNode: true}, 
+					SelectColumnsSTA: {description: "Select Columns", callSTALoad: true},
+					SelectRowsSTA: {description: "Select Rows", callSTALoad: true},
+					SortBySTA: {description: "Sort by", callSTALoad: true},
+					ViewQuerySTA: {description: "View Query", leafNode: true},
+					UploadObservations: {description: "Upload in STA", leafNode: true},
+					//UploadTimeAverages: {description: "Upload time averages", leafNode: true},
+					SelectColumnsTable: {description: "Select Columns"},
+					/*SelectRowsTable: {description: "Select Rows"},*/
+					SeparateColumns: {description: "Separate Columns"},
+					ScatterPlot: {description: "Scatter Plot", leafNode: true},
+					SaveTable: {description: "Save Table", leafNode: true},
+					SaveLayer: {description: "Save Layer", leafNode: true},
+					OpenMap: {description: "Open Map", leafNode: true}};
+
 		const TableOperationsArray = Object.keys(TableOperations);
 
 		//If the two nodes cannot connect it returns null. It transforms a plural to singular if needed.
-		function transformToSingularIfNeededSTAEntity(parentEntity, entityName) {
+		function transformToSingularIfNeededSTAEntity(parentEntity, entityName) {		
 			//Determinino si ha de ser singular o plural
-			for (var i = 0; i < parentEntity.entities.length; i++) {
-				if (parentEntity.entities[i] == entityName)
+			for (var i=0; i<parentEntity.entities.length; i++)
+			{			
+				if (parentEntity.entities[i]==entityName)
 					return entityName;
-				else if (parentEntity.entities[i] == STAEntities[entityName].singular)
-					return STAEntities[nextEntity].singular;
+				else if (parentEntity.entities[i]==STAEntities[entityName].singular)
+					return STAEntities[entityName].singular;
 			}
 			return null;
 		}
 
 		function getConnectionSTAEntity(parentNode, node) {
 			var parentPlural, parentEntity;
-			var idNode = IdOfSTAEntity(node);
-			if (idNode == -1)
-				return { error: "Parent node is not a STA entity" };
-			var parentLastEntity = getSTAURLLastEntity(parentNode.STAURL);
-			if (STAEntities[parentLastEntity]) {
-				parentPlural = true;
-				parentEntity = STAEntities[parentLastEntity];
+			var idNode=IdOfSTAEntity(node);
+			if (idNode==-1)
+				return {error: "Parent node is not a STA entity"};
+			var parentLastEntity=getSTAURLLastEntity(parentNode.STAURL);
+			if (STAEntities[parentLastEntity]){
+				parentPlural=true;
+				parentEntity=STAEntities[parentLastEntity];
 			} else {
-				for (var i = 0; i < STAEntitiesArray.length; i++) {
-					if (STAEntities[STAEntitiesArray[i]].singular == parentLastEntity) {
-						parentPlural = false;
-						parentEntity = STAEntities[STAEntitiesArray[i]];
+				for (var i=0; i<STAEntitiesArray.length; i++)
+				{			
+					if (STAEntities[STAEntitiesArray[i]].singular==parentLastEntity)
+					{
+						parentPlural=false;
+						parentEntity=STAEntities[STAEntitiesArray[i]];
 						break;
 					}
 				}
-				if (i == parentEntity.entities.length)
-					return { error: "Parent node is not a STA entity" };
+				if (i==parentEntity.entities.length)
+					return {error: "Parent node is not a STA entity"};
 			}
-
-			var nextEntity = removeExtension(node.image);
+			
+			var nextEntity=removeExtension(node.image);
 
 			if (!STAEntities[nextEntity])
-				return { error: "Child node is not a STA entity" };
-
-			if (parentPlural) {
-				if (null != getSTAURLSelectingARow(parentNode.STAURL)) {
+				return {error: "Child node is not a STA entity"};
+			
+			if (parentPlural)
+			{
+				if (null!=getSTAURLSelectingARow(parentNode.STAURL))
+				{
 					//Determinino si ha de ser singular o plural
-					var entityName = transformToSingularIfNeededSTAEntity(parentEntity, nextEntity)
+					var entityName=transformToSingularIfNeededSTAEntity(parentEntity, nextEntity)
 					if (entityName)
-						return { entity: entityName };
+						return {entity: entityName};
 					else
-						return { error: "The node connection does not match the STA data model. Use one of the following: " + JSON.stringify(parentEntity.entities) };
+						return {error: "The node connection does not match the STA data model. Use one of the following: " + JSON.stringify(parentEntity.entities)};
 				}
-				else {
+				else
+				{
 					//Is parentNode plural? Everything is incompatible
-					return { error: "A plural parent node requires selecting a row before being connectable to another STA entity" };
+					return {error: "A plural parent node requires selecting a row before being connectable to another STA entity"};
 				}
 			}
 			//else
 			//Is parentNode singular?
-			var entityName = transformToSingularIfNeededSTAEntity(parentEntity, nextEntity);
+			var entityName=transformToSingularIfNeededSTAEntity(parentEntity, nextEntity);
 			if (entityName)
-				return { entity: entityName };
+				return {entity: entityName};
 			else
-				return { error: "The node connection does not match the STA data model. Use one of the following: " + JSON.stringify(parentEntity.entities) };
+				return {error: "The node connection does not match the STA data model. Use one of the following: " + JSON.stringify(parentEntity.entities)};
 		}
 
 		//Return null if there is no reason (and there is a "fit").
 		function reasonNodeDoesNotFitWithPrevious(node, parentNode) {
-			if (parentNode.image == "ogc.png")
+			if (parentNode.image=="ogc.png")
 				return null;
-			var idNode = IdOfSTAEntity(node);
-			var parentLastEntity = getSTAURLLastEntity(parentNode.STAURL);
-			if (idNode < 0)
+			if (TableOperations[removeExtension(parentNode.image)] && TableOperations[removeExtension(parentNode.image)].leafNode==true)
+				return "Parent node is a leaf node and cannot be connected with any other node";
+			var idNode=IdOfSTAEntity(node);
+			if (idNode<0)
 				return null;
-			var getCon = getConnectionSTAEntity(parentNode, node)
+			var getCon=getConnectionSTAEntity(parentNode, node)
 			if (getCon.error)
 				return getCon.error;
 			return null;
@@ -568,97 +533,132 @@
 
 		window.onbeforeunload = function () { return "Your work will be lost."; }
 
-		function showInfoMessage(msg) {
-			var elem = document.getElementById("clarification");
+		function showInfoMessage(msg){
+			var elem=document.getElementById("clarification");
 			elem.innerHTML += (msg + "<br>");
-			elem.scrollTop = elem.scrollHeight;  //https://stackoverflow.com/questions/11715646/scroll-automatically-to-the-bottom-of-the-page
+			elem.scrollTop=elem.scrollHeight;  //https://stackoverflow.com/questions/11715646/scroll-automatically-to-the-bottom-of-the-page
 		}
 
 		function deapCopy(o) {
 			return JSON.parse(JSON.stringify(o));
 		}
 
-		function getURLWithoutQueryParams(s) {
-			var i = s.indexOf('?')
-			if (i == -1)
+		function getURLWithoutQueryParams(s)
+		{
+			var i=s.indexOf('?')
+			if (i==-1)
 				return s;
 			return s.substring(0, i);
 		}
 
-		//Returns the id of the selected resource in the last part of the path. So extracts in the "entities(id)" extracts the id
-		function getSTAURLSelectingARow(url) {
-			var s = getURLWithoutQueryParams(url);
-			var i = (s.charAt(s.length - 1) == '/') ? s.length - 2 : s.length - 1
+		function getURLQueryParams(s)
+		{
+			var i=s.indexOf('?')
+			if (i==-1)
+				return "";
+			return s.substring(i+1);
+		}
 
-			if (s.charAt(i) != ')')
+
+		//Returns the id of the selected resource in the last part of the path. So extracts in the "entities(id)" extracts the id
+		function getSTAURLSelectingARow(url)
+		{
+			var s=getURLWithoutQueryParams(url);
+			var i=(s.charAt(s.length-1)=='/')? s.length-2 : s.length-1
+			
+			if (s.charAt(i)!=')')
 				return null;
-			var ii = s.lastIndexOf('(');
-			if (ii == -1)
+			var ii=s.lastIndexOf('(');
+			if (ii==-1)
 				return null;
-			if (ii > s.lastIndexOf('/') + 2) {
-				var id = s.substring(ii + 1, i);
-				if (id.charAt(0) == '\'' && id.charAt(id.length - 1) == '\'')
-					return id.substring(1, id.length - 1);
-				return id;
+			if (ii>s.lastIndexOf('/')+2)
+			{
+				var id=s.substring(ii+1, i);
+				if (id.charAt(0)=='\'' && id.charAt(id.length-1)=='\'')
+					return id.substring(1, id.length-1);
+				return id; 
 			}
 			return null;
 		}
 
 		//Get the last entity of the path (without the filter or selection of a single entity by using (id))
-		function getSTAURLLastEntity(url) {
-			var s = getURLWithoutQueryParams(url);
-			var i = (s.charAt(s.length - 1) == '/') ? s.length - 2 : s.length - 1
-
-			if (s.charAt(i) != ')') {
-				i = s.lastIndexOf('/')
-				if (-1 != s)
-					return s.substring(i + 1);
+		function getSTAURLLastEntity(url)
+		{
+			var s=getURLWithoutQueryParams(url);
+			var i=(s.charAt(s.length-1)=='/')? s.length-2 : s.length-1
+			
+			if (s.charAt(i)!=')')
+			{
+				i=s.lastIndexOf('/')
+				if (-1!=s)
+					return s.substring(i+1);
 				return s;
 			}
-			i = s.lastIndexOf('(');
-			if (i == -1)
+			i=s.lastIndexOf('(');
+			if (i==-1)
 				return s;
-			var ii = s.lastIndexOf('/');
-			if (i > ii + 2)
-				return s.substring(ii + 1, i);
-			return s.substring(ii + 1);
+			var ii=s.lastIndexOf('/');
+			if (i>ii+2)
+				return s.substring(ii+1, i);
+			return s.substring(ii+1);
 		}
 
 		//from the MiraMon Map Browser DonaAdreca(s)
-		function getAddressPath(s) {
-			if (s.charAt(s.length - 1) == '/')
+		function getAddressPath(s)
+		{
+			if (s.charAt(s.length-1)=='/')
 				return s;
-			var i = s.lastIndexOf('/');
-			if (i == -1)
+			var i=s.lastIndexOf('/');
+			if (i==-1)
 				return "";
 			return s.substring(0, i);
 		}
 
 		//from the MiraMon Map Browser DonaAdrecaAbsoluta(url)
-		function getAbsoluteURL(url) {
-			if (url.length > 8 && (url.substring(0, 7) == "http://" || url.substring(0, 8) == "https://"))
+		function getAbsoluteURL(url)
+		{
+			if (url.length>8 && (url.substring(0, 7)=="http://" || url.substring(0, 8)=="https://"))
 				return url;
-			if (url.charAt(0) == "/")
-				return location.protocol + "//" + location.host + url;
-			return location.protocol + "//" + location.host + getAddressPath(location.pathname) + url;
+			if (url.charAt(0)=="/")
+				return location.protocol+"//"+location.host+url;
+			return location.protocol+"//"+location.host+getAddressPath(location.pathname)+url;
 		}
 
-		function removeExtension(name) {
-			var i = name.lastIndexOf(".");
-			if (i == -1)
+		function removeExtension(name){
+			var i=name.lastIndexOf(".");
+			if (i==-1)
 				return name;
 			return name.substring(0, i);
 		}
-
+		
 
 		function getLang() {
 			if (navigator.languages != undefined)
-				return navigator.languages[0];
+				return navigator.languages[0]; 
 			return navigator.language;
 		}
 
+		function removeExtraAmpersand(queryparams) {
+			if (!queryparams)
+				return queryparams;
+			var s;
+			if (queryparams.charAt(0)=='&') {
+				s=queryparams.substring(1);
+				if (!s)
+					return s;
+			}
+			else
+				s=queryparams;
+			if (queryparams.charAt(s.length-1)=='&')
+				return s.substring(0, queryparams.length-1);
+			return s;				
+		}
+
 		function AddKVPToURL(url, kvp) {
-			if (url.indexOf('?') == -1)
+			kvp=removeExtraAmpersand(kvp);
+			if (!kvp)
+				return url;
+			if (url.indexOf('?')==-1)
 				return url + "?" + kvp;
 			return url + "&" + kvp;
 		}
@@ -666,9 +666,9 @@
 		//https://stackoverflow.com/questions/50036922/change-a-css-stylesheets-selectors-properties/50036923#50036923
 		function changeCSSStyle(selector, cssProp, cssVal) {
 			var ssMain = 0;  //The first stylesheet
-			var cssRules = (document.all) ? 'rules' : 'cssRules';
+			var cssRules = (document.all) ? 'rules': 'cssRules';
 
-			for (var i = 0, len = document.styleSheets[ssMain][cssRules].length; i < len; i++) {
+			for (var i=0, len=document.styleSheets[ssMain][cssRules].length; i<len; i++) {
 				if (document.styleSheets[ssMain][cssRules][i].selectorText === selector) {
 					document.styleSheets[ssMain][cssRules][i].style[cssProp] = cssVal;
 					return;
@@ -677,52 +677,54 @@
 		}
 
 		//Returns the protocol of a URL without the double slash
-		function getProtocol(s) {
+		function getProtocol(s){
 			var pos_barrabarra;
-			if (-1 != (pos_barrabarra = s.indexOf("://")))
-				return s.substring(0, pos_barrabarra + 1);
+			if (-1!=(pos_barrabarra=s.indexOf("://")))
+				return s.substring(0, pos_barrabarra+1);
 			return "";
 		}
 
-		var IdGPSPosition = 0;
+		var IdGPSPosition=0;
 		function InitGPSPosition() {
 			if (navigator.geolocation)
-				IdGPSPosition = navigator.geolocation.watchPosition(UpdateGPSPosition, ErrorGPSPosition, { enableHighAccuracy: true, maximumAge: 8000 });
-			else {
+				IdGPSPosition=navigator.geolocation.watchPosition(UpdateGPSPosition, ErrorGPSPosition, {enableHighAccuracy: true, maximumAge: 8000});
+			else
+			{
 				showInfoMessage("Geolocation not supported by the web browser");
 				CancelGPSPosition();
 			}
 		}
 
-		var PreviousGPSPoint = null;
+		var PreviousGPSPoint=null;
 
 		function CancelGPSPosition() {
 			if (IdGPSPosition) {
 				navigator.geolocation.clearWatch(IdGPSPosition);
-				IdGPSPosition = 0;
+				IdGPSPosition=0;
 			}
-			PreviousGPSPoint = null;
+			PreviousGPSPoint=null;
 		}
 
-		var GPSPositionReported = false;
+		var GPSPositionReported=false;
 		function UpdateGPSPosition(position) {
-			PreviousGPSPoint = { long: position.coords.longitude, lat: position.coords.latitude };
-			if (!GPSPositionReported) {
+			PreviousGPSPoint={long: position.coords.longitude, lat: position.coords.latitude};
+			if (!GPSPositionReported)
+			{
 				showInfoMessage("Geolocation is long: " + PreviousGPSPoint.long + " lat: " + PreviousGPSPoint.lat);
-				GPSPositionReported = true;
+				GPSPositionReported=true;
 			}
 		}
 
 		function ErrorGPSPosition(error) {
-			switch (error.code) {
+			switch(error.code) {
 				case error.PERMISSION_DENIED:
-					showInfoMessage("User denied request location.");
+	      				showInfoMessage("User denied request location.");
 					CancelGPSPosition();
 					break;
 				case error.POSITION_UNAVAILABLE:
-					showInfoMessage("Location information is unavailable.");
+      					showInfoMessage("Location information is unavailable.");
 					CancelGPSPosition();
-					break;
+      					break;
 				case error.TIMEOUT:
 					showInfoMessage("Request location timeOut.");
 					CancelGPSPosition();
@@ -738,12 +740,12 @@
 
 		function StartSTAPage() {
 
-			var s_protocol = getProtocol(location.href);
-
-			if (s_protocol && s_protocol.toLowerCase() != "https:")
+			var s_protocol=getProtocol(location.href);
+	
+			if (s_protocol && s_protocol.toLowerCase()!="https:")
 				location.replace("https:" + location.href.substring(s_protocol.length));
 
-			hello.init({ "authenix": "1cc09d67-8ce1-48c2-872a-6e2f03dba835" }, { redirect_uri: ((location.pathname.charAt(location.pathname.length - 1) == '/') ? location.pathname.substring(0, location.pathname.length - 1) : location.pathname) });
+			hello.init({"authenix": "1cc09d67-8ce1-48c2-872a-6e2f03dba835"}, {redirect_uri: ((location.pathname.charAt(location.pathname.length-1)=='/') ? location.pathname.substring(0, location.pathname.length-1) : location.pathname)});
 
 			UpdateConfiguration();
 
@@ -751,9 +753,10 @@
 		}
 
 		async function InitSTAPage() {
-			var response = await HTTPJSONData("config.json");
-			config = (response && response.obj) ? response.obj : null;
-			if (!config) {
+			var response=await HTTPJSONData("config.json");
+			config=(response && response.obj) ? response.obj : null;
+			if (!config)
+			{
 				showInfoMessage("Error loading \'config.json\'");
 				return;
 			}
@@ -774,27 +777,30 @@
 			document.getElementById("ButtonsSTAEntities").innerHTML = s;
 
 			s = "";
-			for (var i = 0; i < STAEntitiesArray.length; i++) {
+			for (var i = 0; i < STAEntitiesArray.length; i++)
+			{
 				s += "<button onclick='addCircularImage(event, \"DialogContextMenu\", \"" + STAEntitiesArray[i] + "\", \"" + STAEntitiesArray[i] + ".png\");'><img src='" + STAEntitiesArray[i] + ".png' height='20' valign='middle'> " + STAEntitiesArray[i] + "</button>";
-				s += i % 2 || i == STAEntitiesArray.length - 1 ? "<br>" : " ";
+				s += i%2 || i == STAEntitiesArray.length-1 ? "<br>" : " ";
 			}
 			s += "<br>";
-			for (var i = 0; i < STASpecialQueriesArray.length; i++) {
+			for (var i = 0; i < STASpecialQueriesArray.length; i++)
+			{
 				s += "<button onclick='addCircularImage(event, \"DialogContextMenu\", \"" + STASpecialQueriesArray[i] + "\", \"" + STASpecialQueriesArray[i] + ".png\");'><img src='" + STASpecialQueriesArray[i] + ".png' height='20' valign='middle'> " + STASpecialQueries[STASpecialQueriesArray[i]].description + "</button>";
-				s += i % 2 || i == STASpecialQueriesArray.length - 1 ? "<br>" : " ";
+				s += i%2 || i == STASpecialQueriesArray.length-1 ? "<br>" : " ";
 			}
 			s += "<br>";
-			for (var i = 0; i < TableOperationsArray.length; i++) {
+			for (var i = 0; i < TableOperationsArray.length; i++)
+			{
 				s += "<button onclick='addCircularImage(event, \"DialogContextMenu\", \"" + TableOperationsArray[i] + "\", \"" + TableOperationsArray[i] + ".png\");'><img src='" + TableOperationsArray[i] + ".png' height='20' valign='middle'> " + TableOperations[TableOperationsArray[i]].description + "</button>";
-				s += i % 2 || i == TableOperationsArray.length - 1 ? "<br>" : " ";
+				s += i%2 || i == TableOperationsArray.length-1 ? "<br>" : " ";
 			}
 
 			document.getElementById("ButtonsContextMenuObjects").innerHTML = s;
 		}
 
 		function eliminarParamContentType(contentType) {
-			var i = contentType.indexOf(';')
-			if (i < 0)
+			var i=contentType.indexOf(';')
+			if (i<0)
 				return contentType;
 			else
 				return contentType.substring(0, i);
@@ -802,31 +808,33 @@
 
 		function AddHeadersIfNeeded(options) {
 			if (CriptoName &&
-				hello("authenix").getAuthResponse() &&
-				hello("authenix").getAuthResponse().access_token) {
+			    hello("authenix").getAuthResponse() && 
+			    hello("authenix").getAuthResponse().access_token) {
 				if (!options.headers)
-					options.headers = {};
-				options.headers['Authorization'] = 'Bearer ' + hello("authenix").getAuthResponse().access_token;
+					options.headers={};
+				options.headers['Authorization']='Bearer ' + hello("authenix").getAuthResponse().access_token;
 			}
-			if (PreviousGPSPoint) {
+			if (PreviousGPSPoint)
+			{
 				if (!options.headers)
-					options.headers = {};
-				options.headers['Geolocation'] = 'geo:' + PreviousGPSPoint.lat + ',' + PreviousGPSPoint.long;
+					options.headers={};
+				options.headers['Geolocation']='geo:' + PreviousGPSPoint.lat + ',' + PreviousGPSPoint.long;
 			}
 		}
 
 		//https://web.dev/fetch-api-error-handling/
 		async function HTTPJSONData(url, headersToGet, method, obj) {
-			var response, jsonData, options = {};
+			var response, jsonData, options={};
 			try {
 				if (method)
-					options.method = method;
-				options.headers = { 'Accept': 'application/json, */*;q=0.8' };
-
+					options.method=method;
+				options.headers={'Accept': 'application/json, */*;q=0.8'};
+				
 				AddHeadersIfNeeded(options);
-				if (obj) {
-					options.headers['Content-Type'] = 'application/json';
-					options.body = JSON.stringify(obj);
+				if (obj)
+				{
+      					options.headers['Content-Type']='application/json';
+					options.body=JSON.stringify(obj);
 				}
 				response = await fetch(url, options);
 			}
@@ -842,17 +850,18 @@
 				return;
 			}
 			try {
-				var headersObj = {};
-				if (headersToGet) {
-					for (var i = 0; i < headersToGet.length; i++)
-						headersObj[headersToGet[i]] = response.headers.get(headersToGet[i]);
+				var headersObj={};
+				if (headersToGet)
+				{
+					for (var i=0; i<headersToGet.length; i++)
+						headersObj[headersToGet[i]]=response.headers.get(headersToGet[i]);
 					//Enumetates all headers: for(let entry of response.headers.entries()) console.log(entry) })
 				}
-				if (eliminarParamContentType(response.headers.get('Content-Type')) == "application/json" &&
-					(response.headers.get('Content-Length') == null || parseInt(response.headers.get('Content-Length')) > 0))
-					return { obj: await response.json(), responseHeaders: headersObj };
+				if (eliminarParamContentType(response.headers.get('Content-Type'))=="application/json" && 
+					(response.headers.get('Content-Length')==null || parseInt(response.headers.get('Content-Length'))>0))
+					return {obj: await response.json(), responseHeaders: headersObj};
 				else
-					return { obj: null, text: await response.text(), responseHeaders: headersObj };
+					return {obj: null, text: await response.text(), responseHeaders: headersObj};
 			} catch (error) {
 				if (error instanceof SyntaxError) {
 					showInfoMessage('Syntax error reading ' + url + ": " + error.message);
@@ -868,18 +877,18 @@
 		}
 
 		async function LoadJSONNodeSTAData(node, callback, url) {
-			var response, jsonData, options = {};
+			var response, jsonData, options={};
 			try {
 				var url_fetch;
 				if (url)
-					url_fetch = url;
-				else if (typeof node.STAExpectedLength === "undefined")
-					url_fetch = AddKVPToURL(node.STAURL);
+					url_fetch=url;
+				else if (typeof node.STAExpectedLength==="undefined")
+					url_fetch=node.STAURL;
 				else
-					url_fetch = AddKVPToURL(node.STAURL, "$top=" + node.STAExpectedLength);
+					url_fetch=AddKVPToURL(node.STAURL, "$top="+node.STAExpectedLength);
 
 				AddHeadersIfNeeded(options);
-
+					
 				if (options.headers)
 					response = await fetch(url_fetch, options);
 				else
@@ -921,15 +930,16 @@
 			if (url && typeof node.STAExpectedLength)  //node.STAExpectedLength
 			{
 				node.STAdata = node.STAdata.concat(jsonData.value);
-				if (node.STAdata.length > node.STAExpectedLength)  //too much data. Trucating
-					node.STAdata.length = node.STAExpectedLength;
+				if (node.STAdata.length>node.STAExpectedLength)  //too much data. Trucating
+					node.STAdata.length=node.STAExpectedLength;	
 			}
 			else
-				node.STAdata = (typeof jsonData.value !== "undefined") ? jsonData.value : [jsonData];
+				node.STAdata = (typeof jsonData.value!=="undefined") ? jsonData.value : [jsonData];
 			networkNodes.update(node);
-			if (jsonData.value && node.STAExpectedLength && node.STAdata.length < node.STAExpectedLength && jsonData["@iot.nextLink"])
+			if (jsonData.value && node.STAExpectedLength && node.STAdata.length<node.STAExpectedLength && jsonData["@iot.nextLink"])
 				await LoadJSONNodeSTAData(node, callback, jsonData["@iot.nextLink"]);
-			else {
+			else
+			{
 				showInfoMessage("Completed.");
 				await UpdateChildenLoadJSONCallback(node);
 				if (callback)
@@ -939,8 +949,9 @@
 
 		var savedFile = null;
 
-		function MakeHrefData(data, mediatype) {
-			var blobData = new Blob([data], { type: mediatype });
+		function MakeHrefData(data, mediatype)
+		{
+			var blobData = new Blob([data], {type: mediatype});
 
 			// If we are replacing a previously generated file we need to
 			// manually revoke the object URL to avoid memory leaks.
@@ -955,22 +966,24 @@
 			var input = event.target;
 
 			var reader = new FileReader();
-			reader.onload = function () {
+			reader.onload = function() {
 				//Transform the JSON text in something in memory
-				try {
-					var data_csvw = JSON.parse(reader.result);
+				try
+				{
+					var data_csvw=JSON.parse(reader.result);
 					//document.getElementById("DialogImportCSVdataAttributes").value=JSON.stringify(getDataAttributesCSVW(data_csvw));
-					currentNode.STAdataAttributes = getDataAttributesCSVW(data_csvw);
+					currentNode.STAdataAttributes=getDataAttributesCSVW(data_csvw);
 					networkNodes.update(currentNode);
 					var csvReadParams = getCSVReadParams(data_csvw);
 					if (csvReadParams.delimiter)
-						document.getElementById("DialogImportCSVDelimiter").value = csvReadParams.delimiter;
+						document.getElementById("DialogImportCSVDelimiter").value=csvReadParams.delimiter;
 					if (csvReadParams.header)
-						document.getElementById("DialogImportCSVHeader").checked = csvReadParams.header;
-				}
-				catch (e) {
+						document.getElementById("DialogImportCSVHeader").checked=csvReadParams.header;
+				}	
+				catch (e) 
+				{
 					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
-					currentNode.STAdata = null;
+					currentNode.STAdata=null;
 					networkNodes.update(currentNode);
 					return;
 				}
@@ -982,21 +995,21 @@
 			var input = event.target;
 
 			var reader = new FileReader();
-			reader.onload = function () {
+			reader.onload = function() {
 				//Transform the JSON text in something in memory
-				try {
-					var result = Papa.parse(reader.result, {
-						delimiter: (document.getElementById("DialogImportCSVDelimiterText").checked ? document.getElementById("DialogImportCSVDelimiter").value : '\t'),
-						header: document.getElementById("DialogImportCSVHeader").checked,
-						skipEmptyLines: true
-					});
+				try
+				{
+					var result = Papa.parse(reader.result, {delimiter: (document.getElementById("DialogImportCSVDelimiterText").checked ? document.getElementById("DialogImportCSVDelimiter").value : '\t'),
+							header: document.getElementById("DialogImportCSVHeader").checked,
+							skipEmptyLines: true});
 					//if (document.getElementById("DialogImportCSVHeader").checked)
-					currentNode.STAdata = result.data;
+					currentNode.STAdata=result.data;
 					networkNodes.update(currentNode);
-				}
-				catch (e) {
+				}	
+				catch (e) 
+				{
 					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
-					currentNode.STAdata = null;
+					currentNode.STAdata=null;
 					networkNodes.update(currentNode);
 					return;
 				}
@@ -1006,21 +1019,21 @@
 
 		function SaveLocalDataFile(data, fileName, extension, mediatype)   //Saves a memory data structure to a local file
 		{
-			const link = document.createElement('a');
-			if (fileName.substring(fileName.length - extension.length) != extension)
-				fileName += extension;
+		const link = document.createElement('a');
+			if (fileName.substring(fileName.length-extension.length) != extension)
+				fileName+=extension;
 			link.setAttribute('download', fileName);
 			link.setAttribute('href', MakeHrefData(data));
 			document.body.appendChild(link);
 
 			// wait for the link to be added to the document
 			window.requestAnimationFrame(function () {
-				var event = new MouseEvent('click');
+		      	var event = new MouseEvent('click');
 				link.dispatchEvent(event);
 				document.body.removeChild(link);
 			});
 
-			return false;
+		  	return false;
 		}
 
 		function OpenConfiguration(event) {
@@ -1034,44 +1047,46 @@
 			return JSON.parse(atob(base64));
 		};
 
-		var CriptoName = null;
-		document.getElementById("UserInfoText").innerHTML = "";
+		var CriptoName=null;
+		document.getElementById("UserInfoText").innerHTML="";
 		function OpenLogin(event) {
-			hello("authenix").login({ redirect_uri: location.pathname, lang: getLang(), scope: "openid profile idp citiobs.secd.eu%23read citiobs.secd.eu%23create citiobs.secd.eu%23update citiobs.secd.eu%23delete", display: "popup" }).then(
-				function (success) {
-					document.getElementById("buttonOpenLogin").style.display = "none";
-					document.getElementById("buttonOpenLogout").style.display = "inline-block";
-					var jwt_elems = parseJwt(success.authResponse.id_token)
-					CriptoName = jwt_elems.sub;
+			hello("authenix").login({redirect_uri: location.pathname, lang: getLang(), scope: "openid profile idp citiobs.secd.eu%23read citiobs.secd.eu%23create citiobs.secd.eu%23update citiobs.secd.eu%23delete", display: "popup"}).then(
+				function(success) {
+					document.getElementById("buttonOpenLogin").style.display="none";
+					document.getElementById("buttonOpenLogout").style.display="inline-block";
+					var jwt_elems=parseJwt(success.authResponse.id_token)
+					CriptoName=jwt_elems.sub;
 					if (!CriptoName)
-						CriptoName == "Anonymous"
-					document.getElementById("UserInfoText").innerHTML = jwt_elems.preferred_username + " at " + jwt_elems.idp_name;
+						CriptoName=="Anonymous"
+					document.getElementById("UserInfoText").innerHTML=jwt_elems.preferred_username +" at "+ jwt_elems.idp_name;
 				},
-				function (e) {
+				function(e) 
+				{
 					alert("Signin error: " + e.error.message);
-					document.getElementById("UserInfoText").innerHTML = "";
-					CriptoName = null;
+					document.getElementById("UserInfoText").innerHTML="";
+					CriptoName=null;
 				}
 			);
 		}
 
 		function OpenLogout(event) {
-			hello("authenix").logout({ force: true }).then(
-				function (success) {
-					document.getElementById("buttonOpenLogin").style.display = "inline-block";
-					document.getElementById("buttonOpenLogout").style.display = "none";
-					alert("Signed out from" + " " + "authenix" + ". ");
-					document.getElementById("UserInfoText").innerHTML = "";
-					CriptoName = null;
-				}, function (e) {
-					alert("Signed out error: " + e.error.message);
-					document.getElementById("UserInfoText").innerHTML = "";
-					CriptoName = null;
+			hello("authenix").logout({force:true}).then(
+				function(success) {
+					document.getElementById("buttonOpenLogin").style.display="inline-block";
+					document.getElementById("buttonOpenLogout").style.display="none";
+					alert("Signed out from"+ " " + "authenix" + ". ");
+					document.getElementById("UserInfoText").innerHTML="";
+					CriptoName=null;
+				}, function(e) {
+					alert("Signed out error: "  + e.error.message);
+					document.getElementById("UserInfoText").innerHTML="";
+					CriptoName=null;
 				});
 		}
 
-		function UpdateConfiguration() {
-			changeCSSStyle(".tablesmall", 'font-size', document.getElementById("DialogConfigurationFontSize").value / 100 + "em");
+		function UpdateConfiguration()
+		{
+			changeCSSStyle(".tablesmall", 'font-size', document.getElementById("DialogConfigurationFontSize").value/100+"em");
 
 			if (document.getElementById("DialogConfigurationAddGeolocationHeader").checked)
 				InitGPSPosition();
@@ -1082,7 +1097,7 @@
 		function ChangeConfiguration(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogConfiguration").close(document.getElementById("DialogConfigurationFontSize").value);
-			UpdateConfiguration();
+			UpdateConfiguration();			
 		}
 
 		function GetSTAURLEvent(event) {
@@ -1102,26 +1117,35 @@
 			LoadJSONNodeSTAData(currentNode);
 		}
 
-		function ShowUploadObservationsDialog(nodeId) {
+		function ShowUploadObservationsDialog(node) {
 			if (CriptoName &&
-				hello("authenix").getAuthResponse() &&
-				hello("authenix").getAuthResponse().access_token) {
-				document.getElementById("DialogUploadObservationsLoginFirst").style.display = "none";
-				document.getElementById("DialogUploadObservationsForm").style.display = "inline-block";
-				document.getElementById("DialogSTAUploadURLInput").value = nodeId.STAURL ? nodeId.STAURL : config.STAurl;
-				ShowUploadObservationsSelects(nodeId);
+			    hello("authenix").getAuthResponse() && 
+			    hello("authenix").getAuthResponse().access_token)
+			{
+				document.getElementById("DialogUploadObservationsLoginFirst").style.display="none";
+				document.getElementById("DialogUploadObservationsForm").style.display="inline-block";
+				document.getElementById("DialogSTAUploadURLInput").value = node.STAURL ? node.STAURL : config.STAurl;
+				ShowUploadObservationsSelects(node);
 			}
-			else {
-				document.getElementById("DialogUploadObservationsLoginFirst").style.display = "inline-block";
-				document.getElementById("DialogUploadObservationsForm").style.display = "none";
+			else
+			{
+				document.getElementById("DialogUploadObservationsLoginFirst").style.display="inline-block";
+				document.getElementById("DialogUploadObservationsForm").style.display="none";
 			}
 		}
+		
+		function GetFirstParentNode(node) {
+			var nodeids = network.getConnectedNodes(node.id, "from");
+			if (nodeids && nodeids.length && networkNodes.get(nodeids[0]))
+				return networkNodes.get(nodeids[0]);
+			return null;
+		}		
 
-		function ShowUploadObservationsSelects(nodeId) {
-			var nodeids = network.getConnectedNodes(nodeId, "from");
-			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
-				var data = networkNodes.get(nodeids[0]).STAdata;
-				var dataAttributes = networkNodes.get(nodeids[0]).STAdataAttributes ? networkNodes.get(nodeids[0]).STAdataAttributes : getDataAttributes(data);
+		function ShowUploadObservationsSelects(node) {
+			var parentNode = GetFirstParentNode(node)
+			if (parentNode) {
+				var data = parentNode.STAdata;
+				var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsPlace", dataAttributes, "place");
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsLongitude", dataAttributes, "long");
 				PopulateSelectSaveLayerDialog("DialogUploadObservationsLatitude", dataAttributes, "lat");
@@ -1131,14 +1155,14 @@
 			}
 		}
 
-		function GetSelectedOptionsUploadObservations() {
-			var selectedOptions = {};
-			selectedOptions.place = document.getElementById("DialogUploadObservationsPlaceSelect").value;
-			selectedOptions.longitude = document.getElementById("DialogUploadObservationsLongitudeSelect").value;
-			selectedOptions.latitude = document.getElementById("DialogUploadObservationsLatitudeSelect").value;
-			selectedOptions.time = document.getElementById("DialogUploadObservationsTimeSelect").value;
-			selectedOptions.sensorName = document.getElementById("DialogUploadObservationsSensorNameSelect").value;
-			selectedOptions.sensorType = document.getElementById("DialogUploadObservationsSensorTypeSelect").value;
+		function GetSelectedOptionsUploadObservations(){
+			var selectedOptions={};
+			selectedOptions.place=document.getElementById("DialogUploadObservationsPlaceSelect").value;
+			selectedOptions.longitude=document.getElementById("DialogUploadObservationsLongitudeSelect").value;
+			selectedOptions.latitude=document.getElementById("DialogUploadObservationsLatitudeSelect").value;
+			selectedOptions.time=document.getElementById("DialogUploadObservationsTimeSelect").value;
+			selectedOptions.sensorName=document.getElementById("DialogUploadObservationsSensorNameSelect").value;
+			selectedOptions.sensorType=document.getElementById("DialogUploadObservationsSensorTypeSelect").value;
 
 			/*selectedOptions.variable=document.getElementById("DialogSaveLayerVariableSelect").value;
 			if (descripUoM){
@@ -1152,8 +1176,8 @@
 			return selectedOptions;
 		}
 
-		function ShowScatterPlotDialog(parentNodeId, nodeId) {
-			var data = networkNodes.get(parentNodeId).STAdata;
+		function ShowScatterPlotDialog(parentNode) {
+			var data = parentNode.STAdata;
 
 			if (!data || !data.length) {
 				document.getElementById("DialogScatterPlotTitle").innerHTML = "No data to show.";
@@ -1161,64 +1185,64 @@
 			}
 			document.getElementById("DialogScatterPlotTitle").innerHTML = "Scatter Plot";
 
-			var dataAttributes = networkNodes.get(parentNodeId).STAdataAttributes ? networkNodes.get(parentNodeId).STAdataAttributes : getDataAttributes(data);
+			var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
 			PopulateSelectSaveLayerDialog("DialogScatterPlotAxisX", dataAttributes, "phenomenonTime");
 			PopulateSelectSaveLayerDialog("DialogScatterPlotAxisY", dataAttributes, "result");
 		}
 
-		function AdaptValueAxisY(value) {
-			return '' + value.toPrecision(5);
+		function AdaptValueAxisY(value) {	
+			return ''+value.toPrecision(5);
 		}
 
-		var ScatterPlotGraph2d = null;
-		function DrawScatterPlot(event) {
+		var ScatterPlotGraph2d=null;
+		function DrawScatterPlot(event){
 			event.preventDefault(); // We don't want to submit this form
-			var selectedOptions = {};
-			selectedOptions.AxisX = document.getElementById("DialogScatterPlotAxisXSelect").value;
-			selectedOptions.AxisY = document.getElementById("DialogScatterPlotAxisYSelect").value;
+			var selectedOptions={};
+			selectedOptions.AxisX=document.getElementById("DialogScatterPlotAxisXSelect").value;
+			selectedOptions.AxisY=document.getElementById("DialogScatterPlotAxisYSelect").value;
 
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length) {
-				if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
-					var items = [], minx, maxx, miny, maxy, record, node = networkNodes.get(nodeids[0]);
-					var data = node.STAdata;
+			var node=GetFirstParentNode(currentNode);
+			if (node) {
+				if (node.STAURL) {
+					var items=[], minx, maxx, miny, maxy, record;
+					var data=node.STAdata;
 					var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
 
 					if (ScatterPlotGraph2d)
 						ScatterPlotGraph2d.destroy();
 					for (var i = 0; i < data.length; i++) {
-						record = data[i];
-						if (i == 0) {
-							minx = maxx = record[selectedOptions.AxisX];
-							miny = maxy = record[selectedOptions.AxisY];
+						record=data[i];
+						if (i==0){
+							minx=maxx=record[selectedOptions.AxisX];
+							miny=maxy=record[selectedOptions.AxisY];
 						} else {
-							if (minx > record[selectedOptions.AxisX])
-								minx = record[selectedOptions.AxisX];
-							if (maxx < record[selectedOptions.AxisX])
-								maxx = record[selectedOptions.AxisX];
-							if (miny > record[selectedOptions.AxisY])
-								miny = record[selectedOptions.AxisY];
-							if (maxy < record[selectedOptions.AxisY])
-								maxy = record[selectedOptions.AxisY];
+							if (minx>record[selectedOptions.AxisX])
+								minx=record[selectedOptions.AxisX];
+							if (maxx<record[selectedOptions.AxisX])
+								maxx=record[selectedOptions.AxisX];
+							if (miny>record[selectedOptions.AxisY])
+								miny=record[selectedOptions.AxisY];
+							if (maxy<record[selectedOptions.AxisY])
+								maxy=record[selectedOptions.AxisY];
 						}
-						items.push({ x: record[selectedOptions.AxisX], y: record[selectedOptions.AxisY], group: 0 })
+						items.push({x: record[selectedOptions.AxisX], y: record[selectedOptions.AxisY], group: 0})
 					}
 					var dataset = new vis.DataSet(items);
 					var groups = new vis.DataSet();
-					groups.add({
-						id: 0,
-						content: "Results",
+    					groups.add({
+        					id: 0,
+        					content: "Results",
 						interpolation: {
 							parametrization: 'chordal'
 						}
 					});
 					var options = {
-						dataAxis: { left: { range: { min: miny, max: maxy }, title: { text: "Values" }, format: AdaptValueAxisY } },
-						drawPoints: { size: 1 }, /*
+						dataAxis: {left: {range: {min:miny, max:maxy}, title: {text: "Values"}, format: AdaptValueAxisY}},
+						drawPoints: {size: 1}, /*
 						legend: {left:{position:"bottom-left"}},*/
 						start: minx,
 						end: maxx
-					};
+					};		
 					ScatterPlotGraph2d = new vis.Graph2d(document.getElementById('DialogScatterPlotVisualization'), dataset, groups, options);
 				}
 			}
@@ -1231,18 +1255,21 @@
 
 
 		//From iNat2STA
-		function ExtractIdFromURL(url) {
+		function ExtractIdFromURL(url)
+		{
 			var id;
-			if (!url && url !== 0)
+			if (!url && url!==0)
 				return;
-			if (-1 != url.indexOf("('") && -1 != url.indexOf("')", url.indexOf("('") + 2)) {
-				id = url.substring(url.indexOf("('") + 2, url.indexOf("')", url.indexOf("('") + 2));
-				if (id == +id)  //Is it a numerical id?  /inspired in https://stackoverflow.com/questions/20169217/how-to-write-isnumber-in-javascript
+			if (-1!=url.indexOf("('") && -1!=url.indexOf("')", url.indexOf("('")+2))
+			{
+				id=url.substring(url.indexOf("('")+2,url.indexOf("')",url.indexOf("('")+2));
+				if (id==+id)  //Is it a numerical id?  /inspired in https://stackoverflow.com/questions/20169217/how-to-write-isnumber-in-javascript
 					return +id;  //returns a number
 				return id;  //returns a string
 			}
-			if (-1 != url.indexOf("(") && -1 != url.indexOf(")", url.indexOf("(") + 1)) {
-				id = url.substring(url.indexOf("(") + 1, url.indexOf(")", url.indexOf("(") + 1));
+			if (-1!=url.indexOf("(") && -1!=url.indexOf(")", url.indexOf("(")+1))
+			{
+				id=url.substring(url.indexOf("(")+1,url.indexOf(")",url.indexOf("(")+1));
 				return +id;  //returns a number
 			}
 			else
@@ -1250,42 +1277,46 @@
 		}
 
 		function AddKeysToFilter(url, obj, prefix) {
-			var objArray = Object.keys(obj);
-			for (var i = 0; i < objArray.length; i++) {
-				if (typeof obj[objArray[i]] === "object") {
-					if (objArray[i] == "feature")
-						url += (url == "" ? "" : " and ") + "st_equals(feature, geography'POINT (" + obj[objArray[i]].geometry.coordinates[0] + " " + obj[objArray[i]].geometry.coordinates[1] + ")')";
+			var objArray=Object.keys(obj);
+			for (var i=0; i<objArray.length; i++)
+			{
+				if (typeof obj[objArray[i]]==="object")
+				{
+					if (objArray[i]=="feature")
+						url+=(url=="" ? "" : " and ") + "st_equals(feature, geography'POINT (" + obj[objArray[i]].geometry.coordinates[0] + " " + obj[objArray[i]].geometry.coordinates[1] + ")')";
 					else
-						url = AddKeysToFilter(url, obj[objArray[i]], prefix ? prefix + "/" + objArray[i] : objArray[i]);
+						url=AddKeysToFilter(url, obj[objArray[i]], prefix ? prefix + "/" + objArray[i] : objArray[i]);						
 				}
-				else if (objArray[i] == "encodingType")
+				else if (objArray[i]=="encodingType")
 					continue;  //I'm ignoring this element in the queries.
-				else {
-					url += (url == "" ? "" : " and ") + (prefix ? prefix + "/" : "") + objArray[i] + " eq ";
-					if (typeof obj[objArray[i]] === "number" || objArray[i] == "resultTime" || objArray[i] == "phenomenonTime")
-						url += obj[objArray[i]];
+				else
+				{
+					url+=(url=="" ? "" : " and ") + (prefix ? prefix + "/" : "")+ objArray[i] + " eq ";
+					if (typeof obj[objArray[i]]==="number" || objArray[i]=="resultTime" || objArray[i]=="phenomenonTime")
+						url+=obj[objArray[i]];
 					else
-						url += "'" + obj[objArray[i]] + "'";
-				}
+						url+="'" + obj[objArray[i]] + "'";
+				}					
 			}
 			return url;
 		}
 
-		async function GetObjectId(url, objsName, obj) {
-			var response = await HTTPJSONData(url + "/" + objsName + "?$filter=" + encodeURIComponent(AddKeysToFilter("", obj)));
-			var data = (response && response.obj) ? response.obj : null;
+		async function GetObjectId(url, objsName, obj){
+			var response=await HTTPJSONData(url+"/"+objsName+ "?$filter=" + encodeURIComponent(AddKeysToFilter("", obj)));
+			var data=(response && response.obj) ? response.obj : null;
 			if (data && data.value && data.value.length)
 				return data.value[0]["@iot.id"];
-			else {
+			else
+			{
 				//Not found. I'm creating it.
-				var response = await HTTPJSONData(url + "/" + objsName, ['Location'], 'POST', obj);
+				var response=await HTTPJSONData(url+"/"+objsName, ['Location'], 'POST', obj);
 				return ExtractIdFromURL(response.responseHeaders['Location']);
 			}
 		}
 
 		async function GetPartyId(url, authId) {
 			return GetObjectId(url, "Parties", {
-				"authId": authId,
+				"authId": authId,  
 				//"displayName": authId,  //It might change soon to "description"
 				//"description": null,
 				role: "individual"
@@ -1312,14 +1343,14 @@
 			return GetObjectId(url, "Things", {
 				"name": "Platform that measures " + name.charAt(0).toLowerCase() + name.substring(1),
 				"description": "Platform that measures " + description.charAt(0).toLowerCase() + description.substring(1),
-				"Party": { "@iot.id": partyId }
+				"Party": { "@iot.id":  partyId }
 			});
 		}
 
-
+		
 		async function GetDatastreamId(url, partyId, obsPropId, sensorId, thingId, name, description, UoM, UoMSymbol, UoMDefinition) {
 			return GetObjectId(url, "Datastreams", {
-				"unitOfMeasurement": {
+				"unitOfMeasurement":{
 					"name": UoM,
 					"symbol": UoMSymbol,
 					"definition": UoMDefinition
@@ -1328,12 +1359,12 @@
 				"name": name,
 				"description": description,
 				"ObservedProperty": { "@iot.id": obsPropId },
-				"Sensor": { "@iot.id": sensorId },
-				"Thing": { "@iot.id": thingId },
-				"Party": { "@iot.id": partyId }
+				"Sensor": { "@iot.id":  sensorId },
+    				"Thing": { "@iot.id": thingId },
+				"Party": { "@iot.id":  partyId }
 			});
 		}
-
+		
 		async function GetFeatureOfInterestId(url, place, longitude, latitude) {
 			return GetObjectId(url, "FeaturesOfInterest", {
 				"name": place,
@@ -1342,20 +1373,20 @@
 				"feature": {
 					"type": "Feature",
 					"geometry": {
-						"type": "Point",
+        					"type": "Point",
 						"coordinates": [longitude, latitude]
 					}
 				}
 			});
 		}
-
+		
 		async function GetObservationId(url, datastreamId, FoIId, time, result) {
-			var d = new Date(time);
-			var t = d.toISOString();
+			var d=new Date(time); 
+			var t=d.toISOString();
 
 			return GetObjectId(url, "Observations", {
 				"result": result,
-				"resultTime": t,
+				"resultTime": t, 
 				"phenomenonTime": t,
 				"FeatureOfInterest": { "@iot.id": FoIId },
 				"Datastream": { "@iot.id": datastreamId }
@@ -1363,63 +1394,64 @@
 		}
 
 		function getUrlToId(url, objsName, id) {
-			return url + "/" + objsName + "(" + (typeof id === "number" ? "" : "'") + id + (typeof id === "number" ? "" : "'") + ")";
+			return url + "/" + objsName + "(" + (typeof id==="number" ? "" :"'") + id + (typeof id==="number" ? "" :"'") + ")";
 		}
 
 		async function UploadObservationsSTA(url, data, dataAttributes, selectedOptions) {
-			var record, obsPropId, sensorId, partyId, thingId, datastreamIds = [];
+			var record, obsPropId, sensorId, partyId, thingId, datastreamIds=[];
 			var dataAttributesArray = Object.keys(dataAttributes);
 
-			partyId = await GetPartyId(url, CriptoName);
-			if (!partyId && partyId !== 0)
+			partyId=await GetPartyId(url, CriptoName);
+			if (!partyId && partyId!==0)
 				return;
-			record = data[0];  //to be able to extract a constant value (the sensor name)
+			record=data[0];  //to be able to extract a constant value (the sensor name)
 			for (var i = 0; i < dataAttributesArray.length; i++) {
-				if (dataAttributesArray[i] == selectedOptions.place ||
-					dataAttributesArray[i] == selectedOptions.longitude ||
-					dataAttributesArray[i] == selectedOptions.latitude ||
-					dataAttributesArray[i] == selectedOptions.time ||
-					dataAttributesArray[i] == selectedOptions.sensorName ||
-					dataAttributesArray[i] == selectedOptions.sensorType)
+				if (dataAttributesArray[i]==selectedOptions.place || 
+					dataAttributesArray[i]==selectedOptions.longitude ||
+					dataAttributesArray[i]==selectedOptions.latitude ||
+					dataAttributesArray[i]==selectedOptions.time ||
+					dataAttributesArray[i]==selectedOptions.sensorName ||
+					dataAttributesArray[i]==selectedOptions.sensorType)
 					continue;
-				if (!dataAttributes[dataAttributesArray[i]].description ||
-					!dataAttributes[dataAttributesArray[i]].definition) {
-					datastreamIds[i] = null;
+				if (!dataAttributes[dataAttributesArray[i]].description || 
+					!dataAttributes[dataAttributesArray[i]].definition)
+				{
+					datastreamIds[i]=null;
 					continue;
 				}
-				obsPropId = await GetObservedPropertyId(url, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
-				if (!obsPropId && obsPropId !== 0)
+				obsPropId=await GetObservedPropertyId(url, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
+				if (!obsPropId && obsPropId!==0)
 					return;
-				sensorId = await GetSensorId(url, dataAttributesArray[i], (selectedOptions.sensorType && record[selectedOptions.sensorType]) ? record[selectedOptions.sensorType] : dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
-				if (!sensorId && sensorId !== 0)
-					return;
-
-				thingId = await GetThingId(url, partyId, dataAttributesArray[i], (selectedOptions.sensorName && record[selectedOptions.sensorName]) ? record[selectedOptions.sensorName] : dataAttributes[dataAttributesArray[i]].description);
-				if (!thingId && thingId !== 0)
+				sensorId=await GetSensorId(url, dataAttributesArray[i], (selectedOptions.sensorType && record[selectedOptions.sensorType]) ? record[selectedOptions.sensorType] : dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].definition);
+				if (!sensorId && sensorId!==0)
 					return;
 
-				datastreamIds[i] = await GetDatastreamId(url, partyId, obsPropId, sensorId, thingId, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].UoM, dataAttributes[dataAttributesArray[i]].UoMSymbol, dataAttributes[dataAttributesArray[i]].UoMDefinition);
-				if (!datastreamIds[i] && datastreamIds[i] !== 0)
+				thingId=await GetThingId(url, partyId, dataAttributesArray[i], (selectedOptions.sensorName && record[selectedOptions.sensorName]) ? record[selectedOptions.sensorName] : dataAttributes[dataAttributesArray[i]].description);
+				if (!thingId && thingId!==0)
+					return;
+
+				datastreamIds[i]=await GetDatastreamId(url, partyId, obsPropId, sensorId, thingId, dataAttributesArray[i], dataAttributes[dataAttributesArray[i]].description, dataAttributes[dataAttributesArray[i]].UoM, dataAttributes[dataAttributesArray[i]].UoMSymbol, dataAttributes[dataAttributesArray[i]].UoMDefinition);
+				if (!datastreamIds[i] && datastreamIds[i]!==0)
 					return;
 				showInfoMessage("Datastream <a href='" + getUrlToId(url, "Datastreams", datastreamIds[i]) + "' target='_blank'>" + datastreamIds[i] + "</a> available in STA");
 			}
 			for (var i = 0; i < data.length; i++) {
-				record = data[i];
-				var FoIId = await GetFeatureOfInterestId(url, record[selectedOptions.place], record[selectedOptions.longitude], record[selectedOptions.latitude]);
-				if (!FoIId && FoIId !== 0)
+				record=data[i];
+				var FoIId=await GetFeatureOfInterestId(url, record[selectedOptions.place], record[selectedOptions.longitude], record[selectedOptions.latitude]);
+				if (!FoIId && FoIId!==0)
 					return;
 				var keys = Object.keys(data[i]);
 				for (var k = 0; k < keys.length; k++) {
-					if (keys[k] == selectedOptions.place ||
-						keys[k] == selectedOptions.longitude ||
-						keys[k] == selectedOptions.latitude ||
-						keys[k] == selectedOptions.time)
+					if (keys[k]==selectedOptions.place || 
+						keys[k]==selectedOptions.longitude ||
+						keys[k]==selectedOptions.latitude ||
+						keys[k]==selectedOptions.time)
 						continue;
 					if (!datastreamIds[k])
 						continue;
-
-					var observationId = await GetObservationId(url, datastreamIds[k], FoIId, record[selectedOptions.time], record[keys[k]]);
-					if (!observationId && observationId !== 0)
+					
+					var observationId=await GetObservationId(url, datastreamIds[k], FoIId, record[selectedOptions.time], record[keys[k]]);
+					if (!observationId && observationId!==0)
 						return;
 					showInfoMessage("Observation <a href='" + getUrlToId(url, "Observations", observationId) + "' target='_blank'>" + observationId + "</a> available in STA under Datastream <a href='" + getUrlToId(url, "Datastreams", datastreamIds[k]) + "' target='_blank'>" + datastreamIds[k] + "</a>");
 				}
@@ -1430,22 +1462,20 @@
 		function UploadObservationsSTAURL(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogUploadObservations").close();
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
-				var url = document.getElementById("DialogSTAUploadURLInput").value;
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				var url=document.getElementById("DialogSTAUploadURLInput").value; 
 				if (url.charAt(url.length - 1) == '/')
 					url = url.slice(0, -1);  //remove last character
 				showInfoMessage('Upload observations in STA started...');
 				UploadObservationsSTA(url,
-					networkNodes.get(nodeids[0]).STAdata,
-					networkNodes.get(nodeids[0]).STAdataAttributes ? networkNodes.get(nodeids[0]).STAdataAttributes : getDataAttributes(networkNodes.get(nodeids[0]).STAdata),
+					parentNode.STAdata, 
+					parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(parentNode.STAdata), 
 					GetSelectedOptionsUploadObservations()).then(
-						function (value) { showInfoMessage('Upload observations in STA completed.'); },
-						function (error) {
-							showInfoMessage('Error uploading Observations to STA. <br>name: ' + error.name + ' message: ' + error.message + ' at: ' + error.at + ' text: ' + error.text);
-							console.log(error);
-						}
-					);
+					function(value) { showInfoMessage('Upload observations in STA completed.'); },
+  					function(error) { showInfoMessage('Error uploading Observations to STA. <br>name: ' + error.name + ' message: ' + error.message + ' at: ' + error.at + ' text: ' + error.text);
+							console.log(error) ;}
+				);
 			}
 		}
 
@@ -1453,20 +1483,20 @@
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectColumns").close();
 
-			var previousSTAURL = null;
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
-				var node = networkNodes.get(nodeids[0]);
-				if (node.STAURL) {
-					previousSTAURL = currentNode.STAURL;
-					currentNode.STAURL = node.STAURL;
+			var previousSTAURL=null;
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				if (parentNode.STAURL)
+				{
+					previousSTAURL=currentNode.STAURL;
+					currentNode.STAURL = parentNode.STAURL;
 				}
-				if (node.STAdata)
-					currentNode.STAdata = deapCopy(node.STAdata);
-				if (node.STAdataAttributes)
-					currentNode.STAdataAttributes = deapCopy(node.STAdataAttributes);
+				if (parentNode.STAdata)
+					currentNode.STAdata = deapCopy(parentNode.STAdata);
+				if (parentNode.STAdataAttributes)
+					currentNode.STAdataAttributes = deapCopy(parentNode.STAdataAttributes);
 			}
-			currentNode.STASelectedColumns = [];
+			currentNode.STASelectedColumns=[];
 			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
 			const dataAttributesArray = Object.keys(dataAttributes);
 			for (var a = 0; a < dataAttributesArray.length; a++) {
@@ -1475,44 +1505,46 @@
 			}
 			if (a < dataAttributesArray.length) //A checked attribute has been found ("for" breaks before ending).
 			{
-				if (node.STAURL) {
+				if (parentNode.STAURL)
+				{
 					var s;
-					currentNode.STAURL = AddKVPToURL(currentNode.STAURL, "$select=");
+					currentNode.STAURL=AddKVPToURL(currentNode.STAURL, "$select=");
 					for (var a = 0; a < dataAttributesArray.length; a++) {
 						if (document.getElementById("SelectColumn_" + a).checked) {
-							if (dataAttributesArray[a] == "@iot.selfLink")
+							if (dataAttributesArray[a]=="@iot.selfLink")
 								s = dataAttributesArray[a];
 							else if (dataAttributesArray[a].startsWith("@iot."))
 								s = dataAttributesArray[a].substring(5);
 							else
 								s = dataAttributesArray[a].replace("@iot.", "/");  //Changes Datastreams@iot.navigationLink to Datastreams/navigationLink
-
+							
 							currentNode.STAURL += s + ",";
-							currentNode.STASelectedColumns[a] = true;
+							currentNode.STASelectedColumns[a]=true;
 						}
 						else
-							currentNode.STASelectedColumns[a] = false;
+							currentNode.STASelectedColumns[a]=false;
 					}
 					currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.
-					currentNode.STAExpectedLength = node.STAExpectedLength;
+					currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 					networkNodes.update(currentNode);
 					showInfoMessage("Selecting STA columns...");
 					UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 					LoadJSONNodeSTAData(currentNode);
 				}
-				else {
+				else
+				{
 					//If there is no STA to query, the selection is done manually (table mode).
 					//currentNode.STAdata = deapCopy(currentNode.STAdata);
 					for (var a = 0; a < dataAttributesArray.length; a++) {
 						if (document.getElementById("SelectColumn_" + a).checked)
-							currentNode.STASelectedColumns[a] = true;
+							currentNode.STASelectedColumns[a]=true;
 						else
-							currentNode.STASelectedColumns[a] = false;
+							currentNode.STASelectedColumns[a]=false;
 					}
 
-					var data = currentNode.STAdata, record;
+					var data=currentNode.STAdata, record;
 					for (var i = 0; i < data.length; i++) {
-						record = data[i];
+						record=data[i];
 						for (var a = 0; a < dataAttributesArray.length; a++) {
 							if (!currentNode.STASelectedColumns[a]) {
 								delete record[dataAttributesArray[a]];
@@ -1524,12 +1556,12 @@
 							delete dataAttributes[dataAttributesArray[a]];
 					}
 					networkNodes.update(currentNode);
-				}
+				}				
 			}
 			else   //If no selected collumn has been found, no filter is done and all collumns are selected
 			{
 				for (var a = 0; a < dataAttributesArray.length; a++) {
-					currentNode.STASelectedColumns[a] = true;
+					currentNode.STASelectedColumns[a]=true;
 				}
 			}
 		}
@@ -1537,17 +1569,18 @@
 		function GetSelectExpands(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectExpands").close();
-
+			
 			var previousSTAURL = currentNode.STAURL;
 			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
 			if (!currentNode.STASelectedExpands)
-				currentNode.STASelectedExpands = { STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: deapCopy(dataAttributes), selected: [] };
+				currentNode.STASelectedExpands={STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: deapCopy(dataAttributes), selected: []};
 			else
 				currentNode.STAURL = currentNode.STASelectedExpands.STAURLUnexpanded;
-
-			if (document.getElementById("DialogSelectExpandsHTML").style.display != "none") {
-				var dataAttr = currentNode.STASelectedExpands.dataAttributesUnexpanded;
-				var dataAttrArray = Object.keys(dataAttr)
+			
+			if (document.getElementById("DialogSelectExpandsHTML").style.display != "none")
+			{
+				var dataAttr=currentNode.STASelectedExpands.dataAttributesUnexpanded;
+				var dataAttrArray=Object.keys(dataAttr)
 				for (var a = 0; a < dataAttrArray.length; a++) {
 					if (document.getElementById("SelectExpand_" + a) && document.getElementById("SelectExpand_" + a).checked)
 						break;
@@ -1557,20 +1590,23 @@
 					var s;
 					currentNode.STAURL = AddKVPToURL(currentNode.STAURL, "$expand=");
 					for (var a = 0; a < dataAttrArray.length; a++) {
-						if (document.getElementById("SelectExpand_" + a) &&
-							document.getElementById("SelectExpand_" + a).checked &&
-							dataAttrArray[a].endsWith("@iot.navigationLink")) {
-							s = dataAttrArray[a].substring(0, dataAttrArray[a].length - "@iot.navigationLink".length);
+						if (document.getElementById("SelectExpand_" + a) && 
+							document.getElementById("SelectExpand_" + a).checked && 
+							dataAttrArray[a].endsWith("@iot.navigationLink")){
+							s = dataAttrArray[a].substring(0, dataAttrArray[a].length-"@iot.navigationLink".length);
 							currentNode.STAURL += s + ",";
-							currentNode.STASelectedExpands.selected[a] = true;
+							currentNode.STASelectedExpands.selected[a]=true;
 						}
 						else
-							currentNode.STASelectedExpands.selected[a] = false;
+							currentNode.STASelectedExpands.selected[a]=false;
 					}
 					currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.
 				}
-				/*else   //If no selected collumn has been found, no expand is needed and the previous request is fine
-					;*/
+				else   //If no selected collumn has been found, no expand is needed and the previous request is fine
+				{					
+					for (var a = 0; a < dataAttrArray.length; a++)
+						currentNode.STASelectedExpands.selected[a]=false;
+				}
 			}
 			if (!isNaN(parseInt(document.getElementById("SelectExpandsNumberOfRecords").value)))
 				currentNode.STAExpectedLength = parseInt(document.getElementById("SelectExpandsNumberOfRecords").value);
@@ -1583,14 +1619,27 @@
 		function GetSelectSortBy(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectSortBy").close();
+			
+			var previousSTAURL= currentNode.STAURL;
 
-			var previousSTAURL = currentNode.STAURL;
-			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
-			var dataAttributesArray = Object.keys(dataAttributes)
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				if (parentNode.STAURL)
+					currentNode.STAURL = parentNode.STAURL;
+				if (parentNode.STAdata)
+					currentNode.STAdata = parentNode.STAdata;
+				var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
+				var dataAttributesArray=Object.keys(dataAttributes)
+			}
+			else
+				return;
 
-			if (document.getElementById("DialogSelectSortByHTML").style.display != "none") {
-				for (var a = 0; a < dataAttributesArray.length; a++) {
-					if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0) != '@') {
+			if (document.getElementById("DialogSelectSortByHTML").style.display != "none")
+			{
+				for (var a = 0; a < dataAttributesArray.length; a++)
+				{
+					if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0)!='@')
+					{
 						if (document.getElementById("SelectSortByEntity_" + a) && document.getElementById("SelectSortByEntity_" + a).checked)
 							break;
 					}
@@ -1599,13 +1648,13 @@
 				if (a < dataAttributesArray.length) //A checked attribute has been found ("for" breaks before ending).
 				{
 					var s;
-					currentNode.STAURL = AddKVPToURL(currentNode.STAURL, "$orderby=" + dataAttributesArray[a] + " " + ((document.getElementById("SelectSortByDesc") && document.getElementById("SelectSortByDesc").checked) ? "desc" : "asc"));
+					currentNode.STAURL = AddKVPToURL(currentNode.STAURL, "$orderby="+dataAttributesArray[a]+" "+((document.getElementById("SelectSortByDesc") && document.getElementById("SelectSortByDesc").checked) ? "desc" : "asc"));
 				}
 			}
 			if (!isNaN(parseInt(document.getElementById("SelectExpandsNumberOfRecords").value)))
 				currentNode.STAExpectedLength = parseInt(document.getElementById("SelectSortByNumberOfRecords").value);
 			networkNodes.update(currentNode);
-			showInfoMessage("Sorting STA by " + dataAttributesArray[a] + " ...");
+			showInfoMessage("Sorting STA by "+ dataAttributesArray[a] + " ...");
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
 		}
@@ -1619,15 +1668,14 @@
 		function GetSelectRows(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectRows").close();
-
-			var previousSTAURL = currentNode.STAURL;
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
-				var node = networkNodes.get(nodeids[0]);
-				if (node.STAURL)
-					currentNode.STAURL = node.STAURL;
-				if (node.STAdata)
-					currentNode.STAdata = node.STAdata;
+			
+			var previousSTAURL=currentNode.STAURL;
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				if (parentNode.STAURL)
+					currentNode.STAURL = parentNode.STAURL;
+				if (parentNode.STAdata)
+					currentNode.STAdata = parentNode.STAdata;
 			}
 			else
 				return;
@@ -1641,17 +1689,15 @@
 				if (i < elems.length) {
 					const s = elems[i].id.substring("SelectRow_".length);
 					const n = Number(s);
-					if (Number.isInteger(n))
-						currentNode.STAURL += "(" + n + ")";
-					else
-						currentNode.STAURL += "('" + s + "')";
-					currentNode.STAURLIdSelected = s;
+
+					currentNode.STAURL = AddKVPToURL(getURLWithoutQueryParams(currentNode.STAURL) + (Number.isInteger(n) ? "(" + n + ")" : "('" + s + "')"), getURLQueryParams(currentNode.STAURL));
+					currentNode.STAURLIdSelected=s;
 				}
 			}
 			else {
 				alert("TBD");
 			}
-			currentNode.STAExpectedLength = node.STAExpectedLength;
+			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
 			showInfoMessage("Selecting STA rows...");
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
@@ -1680,15 +1726,24 @@
 			for (var i = 0; i < nodeIds.length; i++) {
 				var node = networkNodes.get(nodeIds[i])
 				if (node.STAURL && currentSTAURLroot && previousSTAURLroot) {
-					if (node.STAURL.substring(0, previousSTAURLroot.length) == previousSTAURLroot) {
-						node.STAURL = currentSTAURLroot + node.STAURL.substring(previousSTAURLroot.length);
+					var previousSTAURLrootWithoutQuery=getURLWithoutQueryParams(previousSTAURLroot);
+					if (node.STAURL.substring(0, previousSTAURLrootWithoutQuery.length)==previousSTAURLrootWithoutQuery)
+					{
+						var previousQueryParams=getURLQueryParams(previousSTAURLroot)
+						var currentQueryParams=getURLQueryParams(currentSTAURLroot)
+						var queryParam=getURLQueryParams(node.STAURL);
+						if (!previousQueryParams && !currentQueryParams)
+							;
+						else if (!previousQueryParams)
+							queryParam=queryParam ? queryParam + '&' + currentQueryParams : currentQueryParams;
+						else 
+							queryParam=queryParam.replace(previousQueryParams, currentQueryParams);
+						
+						getURLQueryParams(node.STAURL).replace(previousQueryParams, getURLQueryParams(currentSTAURLroot))
+						node.STAURL=AddKVPToURL(getURLWithoutQueryParams(currentSTAURLroot)+getURLWithoutQueryParams(node.STAURL).substring(previousSTAURLrootWithoutQuery.length), 
+									queryParam);
 						networkNodes.update(node);
 					}
-					/*if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node)!=-1 || TableOperations[node.image.substring(0, node.image.length-4)].callSTALoad) {
-						networkNodes.update(node);
-						showInfoMessage("Updating STA child node...");
-						LoadJSONNodeSTAData(node);
-					}*/
 				}
 				UpdateChildenSTAURL(node, currentSTAURLroot, previousSTAURLroot);
 			}
@@ -1700,32 +1755,37 @@
 				var node = networkNodes.get(nodeIds[i])
 				if (node.image == "SeparateColumns.png")
 					SeparateColumns(node, parentNode);
-				else if (node.image == "SelectColumnsTable.png") {
+				else if (node.image == "SelectColumnsTable.png")
+				{
 					//pensar com es podria fer.
 					showInfoMessage("Automatic update of SelectColumns not implemented for table nodes.");
 				}
-				else if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node) != -1 || TableOperations[removeExtension(node.image)].callSTALoad) {
-					showInfoMessage("Updating " + removeExtension(node.image) + " ...");
+				else if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node)!=-1 || TableOperations[removeExtension(node.image)].callSTALoad)
+				{
+					showInfoMessage("Updating "+ removeExtension(node.image) + " ...");
 					await LoadJSONNodeSTAData(node);
 				}
 			}
 		}
 
-		function getCSVWTypeFromAttributeType(t) {
-			if (t == "array" || t == "null" || t == "object" || t == "undefined")
+		function getCSVWTypeFromAttributeType(t)
+		{
+			if (t=="array" || t=="null" || t=="object" || t=="undefined")
 				return "json";
 			return t;
 		}
 
-		function getAttributeTypeFromCSVWType(t) {
-			if (t == "json")
+		function getAttributeTypeFromCSVWType(t)
+		{
+			if (t=="json")
 				return "object";
 			return t;
 		}
 
 
-		function getJSONSchemaTypeFromAttributeType(t) {
-			if (t == "anyURI")
+		function getJSONSchemaTypeFromAttributeType(t)
+		{
+			if (t=="anyURI")
 				return "string";
 			return t;
 		}
@@ -1737,7 +1797,7 @@
 				return "boolean";
 			if (Array.isArray(a))
 				return "array";
-			if (a === null)
+			if (a===null)
 				return "null";
 			if (typeof a === "object")
 				return "object";
@@ -1747,7 +1807,7 @@
 				return "integer";
 			if (parseFloat(a))
 				return "number"
-			else
+			else 
 				return "string";
 		}
 
@@ -1757,55 +1817,59 @@
 			for (var i = 0; i < data.length; i++) {
 				var keys = Object.keys(data[i]);
 				for (var k = 0; k < keys.length; k++) {
-					if (dataAttributes[keys[k]]) {
-						dataAttribute = dataAttributes[keys[k]];
-						if (!isAttributeAnyURI(keys[k])) {
-							type = getJSONType(data[i][keys[k]]);
-							if (dataAttribute.type == "null" || dataAttribute.type == "undefined")
-								dataAttribute.type = type;
-							if (type != "null" && type != "undefined") {
-								if ((dataAttribute.type == "boolean" && type != "boolean") ||
-									((dataAttribute.type == "integer" || dataAttribute.type == "number") && (type == "object" || type == "array" || type == "string")) ||
-									(dataAttribute.type == "string" && (type == "object" || type == "array")) ||
-									(dataAttribute.type == "array" && type == "object"))
-									dataAttribute.type = type;
-								else if (dataAttribute.type == "integer" && type == "number")
-									dataAttribute.type = "number";
+					if (dataAttributes[keys[k]])
+					{
+						dataAttribute=dataAttributes[keys[k]];
+						if (!isAttributeAnyURI(keys[k]))
+						{
+							type=getJSONType(data[i][keys[k]]);
+							if (dataAttribute.type=="null" || dataAttribute.type=="undefined")
+								dataAttribute.type=type;
+							if (type!="null" && type!="undefined")
+							{
+								if ( (dataAttribute.type=="boolean" && type!="boolean") ||
+								    ((dataAttribute.type=="integer" || dataAttribute.type=="number") && (type=="object" || type=="array" || type=="string")) ||
+								    (dataAttribute.type=="string" && (type=="object" || type=="array")) ||
+								    (dataAttribute.type=="array" && type=="object") )
+									dataAttribute.type=type;
+								else if (dataAttribute.type=="integer" && type=="number")
+									dataAttribute.type="number";
 							}
 						}
 					}
 					else
-						dataAttributes[keys[k]] = {
-							type: isAttributeAnyURI(keys[k]) ? "anyURI" : getJSONType(data[i][keys[k]])
+						dataAttributes[keys[k]]={
+								type: isAttributeAnyURI(keys[k]) ? "anyURI" : getJSONType(data[i][keys[k]])
 						};
 				}
 			}
 			return dataAttributes;
 		}
-
-		function isAttributeAnyURI(s) {
+		
+		function isAttributeAnyURI(s){
 			return (s == "url" || s == "definition" || s.endsWith("@iot.selfLink") || s.endsWith("@iot.navigationLink"));
 		}
 
 		function GetHTMLTable(data, dataAttributesInput, rowNumbers, selectedEntityId) {
-			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
-			var cdns = [], needhref = [], record, cell, dataAttribute;
+			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data); 
+			var cdns=[], needhref=[], record, cell, dataAttribute;
 			var dataAttributesArray = Object.keys(dataAttributes);
 
 			cdns.push("<table class='tablesmall'><tr>");
 			if (rowNumbers)
 				cdns.push("<th></th>");
-			if (selectedEntityId !== null && typeof selectedEntityId !== "undefined")
+			if (selectedEntityId!==null && typeof selectedEntityId!=="undefined")
 				cdns.push("<th></th>");
 			for (var a = 0; a < dataAttributesArray.length; a++) {
 				cdns.push("<th>");
-				dataAttribute = dataAttributes[dataAttributesArray[a]];
+				dataAttribute=dataAttributes[dataAttributesArray[a]];
 				if (dataAttribute.definition)
 					cdns.push("<a href='", dataAttribute.definition, "' target='_blank'>");
 				cdns.push(dataAttributesArray[a]);
 				if (dataAttribute.definition)
 					cdns.push("</a>");
-				if (dataAttribute.UoM || dataAttribute.UoMSymbol) {
+				if (dataAttribute.UoM || dataAttribute.UoMSymbol)
+				{
 					cdns.push(" (");
 					if (dataAttribute.UoMDefinition)
 						cdns.push("<a href='", dataAttribute.UoMDefinition, "' target='_blank'>");
@@ -1815,22 +1879,23 @@
 					cdns.push(")");
 				}
 				cdns.push("</th>");
-				needhref[a] = isAttributeAnyURI(dataAttributesArray[a]);
+				needhref[a]=isAttributeAnyURI(dataAttributesArray[a]);
 			}
 
 			cdns.push("</tr>");
 			for (var i = 0; i < data.length; i++) {
-				record = data[i];
+				record=data[i];
 				cdns.push("<tr>");
 				if (rowNumbers)
 					cdns.push("<td align='right'>", i + 1, "</td>");
-				if (selectedEntityId !== null && typeof selectedEntityId !== "undefined") {
-					var s = record["@iot.id"] ? record["@iot.id"] : i;
+				if (selectedEntityId!==null && typeof selectedEntityId!=="undefined")
+				{
+					var s=record["@iot.id"] ? record["@iot.id"] : i;
 					cdns.push("<td><input type='radio' name='SelectRowRadio' id='SelectRow_", s, "' ", s == selectedEntityId ? "checked='checked'" : "", "/></td>");
 				}
 				for (var a = 0; a < dataAttributesArray.length; a++) {
-					cell = record[dataAttributesArray[a]];
-					cdns.push((dataAttributes[dataAttributesArray[a]].type == "number" || dataAttributes[dataAttributesArray[a]].type == "integer") ? "<td align='right'>" : "<td>");
+					cell=record[dataAttributesArray[a]];
+					cdns.push((dataAttributes[dataAttributesArray[a]].type=="number" || dataAttributes[dataAttributesArray[a]].type=="integer") ? "<td align='right'>" :  "<td>");
 					if (typeof cell !== "undefined") {
 						if (needhref[a] && cell.length)
 							cdns.push("<a href='", cell, "' target='_blank'>", cell, "</a>");
@@ -1861,17 +1926,18 @@
 		}
 
 		function StringifyObjectElements(data, dataAttributesInput) {
-			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
-			var jsonTable = [];
+			var dataAttributes = dataAttributesInput? dataAttributesInput : getDataAttributes(data);
+			var jsonTable=[];
 			var dataAttributesArray = Object.keys(dataAttributes);
 
 			for (var i = 0; i < data.length; i++) {
-				jsonTable[i] = {};
-				for (var a = 0; a < dataAttributesArray.length; a++) {
+				jsonTable[i]={};
+				for (var a = 0; a < dataAttributesArray.length; a++)
+					{
 					if (typeof data[i][dataAttributesArray[a]] === "object")  //"arrays" are also objects.
-						jsonTable[i][dataAttributesArray[a]] = JSON.stringify(data[i][dataAttributesArray[a]]);
+						jsonTable[i][dataAttributesArray[a]]=JSON.stringify(data[i][dataAttributesArray[a]]);
 					else
-						jsonTable[i][dataAttributesArray[a]] = data[i][dataAttributesArray[a]];
+						jsonTable[i][dataAttributesArray[a]]=data[i][dataAttributesArray[a]];
 				}
 			}
 			return jsonTable;
@@ -1879,41 +1945,41 @@
 
 
 		function GetGeoJSON(data, selectedOptions) {
-			var dataSorted = deapCopy(data), geojson = { "type": "FeatureCollection", "features": [] };
+			var dataSorted=deapCopy(data), geojson={"type": "FeatureCollection", "features": []};
 
 			//Sorted by place, variable and date (older first).
 			dataSorted.sort(function (a, b) {
-				if (a[selectedOptions.place] < b[selectedOptions.place])
+				if (a[selectedOptions.place]<b[selectedOptions.place])
 					return -1;
-				if (a[selectedOptions.place] > b[selectedOptions.place])
+				if (a[selectedOptions.place]>b[selectedOptions.place])
 					return 1;
-				if (a[selectedOptions.longitude] - b[selectedOptions.longitude] < -0.0000001)
+				if (a[selectedOptions.longitude]-b[selectedOptions.longitude]<-0.0000001)
 					return -1;
-				if (a[selectedOptions.longitude] - b[selectedOptions.longitude] > 0.0000001)
+				if (a[selectedOptions.longitude]-b[selectedOptions.longitude]>0.0000001)
 					return 1;
-				if (a[selectedOptions.latitude] - b[selectedOptions.latitude] < -0.0000001)
+				if (a[selectedOptions.latitude]-b[selectedOptions.latitude]<-0.0000001)
 					return -1;
-				if (a[selectedOptions.latitude] - b[selectedOptions.latitude] > 0.0000001)
+				if (a[selectedOptions.latitude]-b[selectedOptions.latitude]>0.0000001)
 					return 1;
-				if (a[selectedOptions.variable] < b[selectedOptions.variable])
+				if (a[selectedOptions.variable]<b[selectedOptions.variable])
 					return -1;
-				if (a[selectedOptions.variable] > b[selectedOptions.variable])
+				if (a[selectedOptions.variable]>b[selectedOptions.variable])
 					return 1;
-				if (a[selectedOptions.time] < b[selectedOptions.time])
+				if (a[selectedOptions.time]<b[selectedOptions.time])
 					return -1;
-				if (a[selectedOptions.time] > b[selectedOptions.time])
+				if (a[selectedOptions.time]>b[selectedOptions.time])
 					return 1;
-				return 0;
-			});
+				return 0;});
 			var a, b;
-			for (var i = 0, f = -1; i < dataSorted.length; i++) {
-				a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
-				if (i == 0 || a[selectedOptions.place] != b[selectedOptions.place] ||
-					a[selectedOptions.longitude] > b[selectedOptions.longitude] + 0.0000001 ||
-					a[selectedOptions.latitude] < b[selectedOptions.latitude] - 0.0000001 ||
-					a[selectedOptions.latitude] > b[selectedOptions.latitude] + 0.0000001) {
+			for (var i = 0, f=-1; i < dataSorted.length; i++) {
+				a=dataSorted[i], b=dataSorted[i==0 ? 0 : i-1];
+				if (i==0 || a[selectedOptions.place]!=b[selectedOptions.place] ||
+					a[selectedOptions.longitude]>b[selectedOptions.longitude]+0.0000001 ||
+					a[selectedOptions.latitude]<b[selectedOptions.latitude]-0.0000001 ||
+					a[selectedOptions.latitude]>b[selectedOptions.latitude]+0.0000001)
+				{
 					f++;
-					geojson.features[f] = {
+					geojson.features[f]={
 						"type": "Feature",
 						"geometry": {
 							"type": "Point",
@@ -1927,44 +1993,44 @@
 						}
 					};
 				}
-				geojson.features[f].properties[a[selectedOptions.variable] + "_" + a[selectedOptions.time]] = a[selectedOptions.value];
+				geojson.features[f].properties[a[selectedOptions.variable]+"_"+a[selectedOptions.time]]=a[selectedOptions.value];
 			}
 			return geojson;
 		}
 
 		function GetGeoJSONSchema(data, selectedOptions) {
 			return {
-				"$id": "https://meaning.ad4gd.eu/meaning.schema.json",
-				"$schema": "https://meaning.ad4gd.eu/json-meta/meaning",
-				"type": "object",
-				"properties": {
-					"features": {
-						"type": "array",
-						"items": {
-							"type": "object",
-							"properties": {
-								"geometry": {
-									"type": "object",
-									"properties": {
-										"type": { "type": "string" },
-										"coordinates": { "type": "array" }
-									}
-								},
-								"properties": {
-									"type": "object",
-									"properties": GetGeoJSONPropertiesSchema(data, selectedOptions)
-								}
-							}
-						}
-					}
-				}
-			};
+  "$id": "https://meaning.ad4gd.eu/meaning.schema.json",
+  "$schema": "https://meaning.ad4gd.eu/json-meta/meaning",
+  "type": "object",
+  "properties": {
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "geometry": {
+            "type": "object",
+            "properties": {
+              "type": {"type": "string"},
+              "coordinates": {"type": "array"}
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": GetGeoJSONPropertiesSchema(data, selectedOptions)
+          }
+        }
+      }
+    }
+  }
+};
 		}
 
 		function GetGeoJSONPropertiesSchema(data, selectedOptions) {
-			var dataSorted = deapCopy(data);
+			var dataSorted=deapCopy(data); 
 
-			var attributes = {
+			var attributes={
 				"Place": {
 					"description": "Place name",
 					"mostrar": "si"
@@ -1973,20 +2039,20 @@
 
 			//Sorted by variable.
 			dataSorted.sort(function (a, b) {
-				if (a[selectedOptions.variable] < b[selectedOptions.variable])
+				if (a[selectedOptions.variable]<b[selectedOptions.variable])
 					return -1;
-				if (a[selectedOptions.variable] > b[selectedOptions.variable])
+				if (a[selectedOptions.variable]>b[selectedOptions.variable])
 					return 1;
-				return 0;
-			});
+				return 0;});
 			var a, b, UoMSymbol;
 			for (var i = 0; i < dataSorted.length; i++) {
-				a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
-				if (i == 0 || a[selectedOptions.variable] != b[selectedOptions.variable]) {
-					UoMSymbol = a[selectedOptions.variableUoMSymbol];
-					if (UoMSymbol == "ug/m3")
-						UoMSymbol == "µg/m³";
-					attributes[a[selectedOptions.variable] + "_{time?f=ISO}"] = {
+				a=dataSorted[i], b=dataSorted[i==0 ? 0 : i-1];
+				if (i==0 || a[selectedOptions.variable]!=b[selectedOptions.variable])
+				{
+					UoMSymbol=a[selectedOptions.variableUoMSymbol];
+					if (UoMSymbol=="ug/m3")
+						UoMSymbol=="µg/m³";
+					attributes[a[selectedOptions.variable] + "_{time?f=ISO}"]={
 						"description": a[selectedOptions.variableDescription],
 						"definition": a[selectedOptions.variableDefinition],
 						"UoM": a[selectedOptions.variableUoM],
@@ -2004,189 +2070,189 @@
 
 		function GetGeoJSONMetaschema() {
 			return {
-				"title": "GeoJSON properties meaning schema",
-				"$schema": "http://json-schema.org/draft/2019-09/schema#",
-				"$id": "https://meaning.ad4gd.eu/json-meta/meaning",
-				"$vocabulary": {
-					"https://json-schema.org/draft/2019-09/vocab/core": true,
-					"https://json-schema.org/draft/2019-09/vocab/applicator": true,
-					"https://json-schema.org/draft/2019-09/vocab/validation": true,
-					"https://json-schema.org/draft/2019-09/vocab/meta-data": true,
-					"https://json-schema.org/draft/2019-09/vocab/format": false,
-					"https://json-schema.org/draft/2019-09/vocab/content": true,
-					"https://meaning.ad4gd.eu/json-meta/meaning": false
+	"title": "GeoJSON properties meaning schema",
+	"$schema": "http://json-schema.org/draft/2019-09/schema#",
+	"$id": "https://meaning.ad4gd.eu/json-meta/meaning",
+	"$vocabulary": {
+		"https://json-schema.org/draft/2019-09/vocab/core": true,
+		"https://json-schema.org/draft/2019-09/vocab/applicator": true,
+		"https://json-schema.org/draft/2019-09/vocab/validation": true,
+		"https://json-schema.org/draft/2019-09/vocab/meta-data": true,
+		"https://json-schema.org/draft/2019-09/vocab/format": false,
+		"https://json-schema.org/draft/2019-09/vocab/content": true,
+		"https://meaning.ad4gd.eu/json-meta/meaning": false
+	},
+	"$recursiveAnchor": true,
+	"allOf": [
+		{
+			"$ref": "https://json-schema.org/draft/2019-09/schema"
+		},
+		{
+			"$ref": "#/definitions/AttributeDescription"
+		}
+	],
+	"definitions": {
+		"AttributeDescription": {
+			"title": "GeoJSON meaning vocabulary meta-schema",
+			"type": "object",
+			"$comment": "The name of the property is the name of the attribute. If the server is SOS there are 2 special names can be used __om_time__, __om_sensor__ and the rest match the field names of the table containing the data. The properties that define each attribute can be de ones defined below or properties from JSON schema itself if indicated in this comment. For the moment, only 'description' is implemented. Others from 'string' (https://json-schema.org/understanding-json-schema/reference/string.html) or number can be useful (https://json-schema.org/understanding-json-schema/reference/numeric.html).",
+			"properties": {
+				"originalName": {
+					"description": "Name of the original attribute. Optional. If the attributes are taken from a CSV and are transformed into one or more attributes (because they are associated with time). In this case the nomOri maybe different from the property name.",
+					"type": [ "string", "null" ]
 				},
-				"$recursiveAnchor": true,
-				"allOf": [
-					{
-						"$ref": "https://json-schema.org/draft/2019-09/schema"
-					},
-					{
-						"$ref": "#/definitions/AttributeDescription"
-					}
-				],
-				"definitions": {
-					"AttributeDescription": {
-						"title": "GeoJSON meaning vocabulary meta-schema",
-						"type": "object",
-						"$comment": "The name of the property is the name of the attribute. If the server is SOS there are 2 special names can be used __om_time__, __om_sensor__ and the rest match the field names of the table containing the data. The properties that define each attribute can be de ones defined below or properties from JSON schema itself if indicated in this comment. For the moment, only 'description' is implemented. Others from 'string' (https://json-schema.org/understanding-json-schema/reference/string.html) or number can be useful (https://json-schema.org/understanding-json-schema/reference/numeric.html).",
-						"properties": {
-							"originalName": {
-								"description": "Name of the original attribute. Optional. If the attributes are taken from a CSV and are transformed into one or more attributes (because they are associated with time). In this case the nomOri maybe different from the property name.",
-								"type": ["string", "null"]
-							},
-							"symbol": {
-								"description": "Symbol of the attribute. Note that it is not the units of measurement symbol but the attribute itself. For example, the letter 'σ' (sigma) usually represents the standard deviation. It will be used in the compact display (coordinates box) if defined. Created for statistical attributes, but can be used elsewhere.",
-								"type": ["string", "null"]
-							},
-							"descripcio": {
-								"description": "Description of the attribute in multiple languages. If you do not need multilanguage support, please use 'description'",
-								"$ref": "#/definitions/StringOCadenaLang"
-							},
-							"definition": {
-								"description": "A URI that defines the observedProperty or the variable. You may find the right definitions in https://qudt.org/2.1/vocab/quantitykind, http://vocabs.lter-europe.net/EnvThes or https://www.eea.europa.eu/help/glossary/eea-glossary.",
-								"type": ["string", "null"],
-								"format": "uri"
-							},
-							"UoM": {
-								"description": "Units of measurement of the attribute. Formerly refered as 'unitats'",
-								"type": ["string", "null"]
-							},
-							"UoMSymbol": {
-								"description": "Symbol of the units of measurement of the atributte.",
-								"type": ["string", "null"]
-							},
-							"UoMDefinition": {
-								"description": "A URI that defines the units of measurement of the observedProperty or variable. You may find the right definitions in https://qudt.org/2.1/vocab/unit",
-								"type": ["string", "null"],
-								"format": "uri"
-							},
-							"calcul": {
-								"description": "Mathematical formula to transform the values of one or more properties of another vector or raster 'capa'. To point to a raster 'capa', see the explanation in 'component'; to point to a vector 'capa', we should use {'i_capa': 2, 'prop': 'flower_name'} to refer to 'capa' 2 which is of 'model' ='vector'. Can only be used if there are capa.objectes on the given 'capa'. If you do not specify i_capa, this 'capa' is assumed. For each 'objecte' {'i_capa': 2, 'prop': 'flower_name'} (or the equivalent for raster 'capa' for each pixel) is transformed into the value and, once done, the formula is evaluated as JavaScript syntax.",
-								"type": "string"
-							},
-							"FormulaConsulta": {
-								"description": "Mathematical formula to transform the values of objectes[].feature[].properties of this 'capa' (or into values[]). To know about v[0] etc see the explanation under 'component'. Use p['name'] to indicate the name of the property inside properties. You can also specify nomPropId to refer to the feature identifier (e.g. the feature id, in case of GeoJSON). Can only be used if there is capa.valors or capa.objectes. If you want to choose a value from another 'capa' use 'calcul' instead. Internally, 'FormulaConsulta' is transformed into 'calcul'.",
-								"type": "string"
-							},
-							"separador": {
-								"description": "Separator of the next block of attributes",
-								"$ref": "#/definitions/StringOCadenaLang"
-							},
-							"esLink": {
-								"description": "Is the attribute value a link?",
-								"type": "boolean"
-							},
-							"descLink": {
-								"description": "Description of the link",
-								"$ref": "#/definitions/StringOCadenaLang"
-							},
-							"esImatge": {
-								"description": "Is the attribute value a image URI?. This forces the attribute to appear as an embedded image in the query box",
-								"type": "boolean"
-							},
-							"FormatVideo": {
-								"description": "If the attribute is a link to a video, this is the video format. This forces the attribute to appear as an embedded video with a play button in the query box. It should be a MIME type. Example: video/mp4. optional",
-								"type": "string",
-								"format": "uri"
-							},
-							"mostrar": {
-								"description": "Should it be shown in the query box? Can be 'si' (always), 'no' (never), 'si_ple' (it will only be displayed if the attribute has content).",
-								"enum": ["si", "no", "si_ple"]
-							},
-							"mida": {
-								"description": "Implementation pending (maxLength should be used instead of 'mida'). Attribute size. Optional. Maximum width the field type can have. In the case of numerical types it is the maximum precision. In the case of strings it is the maximum length in characters. In the case of date-time it is the maximum length in characters of the representation of the date-time as text.",
-								"type": "number"
-							},
-							"pDecimals": {
-								"description": "Implementation pending. Number of decimals places of the attribute. It only applies if the attribute is of type 'number'. Optional. (Note: do not confused with NDecimals, which is the number of decimals to display in the screen).",
-								"type": "number"
-							},
-							"presentation": {
-								"description": "It is the format in which we receive the value from the server. Currently it is only used for a very specific thing in the interpretation of dates. In the future it could be combined with to the JSON schema 'type' to indicate whether string, date, number, float... and 'format'.",
-								"enum": ["dd/mm/yyyy"]
-							},
-							"NDecimals": {
-								"description": "Number of decimal places to be displayed in the screen. Optional, when not indicated, precision is not truncated.",
-								"type": "number",
-								"minimum": 0,
-								"maximum": 20,
-								"multipleOf": 1
-							},
-							"serieTemporal": {
-								"description": "The values of this attribute form a time series that will be displayed as a graph.",
-								"type": "object",
-								"required": ["color"],
-								"properties": {
-									"color": {
-										"description": "Line color in the graph",
-										"type": "string"
-									}
-								}
-							}
+				"symbol": {
+					"description": "Symbol of the attribute. Note that it is not the units of measurement symbol but the attribute itself. For example, the letter 'σ' (sigma) usually represents the standard deviation. It will be used in the compact display (coordinates box) if defined. Created for statistical attributes, but can be used elsewhere.",
+					"type": [ "string", "null" ]
+				},
+				"descripcio": {
+					"description": "Description of the attribute in multiple languages. If you do not need multilanguage support, please use 'description'",
+					"$ref": "#/definitions/StringOCadenaLang"
+				},
+				"definition": {
+					"description": "A URI that defines the observedProperty or the variable. You may find the right definitions in https://qudt.org/2.1/vocab/quantitykind, http://vocabs.lter-europe.net/EnvThes or https://www.eea.europa.eu/help/glossary/eea-glossary.",
+					"type": [ "string", "null" ],
+					"format": "uri"
+				},
+				"UoM": {
+					"description": "Units of measurement of the attribute. Formerly refered as 'unitats'",
+					"type": [ "string", "null" ]
+				},
+				"UoMSymbol": {
+					"description": "Symbol of the units of measurement of the atributte.",
+					"type": [ "string", "null" ]
+				},
+				"UoMDefinition": {
+					"description": "A URI that defines the units of measurement of the observedProperty or variable. You may find the right definitions in https://qudt.org/2.1/vocab/unit",
+					"type": [ "string", "null" ],
+					"format": "uri"
+				},
+				"calcul": {
+					"description": "Mathematical formula to transform the values of one or more properties of another vector or raster 'capa'. To point to a raster 'capa', see the explanation in 'component'; to point to a vector 'capa', we should use {'i_capa': 2, 'prop': 'flower_name'} to refer to 'capa' 2 which is of 'model' ='vector'. Can only be used if there are capa.objectes on the given 'capa'. If you do not specify i_capa, this 'capa' is assumed. For each 'objecte' {'i_capa': 2, 'prop': 'flower_name'} (or the equivalent for raster 'capa' for each pixel) is transformed into the value and, once done, the formula is evaluated as JavaScript syntax.",
+					"type": "string"
+				},
+				"FormulaConsulta": {
+					"description": "Mathematical formula to transform the values of objectes[].feature[].properties of this 'capa' (or into values[]). To know about v[0] etc see the explanation under 'component'. Use p['name'] to indicate the name of the property inside properties. You can also specify nomPropId to refer to the feature identifier (e.g. the feature id, in case of GeoJSON). Can only be used if there is capa.valors or capa.objectes. If you want to choose a value from another 'capa' use 'calcul' instead. Internally, 'FormulaConsulta' is transformed into 'calcul'.",
+					"type": "string"
+				},
+				"separador": {
+					"description": "Separator of the next block of attributes",
+					"$ref": "#/definitions/StringOCadenaLang"
+				},
+				"esLink": {
+					"description": "Is the attribute value a link?",
+					"type": "boolean"
+				},
+				"descLink": {
+					"description": "Description of the link",
+					"$ref": "#/definitions/StringOCadenaLang"
+				},
+				"esImatge": {
+					"description": "Is the attribute value a image URI?. This forces the attribute to appear as an embedded image in the query box",
+					"type": "boolean"
+				},
+				"FormatVideo": {
+					"description": "If the attribute is a link to a video, this is the video format. This forces the attribute to appear as an embedded video with a play button in the query box. It should be a MIME type. Example: video/mp4. optional",
+					"type": "string",
+					"format": "uri"
+				},
+				"mostrar": {
+					"description": "Should it be shown in the query box? Can be 'si' (always), 'no' (never), 'si_ple' (it will only be displayed if the attribute has content).",
+					"enum": [ "si", "no", "si_ple" ]
+				},
+				"mida": {
+					"description": "Implementation pending (maxLength should be used instead of 'mida'). Attribute size. Optional. Maximum width the field type can have. In the case of numerical types it is the maximum precision. In the case of strings it is the maximum length in characters. In the case of date-time it is the maximum length in characters of the representation of the date-time as text.",
+					"type": "number"
+				},
+				"pDecimals": {
+					"description": "Implementation pending. Number of decimals places of the attribute. It only applies if the attribute is of type 'number'. Optional. (Note: do not confused with NDecimals, which is the number of decimals to display in the screen).",
+					"type": "number"
+				},
+				"presentation": {
+					"description": "It is the format in which we receive the value from the server. Currently it is only used for a very specific thing in the interpretation of dates. In the future it could be combined with to the JSON schema 'type' to indicate whether string, date, number, float... and 'format'.",
+					"enum": [ "dd/mm/yyyy" ]
+				},
+				"NDecimals": {
+					"description": "Number of decimal places to be displayed in the screen. Optional, when not indicated, precision is not truncated.",
+					"type": "number",
+					"minimum": 0,
+					"maximum": 20,
+					"multipleOf": 1
+				},
+				"serieTemporal": {
+					"description": "The values of this attribute form a time series that will be displayed as a graph.",
+					"type": "object",
+					"required": [ "color" ],
+					"properties": {
+						"color": {
+							"description": "Line color in the graph",
+							"type": "string"
 						}
-					},
-					"StringOCadenaLang": {
-						"description": "String or multilanguage object.",
-						"oneOf": [
-							{
-								"type": ["string", "null"]
-							},
-							{
-								"type": "object",
-								"properties": {
-									"cat": {
-										"description": "Català",
-										"type": ["string", "null"]
-									},
-									"spa": {
-										"description": "Español",
-										"type": ["string", "null"]
-									},
-									"eng": {
-										"description": "English",
-										"type": ["string", "null"]
-									},
-									"fre": {
-										"description": "Français",
-										"type": ["string", "null"]
-									},
-									"cze": {
-										"description": "Čeština",
-										"type": ["string", "null"]
-									},
-									"ger": {
-										"description": "Deutsch",
-										"type": ["string", "null"]
-									}
-								}
-							}
-						]
 					}
 				}
-			};
+			}
+		},
+		"StringOCadenaLang": {
+			"description": "String or multilanguage object.",
+			"oneOf": [
+				{
+					"type": [ "string", "null" ]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"cat": {
+							"description": "Català",
+							"type": [ "string", "null" ]
+						},
+						"spa": {
+							"description": "Español",
+							"type": [ "string", "null" ]
+						},
+						"eng": {
+							"description": "English",
+							"type": [ "string", "null" ]
+						},
+						"fre": {
+							"description": "Français",
+							"type": [ "string", "null" ]
+						},
+						"cze": {
+							"description": "Čeština",
+							"type": [ "string", "null" ]
+						},
+						"ger": {
+							"description": "Deutsch",
+							"type": [ "string", "null" ]
+						}
+					}
+				}
+			]
+		}
+	}
+};
 		}
 
 		function GetGeoJSONStyles(data, selectedOptions) {
-			var dataSorted = deapCopy(data), estil = [];
+			var dataSorted=deapCopy(data), estil=[];
 
 			//Sorted by variable.
 			dataSorted.sort(function (a, b) {
-				if (a[selectedOptions.variable] < b[selectedOptions.variable])
+				if (a[selectedOptions.variable]<b[selectedOptions.variable])
 					return -1;
-				if (a[selectedOptions.variable] > b[selectedOptions.variable])
+				if (a[selectedOptions.variable]>b[selectedOptions.variable])
 					return 1;
-				return 0;
-			});
+				return 0;});
 			var a, b, maximum;
-			for (var i = 0, f = -1; i < dataSorted.length; i++) {
-				a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
-				if (i == 0 || a[selectedOptions.variable] != b[selectedOptions.variable]) {
-					if (f >= 0)
-						estil[f].simbols[0].simbol[0].icona.r = maximum > 0.001 ? 10 / maximum : 1;
+			for (var i = 0, f=-1; i < dataSorted.length; i++) {
+				a=dataSorted[i], b=dataSorted[i==0 ? 0 : i-1];
+				if (i==0 || a[selectedOptions.variable]!=b[selectedOptions.variable])
+				{
+					if (f>=0)
+						estil[f].simbols[0].simbol[0].icona.r=maximum>0.001 ? 10/maximum: 1; 
 					f++;
-					maximum = a[selectedOptions.value];
-					estil[f] = {
+					maximum=a[selectedOptions.value];
+					estil[f]={
 						"nom": null,
 						"desc": a[selectedOptions.variableDescription],
 						"DescItems": a[selectedOptions.variableUoMSymbol],
@@ -2212,21 +2278,20 @@
 							}
 						],
 						"formes": [{
-							"vora": {
-								"paleta": {
-									"colors": [
-										"#ff0000"
-									]
-								}
-							},
-							"interior": {
-								"paleta": {
-									"colors": [
-										"rgba(255,0,0,0.4)"
-									]
-								}
+						"vora": {
+							"paleta": {
+								"colors": [
+									"#ff0000"
+								]
 							}
-						}],
+						},
+						"interior": {
+							"paleta": {
+								"colors": [
+									"rgba(255,0,0,0.4)"
+								]
+							}
+						}}],
 						"fonts": {
 							"NomCampText": a[selectedOptions.variable] + "_{time?f=ISO}",
 							"aspecte": [
@@ -2243,71 +2308,74 @@
 						}
 					};
 				}
-				else {
-					if (maximum < a[selectedOptions.value])
-						maximum = a[selectedOptions.value];
+				else
+				{
+					if (maximum<a[selectedOptions.value])
+						maximum=a[selectedOptions.value];
 				}
 			}
-			if (f >= 0)
-				estil[f].simbols[0].simbol[0].icona.r = maximum > 0.001 ? 10 / maximum : 1;
+			if (f>=0)
+				estil[f].simbols[0].simbol[0].icona.r=maximum>0.001 ? 10/maximum: 1;
 			return estil;
 		}
 
 		function GetGeoJSONDates(data, selectedOptions) {
-			var dataSorted = deapCopy(data), datetimes = [];
+			var dataSorted=deapCopy(data), datetimes=[];
 
 			//Sorted by date (older first).
 			dataSorted.sort(function (a, b) {
-				if (a[selectedOptions.time] < b[selectedOptions.time])
+				if (a[selectedOptions.time]<b[selectedOptions.time])
 					return -1;
-				if (a[selectedOptions.time] > b[selectedOptions.time])
+				if (a[selectedOptions.time]>b[selectedOptions.time])
 					return 1;
-				return 0;
-			});
+				return 0;});
 			var a, b;
 			for (var i = 0; i < dataSorted.length; i++) {
-				a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
-				if (i == 0 || a[selectedOptions.time] != b[selectedOptions.time])
+				a=dataSorted[i], b=dataSorted[i==0 ? 0 : i-1];
+				if (i==0 || a[selectedOptions.time]!=b[selectedOptions.time])
 					datetimes.push(a[selectedOptions.time]);
 			}
 			return datetimes;
-		}
+		} 
 
 		/*function ShowSaveTableDialog(nodeId) {
 			;   //Nothing to do
 		}*/
 
-		function PopulateSelectSaveLayerDialog(id, dataAttributes, selectedOption) {
-			var thereIsSelectionOption = false;
+		function PopulateSelectSaveLayerDialog(id, dataAttributes, selectedOption)
+		{
+			var thereIsSelectionOption=false;
 			var dataAttributesArray = Object.keys(dataAttributes);
-
-			var s = "<select id=\"" + id + "Select" + "\">";
-			for (var a = 0; a < dataAttributesArray.length; a++) {
-				if (dataAttributesArray[a] == selectedOption) {
-					thereIsSelectionOption = true;
+	
+			var s="<select id=\""+id+"Select"+"\">";
+			for (var a=0; a<dataAttributesArray.length; a++)
+			{
+				if (dataAttributesArray[a]==selectedOption)
+				{
+					thereIsSelectionOption=true;
 					break;
 				}
 			}
-			s += "<option value=\"\"" + (!thereIsSelectionOption ? "selected=\"selected\"" : "") + "></option>";
-			for (var a = 0; a < dataAttributesArray.length; a++)
-				s += "<option value=\"" + dataAttributesArray[a] + "\"" + (dataAttributesArray[a] == selectedOption ? "selected=\"selected\"" : "") + ">" + dataAttributesArray[a] + "</option>";
-			s += "</select>";
-			document.getElementById(id).innerHTML = s;
+			s+="<option value=\"\""+ (!thereIsSelectionOption ? "selected=\"selected\"" : "") +"></option>";
+			for (var a=0; a<dataAttributesArray.length; a++)
+				s+="<option value=\""+dataAttributesArray[a]+"\""+ (dataAttributesArray[a]==selectedOption ? "selected=\"selected\"" : "") +">"+dataAttributesArray[a]+"</option>";
+			s+="</select>";
+			document.getElementById(id).innerHTML=s;
 		}
 
 		function ShowSaveLayerDialogSelects(nodeId, descripUoM) {
-			var nodeids = network.getConnectedNodes(nodeId, "from");
-			if (nodeids && nodeids.length) {
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
 				var data = networkNodes.get(nodeids[0]).STAdata;
-				var dataAttributes = networkNodes.get(nodeids[0]).STAdataAttributes ? networkNodes.get(nodeids[0]).STAdataAttributes : getDataAttributes(data);
+				var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
 				var s, elem;
 				PopulateSelectSaveLayerDialog("DialogSaveLayerPlace", dataAttributes, "FeatureOfInterest/description");
 				PopulateSelectSaveLayerDialog("DialogSaveLayerLongitude", dataAttributes, "FeatureOfInterest/feature/coordinates_0");
 				PopulateSelectSaveLayerDialog("DialogSaveLayerLatitude", dataAttributes, "FeatureOfInterest/feature/coordinates_1");
 				PopulateSelectSaveLayerDialog("DialogSaveLayerTime", dataAttributes, "PhenomenonTime");
 				PopulateSelectSaveLayerDialog("DialogSaveLayerVariable", dataAttributes, "Datastream/ObservedProperty/name");
-				if (descripUoM) {
-					document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display = "inline-block";
+				if (descripUoM){
+					document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display="inline-block";
 					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableDescription", dataAttributes, "Datastream/ObservedProperty/description");
 					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableDefinition", dataAttributes, "Datastream/ObservedProperty/definition");
 					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoM", dataAttributes, "Datastream/unitOfMeasurement/name");
@@ -2315,53 +2383,52 @@
 					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoMDefinition", dataAttributes, "Datastream/unitOfMeasurement/definition");
 				}
 				else
-					document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display = "none";
+					document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display="none";
 
 				PopulateSelectSaveLayerDialog("DialogSaveLayerValue", dataAttributes, "result");
 			}
 		}
 
-		function GetSelectedOptionsSaveLayer(descripUoM) {
-			var selectedOptions = {};
-			selectedOptions.place = document.getElementById("DialogSaveLayerPlaceSelect").value;
-			selectedOptions.longitude = document.getElementById("DialogSaveLayerLongitudeSelect").value;
-			selectedOptions.latitude = document.getElementById("DialogSaveLayerLatitudeSelect").value;
-			selectedOptions.time = document.getElementById("DialogSaveLayerTimeSelect").value;
-			selectedOptions.variable = document.getElementById("DialogSaveLayerVariableSelect").value;
-			if (descripUoM) {
-				selectedOptions.variableDescription = document.getElementById("DialogSaveLayerVariableDescriptionSelect").value;
-				selectedOptions.variableDefinition = document.getElementById("DialogSaveLayerVariableDefinitionSelect").value;
-				selectedOptions.variableUoM = document.getElementById("DialogSaveLayerVariableUoMSelect").value;
-				selectedOptions.variableUoMSymbol = document.getElementById("DialogSaveLayerVariableUoMSymbolSelect").value;
-				selectedOptions.variableUoMDefinition = document.getElementById("DialogSaveLayerVariableUoMDefinitionSelect").value;
+		function GetSelectedOptionsSaveLayer(descripUoM){
+			var selectedOptions={};
+			selectedOptions.place=document.getElementById("DialogSaveLayerPlaceSelect").value;
+			selectedOptions.longitude=document.getElementById("DialogSaveLayerLongitudeSelect").value;
+			selectedOptions.latitude=document.getElementById("DialogSaveLayerLatitudeSelect").value;
+			selectedOptions.time=document.getElementById("DialogSaveLayerTimeSelect").value;
+			selectedOptions.variable=document.getElementById("DialogSaveLayerVariableSelect").value;
+			if (descripUoM){
+				selectedOptions.variableDescription=document.getElementById("DialogSaveLayerVariableDescriptionSelect").value;
+				selectedOptions.variableDefinition=document.getElementById("DialogSaveLayerVariableDefinitionSelect").value;
+				selectedOptions.variableUoM=document.getElementById("DialogSaveLayerVariableUoMSelect").value;
+				selectedOptions.variableUoMSymbol=document.getElementById("DialogSaveLayerVariableUoMSymbolSelect").value;
+				selectedOptions.variableUoMDefinition=document.getElementById("DialogSaveLayerVariableUoMDefinitionSelect").value;
 			}
-			selectedOptions.value = document.getElementById("DialogSaveLayerValueSelect").value;
+			selectedOptions.value=document.getElementById("DialogSaveLayerValueSelect").value;
 			return selectedOptions;
 		}
 
 		function ShowSaveLayerDialog(nodeId) {
 			ShowSaveLayerDialogSelects(nodeId, true);
-			document.getElementById("DialogSaveLayerTitle").innerHTML = "Save table as GeoJSON";
-			document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"SaveLayer(event)\">Save GeoJSON</button> " +
-				"<button onClick=\"SaveLayerSchema(event)\">Save JSON Schema</button> " +
-				"<button onClick=\"SaveLayerMetaschema(event)\">Save JSON Metaschema</button>";
+			document.getElementById("DialogSaveLayerTitle").innerHTML="Save table as GeoJSON";
+			document.getElementById("DialogSaveLayerSave").innerHTML="<button value=\"default\" onClick=\"SaveLayer(event)\">Save GeoJSON</button> " +
+										"<button onClick=\"SaveLayerSchema(event)\">Save JSON Schema</button> " +
+										"<button onClick=\"SaveLayerMetaschema(event)\">Save JSON Metaschema</button>";
 		}
 
 		function ShowOpenMapDialog(nodeId) {
 			ShowSaveLayerDialogSelects(nodeId, true);
-			document.getElementById("DialogSaveLayerTitle").innerHTML = "Open in the Map Browser";
-			document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"OpenMap(event)\">Open</button>";
+			document.getElementById("DialogSaveLayerTitle").innerHTML="Open in the Map Browser";
+			document.getElementById("DialogSaveLayerSave").innerHTML="<button value=\"default\" onClick=\"OpenMap(event)\">Open</button>";
 		}
 
 		function SaveTable(event) {
 			event.preventDefault(); // We don't want to submit this form
-			var delimiter = document.getElementById("DialogSaveTableDelimiter").value;
+			var delimiter=document.getElementById("DialogSaveTableDelimiter").value;
 			document.getElementById("DialogSaveTable").close();
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length) {
-				if (networkNodes.get(nodeids[0]))
-					SaveLocalDataFile(Papa.unparse(StringifyObjectElements(networkNodes.get(nodeids[0]).STAdata, networkNodes.get(nodeids[0]).STAdataAttributes), { quotes: false, quoteChar: '"', escapeChar: '"', delimiter: (delimiter ? delimiter : ";"), header: true, newline: "\r\n", skipEmptyLines: "greedy" }),
-						(IdOfSTAEntity(networkNodes.get(nodeids[0])) == -1) ? "table" : STAEntitiesArray[IdOfSTAEntity(networkNodes.get(nodeids[0]))], ".csv", "application/vnd.ms-excel");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				SaveLocalDataFile(Papa.unparse(StringifyObjectElements(parentNode.STAdata, parentNode.STAdataAttributes), { quotes: false, quoteChar: '"', escapeChar: '"', delimiter: (delimiter ? delimiter : ";"), header: true, newline: "\r\n", skipEmptyLines: "greedy"}), 
+						(IdOfSTAEntity(parentNode) == -1) ?  "table" : STAEntitiesArray[IdOfSTAEntity(parentNode)], ".csv", "application/vnd.ms-excel");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
 			}
 		}
 
@@ -2371,9 +2438,8 @@
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
 			var dataAttributesArray = Object.keys(dataAttributes);
 
-			var csvw = {
-				tableSchema: {
-					"columns": []
+			var csvw={ tableSchema: {
+				 "columns": []
 				},
 				"dialect": {
 					"header": true,
@@ -2392,21 +2458,20 @@
 
 		function SaveCSVW(event) {
 			event.preventDefault(); // We don't want to submit this form
-			var delimiter = document.getElementById("DialogSaveTableDelimiter").value;
+			var delimiter=document.getElementById("DialogSaveTableDelimiter").value;
 			document.getElementById("DialogSaveTable").close();
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
-				if (networkNodes.get(nodeids[0]))
-					SaveLocalDataFile(JSON.stringify(CreateCSVW(networkNodes.get(nodeids[0]).STAdata, networkNodes.get(nodeids[0]).STAdataAttributes, delimiter ? delimiter : ";"), null, "\t"),
-						(IdOfSTAEntity(networkNodes.get(nodeids[0])) == -1 ? "table" : STAEntitiesArray[IdOfSTAEntity(networkNodes.get(nodeids[0]))]) + "_csvw", ".json", "application/json");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				SaveLocalDataFile(JSON.stringify(CreateCSVW(parentNode.STAdata, parentNode.STAdataAttributes, delimiter ? delimiter : ";"), null, "\t"), 
+						(IdOfSTAEntity(parentNode) == -1 ?  "table" : STAEntitiesArray[IdOfSTAEntity(parentNode)]) + "_csvw", ".json", "application/json");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
 			}
 		}
 
-		function getDataAttributesCSVW(csvw) {
+		function getDataAttributesCSVW(csvw){
 			var dataAttributes = {}, c;
 			for (var a = 0; a < csvw.tableSchema.columns.length; a++) {
-				c = csvw.tableSchema.columns[a];
-				dataAttributes[c.name] = {
+				c=csvw.tableSchema.columns[a];
+				dataAttributes[c.name]={
 					"type": getAttributeTypeFromCSVWType(c.datatype),
 					"description": (c.titles && Array.isArray(c.titles)) ? c.titles[0] : c.titles,
 					"definition": c.propertyUrl,
@@ -2418,95 +2483,92 @@
 			return dataAttributes;
 		}
 
-		function getCSVReadParams(csvw) {
+		function getCSVReadParams(csvw){
 			return csvw.dialect;
 		}
 
 		function SaveLayer(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSaveLayer").close();
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length) {
-				if (networkNodes.get(nodeids[0]))
-					SaveLocalDataFile(JSON.stringify(GetGeoJSON(networkNodes.get(nodeids[0]).STAdata, GetSelectedOptionsSaveLayer(false)), null, "\t"), "GeoJSON", ".geojson", "application/geo+json");
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				SaveLocalDataFile(JSON.stringify(GetGeoJSON(parentNode.STAdata, GetSelectedOptionsSaveLayer(false)), null, "\t"), "GeoJSON", ".geojson", "application/geo+json");   
 			}
 		}
 
 		function SaveLayerSchema(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSaveLayer").close();
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length) {
-				if (networkNodes.get(nodeids[0]))
-					SaveLocalDataFile(JSON.stringify(GetGeoJSONSchema(networkNodes.get(nodeids[0]).STAdata, GetSelectedOptionsSaveLayer(true)), null, "\t"), "JSON", ".json", "application/json");
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				SaveLocalDataFile(JSON.stringify(GetGeoJSONSchema(parentNode.STAdata, GetSelectedOptionsSaveLayer(true)), null, "\t"), "JSON", ".json", "application/json");   
 			}
 		}
 
 		function SaveLayerMetaschema(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSaveLayer").close();
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length) {
-				if (networkNodes.get(nodeids[0]))
-					SaveLocalDataFile(JSON.stringify(GetGeoJSONMetaschema(), null, "\t"), "JSON", ".json", "application/json");
-			}
+			SaveLocalDataFile(JSON.stringify(GetGeoJSONMetaschema(), null, "\t"), "JSON", ".json", "application/json");   
 		}
-
 
 		function OpenMap(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSaveLayer").close();
-			var nodeids = network.getConnectedNodes(currentNode.id, "from");
-			if (nodeids && nodeids.length) {
-				if (networkNodes.get(nodeids[0])) {
-					var selectedOptionsSaveLayer = GetSelectedOptionsSaveLayer(true);
-					OpenMapMMN(getAbsoluteURL(config.MMNpath) + (config.MMNpath.indexOf('?') > 0 ? "&" : "?") + "reset=1", GetGeoJSON(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer), GetGeoJSONPropertiesSchema(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer), GetGeoJSONStyles(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer), GetGeoJSONDates(networkNodes.get(nodeids[0]).STAdata, selectedOptionsSaveLayer));
-				}
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				var selectedOptionsSaveLayer=GetSelectedOptionsSaveLayer(true);
+				OpenMapMMN(getAbsoluteURL(config.MMNpath) + (config.MMNpath.indexOf('?')>0 ? "&" : "?") + "reset=1", GetGeoJSON(parentNode.STAdata, selectedOptionsSaveLayer), GetGeoJSONPropertiesSchema(parentNode.STAdata, selectedOptionsSaveLayer), GetGeoJSONStyles(parentNode.STAdata, selectedOptionsSaveLayer), GetGeoJSONDates(parentNode.STAdata, selectedOptionsSaveLayer));
 			}
 		}
 
-		var MiraMonMapBrowserVars = {};
+		var MiraMonMapBrowserVars={};
 
-		function DisplayMapMMN() {
-			MiraMonMapBrowserVars.mmn.postMessage("CommandMMNAddGeoJSONLayer('SensorThings API data', " + JSON.stringify(MiraMonMapBrowserVars.geojson) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonSchema) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonStyle) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonDates) + ")", GetCleanURLMiraMonMapBrowser(MiraMonMapBrowserVars.mmnURL));
+		function DisplayMapMMN(){
+			MiraMonMapBrowserVars.mmn.postMessage("CommandMMNAddGeoJSONLayer('SensorThings API data', "+ JSON.stringify(MiraMonMapBrowserVars.geojson) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonSchema) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonStyle) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonDates) + ")", GetCleanURLMiraMonMapBrowser(MiraMonMapBrowserVars.mmnURL));
 		}
 
-		function OpenMapMMN(url, geojson, geojsonSchema, geojsonStyle, geojsonDates) {
-			MiraMonMapBrowserVars.geojson = geojson;
-			MiraMonMapBrowserVars.geojsonSchema = geojsonSchema;
-			MiraMonMapBrowserVars.geojsonStyle = geojsonStyle;
-			MiraMonMapBrowserVars.geojsonDates = geojsonDates;
+		function OpenMapMMN(url, geojson, geojsonSchema, geojsonStyle, geojsonDates){
+			MiraMonMapBrowserVars.geojson=geojson;
+			MiraMonMapBrowserVars.geojsonSchema=geojsonSchema;
+			MiraMonMapBrowserVars.geojsonStyle=geojsonStyle;
+			MiraMonMapBrowserVars.geojsonDates=geojsonDates;
 			if (MiraMonMapBrowserVars.mmn)
 				DisplayMapMMN();
-			else {
+			else
+			{
 				window.addEventListener("message", ProcessMessageFromMiraMonMapBrowser);
-				MiraMonMapBrowserVars.mmnURL = url;
-				MiraMonMapBrowserVars.mmn = window.open(url, "_blank", "width=1000,height=800");
+				MiraMonMapBrowserVars.mmnURL=url;
+				MiraMonMapBrowserVars.mmn=window.open(url, "_blank", "width=1000,height=800");
 			}
 		}
 
-		function ProcessMessageFromMiraMonMapBrowser(event) {
+		function ProcessMessageFromMiraMonMapBrowser(event)
+		{
 			if (!IsTrustedMiraMonMapBrowser(event, MiraMonMapBrowserVars.mmnURL))
 				return;
 
-			try {
-				var data = JSON.parse(event.data);
-			}
-			catch (e) {
+			try
+			{
+				var data=JSON.parse(event.data);
+			}	
+			catch (e) 
+			{
 				showInfoMessage("JSON message parse error: " + e + " The response was:\n" + event.data);
 				return;
 			}
 
-			if (data.msg === MMN_PM_IsListening) {
+			if (data.msg === MMN_PM_IsListening)
+			{
 				showInfoMessage("MiraMon Map Browser is open and ready to show layers.");
 				DisplayMapMMN();
 				return;
 			}
 
-			if (data.msg === MMN_PM_Closed) {
+			if (data.msg === MMN_PM_Closed)
+			{
 				showInfoMessage("MiraMon Map Browser has been closed.");
-				MiraMonMapBrowserVars.mmn = null;
-				MiraMonMapBrowserVars.mmnURL = null;
+				MiraMonMapBrowserVars.mmn=null;
+				MiraMonMapBrowserVars.mmnURL=null;
 				return;
 			}
 			/*if (data.msg === MMN_PM_CurrentLocationText)
@@ -2516,48 +2578,52 @@
 			}*/
 		}
 
-		function ShowTableSelectColumnsDialog(parentNodeId, nodeId) {
-			var node = networkNodes.get(nodeId)
+		function ShowTableSelectColumnsDialog(parentNode, node) {
 
-			var data = networkNodes.get(parentNodeId).STAdata ? networkNodes.get(parentNodeId).STAdata : node.STAdata,
-				selectedColumns = node.STASelectedColumns;
+			var data = parentNode.STAdata ? parentNode.STAdata : node.STAdata, 
+					selectedColumns=node.STASelectedColumns;
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectColumnsHTML").innerHTML = "No data to show.";
 				return;
 			}
-			var dataAttributes = networkNodes.get(parentNodeId).STAdataAttributes ? networkNodes.get(parentNodeId).STAdataAttributes : getDataAttributes(data);
+			var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
 			const dataAttributesArray = Object.keys(dataAttributes);
 
 			var s = "<table>";
 			for (var a = 0; a < dataAttributesArray.length; a++)
-				s += "<tr><td><label><input type='checkbox'" + ((!selectedColumns || a >= selectedColumns.length || selectedColumns[a]) ? "checked='checked'" : "") + " id='SelectColumn_" + a + "' /> " + dataAttributesArray[a] + "</label></td></tr>";
+				s += "<tr><td><label><input type='checkbox'" + ((!selectedColumns || a>=selectedColumns.length || selectedColumns[a]) ? "checked='checked'" : "") + " id='SelectColumn_" + a + "' /> " + dataAttributesArray[a] + "</label></td></tr>";
 			s += "</table>";
 			document.getElementById("DialogSelectColumnsHTML").innerHTML = s;
 		}
 
 		function ShowTableSelectExpandsDialog(nodeId, expandCheckboxes) {
-			var node = networkNodes.get(nodeId);
-			if (expandCheckboxes) {
-				var data = node.STAdata,
-					entities = STAEntities[STAEntitiesArray[IdOfSTAEntity(node)]].entities,
-					selectedExpands = node.STASelectedExpands;
-
+			var node=networkNodes.get(nodeId);
+			if (expandCheckboxes)
+			{
+				var data = node.STAdata, 
+						entities=STAEntities[STAEntitiesArray[IdOfSTAEntity(node)]].entities,
+						selectedExpands=node.STASelectedExpands;
+		
 				if (!data || !data.length) {
 					document.getElementById("DialogSelectExpandsCheckBoxes").innerHTML = "No data to show.";
 					return;
 				}
-
+	
 				var dataAttributes = selectedExpands ? selectedExpands.dataAttributesUnexpanded : (node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data));
 				const dataAttributesArray = Object.keys(dataAttributes);
-
+	
 				var s = "<table>";
-				for (var a = 0; a < dataAttributesArray.length; a++) {
-					if (dataAttributesArray[a].endsWith("@iot.navigationLink")) {
-						var da = dataAttributesArray[a].substring(0, dataAttributesArray[a].length - "@iot.navigationLink".length);
-						for (var e = 0; e < entities.length; e++) {
-							if (entities[e] == da) {
-								s += "<tr><td><label><input type='checkbox'" + ((selectedExpands && a < selectedExpands.selected.length && selectedExpands.selected[a]) ? "checked='checked'" : "") + " id='SelectExpand_" + a + "' /> " + da + "</label></td></tr>";
+				for (var a = 0; a < dataAttributesArray.length; a++)
+				{
+					if (dataAttributesArray[a].endsWith("@iot.navigationLink"))
+					{
+						var da=dataAttributesArray[a].substring(0, dataAttributesArray[a].length-"@iot.navigationLink".length);
+						for (var e=0; e < entities.length; e++)
+						{
+							if (entities[e]==da)
+							{
+								s += "<tr><td><label><input type='checkbox'" + ((selectedExpands && a<selectedExpands.selected.length && selectedExpands.selected[a]) ? "checked='checked'" : "") + " id='SelectExpand_" + a + "' /> " + da + "</label></td></tr>";
 								break;
 							}
 						}
@@ -2569,34 +2635,35 @@
 			}
 			else
 				document.getElementById("DialogSelectExpandsHTML").style.display = "none";
-			document.getElementById("SelectExpandsNumberOfRecords").value = node.STAExpectedLength;
-
+			document.getElementById("SelectExpandsNumberOfRecords").value=node.STAExpectedLength;
+			
 		}
 
-		function ShowTableSelectSortByDialog(nodeId) {
-			var node = networkNodes.get(nodeId);
+		function ShowTableSelectSortByDialog(node) {
 			var data = node.STAdata;
-
+		
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectSortByRadioButtons").innerHTML = "No data to show.";
 				return;
 			}
-
+	
 			var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
 
 			const dataAttributesArray = Object.keys(dataAttributes);
-
+	
 			var s = "";
-			var first = true;
-			for (var a = 0; a < dataAttributesArray.length; a++) {
-				if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0) != '@') {
+			var first=true;
+			for (var a = 0; a < dataAttributesArray.length; a++)
+			{
+				if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0)!='@')
+				{
 					s += "<label><input type='radio'" + (first ? "checked='checked'" : "") + " id='SelectSortByEntity_" + a + "' name='SelectSortByEntity'/> " + dataAttributesArray[a] + "</label><br>";
-					first = false;
+					first=false;
 				}
 			}
 			document.getElementById("DialogSelectSortByRadioButtons").innerHTML = s;
 			//document.getElementById("DialogSelectSortByHTML").style.display = "inline-block";
-			document.getElementById("SelectSortByNumberOfRecords").value = node.STAExpectedLength;
+			document.getElementById("SelectSortByNumberOfRecords").value=node.STAExpectedLength;
 		}
 
 		function ShowTableSelectRowsDialog(parentNodeId, nodeId) {
@@ -2607,7 +2674,7 @@
 				return;
 			}
 
-			document.getElementById("DialogSelectRowsTableRadio").checked = true;
+			document.getElementById("DialogSelectRowsTableRadio").checked = true;			
 			document.getElementById("DialogSelectRowsTable").innerHTML = GetHTMLTable(data, networkNodes.get(parentNodeId).STAdataAttributes, false, networkNodes.get(nodeId).STAURLIdSelected ? networkNodes.get(nodeId).STAURLIdSelected : 0);
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = false;
@@ -2637,28 +2704,35 @@
 				ShowTableFilterRowsDialog(parentNodeId, nodeId);
 		}
 
-		function SeparatePropertyIfNeeded(record, property, baseName) {
-			if (typeof property === "object" && property !== null)  //"arrays" and 'null' are also objects. 
+		function SeparatePropertyIfNeeded(record, property, baseName)
+		{
+			if (typeof property === "object" && property!==null)  //"arrays" and 'null' are also objects. 
 			{
-				if (Array.isArray(property)) {
+				if (Array.isArray(property))
+				{
 					//Array: creating multifields
-					for (var j = 0; j < property.length; j++) {
-						if (typeof property[j] === "object") {
-							if (Array.isArray(property[j])) {
-								for (var jj = 0; jj < property[j].length; jj++)
+					for (var j = 0; j<property.length; j++)
+					{
+						if (typeof property[j] === "object")
+						{
+							if (Array.isArray(property[j]))
+							{
+								for (var jj = 0; jj<property[j].length; jj++)
 									SeparatePropertyIfNeeded(record, property[j][jj], baseName + "_" + j + "_" + jj);
 							}
-							else {
+							else
+							{
 								var subkeys = Object.keys(property[j]);
 								for (var kk = 0; kk < subkeys.length; kk++)
 									SeparatePropertyIfNeeded(record, property[j][subkeys[kk]], baseName + "/" + subkeys[kk] + "_" + j)
 							}
 						}
 						else
-							record[baseName + "_" + j] = property[j];
+							record[baseName + "_" + j]=property[j];
 					}
 				}
-				else {
+				else
+				{
 					//Object; lets separate it.
 					var subkeys = Object.keys(property);
 					for (var kk = 0; kk < subkeys.length; kk++)
@@ -2666,31 +2740,32 @@
 				}
 			}
 			else
-				record[baseName] = property;
+				record[baseName]=property;
 		}
 
 		function SeparateColumns(node, parentNode) {
-			var record, recordParent, data = parentNode.STAdata;
+			var record, recordParent, data=parentNode.STAdata; 
 
 			if (!data)
 				showInfoMessage("No data loaded in the parent node.");
 			if (parentNode.STAURL)
-				node.STAURL = parentNode.STAURL;
+				node.STAURL=parentNode.STAURL;
 
 			node.STAExpectedLength = parentNode.STAExpectedLength;
-			node.STAdata = [];
+			node.STAdata=[];
 			for (var i = 0; i < data.length; i++) {
-				record = node.STAdata[i] = {};
-				recordParent = data[i]
+				record=node.STAdata[i]={};
+				recordParent=data[i]
 				var keys = Object.keys(recordParent);
 				for (var k = 0; k < keys.length; k++)
 					SeparatePropertyIfNeeded(record, recordParent[keys[k]], keys[k]);
 			}
-			if (parentNode.STAdataAttributes) {
-				var dataAttributes = getDataAttributes(data);
-				var dataAttributesArray = Object.keys(dataAttributes);
+			if (parentNode.STAdataAttributes)
+			{
+				var dataAttributes=getDataAttributes(data);
+				var dataAttributesArray=Object.keys(dataAttributes);
 				for (var i = 0; i < dataAttributesArray.length; i++) {
-					node.STAdataAttributes[dataAttributesArray[i]] = deapCopy((parentNode.STAdataAttributes[dataAttributesArray[i]]) ? parentNode.STAdataAttributes[dataAttributesArray[i]] : dataAttributes[dataAttributesArray[i]]);
+					node.STAdataAttributes[dataAttributesArray[i]]=deapCopy( (parentNode.STAdataAttributes[dataAttributesArray[i]]) ? parentNode.STAdataAttributes[dataAttributesArray[i]] : dataAttributes[dataAttributesArray[i]]);
 				}
 			}
 			networkNodes.update(node);
@@ -2700,14 +2775,19 @@
 			null means connection should not be done.
 			true means all done
 			false means pending.*/
-		function StartCircularImage(nodeTo, nodeFrom, calUnir) {
-			var errorText = reasonNodeDoesNotFitWithPrevious(nodeTo, nodeFrom);
-			if (errorText) {
-				alert("Node incompatible. " + errorText + " It has not been added.");
+		function StartCircularImage(nodeTo, nodeFrom, calUnir)
+		{
+			var errorText=reasonNodeDoesNotFitWithPrevious(nodeTo, nodeFrom);
+			if (errorText)
+			{
+				alert("Node incompatible. " + errorText + ". It has not been added.");
 				return null;
 			}
 			if (nodeFrom.STAURL && IdOfSTAEntity(nodeTo) != -1) {
-				nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAEntity(nodeTo)];
+				if (nodeFrom.image=="ogc.png")	
+					nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAEntity(nodeTo)];
+				else
+					nodeTo.STAURL = nodeFrom.STAURL + "/" + getConnectionSTAEntity(nodeFrom, nodeTo).entity;
 				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
 
 				networkNodes.update(nodeTo);
@@ -2766,27 +2846,27 @@
 		// create an array with edges	
 		var networkEdges = new vis.DataSet([]);
 		var networkOptions = {
-			interaction: { hover: true },
-			manipulation: {  //https://stackoverflow.com/questions/39701703/add-edge-dynamically-visjs
-				enabled: false,
-				addEdge: function (data, callback) {
-					console.log('add edge', data);
-					if (data.from == data.to)
-						showInfoMessage("Connection to the same node is not allowed.");
-					else {
-						networkEdges.add([{ from: data.from, to: data.to, arrows: "from" }]);
-						showInfoMessage("Connected.");
-						StartCircularImage(networkNodes.get(data.to), networkNodes.get(data.from), false);
+				interaction: { hover: true },
+				manipulation: {  //https://stackoverflow.com/questions/39701703/add-edge-dynamically-visjs
+					enabled: false,
+					addEdge: function (data, callback) {
+						console.log('add edge', data);
+						if (data.from == data.to)
+							showInfoMessage("Connection to the same node is not allowed.");
+						else {
+							networkEdges.add([{ from: data.from, to: data.to, arrows: "from"}]);
+							showInfoMessage("Connected.");
+							StartCircularImage(networkNodes.get(data.to), networkNodes.get(data.from), false);
+						}
+						connectionInProcess = false;
 					}
-					connectionInProcess = false;
 				}
-			}
-		};
+			};
 
 		var network = new vis.Network(document.getElementById("mynetwork"), {
 			nodes: networkNodes,
 			edges: networkEdges
-		}, networkOptions);
+			}, networkOptions);
 
 		/*network.on("click", function (params) {
 			params.event = "[original event]";
@@ -2807,12 +2887,10 @@
 					document.getElementById("DialogSTAURL").showModal();
 				}
 				else if (currentNode.image == "ViewQuerySTA.png") {
-					document.getElementById("DialogSTAURLInput").value = "";
-					var nodeids = network.getConnectedNodes(currentNode.id, "from");
-					if (nodeids && nodeids.length) {
-						if (networkNodes.get(nodeids[0]))
-							document.getElementById("DialogSTAURLInput").value = networkNodes.get(nodeids[0]).STAURL;
-					}
+					document.getElementById("DialogSTAURLInput").value="";
+					var parentNode=GetFirstParentNode(currentNode);
+					if (parentNode)
+						document.getElementById("DialogSTAURLInput").value = parentNode.STAURL;
 					document.getElementById("DialogSTAURLInput").readOnly = true;
 					document.getElementById("DialogSTAURLOk").style.display = "none";
 					document.getElementById("DialogSTAURL").showModal();
@@ -2824,20 +2902,18 @@
 				else if (currentNode.image == "Table.png") {
 					///Determining the parent node.
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
-					if (nodeids && nodeids.length) {
-						if (networkNodes.get(nodeids[0])) {
-							var data = networkNodes.get(nodeids[0]).STAdata;
-							if (data && data.length)
-								document.getElementById("DialogOKOptions").innerHTML = "<label><input type='checkbox' checked='checked' id='ShowTableRowNumberDialogOK' onChange='ShowTableDialog(\"" + nodeids[0] + "\");'/> Show row numbers</label>";
-							else
-								document.getElementById("DialogOKOptions").innerHTML = "";
-							ShowTableDialog(nodeids[0]);
-						}
+					if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
+						var data = networkNodes.get(nodeids[0]).STAdata;
+						if (data && data.length)
+							document.getElementById("DialogOKOptions").innerHTML = "<label><input type='checkbox' checked='checked' id='ShowTableRowNumberDialogOK' onChange='ShowTableDialog(\"" + nodeids[0] + "\");'/> Show row numbers</label>";
+						else
+							document.getElementById("DialogOKOptions").innerHTML = "";
+						ShowTableDialog(nodeids[0]);
 						document.getElementById("DialogOK").showModal();
 					}
 				}
 				else if (currentNode.image == "UploadObservations.png") {
-					ShowUploadObservationsDialog(currentNode.id);
+					ShowUploadObservationsDialog(currentNode);
 					document.getElementById("DialogUploadObservations").showModal();
 				}
 				else if (currentNode.image == "UploadTimeAverages.png") {
@@ -2849,12 +2925,10 @@
 					document.getElementById("DialogSaveTable").showModal();
 				}
 				else if (currentNode.image == "ScatterPlot.png") {
-					//Determining the parent node.
-					var nodeids = network.getConnectedNodes(currentNode.id, "from");
-					if (nodeids && nodeids.length) {
-						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
-							ShowScatterPlotDialog(nodeids[0], currentNode.id);
-						}
+					var parentNode=GetFirstParentNode(currentNode);
+					if (parentNode) {
+						if (parentNode.STAURL)
+							ShowScatterPlotDialog(parentNode);
 						document.getElementById("DialogScatterPlot").showModal();
 					}
 				}
@@ -2867,17 +2941,13 @@
 					document.getElementById("DialogSaveLayer").showModal();
 				}
 				else if (currentNode.image == "SelectColumnsSTA.png" || currentNode.image == "SelectColumnsTable.png") {
-					//Determining the parent node.
-					var nodeids = network.getConnectedNodes(currentNode.id, "from");
-					if (nodeids && nodeids.length) {
-						if (networkNodes.get(nodeids[0]))
-							ShowTableSelectColumnsDialog(nodeids[0], currentNode.id);
-
+					var parentNode=GetFirstParentNode(currentNode);
+					if (parentNode) {
+						ShowTableSelectColumnsDialog(parentNode, currentNode);
 						document.getElementById("DialogSelectColumns").showModal();
 					}
 				}
 				else if (currentNode.image == "SelectRowsSTA.png") {
-					//Determining the parent node.
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length) {
 						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
@@ -2889,10 +2959,10 @@
 					}
 				}
 				else if (currentNode.image == "SortBySTA.png") {
-					var nodeids = network.getConnectedNodes(currentNode.id, "from");
-					if (nodeids && nodeids.length) {
-						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL)
-							ShowTableSelectSortByDialog(nodeids[0]);
+					var parentNode=GetFirstParentNode(currentNode);
+					if (parentNode) {
+						if (parentNode.STAURL)
+							ShowTableSelectSortByDialog(parentNode);
 						document.getElementById("DialogSelectSortBy").showModal();
 					}
 				}
@@ -2991,7 +3061,7 @@
 
 
 		function addCircularImage(event, dialog, label, image) {
-			var returnStart = false;
+			var returnStart=false;
 			if (event)
 				event.preventDefault(); // We don't want to submit this form
 			if (dialog)
@@ -2999,27 +3069,31 @@
 			var newId = (Math.random() * 1e7).toString(32);
 			var node = { id: newId, label: label, image: image, shape: "circularImage" };
 
-			if (image == "ogc.png") {
+			if (image == "ogc.png")
+			{
 				node.STAURL = config.STAurl;
 				node.STAExpectedLength = 100;
 				networkNodes.add(node);
 				showInfoMessage("Requesting STA landing page");
 				LoadJSONNodeSTAData(node);
 			}
-			else {
+			else
+			{
 				if (!startingNodeContextId)
 					networkNodes.add(node);
-				else {
-					returnStart = StartCircularImage(node, networkNodes.get(startingNodeContextId), true);
-					if (returnStart == null)
+				else
+				{
+					returnStart=StartCircularImage(node, networkNodes.get(startingNodeContextId), true);
+					if (returnStart==null)
 						return;
-					if (!returnStart) {
+					if (!returnStart)
+					{
 						networkNodes.add(node);
 						networkEdges.add([{ from: startingNodeContextId, to: newId, arrows: "from" }]);
 					}
 				}
 			}
-
+			
 			if (startingNodeContextId)
 				startingNodeContextId = null;
 
@@ -3032,8 +3106,9 @@
 			if (dialog)
 				document.getElementById(dialog).close();
 			if (startingNodeContextId) {
-				var node = networkNodes.get(startingNodeContextId);
-				if (confirm("Do you want to remove the node '" + node.label + "'?")) {
+				var node=networkNodes.get(startingNodeContextId);
+				if (confirm("Do you want to remove the node '" + node.label + "'?"))
+				{
 					networkNodes.remove(startingNodeContextId);
 					startingNodeContextId = null;
 				}
@@ -3046,8 +3121,8 @@
 			if (dialog)
 				document.getElementById(dialog).close();
 			if (startingNodeContextId) {
-				var node = networkNodes.get(startingNodeContextId);
-				node.label = prompt("Change node label to:", node.label);
+				var node=networkNodes.get(startingNodeContextId);
+				node.label=prompt("Change node label to:", node.label);
 				networkNodes.update(node);
 				startingNodeContextId = null;
 			}
@@ -3059,44 +3134,48 @@
 			showInfoMessage("Press the mouse botton on the starting node, and drag and drop the mouse on the end node.");
 		}
 
-		function openNetwork(event) {
+		function openNetwork(event){
 			var input = event.target;
 
 			var reader = new FileReader();
-			reader.onload = function () {
+			reader.onload = function() {
 				//Transform the JSON text in something in memory
-				try {
-					var data = JSON.parse(reader.result);
+				try
+				{
+					var data=JSON.parse(reader.result);
 					network.destroy();
 					networkNodes = new vis.DataSet(data.nodes);
 					networkEdges = new vis.DataSet(data.edges);
 					network = new vis.Network(document.getElementById("mynetwork"), {
-						nodes: networkNodes,
-						edges: networkEdges
-					}, networkOptions);
+							nodes: networkNodes,
+							edges: networkEdges
+						}, networkOptions);
 					network.on("doubleClick", networkDoubleClick);
 					network.on("oncontext", networkContext);
 					document.getElementById("openNetworkFileName").value = null;  //https://stackoverflow.com/questions/3528359/html-input-type-file-file-selection-event
-				}
-				catch (e) {
+				}	
+				catch (e) 
+				{
 					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
 					return;
 				}
 			};
-			reader.readAsText(input.files[0]);
+			reader.readAsText(input.files[0]);		
 		}
 
-		function saveNetwork(event) {
-			var pos = network.getPositions()
-			var posArray = Object.keys(pos);
-			var data = { nodes: [], edges: [] };
-			for (var i = 0; i < posArray.length; i++) {
+		function saveNetwork(event){
+			var pos=network.getPositions()
+			var posArray=Object.keys(pos);
+			var data={nodes:[], edges:[]};
+			for (var i=0; i<posArray.length; i++)
+			{
 				data.nodes.push(deapCopy(networkNodes._data[posArray[i]]));
-				data.nodes[i].x = pos[posArray[i]].x;
-				data.nodes[i].y = pos[posArray[i]].y;
+				data.nodes[i].x=pos[posArray[i]].x;
+				data.nodes[i].y=pos[posArray[i]].y;
 			}
-			var edgesArray = Object.keys(networkEdges._data);
-			for (var i = 0; i < edgesArray.length; i++) {
+			var edgesArray=Object.keys(networkEdges._data);
+			for (var i=0; i<edgesArray.length; i++)
+			{
 				data.edges.push(deapCopy(networkEdges._data[edgesArray[i]]));
 				delete data.edges[i].id;
 			}
@@ -3104,10 +3183,12 @@
 		}
 
 		async function reloadSTA(event) {
-			var nodesArray = Object.keys(networkNodes._data);
-			for (var i = 0; i < nodesArray.length; i++) {
-				var node = networkNodes._data[nodesArray[i]];
-				if (node.image == "ogc.png") {
+			var nodesArray=Object.keys(networkNodes._data);
+			for (var i=0; i<nodesArray.length; i++)
+			{
+				var node=networkNodes._data[nodesArray[i]];
+				if (node.image=="ogc.png")
+				{
 					showInfoMessage("Reload STA home page and dependencies...");
 					showInfoMessage("Requesting STA page...");
 					await LoadJSONNodeSTAData(node, function () {
