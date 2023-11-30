@@ -3012,12 +3012,6 @@
 
 			createSelect(3, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
 
-			// var instructions = document.createElement("div");
-			// instructions.setAttribute("id", "instructions");
-			// instructions.innerHTML = "Is not your value on the list? You can write it, click the button";
-			// instructions.setAttribute("class", "instructions");
-			// optionsRow.appendChild(instructions);
-
 			var addButton = document.createElement("button");
 			addButton.setAttribute("id", "addButton");
 			addButton.setAttribute("onclick", "addSelected('" + paramsNodeId + "','_optionsRow')");
@@ -3030,37 +3024,47 @@
 
 			var fullFilterDiv = document.createElement("div"); //Verd (Global)
 			fullFilterDiv.id = "fullFilterDiv";
-			// fullFilterDiv.setAttribute("class", "inblock");
-			// fullFilterDiv.innerHTML = "These are your values selected to filter ";
 			divLine.appendChild(fullFilterDiv);
 
 			var filterGroup = document.createElement("div"); //Lila (Grup de condicio)
-			filterGroup.setAttribute("id","filterGroup_0") ;
+			filterGroup.setAttribute("id", "filterGroup_0");
 			filterGroup.setAttribute("class", "filterGroup");
 			fullFilterDiv.appendChild(filterGroup);
 
 			var filterConditionDiv = document.createElement("div"); //Vermell (Línea amb selects i botó opcions)
-			filterConditionDiv.setAttribute("id","filterCondition_0") ;
+			filterConditionDiv.setAttribute("id", "filterCondition_0");
 			filterConditionDiv.setAttribute("class", "filterConditionDiv");
 			filterGroup.appendChild(filterConditionDiv);
 
+
 			var divCondition = document.createElement("div"); //groc (condition)
-			divCondition.setAttribute("id","divCondition_0") ;
+			divCondition.setAttribute("id", "divCondition_0");
 			divCondition.setAttribute("class", "divCondition");
 			filterGroup.appendChild(divCondition);
 
+			var divLineaCondition = document.createElement("div"); //linea de la condició
+			divLineaCondition.setAttribute("id", "divLineaCondition_0");
+			divLineaCondition.setAttribute("class", "divLineaCondition");
+			divCondition.appendChild(divLineaCondition);
 
-			var buttonAddCondition=document.createElement("button");
-			buttonAddCondition.setAttribute("id","buttonAddCondition_0");
-			buttonAddCondition.setAttribute("class","buttonAddCondition");
-			buttonAddCondition.innerHTML="+ Add a Condition";
+			var buttonAddCondition = document.createElement("button");
+			buttonAddCondition.setAttribute("id", "buttonAddCondition_0");
+			buttonAddCondition.setAttribute("class", "buttonAddCondition");
+			buttonAddCondition.innerHTML = "+ Add a Condition";
 			filterGroup.appendChild(buttonAddCondition);
 
 
+			var buttonAddFilterGroup = document.createElement("button");
+			buttonAddFilterGroup.setAttribute("id", "buttonAddFilterGroup");
+			buttonAddFilterGroup.setAttribute("class", "buttonAddFilterGroup");
+			buttonAddFilterGroup.innerHTML=" + Add a new filter group";
+
+			fullFilterDiv.appendChild(buttonAddFilterGroup);
+			
 			// var optionsRow2 = optionsRow.cloneNode(true);
 			// optionsRow.setAttribute("id", "optionsRow2");
 			// fullFilterDiv.appendChild(optionsRow2);
-			
+
 
 
 
@@ -3669,10 +3673,15 @@
 				cancelButton.innerHTML = "Cancel";
 
 				var writeButton = document.createElement("button");
-				writeButton.innerHTML = "...";
 				writeButton.setAttribute("id", "displaySelect" + place);
+				writeButton.setAttribute("class", "displaySelect");
 				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "','simple')");
 				placeId.appendChild(writeButton);
+				var buttonImage = document.createElement("img");
+				buttonImage.setAttribute("src", "botoDesplegable.png");
+				buttonImage.setAttribute("class", "buttonImage");
+				writeButton.appendChild(buttonImage);
+
 				divFilterContainer.appendChild(okButton);
 				divFilterContainer.appendChild(cancelButton);
 

@@ -167,6 +167,7 @@ th.borderTable {
     border: black 1px solid;
     width: 100%;
     margin-top: 20px;
+    position: relative;
 }
 .filterGroup{
     min-height: 100px;
@@ -177,7 +178,7 @@ th.borderTable {
 .filterConditionDiv{
     height: 50px;
     border: black 1px solid;
-    width: 78%;
+    width: 70%;
     margin-top: 20px;
     margin-left: 10px;
     display: inline-block;
@@ -192,11 +193,25 @@ th.borderTable {
     margin-left: 10px;
     display: inline-block;
 }
-.buttonAddCondition{
-    margin-left: 30px;
-    float: bottom;
+.divLineaCondition{
+    width: 10px;
+    height: 50px;
+    border-left:black 5px solid ;
+    margin-left: 10px;
 }
 
+
+.buttonAddCondition{
+    margin-left: 30px;
+}
+.buttonImage{
+    width:12px;
+}
+.buttonAddFilterGroup{
+    margin-left: 30px;
+    position: absolute;
+    bottom:20px;
+}
 /*..........*/
 .divInSelectedGraphic_condition {
     border: black 1px solid;
