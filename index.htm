@@ -2542,14 +2542,14 @@
 
 
 
-		function typeOfValueFromInput(wichTextInput, place, value1, value2) {
+		function typeOfValueFromInput(wichTextInput, place_Id, value1, value2,numberFilterCondition) {
 			var typeOfValues;
 			if (wichTextInput == "simple") {
-				var textInput = document.getElementById("textInput" + place);
+				var textInput = document.getElementById("textInput_" + place_Id + "_" + numberFilterCondition);
 			}
 			else {
-				var textIputInterval1 = document.getElementById("textInputInterval1" + place);
-				var textIputInterval2 = document.getElementById("textInputInterval2" + place);
+				var textIputInterval1 = document.getElementById("textInputInterval1_" +  place_Id + "_" + numberFilterCondition);
+				var textIputInterval2 = document.getElementById("textInputInterval2_" +  place_Id + "_" + numberFilterCondition);
 			}
 			if (wichTextInput == "simple") {
 
@@ -2674,20 +2674,19 @@
 			return typeOfValues;
 
 		}
-
-		function fillValueSelector(nodeId, place) {
+		function fillValueSelectorInFilterCondition(nodeId, finalParForId) {
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
-			select = document.getElementById("selectorProperty" + place);
+			select = document.getElementById("selectorProperty_" + finalParForId); //finalParForId= place_Id + "_" + numberFilterCondition
 			var selectedProperty = select.options[select.selectedIndex].value;
 			var selectorValue, selectorValueInterval, selectorValueInterval2;
 
 
-			selectorValue = document.getElementById("selectorValue" + place);
+			selectorValue = document.getElementById("selectorValue_" + finalParForId);
 			selectorValue.innerHTML = "";
-			selectorValueInterval = document.getElementById("selectorValueInterval1" + place);
+			selectorValueInterval = document.getElementById("selectorValueInterval1_" + finalParForId);
 			selectorValueInterval.innerHTML = "";
-			selectorValueInterval2 = document.getElementById("selectorValueInterval2" + place);
+			selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + finalParForId);
 			selectorValueInterval2.innerHTML = "";
 
 			var valor;
@@ -2697,7 +2696,6 @@
 			// s'ha de filtrar
 			for (var index = 0; index < data.length; index++) { //crear array de valors
 				valor = data[index][selectedProperty];
-				// console.log(typeof valor);
 				if (typeof valor === "object") isAnObject = "yes";
 				if (!arrayValors.find(element => element == valor)) {
 					arrayValors.push(valor);
@@ -2706,9 +2704,7 @@
 				}
 			}
 
-			console.log(arrayValors);
-
-			for (var i = 0; i < arrayValors.length; i++) { //omplir selector simple
+			for (var i = 0; i < arrayValors.length; i++) { //omplir selectors simple i intervals
 				var opcio = document.createElement("option");
 				var opcio2 = document.createElement("option");
 				var opcio3 = document.createElement("option");
@@ -2724,15 +2720,15 @@
 				selectorValueInterval2.appendChild(opcio3);
 			}
 			var divIsAnObject = document.getElementById("divIsAnObject");
-			var addButton = document.getElementById("addButton");
+			// var addButton = document.getElementById("addButton");
 			var table = document.getElementById("tableResult");
-			var rowsNumbers = table.rows.length;
-			var buttonSave;
-
+			// var rowsNumbers = table.rows.length;
+			// var buttonSave;
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////
 			if (isAnObject === "yes") { //no està acabat (falta interval i alguna cosa més)
 				selectorValue.setAttribute("class", "objectInSelect");
 				divIsAnObject.classList.remove("hidden");
-				addButton.disabled = true;
+				// addButton.disabled = true;
 
 
 				for (var i = 1; i < rowsNumbers; i++) {
@@ -2748,7 +2744,7 @@
 			} else {
 				selectorValue.classList.remove("objectInSelect");
 				divIsAnObject.classList.add("hidden");
-				addButton.disabled = false;
+				// addButton.disabled = false;
 				for (var i = 1; i < rowsNumbers; i++) {
 					// if (row == i) {
 					// 	buttonSave = document.getElementById("buttonSave" + i);
@@ -2760,19 +2756,104 @@
 			}
 		}
 
-		function closeModalSelect(place, place_Id, button, row, selector, nodeId) {
+		// function fillValueSelector(nodeId, place) {
+		// 	var data = networkNodes.get(nodeId).STAdata;
+		// 	var select;
+		// 	select = document.getElementById("selectorProperty" + place);
+		// 	var selectedProperty = select.options[select.selectedIndex].value;
+		// 	var selectorValue, selectorValueInterval, selectorValueInterval2;
+
+
+		// 	selectorValue = document.getElementById("selectorValue" + place);
+		// 	selectorValue.innerHTML = "";
+		// 	selectorValueInterval = document.getElementById("selectorValueInterval1" + place);
+		// 	selectorValueInterval.innerHTML = "";
+		// 	selectorValueInterval2 = document.getElementById("selectorValueInterval2" + place);
+		// 	selectorValueInterval2.innerHTML = "";
+
+		// 	var valor;
+		// 	var arrayValors = [];
+		// 	var isAnObject;
+
+		// 	// s'ha de filtrar
+		// 	for (var index = 0; index < data.length; index++) { //crear array de valors
+		// 		valor = data[index][selectedProperty];
+		// 		// console.log(typeof valor);
+		// 		if (typeof valor === "object") isAnObject = "yes";
+		// 		if (!arrayValors.find(element => element == valor)) {
+		// 			arrayValors.push(valor);
+		// 		} else {
+		// 			// console.log("en el else");
+		// 		}
+		// 	}
+
+		// 	console.log(arrayValors);
+
+		// 	for (var i = 0; i < arrayValors.length; i++) { //omplir selector simple
+		// 		var opcio = document.createElement("option");
+		// 		var opcio2 = document.createElement("option");
+		// 		var opcio3 = document.createElement("option");
+		// 		valor = arrayValors[i];
+		// 		opcio.setAttribute("value", valor);
+		// 		opcio2.setAttribute("value", valor);
+		// 		opcio3.setAttribute("value", valor);
+		// 		opcio.innerHTML = valor;
+		// 		opcio2.innerHTML = valor;
+		// 		opcio3.innerHTML = valor;
+		// 		selectorValue.appendChild(opcio);
+		// 		selectorValueInterval.appendChild(opcio2);
+		// 		selectorValueInterval2.appendChild(opcio3);
+		// 	}
+		// 	var divIsAnObject = document.getElementById("divIsAnObject");
+		// 	var addButton = document.getElementById("addButton");
+		// 	var table = document.getElementById("tableResult");
+		// 	var rowsNumbers = table.rows.length;
+		// 	var buttonSave;
+
+		// 	if (isAnObject === "yes") { //no està acabat (falta interval i alguna cosa més)
+		// 		selectorValue.setAttribute("class", "objectInSelect");
+		// 		divIsAnObject.classList.remove("hidden");
+		// 		addButton.disabled = true;
+
+
+		// 		for (var i = 1; i < rowsNumbers; i++) {
+
+		// 			// if (row == i) {
+		// 			// 	buttonSave = document.getElementById("buttonSave" + i);
+		// 			// 	if (!buttonSave.contains("hidden")) {
+		// 			// 		buttonSave.disabled = true;
+		// 			// 	};
+		// 			// }
+
+		// 		}
+		// 	} else {
+		// 		selectorValue.classList.remove("objectInSelect");
+		// 		divIsAnObject.classList.add("hidden");
+		// 		addButton.disabled = false;
+		// 		for (var i = 1; i < rowsNumbers; i++) {
+		// 			// if (row == i) {
+		// 			// 	buttonSave = document.getElementById("buttonSave" + i);
+		// 			// 	if (!buttonSave.contains("hidden")) {
+		// 			// 		buttonSave.disabled = false;
+		// 			// 	};
+		// 			// }
+		// 		}
+		// 	}
+		// }
+
+		function closeModalSelect(numberFilterCondition, place_Id, button, row, selector, nodeId) {
 			event.preventDefault();
-			var divFilterContainer = document.getElementById("divFilterContainer" + place);
-			var textInput = document.getElementById("textInput" + place);
-			var displaySelect = document.getElementById("displaySelect" + place);
+			var divFilterContainer = document.getElementById("divFilterContainer_" + place_Id + "_" + numberFilterCondition);
+			var textInput = document.getElementById("textInput_" + place_Id + "_" + numberFilterCondition);
+			var displaySelect = document.getElementById("displaySelect_" + place_Id + "_" + numberFilterCondition);
 
-			var divFilterContainer2 = document.getElementById("divFilterContainer2" + place);
-			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
-			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
-			var displaySelectInterval = document.getElementById("displaySelectInterval" + place);
+			var divFilterContainer2 = document.getElementById("divFilterContainer2_" + place_Id + "_" + numberFilterCondition);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" + place_Id + "_" + numberFilterCondition);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" + place_Id + "_" + numberFilterCondition);
+			var displaySelectInterval = document.getElementById("displaySelectInterval_" + place_Id + "_" + numberFilterCondition);
 
-			var addButton = document.getElementById("addButton");
-			var saveButton = document.getElementById("buttonSave" + row);
+			// var addButton = document.getElementById("addButton_"+place_Id + "_" + numberFilterCondition);
+			// var saveButton = document.getElementById("buttonSave" + row);
 
 			var interval;
 
@@ -2785,7 +2866,8 @@
 				displaySelect.classList.add("inblock");
 				displaySelect.classList.remove("hidden");
 				interval = false;
-			} else {//Si ve del Interval. Amagar el container i mostrar els textos i el display
+			} 
+			else {//Si ve del Interval. Amagar el container i mostrar els textos i el display
 				divFilterContainer2.classList.remove("inblock");
 				divFilterContainer2.classList.add("hidden");
 				textInputInterval1.classList.add("inblock");
@@ -2797,23 +2879,24 @@
 				interval = true;
 			}
 
-			addButton.disabled = false;
-			if (place != "_optionsRow") {
-				saveButton.disabled = false;
-			}
+			// addButton.disabled = false;
 
-			//Falta escriure l'opcio del select (???')')
+			// if (place != "_optionsRow") {
+			// 	saveButton.disabled = false;
+			// }
+
+			//Falta escriure l'opcio del select )
 			if (button == "ok") {
 				if (interval == false) {
-					var selectorValue = document.getElementById("selectorValue" + place);
+					var selectorValue = document.getElementById("selectorValue_" + place_Id + "_" + numberFilterCondition);
 					textInput.value = selectorValue.options[selectorValue.selectedIndex].value;
-					adjustWidth(place, place_Id, "simple", nodeId);
+					adjustWidth(numberFilterCondition, place_Id, "simple", nodeId);
 				} else {
-					var selectorValueInterval1 = document.getElementById("selectorValueInterval1" + place);
-					var selectorValueInterval2 = document.getElementById("selectorValueInterval2" + place);
+					var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + place_Id + "_" + numberFilterCondition);
+					var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + place_Id + "_" + numberFilterCondition);
 					textInputInterval1.value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
 					textInputInterval2.value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
-					adjustWidth(place, place_Id, "interval", nodeId);
+					adjustWidth(numberFilterCondition, place_Id, "interval", nodeId);
 
 				}
 
@@ -2822,18 +2905,19 @@
 
 		}
 
-		function changeWriteToSelect(nodeId, place, selector) {  //Que pugui recollir el text del input
+		function changeWriteToSelect(nodeId, place_Id, selector,numberFilterCondition) {  //Que pugui recollir el text del input
 			event.preventDefault();
-			var divFilterContainer = document.getElementById("divFilterContainer" + place);
-			var textInput = document.getElementById("textInput" + place);
-			var displaySelect = document.getElementById("displaySelect" + place);
+			console.log(place_Id)
+			var divFilterContainer = document.getElementById("divFilterContainer_" + place_Id + "_" + numberFilterCondition);
+			var textInput = document.getElementById("textInput_" + place_Id + "_" + numberFilterCondition);
+			var displaySelect = document.getElementById("displaySelect_" + place_Id + "_" + numberFilterCondition);
 
-			var divFilterContainer2 = document.getElementById("divFilterContainer2" + place);
-			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
-			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
-			var displaySelectInterval = document.getElementById("displaySelectInterval" + place);
+			var divFilterContainer2 = document.getElementById("divFilterContainer2_" + place_Id + "_" + numberFilterCondition);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" + place_Id + "_" + numberFilterCondition);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" + place_Id + "_" + numberFilterCondition);
+			var displaySelectInterval = document.getElementById("displaySelectInterval_" + place_Id + "_" + numberFilterCondition);
 
-			var addButton = document.getElementById("addButton");
+			// var addButton = document.getElementById("addButton_"+place_Id + "_" + numberFilterCondition);
 
 			//quin text està obert?
 			if (selector == "simple") {
@@ -2844,7 +2928,8 @@
 				divFilterContainer.classList.remove("hidden");
 				divFilterContainer.classList.add("inblock");
 
-			} else { //interval
+			}
+			 else { //interval
 				textInputInterval1.classList.remove("inblock");
 				textInputInterval2.classList.remove("inblock");
 				displaySelectInterval.classList.remove("inblock");
@@ -2855,18 +2940,18 @@
 				divFilterContainer2.classList.add("inblock");
 			}
 
-			addButton.disabled = true;
+			// addButton.disabled = true;
 
-			var table = document.getElementById("tableResult");
-			var rowsNumbers = table.rows.length;
-			var saveButton;
+			// var table = document.getElementById("tableResult");
+			// var rowsNumbers = table.rows.length;
+			// var saveButton;
 
-			for (var i = 1; i < rowsNumbers; i++) {
-				saveButton = document.getElementById("buttonSave" + i);
-				if (saveButton.classList.contains("hidden") == false) {
-					saveButton.disabled = true;
-				}
-			}
+			// for (var i = 1; i < rowsNumbers; i++) {
+			// 	saveButton = document.getElementById("buttonSave" + i);
+			// 	if (saveButton.classList.contains("hidden") == false) {
+			// 		saveButton.disabled = true;
+			// 	}
+			// }
 
 		}
 
@@ -2882,15 +2967,15 @@
 			// }
 		}
 
-		function changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2) {
+		function changeSelectConditionValues(place_Id, wichTextInput, value1, valueInput1, valueInput2,numberFilterCondition) { //Canvia el select de condició en funció del tipus de valor
 			var typeOfValues;
-			var selectCondition = document.getElementById("selectorCondition" + place);
+			var selectCondition = document.getElementById("selectorCondition_" + place_Id + "_" + numberFilterCondition);
 
 			if (wichTextInput == "simple") {
-				typeOfValues = typeOfValueFromInput(wichTextInput, place, value1);
+				typeOfValues = typeOfValueFromInput(wichTextInput, place_Id, value1,"no",numberFilterCondition);
 
 			} else {
-				typeOfValues = typeOfValueFromInput(wichTextInput, place, valueInput1, valueInput2);
+				typeOfValues = typeOfValueFromInput(wichTextInput, place_Id, valueInput1, valueInput2,numberFilterCondition);
 			}
 			var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
 			if (wichTextInput == "simple") {
@@ -2920,12 +3005,12 @@
 			}
 		}
 
-		function adjustWidth(place, placeId, wichTextInput, nodeId) { //and refill conditionSelect (interval if it is a number or a date)
+		function adjustWidth(numberFilterCondition, place_Id, wichTextInput, nodeId) { //and refill conditionSelect (interval if it is a number or a date)
 			var textInput, textIputInterval1, textIputInterval2;
-			if (wichTextInput == "simple") { textInput = document.getElementById("textInput" + place); }
+			if (wichTextInput == "simple") { textInput = document.getElementById("textInput_" +  place_Id + "_" + numberFilterCondition); }
 			else {
-				textIputInterval1 = document.getElementById("textInputInterval1" + place);
-				textIputInterval2 = document.getElementById("textInputInterval2" + place);
+				textIputInterval1 = document.getElementById("textInputInterval1_" +  place_Id + "_" + numberFilterCondition);
+				textIputInterval2 = document.getElementById("textInputInterval2_" +  place_Id + "_" + numberFilterCondition);
 			}
 
 			var value1, valueInput1, valueInput2;
@@ -2960,25 +3045,25 @@
 				}
 			}
 
-			changeSelectConditionValues(place, wichTextInput, value1, valueInput1, valueInput2); //canviar les opcions del selector en funció del tipus de valor del inputText
+			changeSelectConditionValues(place_Id, wichTextInput, value1, valueInput1, valueInput2,numberFilterCondition ); //canviar les opcions del selector en funció del tipus de valor del inputText
 
 			//control del filter i el simple buit
-			var addButton = document.getElementById("addButton");
+			// var addButton = document.getElementById("addButton");
 			var typeOfValues;
 			if (wichTextInput == "interval") {
-				typeOfValues = typeOfValueFromInput(wichTextInput, place, valueInput1, valueInput2);
-				if (typeOfValues == "text" || typeOfValues == "empty") {
-					addButton.disabled = true;
-				} else {
-					addButton.disabled = false;
-				}
+				typeOfValues = typeOfValueFromInput(wichTextInput, place_Id, valueInput1, valueInput2,numberFilterCondition);
+				// if (typeOfValues == "text" || typeOfValues == "empty") {
+				// 	addButton.disabled = true;
+				// } else {
+				// 	addButton.disabled = false;
+				// }
 			} else {
-				typeOfValues = typeOfValueFromInput(wichTextInput, place, value1);
-				if (typeOfValues == "empty") {
-					addButton.disabled = true;
-				} else {
-					addButton.disabled = false;
-				}
+				typeOfValues = typeOfValueFromInput(wichTextInput, place_Id, value1,"no",numberFilterCondition);
+				// if (typeOfValues == "empty") {
+				// 	addButton.disabled = true;
+				// } else {
+				// 	addButton.disabled = false;
+				// }
 			}
 		}
 
@@ -2994,36 +3079,38 @@
 			var selectorStructureRow;
 			var divFilterBox = document.getElementById("divSelectorRowsFilter");
 
-			var optionsRow = document.createElement("div");
-			optionsRow.setAttribute("id", "optionsRow");
-			divFilterBox.appendChild(optionsRow);
-			var label1 = document.createElement("label");
-			label1.innerHTML = "Choose a Property";
-			optionsRow.appendChild(label1);
+			// var optionsRow = document.createElement("div");
+			// optionsRow.setAttribute("id", "optionsRow");
+			// divFilterBox.appendChild(optionsRow);
+			// var labelA = document.createElement("label");
+			// labelA.innerHTML = "Choose a Property";
+			// optionsRow.appendChild(labelA);
 
 
-			createSelect(1, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
-			createSelect(2, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
+			// createSelect(1, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
+			// createSelect(2, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
 
-			var label2 = document.createElement("label");
-			label2.setAttribute("id", "label2");
-			label2.innerHTML = "a Value";
-			optionsRow.appendChild(label2);
+			// var labelB = document.createElement("label");
+			// labelB.setAttribute("id", "labelB");
+			// labelB.innerHTML = "a Value";
+			// optionsRow.appendChild(labelB);
 
-			createSelect(3, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
+			// createSelect(3, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
 
-			var addButton = document.createElement("button");
-			addButton.setAttribute("id", "addButton");
-			addButton.setAttribute("onclick", "addSelected('" + paramsNodeId + "','_optionsRow')");
-			addButton.innerHTML = "add";
-			optionsRow.appendChild(addButton);
+			// var addButton = document.createElement("button");
+			// addButton.setAttribute("id", "addButton");
+			// addButton.setAttribute("onclick", "addSelected('" + paramsNodeId + "','_optionsRow')");
+			// addButton.innerHTML = "add";
+			// optionsRow.appendChild(addButton);
 
+			//Estructura 
 			var divLine = document.createElement("div");
 			divLine.setAttribute("id", "divLine");
 			divFilterBox.appendChild(divLine);
 
 			var fullFilterDiv = document.createElement("div"); //Verd (Global)
-			fullFilterDiv.id = "fullFilterDiv";
+			fullFilterDiv.setAttribute("id", "fullFilterDiv_" + paramsNodeId);
+			fullFilterDiv.setAttribute("class", "fullFilterDiv");
 			divLine.appendChild(fullFilterDiv);
 
 			var filterGroup = document.createElement("div"); //Lila (Grup de condicio)
@@ -3057,74 +3144,86 @@
 			var buttonAddFilterGroup = document.createElement("button");
 			buttonAddFilterGroup.setAttribute("id", "buttonAddFilterGroup");
 			buttonAddFilterGroup.setAttribute("class", "buttonAddFilterGroup");
-			buttonAddFilterGroup.innerHTML=" + Add a new filter group";
-
+			buttonAddFilterGroup.innerHTML = " + Add a new filter group";
 			fullFilterDiv.appendChild(buttonAddFilterGroup);
+
+
+			//Creació dels selectors 
+			var label1 = document.createElement("label");
+			label1.innerHTML = "Choose a Property";
+			filterConditionDiv.appendChild(label1);
+
+			createSelectInFilterCondition(1, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no","no" ,"0");
+			createSelectInFilterCondition(2, "filterCondition_0",paramsNodeId,"no", "no", "initial", "no","no","0");
 			
+			var label2 = document.createElement("label");
+			label2.innerHTML = "a Value of ";
+			filterConditionDiv.appendChild(label2);
+
+			createSelectInFilterCondition(3, "filterCondition_0",paramsNodeId, dataAttributes, "no", "initial", "no","no","0");
+
+
 			// var optionsRow2 = optionsRow.cloneNode(true);
 			// optionsRow.setAttribute("id", "optionsRow2");
 			// fullFilterDiv.appendChild(optionsRow2);
 
 
 
+			// var divResult = document.createElement("div"); //Taula de resultats
+			// divResult.id = "divResult";
+			// // divResult.setAttribute("class", "inblock");
+			// divResult.innerHTML = "These are your values selected to filter ";
+			// divLine.appendChild(divResult);
 
+			// var divGraphicOrder = document.createElement("div"); //Elements gràfics
+			// divGraphicOrder.setAttribute("id", "divGraphicOrder");
+			// divGraphicOrder.innerHTML = ""
+			// // divGraphicOrder.setAttribute("class", "inblock");
+			// divLine.appendChild(divGraphicOrder);
 
-
-			var divResult = document.createElement("div"); //Taula de resultats
-			divResult.id = "divResult";
-			// divResult.setAttribute("class", "inblock");
-			divResult.innerHTML = "These are your values selected to filter ";
-			divLine.appendChild(divResult);
-
-			var divGraphicOrder = document.createElement("div"); //Elements gràfics
-			divGraphicOrder.setAttribute("id", "divGraphicOrder");
-			divGraphicOrder.innerHTML = ""
-			// divGraphicOrder.setAttribute("class", "inblock");
-			divLine.appendChild(divGraphicOrder);
-
-			var divGraphicOrder1 = document.createElement("div"); //Fila1
-			divGraphicOrder1.setAttribute("id", "divGraphicOrder_1");
-			divGraphicOrder.appendChild(divGraphicOrder1);
-			var graphicButtonAnd = document.createElement("button");
-			graphicButtonAnd.id = "graphicButtonAnd";
-			graphicButtonAnd.innerHTML = "add and";
-			graphicButtonAnd.setAttribute("onclick", "addCondition('and', '" + paramsNodeId + "')");
-			var graphicButtonOr = document.createElement("button");
-			graphicButtonOr.id = "graphicButtonOr";
-			graphicButtonOr.innerHTML = "add or";
-			graphicButtonOr.setAttribute("onclick", "addCondition('or', '" + paramsNodeId + "')");
-			var graphicButtonNot = document.createElement("button");
-			graphicButtonNot.id = "graphicButtonNot";
-			graphicButtonNot.innerHTML = "add not";
-			graphicButtonNot.setAttribute("onclick", "addCondition('not', '" + paramsNodeId + "')");
-			divGraphicOrder1.appendChild(graphicButtonAnd);
-			divGraphicOrder1.appendChild(graphicButtonOr);
-			divGraphicOrder1.appendChild(graphicButtonNot);
+			// var divGraphicOrder1 = document.createElement("div"); //Fila1
+			// divGraphicOrder1.setAttribute("id", "divGraphicOrder_1");
+			// divGraphicOrder.appendChild(divGraphicOrder1);
+			// var graphicButtonAnd = document.createElement("button");
+			// graphicButtonAnd.id = "graphicButtonAnd";
+			// graphicButtonAnd.innerHTML = "add and";
+			// graphicButtonAnd.setAttribute("onclick", "addCondition('and', '" + paramsNodeId + "')");
+			// var graphicButtonOr = document.createElement("button");
+			// graphicButtonOr.id = "graphicButtonOr";
+			// graphicButtonOr.innerHTML = "add or";
+			// graphicButtonOr.setAttribute("onclick", "addCondition('or', '" + paramsNodeId + "')");
+			// var graphicButtonNot = document.createElement("button");
+			// graphicButtonNot.id = "graphicButtonNot";
+			// graphicButtonNot.innerHTML = "add not";
+			// graphicButtonNot.setAttribute("onclick", "addCondition('not', '" + paramsNodeId + "')");
+			// divGraphicOrder1.appendChild(graphicButtonAnd);
+			// divGraphicOrder1.appendChild(graphicButtonOr);
+			// divGraphicOrder1.appendChild(graphicButtonNot);
 
 
 
 
-			var divGraphicOrder2 = document.createElement("div");
-			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2_" + paramsNodeId);
-			divGraphicOrder2.setAttribute("class", "divGraphicOrder2")
-			divGraphicOrder.appendChild(divGraphicOrder2);
+			// var divGraphicOrder2 = document.createElement("div");
+			// divGraphicOrder2.setAttribute("id", "divGraphicOrder_2_" + paramsNodeId);
+			// divGraphicOrder2.setAttribute("class", "divGraphicOrder2")
+			// divGraphicOrder.appendChild(divGraphicOrder2);
 
-			var divGraphicOrder3 = document.createElement("div");
-			divGraphicOrder3.setAttribute("id", "divGraphicOrder_3");
-			divGraphicOrder.appendChild(divGraphicOrder3);
-			// var buttonDelete = document.createElement("button");
-			// buttonDelete.id = "graphicButtonDelete";
-			// buttonDelete.innerHTML = "Delete";
-			var deleteDiv = document.createElement("div");
-			deleteDiv.id = "deleteDiv_" + paramsNodeId;
-			deleteDiv.setAttribute("class", "trash");
+			// var divGraphicOrder3 = document.createElement("div");
+			// divGraphicOrder3.setAttribute("id", "divGraphicOrder_3");
+			// divGraphicOrder.appendChild(divGraphicOrder3);
+			// // var buttonDelete = document.createElement("button");
+			// // buttonDelete.id = "graphicButtonDelete";
+			// // buttonDelete.innerHTML = "Delete";
+			// var deleteDiv = document.createElement("div");
+			// deleteDiv.id = "deleteDiv_" + paramsNodeId;
+			// deleteDiv.setAttribute("class", "trash");
 
-			var buttonEdit = document.createElement("button");
-			buttonEdit.id = "graphicButtonEdit";
-			buttonEdit.innerHTML = "Edit";
-			divGraphicOrder3.appendChild(deleteDiv);
-			divGraphicOrder3.appendChild(buttonEdit);
-			// divGraphicOrder3.appendChild(buttonDelete);
+			// var buttonEdit = document.createElement("button");
+			// buttonEdit.id = "graphicButtonEdit";
+			// buttonEdit.innerHTML = "Edit";
+			// divGraphicOrder3.appendChild(deleteDiv);
+			// divGraphicOrder3.appendChild(buttonEdit);
+			// // divGraphicOrder3.appendChild(buttonDelete);
 
 
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
@@ -3142,30 +3241,31 @@
 			divIsAnObject.appendChild(imageIsAnObject);
 			divFilterBox.appendChild(divIsAnObject);
 
-			var table = document.createElement("table");
-			table.setAttribute("id", "tableResult");
-			table.setAttribute("class", "borderTable");
-			var tableTr = document.createElement("tr");
-			tableTr.setAttribute("id", "tableTr0");
-			tableTr.setAttribute("class", "borderTable");
-			table.appendChild(tableTr);
-			for (var i = 0; i < 5; i++) {
-				var tableTh = document.createElement("th");
-				tableTh.setAttribute("class", "borderTable");
-				if (i == 1) {
-					tableTh.innerHTML = "Property";
+			// var table = document.createElement("table");
+			// table.setAttribute("id", "tableResult");
+			// table.setAttribute("class", "borderTable");
+			// var tableTr = document.createElement("tr");
+			// tableTr.setAttribute("id", "tableTr0");
+			// tableTr.setAttribute("class", "borderTable");
+			// table.appendChild(tableTr);
+			// for (var i = 0; i < 5; i++) {
+			// 	var tableTh = document.createElement("th");
+			// 	tableTh.setAttribute("class", "borderTable");
+			// 	if (i == 1) {
+			// 		tableTh.innerHTML = "Property";
 
-				} else if (i == 3) {
-					tableTh.innerHTML = "Value";
-				}
-				tableTr.appendChild(tableTh)
-			}
+			// 	} else if (i == 3) {
+			// 		tableTh.innerHTML = "Value";
+			// 	}
+			// 	tableTr.appendChild(tableTh)
+			// }
 
-			divResult.appendChild(table);
+			// divResult.appendChild(table);
 
-			//omplir la taula si prèviament s'ha seleccionat algo
+			//omplir la taula si prèviament s'ha seleccionat algo !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			console.log("currentNode: " + currentNode);
 			console.log("paramsNodeId: " + paramsNodeId);
+
 			var thisNode = networkNodes.get(paramsNodeId);
 			if (thisNode.STASelectedRows || thisNode.STASelectedRowsTable) {
 				var elementsPreviouslySelected;
@@ -3174,7 +3274,7 @@
 				} else if (thisNode.STASelectedRowsTable) {
 					elementsPreviouslySelected = thisNode.STASelectedRowsTable;
 				}
-				drawTable(paramsNodeId, elementsPreviouslySelected, "add");
+				// drawTable(paramsNodeId, elementsPreviouslySelected, "add");
 			}
 
 
@@ -3191,19 +3291,19 @@
 
 
 
-		function addCondition(condition, nodeId) {
-			event.preventDefault();
-			console.log(condition);
-			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
-			var divCondition = document.createElement("div");
-			divCondition.innerHTML = condition;
-			divCondition.setAttribute("class", "divInSelectedGraphic_condition divInSelectedGraphic");
-			divCondition.value = condition;
-			divGraphicOrder_2.appendChild(divCondition);
-			divCondition.draggable = true;
-			divGraphicOrder_2.appendChild(newDiv);
+		// function addCondition(condition, nodeId) {
+		// 	event.preventDefault();
+		// 	console.log(condition);
+		// 	var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
+		// 	var divCondition = document.createElement("div");
+		// 	divCondition.innerHTML = condition;
+		// 	divCondition.setAttribute("class", "divInSelectedGraphic_condition divInSelectedGraphic");
+		// 	divCondition.value = condition;
+		// 	divGraphicOrder_2.appendChild(divCondition);
+		// 	divCondition.draggable = true;
+		// 	divGraphicOrder_2.appendChild(newDiv);
 
-		}
+		// }
 
 		//Elements draggables (Part gràfica del FilterRow)
 		var draggedElement = null;
@@ -3280,18 +3380,20 @@
 			});
 		}
 
-
 		////Fi draggables
 
-		function addSelected(nodeId, place) {
+
+
+
+		function addSelected(nodeId, place_Id,numberFilterCondition) {
 			event.preventDefault();
 			var table = document.getElementById("tableResult");
 			// var señectorAndOrNot=document.getElementById("select_"+nodeId+"_"+(table.length-1));
-			var selectorProperty = document.getElementById("selectorProperty" + place);
-			var selectorCondition = document.getElementById("selectorCondition" + place);
-			var textInput = document.getElementById("textInput" + place);
-			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
-			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
+			var selectorProperty = document.getElementById("selectorProperty_" + place_Id + "_" + numberFilterCondition);
+			var selectorCondition = document.getElementById("selectorCondition_" + place_Id + "_" + numberFilterCondition);
+			var textInput = document.getElementById("textInput_" +place_Id + "_" + numberFilterCondition);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" + place_Id + "_" + numberFilterCondition);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" + place_Id + "_" + numberFilterCondition);
 			var typeOfValues;
 
 			//llegir taula
@@ -3321,7 +3423,7 @@
 			if (textInput.classList.contains("hidden") == false) {
 				valueTextInput = textInput.value
 				tableContent.push(valueTextInput);
-				typeOfValues = typeOfValueFromInput("simple", place, valueTextInput);
+				typeOfValues = typeOfValueFromInput("simple", place_Id, valueTextInput,"no", numberFilterCondition);
 				tableContent.push(typeOfValues);
 			} else { //valors de l'interval
 				var intervalValues = [];
@@ -3330,7 +3432,7 @@
 				intervalValues.push(textInputInterval2.value);
 
 				tableContent.push(intervalValues);
-				typeOfValues = typeOfValueFromInput("interval", place, textInputInterval1.value, textInputInterval2.value);
+				typeOfValues = typeOfValueFromInput("interval", place_Id, textInputInterval1.value, textInputInterval2.value,numberFilterCondition);
 				tableContent.push(typeOfValues); //afegir el tipus
 			}
 
@@ -3395,19 +3497,20 @@
 
 
 
-		function showIntervalSelector(nodeId, place) {
+		function showIntervalSelector(nodeId, place_Id,numberFilterCondition) {
 			event.preventDefault();
-			var selectorCondition = document.getElementById("selectorCondition" + place);
+			console.log(place_Id);
+			var selectorCondition = document.getElementById("selectorCondition_" +  place_Id + "_" + numberFilterCondition);
 			var selectedValue = selectorCondition.options[selectorCondition.selectedIndex].value;
 
-			var divFilterContainer = document.getElementById("divFilterContainer" + place);
-			var textInput = document.getElementById("textInput" + place);
-			var displaySelect = document.getElementById("displaySelect" + place);
+			var divFilterContainer = document.getElementById("divFilterContainer_" +  place_Id + "_" + numberFilterCondition);
+			var textInput = document.getElementById("textInput_" +  place_Id + "_" + numberFilterCondition);
+			var displaySelect = document.getElementById("displaySelect_" +  place_Id + "_" + numberFilterCondition);
 
-			var divFilterContainer2 = document.getElementById("divFilterContainer2" + place);
-			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
-			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
-			var displaySelectInterval = document.getElementById("displaySelectInterval" + place);
+			var divFilterContainer2 = document.getElementById("divFilterContainer2_" +  place_Id + "_" + numberFilterCondition);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" +  place_Id + "_" + numberFilterCondition);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" +  place_Id + "_" + numberFilterCondition);
+			var displaySelectInterval = document.getElementById("displaySelectInterval_" +  place_Id + "_" + numberFilterCondition);
 
 
 
@@ -3499,29 +3602,24 @@
 			}
 
 		}
-
-		function createSelect(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent, typeOfValues) {
+		function createSelectInFilterCondition(number, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent, typeOfValues, numberFilterCondition) {
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data, previousNode;
 
+
+
 			var actualNode = networkNodes.get(nodeId);
 			if (actualNode.image == "SelectRowsTable.png") { //actualitzar el STAdata del Node actual amb la info del previ
-
 				previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
-				console.log(previousNode);
-				// data = previousNode.STAdata;
-				actualNode.STAdata = previousNode[0].STAdata;
+				actualNode.STAdata = previousNode[0].STAdata; //actualitzem en aquest el STAdata
 				networkNodes.update(actualNode);
-				data = actualNode.STAdata;
-
+				data = actualNode.STAdata; //agafem la data
 			} else {
 				data = networkNodes.get(nodeId).STAdata;
 			}
 
 
-
-			//console.log(nodeId)
 			var dataAttributes2;
 			if (button != "initial") {
 				var table = document.getElementById("tableResult");
@@ -3540,26 +3638,27 @@
 			var dataAttributesFiltered = dataAttributesKeys.filter((element) =>
 				element != "@iot.selfLink"
 			);
-			// console.log(dataAttributesFiltered);
+
 			if (number == 1) {
-				select.setAttribute("id", "selectorProperty" + place);
-				select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + place + "')");
+				select.setAttribute("id", "selectorProperty_" + place_Id + "_" + numberFilterCondition);
+				select.setAttribute("onChange", "fillValueSelectorInFilterCondition('" + nodeId + "','" + place_Id + "_" + numberFilterCondition + "')");
 				for (let i = 0; i < dataAttributesFiltered.length; i++) {// per omplir el de property/property
 					var option = document.createElement("option");
 					option.setAttribute("value", dataAttributesFiltered[i]);
 					option.innerHTML = dataAttributesFiltered[i];
-					if (editRowContent !== 'undefined' & button == "edit") {
-						if (dataAttributesFiltered[i] == editRowContent[number]) {
-							option.setAttribute("selected", true);
-						}
-					}
+					// if (editRowContent !== 'undefined' & button == "edit") {
+					// 	if (dataAttributesFiltered[i] == editRowContent[number]) {
+					// 		option.setAttribute("selected", true);
+					// 	}
+					// }
 					select.appendChild(option);
 					//}
 				}
 				placeId.appendChild(select);
 			}
+
 			else if (number == 2) {
-				select.setAttribute("id", "selectorCondition" + place);
+				select.setAttribute("id", "selectorCondition_" + place_Id + "_" + numberFilterCondition);
 				var selectContent;
 				//que posar en funció de si es interval o no
 
@@ -3567,26 +3666,26 @@
 
 				//al for canviarho pel 2
 				var selectConditionContent2;
-				if (button == "edit") {
-					var typeOfValues = typeOfValueFromInput("simple", place, editRowContent[2]);
-					console.log(typeOfValues);
-					if (typeOfValues == "number") {
-						selectConditionContent2 = selectConditionContentNumber;
-					} else if (typeOfValues == "text") { //text
-						selectConditionContent2 = selectConditionContentText;
-					} else { //data´and empty
-						selectConditionContent2 = selectConditionContent;
-					}
-				} else {
+				// if (button == "edit") {
+				// 	var typeOfValues = typeOfValueFromInput("simple", place, editRowContent[2]);
+				// 	console.log(typeOfValues);
+				// 	if (typeOfValues == "number") {
+				// 		selectConditionContent2 = selectConditionContentNumber;
+				// 	} else if (typeOfValues == "text") { //text
+				// 		selectConditionContent2 = selectConditionContentText;
+				// 	} else { //data´and empty
+				// 		selectConditionContent2 = selectConditionContent;
+				// 	}
+				// } else {
 					//console.log("no entra al edit")
 					selectConditionContent2 = selectConditionContent;
-				}
+				//}
 
 
 				for (var i = 0; i < selectConditionContent2.length; i++) { //crear les opcions del selector de condició
 					var opcioCondicio = document.createElement("option");
 					opcioCondicio.setAttribute("value", selectConditionContent2[i]);
-					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + place + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
+					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + place_Id + "','"+numberFilterCondition+"')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
 					opcioCondicio.innerHTML = selectConditionContent2[i];
 					// console.log(selectConditionContent2[i])
 					if (editRowContent !== 'undefined' & (button == "edit")) {
@@ -3600,28 +3699,28 @@
 				placeId.appendChild(select);
 
 			}
-			else if (number == 3) { //la caixa de select, ok i butó de canvi
+			else if (number == 3) { //la caixa de select, ok i botó de canvi
 
 				//Select senzill
 				var divFilterContainer = document.createElement("div");
-				divFilterContainer.setAttribute("id", "divFilterContainer" + place);
+				divFilterContainer.setAttribute("id", "divFilterContainer_" + place_Id + "_" + numberFilterCondition);
 				divFilterContainer.setAttribute("class", "hidden");
 				placeId.appendChild(divFilterContainer);
 
-				select.setAttribute("id", "selectorValue" + place);
-				select.setAttribute("onChange", "isAnObject('" + nodeId + "','" + place + "')");
+				select.setAttribute("id", "selectorValue_" + place_Id + "_" + numberFilterCondition);
+				select.setAttribute("onChange", "isAnObject('" + nodeId + "','" + place_Id + "')");
 
 				var valor;
 				var arrayValors = [];
 
 				for (let index = 0; index < data.length; index++) {
-					if (button == "edit") {
-						valor = data[index][editRowContent[1]];
-					}
-					else {
+					// if (button == "edit") {
+					// 	valor = data[index][editRowContent[1]];
+					// }
+					// else {
 						valor = data[index][dataAttributesFiltered[0]];
 
-					}
+					//}
 
 					if (!arrayValors.find(element => element == valor)) {
 						var option = document.createElement("option");
@@ -3630,54 +3729,54 @@
 						select.appendChild(option);
 						arrayValors.push(valor);
 					} else {
-						console.log("en el else");
+						//console.log("en el else");
 					}
 				}
 
 				divFilterContainer.appendChild(select);
 
 				var textInput = document.createElement("input");
-				textInput.setAttribute("id", "textInput" + place);
+				textInput.setAttribute("id", "textInput_" + place_Id + "_" + numberFilterCondition);
 				textInput.setAttribute("type", "text");
 				textInput.addEventListener("input", function () {
-					adjustWidth(place, place_Id, "simple", nodeId)
+					adjustWidth("no", place_Id, "simple", nodeId)
 				});
 				textInput.addEventListener("keypress", function (event) {
 					// If the user presses the "Enter" key on the keyboard
 					if (event.key === "Enter") {
 						event.preventDefault();
 						if (place == "_optionsRow") {
-							addSelected(nodeId, place);
+							addSelected(nodeId, place_Id,numberFilterCondition);
 						}
 
 					}
 				});
 
 				placeId.appendChild(textInput);
-				if (button == "edit") {
-					textInput.value = editRowContent[3];
-					adjustWidth(place, place_Id, "simple", nodeId);
-				}
+				// if (button == "edit") {
+				// 	textInput.value = editRowContent[3];
+				// 	adjustWidth(place, place_Id, "simple", nodeId);
+				// }
 
-				var row = rowsNumbers - 1;
+				var row =  1; //Shaurà de borrar
 				var okButton = document.createElement("button");
-				okButton.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','ok'," + row + ",'simple','" + nodeId + "')");
-				okButton.setAttribute("id", "okButton" + place);
+				okButton.setAttribute("onclick", "closeModalSelect('" + numberFilterCondition + "','" + place_Id + "','ok'," + row + ",'simple','" + nodeId + "')");
+				okButton.setAttribute("id", "okButton_" + place_Id + "_" + numberFilterCondition);
 				okButton.innerHTML = "Ok";
 
 				divFilterContainer.appendChild(select);
 				var cancelButton = document.createElement("button");
 				// console.log("inici place_id:  " + place_Id)
-				cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','cancel'," + row + ",'simple','" + nodeId + "')");
-				cancelButton.setAttribute("id", "cancelButton" + place);
+				cancelButton.setAttribute("onclick", "closeModalSelect('" + numberFilterCondition + "','" + place_Id + "','cancel'," + row + ",'simple','" + nodeId + "')");
+				cancelButton.setAttribute("id", "cancelButton_" + place_Id + "_" + numberFilterCondition);
 				cancelButton.innerHTML = "Cancel";
 
 				var writeButton = document.createElement("button");
-				writeButton.setAttribute("id", "displaySelect" + place);
+				writeButton.setAttribute("id", "displaySelect_" + place_Id + "_" + numberFilterCondition);
 				writeButton.setAttribute("class", "displaySelect");
-				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "','simple')");
+				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place_Id + "','simple','"+numberFilterCondition+"')");
 				placeId.appendChild(writeButton);
-				var buttonImage = document.createElement("img");
+				var buttonImage = document.createElement("img"); //Imatge decorativa del botó
 				buttonImage.setAttribute("src", "botoDesplegable.png");
 				buttonImage.setAttribute("class", "buttonImage");
 				writeButton.appendChild(buttonImage);
@@ -3687,50 +3786,54 @@
 
 				//Selects dels intervals
 				var divFilterContainer2 = document.createElement("div");
-				divFilterContainer2.setAttribute("id", "divFilterContainer2" + place);
+				divFilterContainer2.setAttribute("id", "divFilterContainer2_" + place_Id + "_" + numberFilterCondition);
 				divFilterContainer2.setAttribute("class", "hidden");
 				placeId.appendChild(divFilterContainer2);
 
 				var selectorValueInterval1 = select.cloneNode(true); //així ja s'omple com l'altre
-				selectorValueInterval1.setAttribute("id", "selectorValueInterval1" + place);
+				selectorValueInterval1.setAttribute("id", "selectorValueInterval1_" + place_Id + "_" + numberFilterCondition);
 				var selectorValueInterval2 = select.cloneNode(true);
-				selectorValueInterval2.setAttribute("id", "selectorValueInterval2" + place);
+				selectorValueInterval2.setAttribute("id", "selectorValueInterval2_" + place_Id + "_" + numberFilterCondition);
 				divFilterContainer2.appendChild(selectorValueInterval1);
 				divFilterContainer2.appendChild(selectorValueInterval2);
 
 				var textInputInterval1 = textInput.cloneNode(true);
-				textInputInterval1.setAttribute("id", "textInputInterval1" + place);
+				textInputInterval1.setAttribute("id", "textInputInterval1_" + place_Id + "_" + numberFilterCondition);
 				var textInputInterval2 = textInput.cloneNode(true);
-				textInputInterval2.setAttribute("id", "textInputInterval2" + place);
+				textInputInterval2.setAttribute("id", "textInputInterval2_" + place_Id + "_" + numberFilterCondition);
 				textInputInterval1.setAttribute("class", "hidden");
 				textInputInterval2.setAttribute("class", "hidden");
 				textInputInterval1.addEventListener("input", function () {
-					adjustWidth(place, place_Id, "interval", nodeId)
+					adjustWidth(numberFilterCondition, place_Id, "interval", nodeId)
 				});
 				textInputInterval2.addEventListener("input", function () {
-					adjustWidth(place, place_Id, "interval", nodeId)
+					adjustWidth(numberFilterCondition, place_Id, "interval", nodeId)
 				});
 				placeId.appendChild(textInputInterval1);
 				placeId.appendChild(textInputInterval2);
 
 
 				var okButtonInterval = document.createElement("button");
-				okButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','ok'," + row + ",'interval','" + nodeId + "')");
-				okButtonInterval.setAttribute("id", "okButtonInterval" + place);
+				okButtonInterval.setAttribute("onclick", "closeModalSelect('" +  numberFilterCondition + "','" + place_Id + "','ok'," + row + ",'interval','" + nodeId + "')");
+				okButtonInterval.setAttribute("id", "okButtonInterval_" + place_Id + "_" + numberFilterCondition);
 				okButtonInterval.innerHTML = "Ok";
 
 				var cancelButtonInterval = document.createElement("button");
-				cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','cancel'," + row + ",'interval','" + nodeId + "')");
-				cancelButtonInterval.setAttribute("id", "cancelButtonInterval" + place);
+				cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + numberFilterCondition + "','" + place_Id  + "','cancel'," + row + ",'interval','" + nodeId + "')");
+				cancelButtonInterval.setAttribute("id", "cancelButtonInterval_" + place_Id + "_" + numberFilterCondition);
 				cancelButtonInterval.innerHTML = "Cancel";
 
 				var writeButton2 = document.createElement("button");
 				writeButton2.innerHTML = "...";
-				writeButton2.setAttribute("id", "displaySelectInterval" + place);
-				writeButton2.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "','interval')");
+				writeButton2.setAttribute("id", "displaySelectInterval_" + place_Id + "_" + numberFilterCondition);
+				writeButton2.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place_Id + "','inerval','"+numberFilterCondition+"')");
 				writeButton2.setAttribute("class", "hidden");
 
 				placeId.appendChild(writeButton2);
+				var buttonImage2 = document.createElement("img"); //Imatge decorativa del botó
+				buttonImage2.setAttribute("src", "botoDesplegable.png");
+				buttonImage2.setAttribute("class", "buttonImage");
+				writeButton2.appendChild(buttonImage2);
 				divFilterContainer2.appendChild(okButtonInterval);
 				divFilterContainer2.appendChild(cancelButtonInterval);
 
@@ -3738,6 +3841,246 @@
 			}
 
 		}
+
+
+		// function createSelect(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent, typeOfValues) {
+		// 	var placeId = document.getElementById(place_Id);
+		// 	var select = document.createElement("select");
+		// 	var data, previousNode;
+
+		// 	var actualNode = networkNodes.get(nodeId);
+		// 	if (actualNode.image == "SelectRowsTable.png") { //actualitzar el STAdata del Node actual amb la info del previ
+
+		// 		previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
+		// 		console.log(previousNode);
+		// 		// data = previousNode.STAdata;
+		// 		actualNode.STAdata = previousNode[0].STAdata;
+		// 		networkNodes.update(actualNode);
+		// 		data = actualNode.STAdata;
+
+		// 	} else {
+		// 		data = networkNodes.get(nodeId).STAdata;
+		// 	}
+
+
+
+		// 	//console.log(nodeId)
+		// 	var dataAttributes2;
+		// 	// if (button != "initial") {
+		// 	// 	var table = document.getElementById("tableResult");
+		// 	// 	var rowsNumbers = table.rows.length;
+		// 	// }
+
+		// 	if (dataAttributes === "no") {
+		// 		dataAttributes2 = getDataAttributes(data);
+		// 	}
+		// 	else {
+		// 		dataAttributes2 = dataAttributes;
+		// 	};
+
+
+		// 	var dataAttributesKeys = Object.keys(dataAttributes2); //Crear un array amb les keys de l'objecte
+		// 	var dataAttributesFiltered = dataAttributesKeys.filter((element) =>
+		// 		element != "@iot.selfLink"
+		// 	);
+		// 	// console.log(dataAttributesFiltered);
+		// 	if (number == 1) {
+		// 		select.setAttribute("id", "selectorProperty" + place);
+		// 		select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + place + "')");
+		// 		for (let i = 0; i < dataAttributesFiltered.length; i++) {// per omplir el de property/property
+		// 			var option = document.createElement("option");
+		// 			option.setAttribute("value", dataAttributesFiltered[i]);
+		// 			option.innerHTML = dataAttributesFiltered[i];
+		// 			if (editRowContent !== 'undefined' & button == "edit") {
+		// 				if (dataAttributesFiltered[i] == editRowContent[number]) {
+		// 					option.setAttribute("selected", true);
+		// 				}
+		// 			}
+		// 			select.appendChild(option);
+		// 			//}
+		// 		}
+		// 		placeId.appendChild(select);
+		// 	}
+		// 	else if (number == 2) {
+		// 		select.setAttribute("id", "selectorCondition" + place);
+		// 		var selectContent;
+		// 		//que posar en funció de si es interval o no
+
+
+
+		// 		//al for canviarho pel 2
+		// 		var selectConditionContent2;
+		// 		if (button == "edit") {
+		// 			var typeOfValues = typeOfValueFromInput("simple", place, editRowContent[2]);
+		// 			console.log(typeOfValues);
+		// 			if (typeOfValues == "number") {
+		// 				selectConditionContent2 = selectConditionContentNumber;
+		// 			} else if (typeOfValues == "text") { //text
+		// 				selectConditionContent2 = selectConditionContentText;
+		// 			} else { //data´and empty
+		// 				selectConditionContent2 = selectConditionContent;
+		// 			}
+		// 		} else {
+		// 			//console.log("no entra al edit")
+		// 			selectConditionContent2 = selectConditionContent;
+		// 		}
+
+
+		// 		for (var i = 0; i < selectConditionContent2.length; i++) { //crear les opcions del selector de condició
+		// 			var opcioCondicio = document.createElement("option");
+		// 			opcioCondicio.setAttribute("value", selectConditionContent2[i]);
+		// 			select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + place + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
+		// 			opcioCondicio.innerHTML = selectConditionContent2[i];
+		// 			// console.log(selectConditionContent2[i])
+		// 			if (editRowContent !== 'undefined' & (button == "edit")) {
+		// 				console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
+		// 				if (selectConditionContent2[i] == editRowContent[2]) { //no acaba d'anar (xq ja no es i)
+		// 					opcioCondicio.setAttribute("selected", true);
+		// 				}
+		// 			}
+		// 			select.appendChild(opcioCondicio);
+		// 		}
+		// 		placeId.appendChild(select);
+
+		// 	}
+		// 	else if (number == 3) { //la caixa de select, ok i butó de canvi
+
+		// 		//Select senzill
+		// 		var divFilterContainer = document.createElement("div");
+		// 		divFilterContainer.setAttribute("id", "divFilterContainer" + place);
+		// 		divFilterContainer.setAttribute("class", "hidden");
+		// 		placeId.appendChild(divFilterContainer);
+
+		// 		select.setAttribute("id", "selectorValue" + place);
+		// 		select.setAttribute("onChange", "isAnObject('" + nodeId + "','" + place + "')");
+
+		// 		var valor;
+		// 		var arrayValors = [];
+
+		// 		for (let index = 0; index < data.length; index++) {
+		// 			if (button == "edit") {
+		// 				valor = data[index][editRowContent[1]];
+		// 			}
+		// 			else {
+		// 				valor = data[index][dataAttributesFiltered[0]];
+
+		// 			}
+
+		// 			if (!arrayValors.find(element => element == valor)) {
+		// 				var option = document.createElement("option");
+		// 				option.setAttribute("value", valor);
+		// 				option.innerHTML = valor;
+		// 				select.appendChild(option);
+		// 				arrayValors.push(valor);
+		// 			} else {
+		// 				console.log("en el else");
+		// 			}
+		// 		}
+
+		// 		divFilterContainer.appendChild(select);
+
+		// 		var textInput = document.createElement("input");
+		// 		textInput.setAttribute("id", "textInput" + place);
+		// 		textInput.setAttribute("type", "text");
+		// 		textInput.addEventListener("input", function () {
+		// 			adjustWidth(place, place_Id, "simple", nodeId)
+		// 		});
+		// 		textInput.addEventListener("keypress", function (event) {
+		// 			// If the user presses the "Enter" key on the keyboard
+		// 			if (event.key === "Enter") {
+		// 				event.preventDefault();
+		// 				if (place == "_optionsRow") {
+		// 					addSelected(nodeId, place);
+		// 				}
+
+		// 			}
+		// 		});
+
+		// 		placeId.appendChild(textInput);
+		// 		if (button == "edit") {
+		// 			textInput.value = editRowContent[3];
+		// 			adjustWidth(place, place_Id, "simple", nodeId);
+		// 		}
+
+		// 		var row = 1; //S'haurà d'eliminar
+		// 		var okButton = document.createElement("button");
+		// 		okButton.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','ok'," + row + ",'simple','" + nodeId + "')");
+		// 		okButton.setAttribute("id", "okButton" + place);
+		// 		okButton.innerHTML = "Ok";
+
+		// 		divFilterContainer.appendChild(select);
+		// 		var cancelButton = document.createElement("button");
+		// 		// console.log("inici place_id:  " + place_Id)
+		// 		cancelButton.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','cancel'," + row + ",'simple','" + nodeId + "')");
+		// 		cancelButton.setAttribute("id", "cancelButton" + place);
+		// 		cancelButton.innerHTML = "Cancel";
+
+		// 		var writeButton = document.createElement("button");
+		// 		writeButton.setAttribute("id", "displaySelect" + place);
+		// 		writeButton.setAttribute("class", "displaySelect");
+		// 		writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "','simple')");
+		// 		placeId.appendChild(writeButton);
+		// 		var buttonImage = document.createElement("img");
+		// 		buttonImage.setAttribute("src", "botoDesplegable.png");
+		// 		buttonImage.setAttribute("class", "buttonImage");
+		// 		writeButton.appendChild(buttonImage);
+
+		// 		divFilterContainer.appendChild(okButton);
+		// 		divFilterContainer.appendChild(cancelButton);
+
+		// 		//Selects dels intervals
+		// 		var divFilterContainer2 = document.createElement("div");
+		// 		divFilterContainer2.setAttribute("id", "divFilterContainer2" + place);
+		// 		divFilterContainer2.setAttribute("class", "hidden");
+		// 		placeId.appendChild(divFilterContainer2);
+
+		// 		var selectorValueInterval1 = select.cloneNode(true); //així ja s'omple com l'altre
+		// 		selectorValueInterval1.setAttribute("id", "selectorValueInterval1" + place);
+		// 		var selectorValueInterval2 = select.cloneNode(true);
+		// 		selectorValueInterval2.setAttribute("id", "selectorValueInterval2" + place);
+		// 		divFilterContainer2.appendChild(selectorValueInterval1);
+		// 		divFilterContainer2.appendChild(selectorValueInterval2);
+
+		// 		var textInputInterval1 = textInput.cloneNode(true);
+		// 		textInputInterval1.setAttribute("id", "textInputInterval1" + place);
+		// 		var textInputInterval2 = textInput.cloneNode(true);
+		// 		textInputInterval2.setAttribute("id", "textInputInterval2" + place);
+		// 		textInputInterval1.setAttribute("class", "hidden");
+		// 		textInputInterval2.setAttribute("class", "hidden");
+		// 		textInputInterval1.addEventListener("input", function () {
+		// 			adjustWidth(place, place_Id, "interval", nodeId)
+		// 		});
+		// 		textInputInterval2.addEventListener("input", function () {
+		// 			adjustWidth(place, place_Id, "interval", nodeId)
+		// 		});
+		// 		placeId.appendChild(textInputInterval1);
+		// 		placeId.appendChild(textInputInterval2);
+
+
+		// 		var okButtonInterval = document.createElement("button");
+		// 		okButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','ok'," + row + ",'interval','" + nodeId + "')");
+		// 		okButtonInterval.setAttribute("id", "okButtonInterval" + place);
+		// 		okButtonInterval.innerHTML = "Ok";
+
+		// 		var cancelButtonInterval = document.createElement("button");
+		// 		cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + place + "','" + place_Id + "','cancel'," + row + ",'interval','" + nodeId + "')");
+		// 		cancelButtonInterval.setAttribute("id", "cancelButtonInterval" + place);
+		// 		cancelButtonInterval.innerHTML = "Cancel";
+
+		// 		var writeButton2 = document.createElement("button");
+		// 		writeButton2.innerHTML = "...";
+		// 		writeButton2.setAttribute("id", "displaySelectInterval" + place);
+		// 		writeButton2.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "','interval')");
+		// 		writeButton2.setAttribute("class", "hidden");
+
+		// 		placeId.appendChild(writeButton2);
+		// 		divFilterContainer2.appendChild(okButtonInterval);
+		// 		divFilterContainer2.appendChild(cancelButtonInterval);
+
+
+		// 	}
+
+		// }
 
 		function readTableFilterRow(nodeId, row) {
 			var table = document.getElementById("tableResult");
@@ -4073,8 +4416,8 @@
 			var table = document.getElementById("tableResult");
 			var rowsNumbers = table.rows.length;
 			//desabilitar el add
-			var addButton = document.getElementById("addButton");
-			addButton.disabled = true;
+			// var addButton = document.getElementById("addButton");
+			// addButton.disabled = true;
 			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
 
 			for (var i = 1; i < rowsNumbers; i++) {
@@ -4124,8 +4467,8 @@
 				buttonInsert.classList.remove("hidden");
 
 			}
-			var addButton = document.getElementById("addButton");
-			addButton.disabled = false;
+			// var addButton = document.getElementById("addButton");
+			// addButton.disabled = false;
 		}
 
 		function editRow(row, nodeId) {
@@ -4147,8 +4490,8 @@
 			var rowsNumbers = table.rows.length;
 
 			//desabilitar el add
-			var addButton = document.getElementById("addButton");
-			addButton.disabled = true;
+			// var addButton = document.getElementById("addButton");
+			// addButton.disabled = true;
 
 			//amagar els botons de edit,Insert, mostrar botó save i mantenir suprimir
 
