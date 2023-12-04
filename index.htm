@@ -3294,6 +3294,7 @@
 			var buttonAddCondition = document.createElement("button");
 			buttonAddCondition.setAttribute("id", "buttonAddCondition_"+newGroupNumber);
 			buttonAddCondition.setAttribute("class", "buttonAddCondition");
+			buttonAddCondition.setAttribute("onclick","addFilterCondition('"+fullFilterDivId+"','"+newGroupNumber+"')")
 			buttonAddCondition.innerHTML = "+ Add a Condition";
 			filterGroup.appendChild(buttonAddCondition);
 
@@ -3309,30 +3310,6 @@
 
 			var selectorStructureRow;
 			var divFilterBox = document.getElementById("divSelectorRowsFilter");
-
-			// var optionsRow = document.createElement("div");
-			// optionsRow.setAttribute("id", "optionsRow");
-			// divFilterBox.appendChild(optionsRow);
-			// var labelA = document.createElement("label");
-			// labelA.innerHTML = "Choose a Property";
-			// optionsRow.appendChild(labelA);
-
-
-			// createSelect(1, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
-			// createSelect(2, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
-
-			// var labelB = document.createElement("label");
-			// labelB.setAttribute("id", "labelB");
-			// labelB.innerHTML = "a Value";
-			// optionsRow.appendChild(labelB);
-
-			// createSelect(3, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
-
-			// var addButton = document.createElement("button");
-			// addButton.setAttribute("id", "addButton");
-			// addButton.setAttribute("onclick", "addSelected('" + paramsNodeId + "','_optionsRow')");
-			// addButton.innerHTML = "add";
-			// optionsRow.appendChild(addButton);
 
 			//Estructura 
 			var divLine = document.createElement("div");
@@ -3353,35 +3330,6 @@
 			addAFilterGroup(0, fullFilterDivId);
 
 			
-
-
-
-			// var filterGroup = document.createElement("div"); //Lila (Grup de condicio)
-			// filterGroup.setAttribute("id", "filterGroup_0");
-			// filterGroup.setAttribute("class", "filterGroup");
-			// fullFilterDiv.appendChild(filterGroup);
-
-			// var filterConditionDiv = document.createElement("div"); //Vermell (Línea amb selects i botó opcions)
-			// filterConditionDiv.setAttribute("id", "filterCondition_0");
-			// filterConditionDiv.setAttribute("class", "filterConditionDiv");
-			// filterGroup.appendChild(filterConditionDiv);
-
-
-			// var divCondition = document.createElement("div"); //groc (condition)
-			// divCondition.setAttribute("id", "divCondition_0");
-			// divCondition.setAttribute("class", "divCondition");
-			// filterGroup.appendChild(divCondition);
-
-			// var divLineaCondition = document.createElement("div"); //linea de la condició
-			// divLineaCondition.setAttribute("id", "divLineaCondition_0");
-			// divLineaCondition.setAttribute("class", "divLineaCondition");
-			// divCondition.appendChild(divLineaCondition);
-
-			// var buttonAddCondition = document.createElement("button");
-			// buttonAddCondition.setAttribute("id", "buttonAddCondition_0");
-			// buttonAddCondition.setAttribute("class", "buttonAddCondition");
-			// buttonAddCondition.innerHTML = "+ Add a Condition";
-			// filterGroup.appendChild(buttonAddCondition);
 
 
 			var buttonAddFilterGroup = document.createElement("button");
