@@ -3220,46 +3220,53 @@
 			}
 		}
 
-		function addFilterCondition(fullFilterDivId,filterConditionNumber) {
-
+		function addFilterCondition(fullFilterDivId,newGroupNumber) {
+			event.preventDefault();
 			
 			var fullFilterDiv=document.getElementById(fullFilterDivId);
+			var buttonAddCondition=document.getElementById("buttonAddCondition_"+newGroupNumber);
 
 			var lastFilterGroupNumber=fullFilterDiv.getAttribute("data-lastFilterGroupNumber");
-			var lastFilterConditionNumber=fullFilterDiv.getAttribute("data-lastFilterConditionNumber");
+			var lastFilterConditionNumber=parseInt(fullFilterDiv.getAttribute("data-lastFilterConditionNumber"));
+			var lastFilterConditionNumber=parseInt(fullFilterDiv.getAttribute("data-lastFilterConditionNumber"));
+			var newFilterConditionNumber=lastFilterConditionNumber+1;
 
-			var filterGroup=document.getElementById("filterGroup_"+filterConditionNumber);
+			var filterGroup=document.getElementById("filterGroup_"+newGroupNumber);
+
+
+			//insertBefore(newNode, referenceNode)
+
 
 			var filterConditionDiv = document.createElement("div"); //Vermell (Línea amb selects i botó opcions)
-			filterConditionDiv.setAttribute("id", "filterCondition_"+lastFilterConditionNumber);
+			filterConditionDiv.setAttribute("id", "filterCondition_"+newFilterConditionNumber);
 			filterConditionDiv.setAttribute("class", "filterConditionDiv");
-			filterGroup.appendChild(filterConditionDiv);
+			filterGroup.insertBefore(filterConditionDiv,buttonAddCondition );
 
 
 			var divCondition = document.createElement("div"); //groc (condition)
-			divCondition.setAttribute("id", "divCondition_"+lastFilterConditionNumber);
+			divCondition.setAttribute("id", "divCondition_"+newFilterConditionNumber);
 			divCondition.setAttribute("class", "divCondition");
-			filterGroup.appendChild(divCondition);
+			filterGroup.insertBefore(divCondition,buttonAddCondition);
 
 			var divLineaCondition = document.createElement("div"); //linea de la condició
-			divLineaCondition.setAttribute("id", "divLineaCondition_"+lastFilterConditionNumber);
+			divLineaCondition.setAttribute("id", "divLineaCondition_"+newFilterConditionNumber);
 			divLineaCondition.setAttribute("class", "divLineaCondition");
 			divCondition.appendChild(divLineaCondition);
 
 			
 			//Creació dels selectors 
-			var label1 = document.createElement("label");
-			label1.innerHTML = "Choose a Property";
-			filterConditionDiv.appendChild(label1);
+			// var label1 = document.createElement("label");
+			// label1.innerHTML = "Choose a Property";
+			// filterConditionDiv.appendChild(label1);
 
-			createSelectInFilterCondition(1, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
-			createSelectInFilterCondition(2, "filterCondition_0", paramsNodeId, "no", "no", "initial", "no", "no", "0");
+			// createSelectInFilterCondition(1, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
+			// createSelectInFilterCondition(2, "filterCondition_0", paramsNodeId, "no", "no", "initial", "no", "no", "0");
 
-			var label2 = document.createElement("label");
-			label2.innerHTML = "a Value of ";
-			filterConditionDiv.appendChild(label2);
+			// var label2 = document.createElement("label");
+			// label2.innerHTML = "a Value of ";
+			// filterConditionDiv.appendChild(label2);
 
-			createSelectInFilterCondition(3, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
+			// createSelectInFilterCondition(3, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
 
 		}
 
@@ -3281,7 +3288,7 @@
 			filterGroup.setAttribute("class", "filterGroup");
 			fullFilterDiv.appendChild(filterGroup);
 
-			//addFilterCondition(fullFilterDivId,filterGroupNumber);
+			addFilterCondition(fullFilterDivId,newGroupNumber);
 
 
 			var buttonAddCondition = document.createElement("button");
