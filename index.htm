@@ -347,7 +347,7 @@
 		</table>
 	</dialog>
 
-<dialog id="DialogOneValue">
+	<dialog id="DialogOneValue">
 		<span id="DialogOneValueTitle"></span>
 		<form>
 			<fieldset>
@@ -508,7 +508,7 @@
 			SortBySTA: { description: "Sort by", callSTALoad: true },
 			ViewQuerySTA: { description: "View Query", leafNode: true },
 			UploadObservations: { description: "Upload in STA", leafNode: true },
-//UploadTimeAverages: {description: "Upload time averages", leafNode: true},
+			//UploadTimeAverages: {description: "Upload time averages", leafNode: true},
 			SelectColumnsTable: { description: "Select Columns" },
 			SelectRowsTable: { description: "Select Rows" },
 			SeparateColumns: { description: "Separate Columns" },
@@ -584,17 +584,17 @@
 
 		//Return null if there is no reason (and there is a "fit").
 		function reasonNodeDoesNotFitWithPrevious(node, parentNode) {
-		if (parentNode.image == "ogc.png")
-		return null;
+			if (parentNode.image == "ogc.png")
+				return null;
 			if (TableOperations[removeExtension(parentNode.image)] && TableOperations[removeExtension(parentNode.image)].leafNode == true)
 				return "Parent node is a leaf node and cannot be connected with any other node";
 			var idNode = IdOfSTAEntity(node);
 			if (idNode < 0)
 				return null;
 			var getCon = getConnectionSTAEntity(parentNode, node)
-		if (getCon.error)
-		return getCon.error;
-		return null;
+			if (getCon.error)
+				return getCon.error;
+			return null;
 		}
 
 
@@ -611,10 +611,10 @@
 		}
 
 		function getURLWithoutQueryParams(s) {
-		var i = s.indexOf('?')
-		if (i == -1)
-		return s;
-		return s.substring(0, i);
+			var i = s.indexOf('?')
+			if (i == -1)
+				return s;
+			return s.substring(0, i);
 		}
 
 		function getURLQueryParams(s) {
@@ -646,22 +646,22 @@
 
 		//Get the last entity of the path (without the filter or selection of a single entity by using (id))
 		function getSTAURLLastEntity(url) {
-		var s = getURLWithoutQueryParams(url);
-		var i = (s.charAt(s.length - 1) == '/') ? s.length - 2 : s.length - 1
+			var s = getURLWithoutQueryParams(url);
+			var i = (s.charAt(s.length - 1) == '/') ? s.length - 2 : s.length - 1
 
-		if (s.charAt(i) != ')') {
-		i = s.lastIndexOf('/')
-		if (-1 != s)
-		return s.substring(i + 1);
-		return s;
-		}
+			if (s.charAt(i) != ')') {
+				i = s.lastIndexOf('/')
+				if (-1 != s)
+					return s.substring(i + 1);
+				return s;
+			}
 			i = s.lastIndexOf('(');
-		if (i == -1)
-		return s;
-		var ii = s.lastIndexOf('/');
-		if (i > ii + 2)
-		return s.substring(ii + 1, i);
-		return s.substring(ii + 1);
+			if (i == -1)
+				return s;
+			var ii = s.lastIndexOf('/');
+			if (i > ii + 2)
+				return s.substring(ii + 1, i);
+			return s.substring(ii + 1);
 		}
 
 		//from the MiraMon Map Browser DonaAdreca(s)
@@ -714,7 +714,7 @@
 		}
 
 		function AddKVPToURL(url, kvp) {
-kvp = removeExtraAmpersand(kvp);
+			kvp = removeExtraAmpersand(kvp);
 			if (!kvp)
 				return url;
 			if (url.indexOf('?') == -1)
@@ -1721,7 +1721,7 @@ kvp = removeExtraAmpersand(kvp);
 					currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.
 				}
 				else   //If no selected collumn has been found, no expand is needed and the previous request is fine
-					{
+				{
 					for (var a = 0; a < dataAttrArray.length; a++)
 						currentNode.STASelectedExpands.selected[a] = false;
 				}
@@ -1746,9 +1746,9 @@ kvp = removeExtraAmpersand(kvp);
 					currentNode.STAURL = parentNode.STAURL;
 				if (parentNode.STAdata)
 					currentNode.STAdata = parentNode.STAdata;
-			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
-			var dataAttributesArray = Object.keys(dataAttributes)
-}
+				var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
+				var dataAttributesArray = Object.keys(dataAttributes)
+			}
 			else
 				return;
 
@@ -3220,6 +3220,77 @@ kvp = removeExtraAmpersand(kvp);
 			}
 		}
 
+		function addFilterCondition(fullFilterDivId,filterConditionNumber) {
+
+			
+			var fullFilterDiv=document.getElementById(fullFilterDivId);
+
+			var lastFilterGroupNumber=fullFilterDiv.getAttribute("data-lastFilterGroupNumber");
+			var lastFilterConditionNumber=fullFilterDiv.getAttribute("data-lastFilterConditionNumber");
+
+			var filterGroup=document.getElementById("filterGroup_"+filterConditionNumber);
+
+			var filterConditionDiv = document.createElement("div"); //Vermell (Línea amb selects i botó opcions)
+			filterConditionDiv.setAttribute("id", "filterCondition_"+lastFilterConditionNumber);
+			filterConditionDiv.setAttribute("class", "filterConditionDiv");
+			filterGroup.appendChild(filterConditionDiv);
+
+
+			var divCondition = document.createElement("div"); //groc (condition)
+			divCondition.setAttribute("id", "divCondition_"+lastFilterConditionNumber);
+			divCondition.setAttribute("class", "divCondition");
+			filterGroup.appendChild(divCondition);
+
+			var divLineaCondition = document.createElement("div"); //linea de la condició
+			divLineaCondition.setAttribute("id", "divLineaCondition_"+lastFilterConditionNumber);
+			divLineaCondition.setAttribute("class", "divLineaCondition");
+			divCondition.appendChild(divLineaCondition);
+
+			
+			//Creació dels selectors 
+			var label1 = document.createElement("label");
+			label1.innerHTML = "Choose a Property";
+			filterConditionDiv.appendChild(label1);
+
+			createSelectInFilterCondition(1, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
+			createSelectInFilterCondition(2, "filterCondition_0", paramsNodeId, "no", "no", "initial", "no", "no", "0");
+
+			var label2 = document.createElement("label");
+			label2.innerHTML = "a Value of ";
+			filterConditionDiv.appendChild(label2);
+
+			createSelectInFilterCondition(3, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
+
+		}
+
+
+		function addAFilterGroup(filterGroupNumber, fullFilterDivId) {
+			event.preventDefault();
+			var fullFilterDiv = document.getElementById(fullFilterDivId);
+			var newGroupNumber;
+
+			if (filterGroupNumber==="no"){
+				var lastFilterGroupNumber=parseInt(fullFilterDiv.getAttribute("data-lastFilterGroupNumber"));
+				newGroupNumber=lastFilterGroupNumber+1;
+			}else{
+				newGroupNumber=filterGroupNumber;
+			}
+
+			var filterGroup = document.createElement("div"); //Lila (Grup de condicio)
+			filterGroup.setAttribute("id", "filterGroup_" + newGroupNumber);
+			filterGroup.setAttribute("class", "filterGroup");
+			fullFilterDiv.appendChild(filterGroup);
+
+			//addFilterCondition(fullFilterDivId,filterGroupNumber);
+
+
+			var buttonAddCondition = document.createElement("button");
+			buttonAddCondition.setAttribute("id", "buttonAddCondition_"+newGroupNumber);
+			buttonAddCondition.setAttribute("class", "buttonAddCondition");
+			buttonAddCondition.innerHTML = "+ Add a Condition";
+			filterGroup.appendChild(buttonAddCondition);
+
+		}
 
 		function createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId) {
 			//actualitzar STAdata del node
@@ -3262,58 +3333,72 @@ kvp = removeExtraAmpersand(kvp);
 			divFilterBox.appendChild(divLine);
 
 			var fullFilterDiv = document.createElement("div"); //Verd (Global)
-			fullFilterDiv.setAttribute("id", "fullFilterDiv_" + paramsNodeId);
+			var fullFilterDivId = "fullFilterDiv_" + paramsNodeId;
+			fullFilterDiv.setAttribute("id", fullFilterDivId);
 			fullFilterDiv.setAttribute("class", "fullFilterDiv");
+			fullFilterDiv.setAttribute("data-lastFilterGroupNumber", "0");
+			fullFilterDiv.setAttribute("data-lastFilterConditionNumber", "0");
 			divLine.appendChild(fullFilterDiv);
 
-			var filterGroup = document.createElement("div"); //Lila (Grup de condicio)
-			filterGroup.setAttribute("id", "filterGroup_0");
-			filterGroup.setAttribute("class", "filterGroup");
-			fullFilterDiv.appendChild(filterGroup);
-
-			var filterConditionDiv = document.createElement("div"); //Vermell (Línea amb selects i botó opcions)
-			filterConditionDiv.setAttribute("id", "filterCondition_0");
-			filterConditionDiv.setAttribute("class", "filterConditionDiv");
-			filterGroup.appendChild(filterConditionDiv);
 
 
-			var divCondition = document.createElement("div"); //groc (condition)
-			divCondition.setAttribute("id", "divCondition_0");
-			divCondition.setAttribute("class", "divCondition");
-			filterGroup.appendChild(divCondition);
 
-			var divLineaCondition = document.createElement("div"); //linea de la condició
-			divLineaCondition.setAttribute("id", "divLineaCondition_0");
-			divLineaCondition.setAttribute("class", "divLineaCondition");
-			divCondition.appendChild(divLineaCondition);
+			addAFilterGroup(0, fullFilterDivId);
 
-			var buttonAddCondition = document.createElement("button");
-			buttonAddCondition.setAttribute("id", "buttonAddCondition_0");
-			buttonAddCondition.setAttribute("class", "buttonAddCondition");
-			buttonAddCondition.innerHTML = "+ Add a Condition";
-			filterGroup.appendChild(buttonAddCondition);
+			
+
+
+
+			// var filterGroup = document.createElement("div"); //Lila (Grup de condicio)
+			// filterGroup.setAttribute("id", "filterGroup_0");
+			// filterGroup.setAttribute("class", "filterGroup");
+			// fullFilterDiv.appendChild(filterGroup);
+
+			// var filterConditionDiv = document.createElement("div"); //Vermell (Línea amb selects i botó opcions)
+			// filterConditionDiv.setAttribute("id", "filterCondition_0");
+			// filterConditionDiv.setAttribute("class", "filterConditionDiv");
+			// filterGroup.appendChild(filterConditionDiv);
+
+
+			// var divCondition = document.createElement("div"); //groc (condition)
+			// divCondition.setAttribute("id", "divCondition_0");
+			// divCondition.setAttribute("class", "divCondition");
+			// filterGroup.appendChild(divCondition);
+
+			// var divLineaCondition = document.createElement("div"); //linea de la condició
+			// divLineaCondition.setAttribute("id", "divLineaCondition_0");
+			// divLineaCondition.setAttribute("class", "divLineaCondition");
+			// divCondition.appendChild(divLineaCondition);
+
+			// var buttonAddCondition = document.createElement("button");
+			// buttonAddCondition.setAttribute("id", "buttonAddCondition_0");
+			// buttonAddCondition.setAttribute("class", "buttonAddCondition");
+			// buttonAddCondition.innerHTML = "+ Add a Condition";
+			// filterGroup.appendChild(buttonAddCondition);
 
 
 			var buttonAddFilterGroup = document.createElement("button");
 			buttonAddFilterGroup.setAttribute("id", "buttonAddFilterGroup");
 			buttonAddFilterGroup.setAttribute("class", "buttonAddFilterGroup");
+			buttonAddFilterGroup.setAttribute("onclick","addAFilterGroup('no','"+ fullFilterDivId+"')");
 			buttonAddFilterGroup.innerHTML = " + Add a new filter group";
 			fullFilterDiv.appendChild(buttonAddFilterGroup);
 
 
+
 			//Creació dels selectors 
-			var label1 = document.createElement("label");
-			label1.innerHTML = "Choose a Property";
-			filterConditionDiv.appendChild(label1);
+			// var label1 = document.createElement("label");
+			// label1.innerHTML = "Choose a Property";
+			// filterConditionDiv.appendChild(label1);
 
-			createSelectInFilterCondition(1, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
-			createSelectInFilterCondition(2, "filterCondition_0", paramsNodeId, "no", "no", "initial", "no", "no", "0");
+			// createSelectInFilterCondition(1, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
+			// createSelectInFilterCondition(2, "filterCondition_0", paramsNodeId, "no", "no", "initial", "no", "no", "0");
 
-			var label2 = document.createElement("label");
-			label2.innerHTML = "a Value of ";
-			filterConditionDiv.appendChild(label2);
+			// var label2 = document.createElement("label");
+			// label2.innerHTML = "a Value of ";
+			// filterConditionDiv.appendChild(label2);
 
-			createSelectInFilterCondition(3, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
+			// createSelectInFilterCondition(3, "filterCondition_0", paramsNodeId, dataAttributes, "no", "initial", "no", "no", "0");
 
 
 			// var optionsRow2 = optionsRow.cloneNode(true);
@@ -5479,7 +5564,7 @@ kvp = removeExtraAmpersand(kvp);
 		}
 
 		function ShowTableSelectColumnsDialog(parentNode, node) {
-			
+
 			var data = parentNode.STAdata ? parentNode.STAdata : node.STAdata,
 				selectedColumns = node.STASelectedColumns;
 
@@ -5535,7 +5620,7 @@ kvp = removeExtraAmpersand(kvp);
 		}
 
 		function ShowTableSelectSortByDialog(node) {
-						var data = node.STAdata;
+			var data = node.STAdata;
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectSortByRadioButtons").innerHTML = "No data to show.";
@@ -5666,13 +5751,13 @@ kvp = removeExtraAmpersand(kvp);
 		function StartCircularImage(nodeTo, nodeFrom, calUnir) {
 			var errorText = reasonNodeDoesNotFitWithPrevious(nodeTo, nodeFrom);
 			if (errorText) {
-			alert("Node incompatible. " + errorText + ". It has not been added.");
-			return null;
+				alert("Node incompatible. " + errorText + ". It has not been added.");
+				return null;
 			}
 			if (nodeFrom.STAURL && IdOfSTAEntity(nodeTo) != -1) {
-if (nodeFrom.image == "ogc.png")
-				nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAEntity(nodeTo)];
-else
+				if (nodeFrom.image == "ogc.png")
+					nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAEntity(nodeTo)];
+				else
 					nodeTo.STAURL = nodeFrom.STAURL + "/" + getConnectionSTAEntity(nodeFrom, nodeTo).entity;
 				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
 
@@ -5777,8 +5862,8 @@ else
 					document.getElementById("DialogSTAURLInput").value = "";
 					var parentNode = GetFirstParentNode(currentNode);
 					if (parentNode)
-							document.getElementById("DialogSTAURLInput").value = parentNode.STAURL;
-										document.getElementById("DialogSTAURLInput").readOnly = true;
+						document.getElementById("DialogSTAURLInput").value = parentNode.STAURL;
+					document.getElementById("DialogSTAURLInput").readOnly = true;
 					document.getElementById("DialogSTAURLOk").style.display = "none";
 					document.getElementById("DialogSTAURL").showModal();
 				}
@@ -5790,13 +5875,13 @@ else
 					///Determining the parent node.
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
-							var data = networkNodes.get(nodeids[0]).STAdata;
-							if (data && data.length)
-								document.getElementById("DialogOKOptions").innerHTML = "<label><input type='checkbox' checked='checked' id='ShowTableRowNumberDialogOK' onChange='ShowTableDialog(\"" + nodeids[0] + "\");'/> Show row numbers</label>";
-							else
-								document.getElementById("DialogOKOptions").innerHTML = "";
-							ShowTableDialog(nodeids[0]);
-												document.getElementById("DialogOK").showModal();
+						var data = networkNodes.get(nodeids[0]).STAdata;
+						if (data && data.length)
+							document.getElementById("DialogOKOptions").innerHTML = "<label><input type='checkbox' checked='checked' id='ShowTableRowNumberDialogOK' onChange='ShowTableDialog(\"" + nodeids[0] + "\");'/> Show row numbers</label>";
+						else
+							document.getElementById("DialogOKOptions").innerHTML = "";
+						ShowTableDialog(nodeids[0]);
+						document.getElementById("DialogOK").showModal();
 					}
 				}
 				else if (currentNode.image == "UploadObservations.png") {
@@ -5816,10 +5901,10 @@ else
 					if (parentNode) {
 						if (parentNode.STAURL)
 							ShowScatterPlotDialog(parentNode);
-												document.getElementById("DialogScatterPlot").showModal();
+						document.getElementById("DialogScatterPlot").showModal();
 					}
 				}
-else if (currentNode.image == "OneValue.png") {
+				else if (currentNode.image == "OneValue.png") {
 					ShowOneValueDialog(currentNode);
 					document.getElementById("DialogOneValue").showModal();
 				}
@@ -5832,7 +5917,7 @@ else if (currentNode.image == "OneValue.png") {
 					document.getElementById("DialogSaveLayer").showModal();
 				}
 				else if (currentNode.image == "SelectColumnsSTA.png" || currentNode.image == "SelectColumnsTable.png") {
-										var parentNode = GetFirstParentNode(currentNode);
+					var parentNode = GetFirstParentNode(currentNode);
 					if (parentNode) {
 						ShowTableSelectColumnsDialog(parentNode, currentNode);
 						document.getElementById("DialogSelectColumns").showModal();
