@@ -163,7 +163,7 @@ th.borderTable {
     margin-top: 20px;
 }
 #fullFilterDiv{
-    height: 200px;
+    min-height: 100px;
     border: black 1px solid;
     width: 100%;
     margin-top: 20px;
@@ -176,13 +176,22 @@ th.borderTable {
     margin-top: 20px;
 }
 .filterConditionDiv{
-    height: 50px;
+    height: 30px; /*A mirar quant fan els selectors*/
+    width: 85%;
+    border: black 1px solid;
+    margin-top: 10px;
+    margin-left: 10px;
+    display: inline-block;
+
+}
+
+.filterConditionGroup{
+    height: auto;
     border: black 1px solid;
     width: 70%;
     margin-top: 20px;
     margin-left: 10px;
     display: inline-block;
-
 }
 
 .divCondition{
@@ -198,19 +207,23 @@ th.borderTable {
     height: 50px;
     border-left:black 5px solid ;
     margin-left: 10px;
+    margin-top: 15px;
+    margin-bottom: 10px;
 }
 
 
 .buttonAddCondition{
     margin-left: 30px;
+    display: block;
+
 }
 .buttonImage{
     width:12px;
 }
 .buttonAddFilterGroup{
     margin-left: 30px;
-    position: absolute;
-    bottom:20px;
+
+    display: block;
 }
 /*..........*/
 .divInSelectedGraphic_condition {
