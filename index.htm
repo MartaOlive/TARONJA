@@ -3040,36 +3040,59 @@
 			// divGraphicOrder.setAttribute("class", "inblock");
 			divLine.appendChild(divGraphicOrder);
 
-			var divGraphicOrder1 = document.createElement("div"); //Fila1
-			divGraphicOrder1.setAttribute("id", "divGraphicOrder_1");
+			// var divGraphicOrder1 = document.createElement("div"); //Fila1
+			// divGraphicOrder1.setAttribute("id", "divGraphicOrder_1");
+			// divGraphicOrder.appendChild(divGraphicOrder1);
+			// var graphicButtonAnd = document.createElement("button");
+			// graphicButtonAnd.id = "graphicButtonAnd";
+			// graphicButtonAnd.innerHTML = "add and";
+			// graphicButtonAnd.setAttribute("onclick", "addCondition('and', '" + paramsNodeId + "')");
+			// var graphicButtonOr = document.createElement("button");
+			// graphicButtonOr.id = "graphicButtonOr";
+			// graphicButtonOr.innerHTML = "add or";
+			// graphicButtonOr.setAttribute("onclick", "addCondition('or', '" + paramsNodeId + "')");
+			// var graphicButtonNot = document.createElement("button");
+			// graphicButtonNot.id = "graphicButtonNot";
+			// graphicButtonNot.innerHTML = "add not";
+			// graphicButtonNot.setAttribute("onclick", "addCondition('not', '" + paramsNodeId + "')");
+			// divGraphicOrder1.appendChild(graphicButtonAnd);
+			// divGraphicOrder1.appendChild(graphicButtonOr);
+			// divGraphicOrder1.appendChild(graphicButtonNot);
+
+
+
+			//capsa que conté els gràfics
+			var divGraphicOrder1 = document.createElement("div");
+			divGraphicOrder1.setAttribute("id", "divGraphicOrder_1_" + paramsNodeId);
+			divGraphicOrder1.setAttribute("class", "divGraphicOrder1");
+			divGraphicOrder1.setAttribute("data-lastLevelAdded", "1");
+			divGraphicOrder1.innerHTML = "Arrange your filter";
 			divGraphicOrder.appendChild(divGraphicOrder1);
-			var graphicButtonAnd = document.createElement("button");
-			graphicButtonAnd.id = "graphicButtonAnd";
-			graphicButtonAnd.innerHTML = "add and";
-			graphicButtonAnd.setAttribute("onclick", "addCondition('and', '" + paramsNodeId + "')");
-			var graphicButtonOr = document.createElement("button");
-			graphicButtonOr.id = "graphicButtonOr";
-			graphicButtonOr.innerHTML = "add or";
-			graphicButtonOr.setAttribute("onclick", "addCondition('or', '" + paramsNodeId + "')");
-			var graphicButtonNot = document.createElement("button");
-			graphicButtonNot.id = "graphicButtonNot";
-			graphicButtonNot.innerHTML = "add not";
-			graphicButtonNot.setAttribute("onclick", "addCondition('not', '" + paramsNodeId + "')");
-			divGraphicOrder1.appendChild(graphicButtonAnd);
-			divGraphicOrder1.appendChild(graphicButtonOr);
-			divGraphicOrder1.appendChild(graphicButtonNot);
+
+			//Primer nivell 
+			var boxLevel = document.createElement("div");
+			var characterBoxContainer = document.createElement("div");
+			var conditionSelectorBox = document.createElement("div");
+			var selectCondition = document.createElement("select");
+			boxLevel.setAttribute("class", "boxLevel1");
+			boxLevel.setAttribute("id", "boxLevel_1_1");
+			divGraphicOrder1.appendChild(boxLevel);
+			characterBoxContainer.setAttribute("class", "characterBoxContainer_1");
+			characterBoxContainer.setAttribute("id", "characterBoxContainer_1_1");
+			boxLevel.appendChild(characterBoxContainer);
+			conditionSelectorBox.setAttribute("class", "conditionSelectorBox");
+			conditionSelectorBox.setAttribute("id", "conditionSelectorBox_1_1");
+			boxLevel.appendChild(conditionSelectorBox);
+			selectCondition.setAttribute("id", "selectCondition_1_1");
+			selectCondition.setAttribute("class", "selectCondition");
+			conditionSelectorBox.appendChild(selectCondition);
 
 
 
 
 			var divGraphicOrder2 = document.createElement("div");
-			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2_" + paramsNodeId);
-			divGraphicOrder2.setAttribute("class", "divGraphicOrder2")
+			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2");
 			divGraphicOrder.appendChild(divGraphicOrder2);
-
-			var divGraphicOrder3 = document.createElement("div");
-			divGraphicOrder3.setAttribute("id", "divGraphicOrder_3");
-			divGraphicOrder.appendChild(divGraphicOrder3);
 			// var buttonDelete = document.createElement("button");
 			// buttonDelete.id = "graphicButtonDelete";
 			// buttonDelete.innerHTML = "Delete";
@@ -3080,9 +3103,9 @@
 			var buttonEdit = document.createElement("button");
 			buttonEdit.id = "graphicButtonEdit";
 			buttonEdit.innerHTML = "Edit";
-			divGraphicOrder3.appendChild(deleteDiv);
-			divGraphicOrder3.appendChild(buttonEdit);
-			// divGraphicOrder3.appendChild(buttonDelete);
+			divGraphicOrder2.appendChild(deleteDiv);
+			divGraphicOrder2.appendChild(buttonEdit);
+			// divGraphicOrder2.appendChild(buttonDelete);
 
 
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
@@ -3139,10 +3162,6 @@
 
 		}
 
-		///Elements per el filtre en l'àrea gràfica (draggables)
-		// //var dragg
-		// var draggableContainer = "divGraphicOrder_2_" + currentNode;
-		// var idDraggableElement;
 
 
 
@@ -3152,92 +3171,91 @@
 		function addCondition(condition, nodeId) {
 			event.preventDefault();
 			console.log(condition);
-			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
+			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var divCondition = document.createElement("div");
 			divCondition.innerHTML = condition;
 			divCondition.setAttribute("class", "divInSelectedGraphic_condition divInSelectedGraphic");
 			divCondition.value = condition;
-			divGraphicOrder_2.appendChild(divCondition);
+			divGraphicOrder_1.appendChild(divCondition);
 			divCondition.draggable = true;
-			divGraphicOrder_2.appendChild(newDiv);
+			divGraphicOrder_1.appendChild(newDiv);
 
 		}
 
 		//Elements draggables (Part gràfica del FilterRow)
-		var draggedElement = null;
-		var items;
+		// var draggedElement = null;
+		// var items;
 
-		function addDraggableFunctions() {
-			items = document.querySelectorAll(".divGraphicOrder2 .divInSelectedGraphic");
+		// function addDraggableFunctions() {
+		// 	items = document.querySelectorAll(".divGraphicOrder1 .divInSelectedGraphic");
 
-			items.forEach(function (item) {
-				item.addEventListener("dragstart", handleDragStart);
-				item.addEventListener("dragenter", handleDragEnter);
-				item.addEventListener("dragover", handleDragOver);
-				item.addEventListener("dragleave", handleDragLeave);
-				item.addEventListener("drop", handleDrop);
-				item.addEventListener("dragend", handleDragEnd);
-			});
-		}
+		// 	items.forEach(function (item) {
+		// 		item.addEventListener("dragstart", handleDragStart);
+		// 		item.addEventListener("dragenter", handleDragEnter);
+		// 		item.addEventListener("dragover", handleDragOver);
+		// 		item.addEventListener("dragleave", handleDragLeave);
+		// 		item.addEventListener("drop", handleDrop);
+		// 		item.addEventListener("dragend", handleDragEnd);
+		// 	});
+		// }
 
-		function handleDragStart(e) {
-			//this.style.opacity = "0.8";
-			draggedElement = this; //This es el Div sencer
-			console.log(this);
+		// function handleDragStart(e) {
+		// 	//this.style.opacity = "0.8";
+		// 	draggedElement = this; //This es el Div sencer
+		// 	console.log(this);
 
-			e.dataTransfer.effectAllowed = "move"; //https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
-			e.dataTransfer.setData("text", this.innerHTML); //
-			e.dataTransfer.setData("id", this.id); //data-id
-			e.dataTransfer.setData("value", this.value); //data-value
-		}
+		// 	e.dataTransfer.effectAllowed = "move"; //https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
+		// 	e.dataTransfer.setData("text", this.innerHTML); //
+		// 	e.dataTransfer.setData("id", this.id); //data-id
+		// 	e.dataTransfer.setData("value", this.value); //data-value
+		// }
 
-		function handleDragOver(e) {
-			e.preventDefault();
+		// function handleDragOver(e) {
+		// 	e.preventDefault();
 
-			e.dataTransfer.dropEffect = "move";
-			return false;
-		}
+		// 	e.dataTransfer.dropEffect = "move";
+		// 	return false;
+		// }
 
-		function handleDragEnter(e) {
-			//this.classList.add("dragover");
-		}
+		// function handleDragEnter(e) {
+		// 	//this.classList.add("dragover");
+		// }
 
-		function handleDragLeave(e) {
-			//this.classList.remove("dragover");
-		}
+		// function handleDragLeave(e) {
+		// 	//this.classList.remove("dragover");
+		// }
 
-		function handleDrop(e) {
-			// if (e.stopPropagation)
-			// 	e.stopPropagation();
+		// function handleDrop(e) {
+		// 	// if (e.stopPropagation)
+		// 	// 	e.stopPropagation();
 
-			if (draggedElement != this) {
-				draggedElement.innerHTML = this.innerHTML;
-				draggedElement.setAttribute("text", this.innerHTML);
-				draggedElement.setAttribute("id", this.id);
-				draggedElement.setAttribute("value", this.value);
+		// 	if (draggedElement != this) {
+		// 		draggedElement.innerHTML = this.innerHTML;
+		// 		draggedElement.setAttribute("text", this.innerHTML);
+		// 		draggedElement.setAttribute("id", this.id);
+		// 		draggedElement.setAttribute("value", this.value);
 
-				var replacedItem = e.dataTransfer.getData("text");
-				var replacedValue= e.dataTransfer.getData("value");
-				var replacedId= e.dataTransfer.getData("id");
+		// 		var replacedItem = e.dataTransfer.getData("text");
+		// 		var replacedValue= e.dataTransfer.getData("value");
+		// 		var replacedId= e.dataTransfer.getData("id");
 
-				this.innerHTML = replacedItem;
+		// 		this.innerHTML = replacedItem;
 
-				this.setAttribute("text", replacedItem);
-				this.setAttribute("id",replacedId);
-				this.setAttribute("value", replacedValue);
-			}
+		// 		this.setAttribute("text", replacedItem);
+		// 		this.setAttribute("id",replacedId);
+		// 		this.setAttribute("value", replacedValue);
+		// 	}
 
-			return false;
-		}
+		// 	return false;
+		// }
 
-		function handleDragEnd(e) {
-			this.style.opacity = "1";
+		// function handleDragEnd(e) {
+		// 	this.style.opacity = "1";
 
-			items.forEach(function (item) {
-				item.classList.remove("dragover");
-			});
-		}
-
+		// 	items.forEach(function (item) {
+		// 		item.classList.remove("dragover");
+		// 	});
+		// }
 
 		////Fi draggables
 
@@ -3257,16 +3275,17 @@
 			tableContent = readTableFilterRow(nodeId, 0);
 			// console.log("abans d'afegir: " + tableContent);
 
-			//afegir els valors nous --> ixò es canviarà al borrar els and/or/not de la taula
-			var property, condition, valueTextInput, numberCharacter;
-
+			//afegir els valors nous --> això es canviarà al borrar els and/or/not de la taula
+			var property, condition, valueTextInput, numberCharacter, character;
 			if (tableContent.length == 0) {
 				tableContent.push("nothing");
+				numberCharacter = 0;
 			}
 			else {
-				numberCharacter = tableContent[tableContent.length - 1];
-				console.log(numberCharacter);
-				tableContent.push("and");
+				numberCharacter = tableContent[tableContent.length - 1]; //es guarda el value com un número
+
+				// console.log(numberCharacter);
+				tableContent.push("and"); //a borrar
 			}
 
 
@@ -3276,7 +3295,7 @@
 			tableContent.push(property);
 			tableContent.push(condition);
 
-			if (textInput.classList.contains("hidden") == false) {
+			if (textInput.classList.contains("hidden") == false) { //Agafar el Value segons quin textInput estigui actiu
 				valueTextInput = textInput.value
 				tableContent.push(valueTextInput);
 				typeOfValues = typeOfValueFromInput("simple", place, valueTextInput);
@@ -3292,7 +3311,7 @@
 				tableContent.push(typeOfValues); //afegir el tipus
 			}
 
-			if (tableContent.length == 5) {
+			if (tableContent.length == 5) { //Afegir lletra al Array
 				tableContent.push(0);
 			} else {
 				tableContent.push(numberCharacter + 1);
@@ -3308,45 +3327,80 @@
 			drawTable(nodeId, tableContent, "add");
 
 			//afegir a la part gràfica --> S'haurà de modificar el tablecharacters blabla
-			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
-			var newDivBox = document.createElement("div");
-			var newDiv = document.createElement("div");
-			var character;
-			var idDivToMove;
+			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
+			var lastLevel = divGraphicOrder_1.getAttribute("data-lastLevelAdded");
+			var content;
+			var boxLevel = document.getElementById("boxLevel_1_" + lastLevel);
 
-			if (tableContent.length == 6) {
+			if (tableContent.length == 6) {// La primera vegada. / Arreglar quan es borri els ands de la taula
 				character = tableCharacters[0];
-				newDiv.setAttribute("value", 0);
-				newDiv.setAttribute("id", "divInGraphic_0");
-				idDivToMove = "divInGraphic_0";
-
+				content = character;
 			} else {
 				character = tableCharacters[numberCharacter + 1];
-				newDiv.setAttribute("value", numberCharacter + 1);
-				newDiv.setAttribute("id", "divInGraphic_" + (numberCharacter + 1));
-				idDivToMove = "divInGraphic_" + (numberCharacter + 1);
+				content = boxLevel.getAttribute("value");
+
+				console.log(content);
 			}
 
-			newDiv.setAttribute("class", "divInSelectedGraphicElement divInSelectedGraphic");
-			newDivBox.className = "divInSelectedGraphicBox";
-			newDiv.innerHTML = character + "<br>" + property + " " + condition + " " + valueTextInput;
-			newDiv.draggable = true;
 
 
-			addDraggableFunctions();
+			//buufdudsudsusdhsdfbsdkfbsd fer-lo al crear al principi"
+
+			var characterBoxContainer = document.getElementById("characterBoxContainer_1_" + lastLevel);
+			var characterBox = document.createElement("div");
 
 
 
-			if (divGraphicOrder_2.children.length) { //Afegir un And abans si ja hi ha un altre element
-				var divCondition = document.createElement("div");
-				divCondition.innerHTML = "and";
-				divCondition.className = "divInSelectedGraphic_condition"
-				divCondition.value = "and";
-				divGraphicOrder_2.appendChild(divCondition);
-				divCondition.draggable = true;
+
+			var idDivToMove;
+
+			//boxLevel
+			if (tableContent.length == 6) {
+				boxLevel.setAttribute("value", character); //Afegirem els que contingui
+			} else {
+				content += "," + character; //el que s'afegirà
+				boxLevel.setAttribute("value", content);
 			}
-			newDivBox.appendChild(newDiv);
-			divGraphicOrder_2.appendChild(newDivBox);
+
+
+			//characterBox
+			characterBox.setAttribute("value", character);
+			characterBox.setAttribute("class", "characterBox");
+			characterBox.setAttribute("id", "characterBox_" + character);
+			characterBox.innerHTML = character;
+			characterBoxContainer.appendChild(characterBox);
+
+			//redimensionar
+			var itemsNumber = content.split(",").length;
+			boxLevel.style.height = (35 * itemsNumber) + "px";
+
+
+			//Afegir el valor de l'ultim de nivell1 creat al data-lastLevel1Added (divGraphicOrder_1_" + nodeId)
+
+
+			// else {
+			// 	character = tableCharacters[numberCharacter + 1];
+			// 	newDiv.setAttribute("value", numberCharacter + 1);
+			// 	newDiv.setAttribute("id", "divInGraphic_" + (numberCharacter + 1));
+			// 	idDivToMove = "divInGraphic_" + (numberCharacter + 1);
+			// }
+			// newDiv.setAttribute("class", "divInSelectedGraphicElement divInSelectedGraphic");
+			// newDivBox.className = "divInSelectedGraphicBox";
+			// newDiv.innerHTML = character;
+			// newDiv.draggable = true;
+			// newDivBox.appendChild(newDiv);
+			// divGraphicOrder_1.appendChild(newDivBox);
+
+			// addDraggableFunctions();
+
+
+
+
+
+
+			//Afegir a l'arrai d'instruccions per processar després
+
+
 		}
 
 
@@ -4137,31 +4191,31 @@
 
 
 			//Eliminar l'element de la part gràfica
-			var divGraphicOrder_2 = document.getElementById("divGraphicOrder_2_" + nodeId);
+			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var elementToDelete = document.getElementById("th_" + nodeId + "_" + row + "_character");
 			var valueOfElementToDelete = elementToDelete.getAttribute("value");
 			console.log(valueOfElementToDelete);
 			var divToDelete = document.getElementById("divInGraphic_" + valueOfElementToDelete);
 
-			divGraphicOrder_2.removeChild(divToDelete);
+			divGraphicOrder_1.removeChild(divToDelete);
 			var previousIsAnd = false;
 			var previousIsNot = false;
-			for (var i = 0; i < divGraphicOrder_2.children.length; i++) { //borrar dos and seguits
-				if (previousIsAnd == true & divGraphicOrder_2.children[i].value == "and") {
-					divGraphicOrder_2.removeChild(divGraphicOrder_2.children[i]);
+			for (var i = 0; i < divGraphicOrder_1.children.length; i++) { //borrar dos and seguits
+				if (previousIsAnd == true & divGraphicOrder_1.children[i].value == "and") {
+					divGraphicOrder_1.removeChild(divGraphicOrder_1.children[i]);
 				}
-				if (divGraphicOrder_2.children[i].value == "and") {
+				if (divGraphicOrder_1.children[i].value == "and") {
 					previousIsAnd = true;
 				}
 				else {
 					previousIsAnd = false;
 				}
 			}
-			for (var i = 0; i < divGraphicOrder_2.children.length; i++) { //borrar dos not seguits
-				if (previousIsAnd == true & divGraphicOrder_2.children[i].value == "not") {
-					divGraphicOrder_2.removeChild(divGraphicOrder_2.children[i]);
+			for (var i = 0; i < divGraphicOrder_1.children.length; i++) { //borrar dos not seguits
+				if (previousIsAnd == true & divGraphicOrder_1.children[i].value == "not") {
+					divGraphicOrder_1.removeChild(divGraphicOrder_1.children[i]);
 				}
-				if (divGraphicOrder_2.children[i].value == "not") {
+				if (divGraphicOrder_1.children[i].value == "not") {
 					previousIsAnd = true;
 				}
 				else {
@@ -4169,8 +4223,8 @@
 				}
 			}
 
-			if (divGraphicOrder_2.children[0].value == "and" || divGraphicOrder_2.children[0].value == "not") { //eliminar si queda un and al principi
-				divGraphicOrder_2.removeChild(divGraphicOrder_2.children[0]);
+			if (divGraphicOrder_1.children[0].value == "and" || divGraphicOrder_1.children[0].value == "not") { //eliminar si queda un and al principi
+				divGraphicOrder_1.removeChild(divGraphicOrder_1.children[0]);
 			}
 
 			///Borrar la taula
