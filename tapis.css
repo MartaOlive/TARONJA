@@ -131,7 +131,7 @@ th.borderTable {
 
 .boxLevel1 {
     min-height: 50px;
-    width: 80px;
+    width: 120px;
     border: black 1px solid;
     position: relative;
 
@@ -156,6 +156,28 @@ th.borderTable {
     border: black 1px solid;
     display: block;
 }
+.characterBox:hover{
+    cursor: pointer;
+}
+.imgList{
+    height: 10px;
+    display: inline;
+}
+.divText{
+    display: inline;
+}
+.list{
+    list-style: none;
+}
+
+.elementInList{
+    margin:0px;
+	padding:0px;
+}
+.elementInList:hover{ /*no va*/
+    background-color: rgba(62, 192, 240, 0.692);
+
+}
 
 .conditionSelectorBox {
     position: absolute;
@@ -164,6 +186,15 @@ th.borderTable {
     width: 50%;
     border: black 1px solid;
 
+}
+.divPlus{
+    position:relative;
+    font-weight: bolder;
+    margin-right: 5px;
+    font-weight: bolder;
+}
+.divPlus:hover{
+    cursor: pointer;
 }
 .selectCondition{
     position: absolute;

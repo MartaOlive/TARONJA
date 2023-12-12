@@ -3040,32 +3040,13 @@
 			// divGraphicOrder.setAttribute("class", "inblock");
 			divLine.appendChild(divGraphicOrder);
 
-			// var divGraphicOrder1 = document.createElement("div"); //Fila1
-			// divGraphicOrder1.setAttribute("id", "divGraphicOrder_1");
-			// divGraphicOrder.appendChild(divGraphicOrder1);
-			// var graphicButtonAnd = document.createElement("button");
-			// graphicButtonAnd.id = "graphicButtonAnd";
-			// graphicButtonAnd.innerHTML = "add and";
-			// graphicButtonAnd.setAttribute("onclick", "addCondition('and', '" + paramsNodeId + "')");
-			// var graphicButtonOr = document.createElement("button");
-			// graphicButtonOr.id = "graphicButtonOr";
-			// graphicButtonOr.innerHTML = "add or";
-			// graphicButtonOr.setAttribute("onclick", "addCondition('or', '" + paramsNodeId + "')");
-			// var graphicButtonNot = document.createElement("button");
-			// graphicButtonNot.id = "graphicButtonNot";
-			// graphicButtonNot.innerHTML = "add not";
-			// graphicButtonNot.setAttribute("onclick", "addCondition('not', '" + paramsNodeId + "')");
-			// divGraphicOrder1.appendChild(graphicButtonAnd);
-			// divGraphicOrder1.appendChild(graphicButtonOr);
-			// divGraphicOrder1.appendChild(graphicButtonNot);
-
-
 
 			//capsa que conté els gràfics
 			var divGraphicOrder1 = document.createElement("div");
 			divGraphicOrder1.setAttribute("id", "divGraphicOrder_1_" + paramsNodeId);
 			divGraphicOrder1.setAttribute("class", "divGraphicOrder1");
 			divGraphicOrder1.setAttribute("data-lastLevelAdded", "1");
+			divGraphicOrder1.setAttribute("data-boxLevelNumbers", "1");
 			divGraphicOrder1.innerHTML = "Arrange your filter";
 			divGraphicOrder.appendChild(divGraphicOrder1);
 
@@ -3074,8 +3055,10 @@
 			var characterBoxContainer = document.createElement("div");
 			var conditionSelectorBox = document.createElement("div");
 			var selectCondition = document.createElement("select");
+			var divPlus=document.createElement("div");
 			boxLevel.setAttribute("class", "boxLevel1");
 			boxLevel.setAttribute("id", "boxLevel_1_1");
+
 			divGraphicOrder1.appendChild(boxLevel);
 			characterBoxContainer.setAttribute("class", "characterBoxContainer_1");
 			characterBoxContainer.setAttribute("id", "characterBoxContainer_1_1");
@@ -3083,13 +3066,34 @@
 			conditionSelectorBox.setAttribute("class", "conditionSelectorBox");
 			conditionSelectorBox.setAttribute("id", "conditionSelectorBox_1_1");
 			boxLevel.appendChild(conditionSelectorBox);
+			divPlus.setAttribute("onclick","addNewGroupL1('1')");
+			divPlus.setAttribute("class", "divPlus");
+			divPlus.innerHTML="+";
+			divPlus.setAttribute("title","Add new group");
+			conditionSelectorBox.appendChild(divPlus);
 			selectCondition.setAttribute("id", "selectCondition_1_1");
 			selectCondition.setAttribute("class", "selectCondition");
+
+			for (var i = 0; i < 3; i++) {
+				var option = document.createElement("option");
+				var value;
+				if (i == 0) {
+					value = "and";
+				} else if (i == 1) {
+					value = "or";
+				} else if (i == 2) {
+					value = "not";
+				}
+				option.innerHTML = value;
+				option.setAttribute("value", value);
+				selectCondition.appendChild(option);
+			}
+
 			conditionSelectorBox.appendChild(selectCondition);
 
 
 
-
+			//////////
 			var divGraphicOrder2 = document.createElement("div");
 			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2");
 			divGraphicOrder.appendChild(divGraphicOrder2);
@@ -3258,7 +3262,14 @@
 		// }
 
 		////Fi draggables
+		function unfoldMenu(character) {
+			console.log(character);
+			var list = document.getElementById("list_" + character);
+			list.classList.remove("hidden");
+			list.style.display = "block"
 
+
+		}
 		function addSelected(nodeId, place) {
 			event.preventDefault();
 			var table = document.getElementById("tableResult");
@@ -3329,8 +3340,11 @@
 			//afegir a la part gràfica --> S'haurà de modificar el tablecharacters blabla
 			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var lastLevel = divGraphicOrder_1.getAttribute("data-lastLevelAdded");
-			var content;
+			var listBoxLevel = divGraphicOrder_1.getAttribute("data-boxLevelNumbers").split(",");
 			var boxLevel = document.getElementById("boxLevel_1_" + lastLevel);
+			var list = document.createElement("ul");
+			var content;
+
 
 			if (tableContent.length == 6) {// La primera vegada. / Arreglar quan es borri els ands de la taula
 				character = tableCharacters[0];
@@ -3343,16 +3357,9 @@
 			}
 
 
-
-			//buufdudsudsusdhsdfbsdkfbsd fer-lo al crear al principi"
-
 			var characterBoxContainer = document.getElementById("characterBoxContainer_1_" + lastLevel);
 			var characterBox = document.createElement("div");
-
-
-
-
-			var idDivToMove;
+			var characterButton = document.createElement("div");
 
 			//boxLevel
 			if (tableContent.length == 6) {
@@ -3363,16 +3370,55 @@
 			}
 
 
-			//characterBox
+			//characterBox,list
 			characterBox.setAttribute("value", character);
 			characterBox.setAttribute("class", "characterBox");
 			characterBox.setAttribute("id", "characterBox_" + character);
+			characterBox.setAttribute("onclick", "unfoldMenu('" + character + "')");
 			characterBox.innerHTML = character;
+
+			//afegir llista
+
+			list.setAttribute("class", "list hidden");
+			list.setAttribute("id", "list_" + character);
+
+
+			for (var i = 0; i < (listBoxLevel.length + 1); i++) {
+				var li = document.createElement("li");
+				var img = document.createElement("img");
+				var divText = document.createElement("div");
+				var text, src;
+
+				if (i == listBoxLevel.length) {//ultim
+					text = "Delete item";
+					src = "trash.png";
+				} else if (listBoxLevel[i] == lastLevel) {
+					text = listBoxLevel[i];
+					src = "fletxes.png"
+				};
+
+				divText.setAttribute("class", "divText");
+				li.setAttribute("class", "elementInList")
+				img.setAttribute("src", src);
+				img.setAttribute("class", "imgList");
+				divText.innerHTML = text;
+				li.appendChild(img);
+				li.appendChild(divText);
+				list.appendChild(li);
+
+			}
+
+			characterBox.appendChild(list)
 			characterBoxContainer.appendChild(characterBox);
 
 			//redimensionar
-			var itemsNumber = content.split(",").length;
+			var contentSplited = content.split(",")
+			var itemsNumber = contentSplited.length;
 			boxLevel.style.height = (35 * itemsNumber) + "px";
+
+
+
+
 
 
 			//Afegir el valor de l'ultim de nivell1 creat al data-lastLevel1Added (divGraphicOrder_1_" + nodeId)
@@ -3685,12 +3731,16 @@
 				cancelButton.innerHTML = "Cancel";
 
 				var writeButton = document.createElement("button");
-				writeButton.innerHTML = "...";
 				writeButton.setAttribute("id", "displaySelect" + place);
 				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place + "','simple')");
 				placeId.appendChild(writeButton);
 				divFilterContainer.appendChild(okButton);
 				divFilterContainer.appendChild(cancelButton);
+
+				var buttonImage2 = document.createElement("img"); //Imatge decorativa del botó
+				buttonImage2.setAttribute("src", "botoDesplegable.png");
+				buttonImage2.setAttribute("class", "buttonImage");
+				writeButton.appendChild(buttonImage2);
 
 				//Selects dels intervals
 				var divFilterContainer2 = document.createElement("div");
