@@ -4035,87 +4035,7 @@
 		}
 
 
-		//Funcions part gràfica
-		function addGraphicElement(nodeId, character, numberCharacter, tableContent) {
-			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
-			var lastLevel = divGraphicOrder_1.getAttribute("data-lastLevelAdded");
-			var listBoxLevel = divGraphicOrder_1.getAttribute("data-boxLevelNumbers").split(",");
-			var boxLevel = document.getElementById("boxLevel_1_" + lastLevel);
-			var list = document.createElement("ul");
-			var content;
-
-
-			if (tableContent.length == 6) {// La primera vegada. / Arreglar quan es borri els ands de la taula
-				character = tableCharacters[0];
-				content = character;
-			} else {
-				character = tableCharacters[numberCharacter + 1];
-				content = boxLevel.getAttribute("value");
-
-				console.log(content);
-			}
-
-
-			var characterBoxContainer = document.getElementById("characterBoxContainer_1_" + lastLevel);
-			var characterBox = document.createElement("div");
-			var characterButton = document.createElement("div");
-
-			//boxLevel
-			if (tableContent.length == 6) {
-				boxLevel.setAttribute("value", character); //Afegirem els que contingui
-			} else {
-				content += "," + character; //el que s'afegirà
-				boxLevel.setAttribute("value", content);
-			}
-
-
-			//characterBox,list
-			characterBox.setAttribute("value", character);
-			characterBox.setAttribute("class", "characterBox");
-			characterBox.setAttribute("id", "characterBox_" + character);
-			characterBox.setAttribute("onclick", "unfoldMenu('" + character + "')");
-			characterBox.innerHTML = character;
-
-			//afegir llista
-
-			list.setAttribute("class", "list hidden");
-			list.setAttribute("id", "list_" + character);
-
-
-			for (var i = 0; i < (listBoxLevel.length + 1); i++) {
-				var li = document.createElement("li");
-				var img = document.createElement("img");
-				var divText = document.createElement("div");
-				var text, src;
-
-				if (i == listBoxLevel.length) {//ultim
-					text = "Delete item";
-					src = "trash.png";
-				} else if (listBoxLevel[i] == lastLevel) {
-					text = listBoxLevel[i];
-					src = "fletxes.png"
-				};
-
-				divText.setAttribute("class", "divText");
-				li.setAttribute("class", "elementInList")
-				img.setAttribute("src", src);
-				img.setAttribute("class", "imgList");
-				divText.innerHTML = text;
-				li.appendChild(img);
-				li.appendChild(divText);
-				list.appendChild(li);
-
-			}
-
-			characterBox.appendChild(list)
-			characterBoxContainer.appendChild(characterBox);
-
-			//redimensionar
-			var contentSplited = content.split(",")
-			var itemsNumber = contentSplited.length;
-			boxLevel.style.height = (35 * itemsNumber) + "px";
-
-		}
+		//Funcions part gràfica		
 		function addNewGroupL1(number, nodeId) {
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var boxLevel = document.createElement("div");
@@ -4165,11 +4085,75 @@
 			divGraphicOrder1.setAttribute("data-boxLevelNumbers", "1");
 
 		}
+
+		function addGraphicElement(nodeId, character, numberCharacter, tableContent) { //character
+			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
+			var lastLevel = divGraphicOrder_1.getAttribute("data-lastLevelAdded");
+			var listBoxLevel = divGraphicOrder_1.getAttribute("data-boxLevelNumbers").split(",");
+			var boxLevel = document.getElementById("boxLevel_1_" + lastLevel);
+			var table = document.createElement("div");
+			var content;
+
+
+			if (tableContent.length == 6) {// La primera vegada. / Arreglar quan es borri els ands de la taula
+				character = tableCharacters[0];
+				content = character;
+			} else {
+				character = tableCharacters[numberCharacter + 1];
+				content = boxLevel.getAttribute("value");
+
+				console.log(content);
+			}
+
+
+			var characterBoxContainer = document.getElementById("characterBoxContainer_1_" + lastLevel);
+			var characterBox=document.createElement("div");
+			var characterBoxText = document.createElement("div");
+			var characterDeleteButton = document.createElement("div");
+			var characterUpButton = document.createElement("div");
+			var characterDownButton = document.createElement("div");
+
+			//boxLevel
+			if (tableContent.length == 6) {
+				boxLevel.setAttribute("value", character); //Afegirem els que contingui
+			} else {
+				content += "," + character; //el que s'afegirà
+				boxLevel.setAttribute("value", content);
+			}
+
+			//characterBox,table
+			
+			characterBox.setAttribute("value", character);
+			characterBox.setAttribute("class", "characterBox");
+			characterBox.setAttribute("id", "characterBox_" + character);
+			characterBox.setAttribute("onclick", "unfoldMenu('" + character + "')");
+
+			characterBoxText.setAttribute("class","characterBoxText");
+			characterBoxText.innerHTML = character;
+
+			characterDeleteButton.setAttribute("class", "characterDeleteButton");
+			characterUpButton.setAttribute("class", "characterUpButton");
+			characterDownButton.setAttribute("class", "characterDownButton");
+
+			characterBox.appendChild(characterBoxText);
+			characterBox.appendChild(characterDownButton);
+			characterBox.appendChild(characterUpButton);
+			characterBox.appendChild(characterDeleteButton);
+			characterBoxContainer.appendChild(characterBox);
+
+			//redimensionar
+			var contentSplited = content.split(",")
+			var itemsNumber = contentSplited.length;
+			boxLevel.style.height = (35 * itemsNumber) + "px";
+
+		}
+
+
 		function unfoldMenu(character) {
 			console.log(character);
-			var list = document.getElementById("list_" + character);
-			list.classList.remove("hidden");
-			list.style.display = "block"
+			var table = document.getElementById("table_" + character);
+			table.classList.remove("hidden");
+			table.style.display = "block";
 
 
 		}

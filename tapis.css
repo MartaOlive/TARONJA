@@ -126,14 +126,15 @@ th.borderTable {
 
 .divGraphicOrder1 {
     border: black 1px solid;
-    height: 200px;
+    height: auto+50px;
 }
 
 .boxLevel1 {
     min-height: 50px;
-    width: 120px;
+    width:180px;
     border: black 1px solid;
     position: relative;
+    margin-bottom: 20px;
 
 }
 
@@ -141,57 +142,70 @@ th.borderTable {
     position: absolute;
     left: 0;
     height: 100%;
-    width: 50%;
+    width: 60%;
     border: black 1px solid;
 
     
 }
 
 .characterBox {
-    height: 20px;
-    width: 20px;
+
     margin-left: 5px;
     margin-top: 10px;
     margin-bottom: 5px;
+    height: 20px;
     border: black 1px solid;
     display: block;
 }
 .characterBox:hover{
     cursor: pointer;
 }
-.imgList{
-    height: 10px;
-    display: inline;
-}
-.divText{
-    display: inline;
-}
-.list{
-    list-style: none;
+
+.characterBoxText{
+    height: 20px;
+    width: 20px;
+    display: inline-block;  
 }
 
-.elementInList{
-    margin:0px;
-	padding:0px;
+.characterDeleteButton{
+    background-image: url("trash_18x18.png");
+    height: 18px;
+    width: 18px;
+   display: inline-block;
+  
+  
 }
-.elementInList:hover{ /*no va*/
-    background-color: rgba(62, 192, 240, 0.692);
+.characterUpButton{
+    background-image: url("fletxaAmunt_18x11.png");
+    height: 18px;
+    width: 11px;
+    display: inline-block; 
+    margin-right: 5px; 
+   
 
 }
+.characterDownButton{
+    background-image: url("fletxaAbaix_18x11.png");
+    height: 18px;
+    width: 11px;
+    margin-right: 5px; 
+    display: inline-block; 
+}
+
 
 .conditionSelectorBox {
     position: absolute;
     height: 100%;
-    left: 50%;
-    width: 50%;
+    left: 60%;
+    width: 40%;
     border: black 1px solid;
 
 }
 .divPlus{
-    position:relative;
+    position: relative;
+    float: right;
     font-weight: bolder;
-    margin-right: 5px;
-    font-weight: bolder;
+    margin-right: 10px;
 }
 .divPlus:hover{
     cursor: pointer;
