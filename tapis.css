@@ -130,7 +130,7 @@ th.borderTable {
 }
 
 .boxLevel1 {
-    min-height: 50px;
+    min-height: 70px;
     width:180px;
     border: black 1px solid;
     position: relative;
@@ -206,10 +206,28 @@ th.borderTable {
     float: right;
     font-weight: bolder;
     margin-right: 10px;
+
 }
 .divPlus:hover{
     cursor: pointer;
 }
+.divTrash{
+    position: absolute;
+    background-image: url("trash_18x18.png");
+    height: 18px;
+    width: 18px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    bottom:0px;
+    margin-right:5px;
+    right: 0px;
+}
+.divTrash:hover{
+    cursor: pointer;
+}
+
+
+
 .selectCondition{
     position: absolute;
     top:40%;
