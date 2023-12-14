@@ -4197,44 +4197,32 @@
 			var a = 1;
 			var rowsNumbers2 = table.rows.length;
 
-
-
 			//Eliminar l'element de la part gràfica
 			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var elementToDelete = document.getElementById("th_" + nodeId + "_" + row + "_character");
 			var valueOfElementToDelete = elementToDelete.getAttribute("value");
 			console.log(valueOfElementToDelete);
-			var divToDelete = document.getElementById("divInGraphic_" + valueOfElementToDelete);
 
-			divGraphicOrder_1.removeChild(divToDelete);
-			var previousIsAnd = false;
-			var previousIsNot = false;
-			for (var i = 0; i < divGraphicOrder_1.children.length; i++) { //borrar dos and seguits
-				if (previousIsAnd == true & divGraphicOrder_1.children[i].value == "and") {
-					divGraphicOrder_1.removeChild(divGraphicOrder_1.children[i]);
+			for (var i = 0; i < divGraphicOrder_1.children.length; i++) {
+				console.log(divGraphicOrder_1.children[i]);
+				var value = divGraphicOrder_1.children[i].getAttribute("value");
+				var id;
+				if (value.includes(tableCharacters[valueOfElementToDelete])) {
+					id = divGraphicOrder_1.children[i].getAttribute("id");
+					var numberToId=id.substr(-1);
+					console.log("numberToId: "+numberToId)
 				}
-				if (divGraphicOrder_1.children[i].value == "and") {
-					previousIsAnd = true;
-				}
-				else {
-					previousIsAnd = false;
-				}
-			}
-			for (var i = 0; i < divGraphicOrder_1.children.length; i++) { //borrar dos not seguits
-				if (previousIsAnd == true & divGraphicOrder_1.children[i].value == "not") {
-					divGraphicOrder_1.removeChild(divGraphicOrder_1.children[i]);
-				}
-				if (divGraphicOrder_1.children[i].value == "not") {
-					previousIsAnd = true;
-				}
-				else {
-					previousIsAnd = false;
-				}
-			}
 
-			if (divGraphicOrder_1.children[0].value == "and" || divGraphicOrder_1.children[0].value == "not") { //eliminar si queda un and al principi
-				divGraphicOrder_1.removeChild(divGraphicOrder_1.children[0]);
+
+
 			}
+			// var divToDelete = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
+			var divToDeleteParent=document.getElementById("characterBoxContainer_1_"+numberToId);
+			var divToDelete=document.getElementById("characterBox_"+tableCharacters[valueOfElementToDelete])
+
+			divToDeleteParent.removeChild(divToDelete);
+
+
 
 			///Borrar la taula
 			while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
@@ -4263,6 +4251,10 @@
 			contador = 1;
 			//tornar a pintar la taula 
 			drawTable(nodeId, tableContentNew, "delete");
+
+
+
+
 
 
 
