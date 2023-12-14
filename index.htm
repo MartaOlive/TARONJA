@@ -4276,9 +4276,6 @@
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			//Si és el 2n, crear un grup2
 
-
-
-
 			var boxLevel = document.createElement("div");
 			var characterBoxContainer = document.createElement("div");
 			var conditionSelectorBox = document.createElement("div");
@@ -4327,13 +4324,24 @@
 			}
 			conditionSelectorBox.appendChild(selectCondition);
 
-			filteringInstructions.push({  //Crear la primera instrucció del filter
-				1: {
+			if (number == 0) {
+				filteringInstructions.push({  //Crear la primera instrucció del filter
+					1: {
+						toFilter: [],
+						condition: "and"
+					}
+				}
+				);
+			} else {
+				filteringInstructions[0][newNumber] = {
+
 					toFilter: [],
 					condition: "and"
 				}
-			}
-			);
+			};
+
+
+
 			console.log(filteringInstructions);
 
 			//actualització
@@ -4410,17 +4418,17 @@
 
 
 			//actualitzar instruccions
-			var oldToFilter=[];			
+			var oldToFilter = [];
 			oldToFilter.push(...filteringInstructions[0][lastLevel].toFilter);
-			console.log("oldToFilter: " +oldToFilter);
+			console.log("oldToFilter: " + oldToFilter);
 			var character2;
-			if (character ==",A"){
-				character2=character.substring(1); //eliminala coma 
+			if (character == ",A") {
+				character2 = character.substring(1); //eliminala coma 
 			}
-			
+
 			oldToFilter.push(character);
-			console.log("newToFilter: " +oldToFilter);
-			filteringInstructions[0][lastLevel].toFilter =oldToFilter;
+			console.log("newToFilter: " + oldToFilter);
+			filteringInstructions[0][lastLevel].toFilter = oldToFilter;
 			console.log(filteringInstructions);
 
 		}
