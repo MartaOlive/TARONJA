@@ -4204,23 +4204,34 @@
 			console.log(valueOfElementToDelete);
 
 			for (var i = 0; i < divGraphicOrder_1.children.length; i++) {
-				console.log(divGraphicOrder_1.children[i]);
-				var value = divGraphicOrder_1.children[i].getAttribute("value");
+				var value = divGraphicOrder_1.children[i].getAttribute("value"); //per saber quin grup el conté
 				var id;
 				if (value.includes(tableCharacters[valueOfElementToDelete])) {
-					id = divGraphicOrder_1.children[i].getAttribute("id");
-					var numberToId=id.substr(-1);
-					console.log("numberToId: "+numberToId)
+					id = divGraphicOrder_1.children[i].getAttribute("id"); //agafo el id perque necessito el número final
+					var numberToId = id.substr(-1); //agafo el número final
+					//eliminar del value
+					var arrayValue = [];
+					if (value.length > 1) {
+						arrayValue.push(...value.split(","));
+						var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
+						divGraphicOrder_1.children[i].setAttribute("value", newValue);
+					} else {
+						divGraphicOrder_1.children[i].setAttribute("value", "");
+					}
+
+
 				}
 
-
-
 			}
-			// var divToDelete = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
-			var divToDeleteParent=document.getElementById("characterBoxContainer_1_"+numberToId);
-			var divToDelete=document.getElementById("characterBox_"+tableCharacters[valueOfElementToDelete])
 
+			var divToDeleteParent = document.getElementById("characterBoxContainer_1_" + numberToId);
+			var divToDelete = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
 			divToDeleteParent.removeChild(divToDelete);
+
+			//eliminar de les instruccions!!!!!!!!!!!!!!!
+			filteringInstructions[0][numberToId].toFilter = newValue;
+			console.log(filteringInstructions);
+
 
 
 
@@ -4317,6 +4328,7 @@
 			conditionSelectorBox.appendChild(selectCondition);
 
 			if (number == 0) {
+				filteringInstructions = []; //per quan es crei un altre filterRow que no arrosegui aquesta info
 				filteringInstructions.push({  //Crear la primera instrucció del filter
 					1: {
 						toFilter: [],
@@ -4356,18 +4368,40 @@
 			var listBoxLevel = divGraphicOrder_1.getAttribute("data-boxLevelNumbers").split(",");
 			var boxLevel = document.getElementById("boxLevel_1_" + lastLevel);
 			var table = document.createElement("div");
-			var content;
+			var content=boxLevel.getAttribute("value");
 
 
-			if (tableContent.length == 6) {// La primera vegada. / Arreglar quan es borri els ands de la taula
-				character = tableCharacters[0];
+			if (content == null) {
+				if (tableContent.length == 6) {
+					character = tableCharacters[0];
+					console.log("nuul i 0")
+
+				}else{
+					character = tableCharacters[numberCharacter + 1];
+					console.log("character:" +character)
+				}
+			
 				content = character;
-			} else {
+				boxLevel.setAttribute("value", content);
+			}else{
 				character = tableCharacters[numberCharacter + 1];
-				content = boxLevel.getAttribute("value");
-
-				console.log(content);
+				console.log("algo");
+				content += "," + character; //el que s'afegirà
+				boxLevel.setAttribute("value", content);
 			}
+
+			
+
+			// if (tableContent.length == 6) {// La primera vegada. / Arreglar quan es borri els ands de la taula
+			// 	character = tableCharacters[0];
+			// 	content = character;
+			// } else {
+			// 	character = tableCharacters[numberCharacter + 1];
+			// 	content = boxLevel.getAttribute("value");
+			// 	if (content==null){
+			// 		content = character;
+			// 	}
+			// }
 
 			var characterBoxContainer = document.getElementById("characterBoxContainer_1_" + lastLevel);
 			var characterBox = document.createElement("div");
@@ -4376,13 +4410,13 @@
 			var characterUpButton = document.createElement("div");
 			var characterDownButton = document.createElement("div");
 
-			//boxLevel
-			if (tableContent.length == 6) {
-				boxLevel.setAttribute("value", character); //Afegirem els que contingui
-			} else {
-				content += "," + character; //el que s'afegirà
-				boxLevel.setAttribute("value", content);
-			}
+			// //boxLevel
+			// if (tableContent.length == 6) {
+			// 	boxLevel.setAttribute("value", character); //Afegirem els que contingui
+			// } else {
+			// 	content += "," + character; //el que s'afegirà
+			// 	boxLevel.setAttribute("value", content);
+			// }
 
 			//characterBox,table
 			characterBox.setAttribute("value", character);
