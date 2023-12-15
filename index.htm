@@ -3148,7 +3148,7 @@
 
 			//afegir a la part gràfica --> S'haurà de modificar el tablecharacters blabla
 
-			addGraphicElement(nodeId, character, numberCharacter, tableContent);
+			addGraphicElement(nodeId, character, numberCharacter, tableContent,(table.rows.length - 1));
 
 
 			//Afegir a l'arrai d'instruccions per processar després
@@ -4228,19 +4228,15 @@
 			var divToDelete = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
 			divToDeleteParent.removeChild(divToDelete);
 
-			//eliminar de les instruccions!!!!!!!!!!!!!!!
+			//eliminar de les instruccions [0]=>Nivell 1, numberToId =>1-1,1-2,1-3...
 			filteringInstructions[0][numberToId].toFilter = newValue;
 			console.log(filteringInstructions);
-
-
-
 
 			///Borrar la taula
 			while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
 				table.deleteRow(a);
 				rowsNumbers2 = table.rows.length;
 			}
-
 
 			//treure les dades de la fila eliminada de les dades guardades
 			var tableContentNew = [];
@@ -4362,13 +4358,13 @@
 
 		}
 
-		function addGraphicElement(nodeId, character, numberCharacter, tableContent) { //character
+		function addGraphicElement(nodeId, character, numberCharacter, tableContent,row) { //character
 			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var lastLevel = divGraphicOrder_1.getAttribute("data-lastLevelAdded");
 			var listBoxLevel = divGraphicOrder_1.getAttribute("data-boxLevelNumbers").split(",");
 			var boxLevel = document.getElementById("boxLevel_1_" + lastLevel);
 			var table = document.createElement("div");
-			var content=boxLevel.getAttribute("value");
+			var content = boxLevel.getAttribute("value");
 
 
 			if (content == null) {
@@ -4376,47 +4372,26 @@
 					character = tableCharacters[0];
 					console.log("nuul i 0")
 
-				}else{
+				} else {
 					character = tableCharacters[numberCharacter + 1];
-					console.log("character:" +character)
+					console.log("character:" + character)
 				}
-			
+				//boxLevel
 				content = character;
 				boxLevel.setAttribute("value", content);
-			}else{
+			} else {
 				character = tableCharacters[numberCharacter + 1];
 				console.log("algo");
+				//boxLevel
 				content += "," + character; //el que s'afegirà
 				boxLevel.setAttribute("value", content);
 			}
-
-			
-
-			// if (tableContent.length == 6) {// La primera vegada. / Arreglar quan es borri els ands de la taula
-			// 	character = tableCharacters[0];
-			// 	content = character;
-			// } else {
-			// 	character = tableCharacters[numberCharacter + 1];
-			// 	content = boxLevel.getAttribute("value");
-			// 	if (content==null){
-			// 		content = character;
-			// 	}
-			// }
-
 			var characterBoxContainer = document.getElementById("characterBoxContainer_1_" + lastLevel);
 			var characterBox = document.createElement("div");
 			var characterBoxText = document.createElement("div");
 			var characterDeleteButton = document.createElement("div");
 			var characterUpButton = document.createElement("div");
 			var characterDownButton = document.createElement("div");
-
-			// //boxLevel
-			// if (tableContent.length == 6) {
-			// 	boxLevel.setAttribute("value", character); //Afegirem els que contingui
-			// } else {
-			// 	content += "," + character; //el que s'afegirà
-			// 	boxLevel.setAttribute("value", content);
-			// }
 
 			//characterBox,table
 			characterBox.setAttribute("value", character);
@@ -4428,6 +4403,7 @@
 			characterBoxText.innerHTML = character;
 
 			characterDeleteButton.setAttribute("class", "characterDeleteButton");
+			characterDeleteButton.setAttribute("onclick", "deleteRow(" + row + ",'" + nodeId + "')");
 			characterUpButton.setAttribute("class", "characterUpButton");
 			characterDownButton.setAttribute("class", "characterDownButton");
 
