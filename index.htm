@@ -3137,8 +3137,6 @@
 				tableContent.push(numberCharacter + 1);
 			}
 
-			// console.log("despres d'afegir: " + tableContent);
-			// console.log(tableContent);
 
 
 			//borrar taula
@@ -3151,7 +3149,6 @@
 			addGraphicElement(nodeId, character, numberCharacter, tableContent, (table.rows.length - 1));
 
 
-			//Afegir a l'arrai d'instruccions per processar després
 
 
 		}
@@ -3220,7 +3217,7 @@
 			var divGraphicOrder1 = document.createElement("div");
 			divGraphicOrder1.setAttribute("id", "divGraphicOrder_1_" + paramsNodeId);
 			divGraphicOrder1.setAttribute("class", "divGraphicOrder1");
-			divGraphicOrder1.setAttribute("data-lastLevelAdded", "1");
+			divGraphicOrder1.setAttribute("data-lastLevelAdded", "0");
 			divGraphicOrder1.setAttribute("data-boxLevelNumbers", "1");
 			divGraphicOrder1.innerHTML = "Arrange your filter";
 			divGraphicOrder.appendChild(divGraphicOrder1);
@@ -3761,6 +3758,7 @@
 		}
 
 		//Funcions de la taula
+		var charactersInTable = [];
 		function readTableFilterRow(nodeId, row) {
 			var table = document.getElementById("tableResult");
 			var tableResults = []; //on es guarden els valors de la taula
@@ -3865,6 +3863,7 @@
 			return tableResults;
 		}
 		function drawTable(nodeId, tableContentNew, button, row, editRowContent) {
+			charactersInTable = []; //perque no s'acumuli l'anterior. Es torna a omplir de nou.
 			var contador = 1;
 			var table = document.getElementById("tableResult");
 			// console.log("el q escriu: " + tableContentNew);
@@ -4038,10 +4037,9 @@
 
 
 							tableTh.innerHTML = tableCharacters[tableContentNew[(r + 5)]] //El guardat al llegir la taula
+							charactersInTable.push(tableCharacters[tableContentNew[(r + 5)]]); //per poder borrar el que toca després
 							tableTh.setAttribute("value", tableContentNew[(r + 5)]);
 							//}
-
-
 							var idCharacter = "th_" + nodeId + "_" + (contador) + "_character";
 							tableTh.setAttribute("id", idCharacter);
 
@@ -4053,7 +4051,7 @@
 				}
 			}
 
-
+			console.log(charactersInTable);
 		}
 		function eraseTable() {
 			var table = document.getElementById("tableResult");
@@ -4139,17 +4137,28 @@
 
 			}
 		}
-		function deleteRow(row, nodeId) {
+		function deleteRow(row, nodeId, character) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0); //agafar els valors de la taula
 
 			var table = document.getElementById("tableResult");
 			var a = 1;
 			var rowsNumbers2 = table.rows.length;
+			var newRow;
+			//si ve del gràfic, la row s'ha de buscar
+			if (row == "no") {
+				console.log(character);
+				console.log(filteringInstructions);
+				newRow = (charactersInTable.indexOf(character)) + 1;
+			} else {
+				newRow = row;
+			}
+			console.log(newRow)
+
 
 			//Eliminar l'element de la part gràfica
 			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
-			var elementToDelete = document.getElementById("th_" + nodeId + "_" + row + "_character");
+			var elementToDelete = document.getElementById("th_" + nodeId + "_" + newRow + "_character");
 			var valueOfElementToDelete = elementToDelete.getAttribute("value");
 			console.log(valueOfElementToDelete);
 
@@ -4164,6 +4173,8 @@
 					if (value.length > 1) {
 						arrayValue.push(...value.split(","));
 						var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
+						var newCharactersInTable = charactersInTable.filter(element => element != tableCharacters[valueOfElementToDelete]);
+						charactersInTable = newCharactersInTable; //borrar la lletra que s'elimina
 						divGraphicOrder_1.children[i].setAttribute("value", newValue);
 
 
@@ -4175,7 +4186,7 @@
 
 
 				}
-
+				console.log(newCharactersInTable);
 			}
 
 			var divToDeleteParent = document.getElementById("characterBoxContainer_1_" + numberToId);
@@ -4186,10 +4197,13 @@
 			//Redimensionar
 			var boxLevel = document.getElementById("boxLevel_1_" + numberToId); //El que s'ha de redimensionar
 			var contentSplited;
-
-			if (newValue.length > 1) {
-				boxLevel.style.height = (35 * newValue.length) + "px";
-			} else {
+			if (newValue != null) {
+				if (newValue.length > 1) {
+					boxLevel.style.height = (35 * newValue.length) + "px";
+				}
+			} else if (null){
+				boxLevel.style.height = 70 + "px";
+			}else{
 				boxLevel.style.height = 70 + "px";
 			}
 
@@ -4209,7 +4223,7 @@
 			var contador = 1;
 
 			for (var i = 0; i < tableContent.length; i += 6) {
-				if (row != contador) {
+				if (newRow != contador) {
 					tableContentNew.push(tableContent[i]);
 					tableContentNew.push(tableContent[i + 1]);
 					tableContentNew.push(tableContent[i + 2]);
@@ -4225,17 +4239,10 @@
 			//tornar a pintar la taula
 			drawTable(nodeId, tableContentNew, "delete");
 
-
-
-
-
-
-
 		}
 
 
 		//Funcions part gràfica
-
 		var filteringInstructions = [];
 		function addNewGroupL1(number, nodeId) {
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
@@ -4247,11 +4254,19 @@
 			var selectCondition = document.createElement("select");
 			var divPlus = document.createElement("div");
 			var divTrash = document.createElement("div");
-			var newNumber = parseInt(number) + 1;
+			//mirar quin és l'ultim número 
+			var lastLevel = divGraphicOrder1.getAttribute("data-lastLevelAdded")
+			var newNumber = parseInt(lastLevel) + 1;
 
 			boxLevel.setAttribute("class", "boxLevel1");
 			boxLevel.setAttribute("id", "boxLevel_1_" + newNumber);
+			//S'ha de posar després del que es seleciona indepentdentment del número
+
+			//
 			divGraphicOrder1.appendChild(boxLevel);
+
+
+
 			characterBoxContainer.setAttribute("class", "characterBoxContainer_1");
 			characterBoxContainer.setAttribute("id", "characterBoxContainer_1_" + newNumber);
 			boxLevel.appendChild(characterBoxContainer);
@@ -4390,7 +4405,7 @@
 			characterBoxText.innerHTML = character;
 
 			characterDeleteButton.setAttribute("class", "characterDeleteButton");
-			characterDeleteButton.setAttribute("onclick", "deleteRow(" + row + ",'" + nodeId + "')");
+			characterDeleteButton.setAttribute("onclick", "deleteRow('no','" + nodeId + "','" + character + "')");
 			characterUpButton.setAttribute("class", "characterUpButton");
 			characterDownButton.setAttribute("class", "characterDownButton");
 
