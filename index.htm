@@ -1873,7 +1873,7 @@
 			//var nodeids = network.getConnectedNodes(currentNode.id, "from"); JOAN
 			var nodeids = currentNode.id;
 
-			//el STARUL que agafarem sempre és el del node previ perque borri el $filter... si hi ha hagut una crida prèvia 
+			//el STARUL que agafarem sempre és el del node previ perque borri el $filter... si hi ha hagut una crida prèvia
 			var previousId = network.getConnectedNodes(nodeids, "from");
 			console.log(previousId);
 			var previouSTAURL = networkNodes.get(previousId[0]);
@@ -2016,7 +2016,7 @@
 				networkNodes.update(currentNode); //important als dos
 				showInfoMessage("Selecting STA rows...");
 				LoadJSONNodeSTAData(currentNode); //crida a la API
-				UpdateChildenSTAURL(currentNode);//important als dos 
+				UpdateChildenSTAURL(currentNode);//important als dos
 
 
 				///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
@@ -2046,7 +2046,7 @@
 
 
 
-				//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir. 
+				//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir.
 				currentNode.STASelectedRowsTable = tableResults;
 				networkNodes.update(currentNode);
 				UpdateChildenSTAURL(currentNode);
@@ -2662,7 +2662,7 @@
 							temporalArray.push(...resultsFiltered);
 						}
 
-						//eliminar repetits: 
+						//eliminar repetits:
 						var arrayWithoutDuplicates = [];
 						for (var e = 0; e < temporalArray.length; e++) {
 							console.log(temporalArray[e]["@iot.id"]);
@@ -3148,7 +3148,7 @@
 
 			//afegir a la part gràfica --> S'haurà de modificar el tablecharacters blabla
 
-			addGraphicElement(nodeId, character, numberCharacter, tableContent,(table.rows.length - 1));
+			addGraphicElement(nodeId, character, numberCharacter, tableContent, (table.rows.length - 1));
 
 
 			//Afegir a l'arrai d'instruccions per processar després
@@ -3264,8 +3264,7 @@
 			divResult.appendChild(table);
 
 			//omplir la taula si prèviament s'ha seleccionat algo
-			console.log("currentNode: " + currentNode);
-			console.log("paramsNodeId: " + paramsNodeId);
+
 			var thisNode = networkNodes.get(paramsNodeId);
 			if (thisNode.STASelectedRows || thisNode.STASelectedRowsTable) {
 				var elementsPreviouslySelected;
@@ -3947,7 +3946,7 @@
 							tableTh.setAttribute("id", idCondition);
 							tableTr.appendChild(tableTh);
 
-							//mirar tipus de dada 
+							//mirar tipus de dada
 							var typeOfValues;
 							var value1 = tableContentNew[(r + 3)];
 							typeOfValues = tableContentNew[(r + 4)];
@@ -4044,7 +4043,6 @@
 							// } else {
 
 
-							console.log(tableContentNew[(r + 5)]);
 							tableTh.innerHTML = tableCharacters[tableContentNew[(r + 5)]] //El guardat al llegir la taula
 							tableTh.setAttribute("value", tableContentNew[(r + 5)]);
 							//}
@@ -4215,8 +4213,12 @@
 						arrayValue.push(...value.split(","));
 						var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
 						divGraphicOrder_1.children[i].setAttribute("value", newValue);
+
+
 					} else {
 						divGraphicOrder_1.children[i].setAttribute("value", "");
+
+
 					}
 
 
@@ -4227,6 +4229,18 @@
 			var divToDeleteParent = document.getElementById("characterBoxContainer_1_" + numberToId);
 			var divToDelete = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
 			divToDeleteParent.removeChild(divToDelete);
+
+
+			//Redimensionar
+			var boxLevel = document.getElementById("boxLevel_1_" + numberToId); //El que s'ha de redimensionar
+			var contentSplited;
+
+			if (newValue.length > 1) {
+				boxLevel.style.height = (35 * newValue.length) + "px";
+			} else {
+				boxLevel.style.height = 70 + "px";
+			}
+
 
 			//eliminar de les instruccions [0]=>Nivell 1, numberToId =>1-1,1-2,1-3...
 			filteringInstructions[0][numberToId].toFilter = newValue;
@@ -4256,7 +4270,7 @@
 			}
 
 			contador = 1;
-			//tornar a pintar la taula 
+			//tornar a pintar la taula
 			drawTable(nodeId, tableContentNew, "delete");
 
 
@@ -4268,7 +4282,7 @@
 		}
 
 
-		//Funcions part gràfica	
+		//Funcions part gràfica
 
 		var filteringInstructions = [];
 		function addNewGroupL1(number, nodeId) {
@@ -4353,12 +4367,36 @@
 		}
 		function deleteGroupL1(number, nodeId) {
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
-			var boxLevelToDelete = document.getAnimations("boxLevel_1_" + number);
-			divGraphicOrder1.removeChild(boxLevelToDelete);
+			var boxLevelToDelete = document.getElementById("boxLevel_1_" + number);
+			var canErase = true;
+			//Sempre hi ha d'haver un (mirar els childs ...)
+			console.log(divGraphicOrder1.children);
+			if (divGraphicOrder1.children.length == 1) {
+				canErase = false;
+				window.alert("You can't erase last group");
+			} else {
+				//no pot borrar si te characters
+				var value = boxLevelToDelete.getAttribute("value");
+				if (value != null) {
+					if (value.length >= 1) {
+						canErase = false;
+						window.alert("You can't erase a group with elements. Move or delete them first");
+					}
+				}
+
+			}
+
+			//Quan si es pugui borrar
+			if (canErase) {
+				divGraphicOrder1.removeChild(boxLevelToDelete);
+			}
+
+
+
 
 		}
 
-		function addGraphicElement(nodeId, character, numberCharacter, tableContent,row) { //character
+		function addGraphicElement(nodeId, character, numberCharacter, tableContent, row) { //character
 			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var lastLevel = divGraphicOrder_1.getAttribute("data-lastLevelAdded");
 			var listBoxLevel = divGraphicOrder_1.getAttribute("data-boxLevelNumbers").split(",");
@@ -4370,18 +4408,15 @@
 			if (content == null) {
 				if (tableContent.length == 6) {
 					character = tableCharacters[0];
-					console.log("nuul i 0")
 
 				} else {
 					character = tableCharacters[numberCharacter + 1];
-					console.log("character:" + character)
 				}
 				//boxLevel
 				content = character;
 				boxLevel.setAttribute("value", content);
 			} else {
 				character = tableCharacters[numberCharacter + 1];
-				console.log("algo");
 				//boxLevel
 				content += "," + character; //el que s'afegirà
 				boxLevel.setAttribute("value", content);
@@ -4422,14 +4457,12 @@
 			//actualitzar instruccions
 			var oldToFilter = [];
 			oldToFilter.push(...filteringInstructions[0][lastLevel].toFilter);
-			console.log("oldToFilter: " + oldToFilter);
 			var character2;
 			if (character == ",A") {
-				character2 = character.substring(1); //eliminala coma 
+				character2 = character.substring(1); //eliminala coma
 			}
 
 			oldToFilter.push(character);
-			console.log("newToFilter: " + oldToFilter);
 			filteringInstructions[0][lastLevel].toFilter = oldToFilter;
 			console.log(filteringInstructions);
 
@@ -4437,10 +4470,10 @@
 
 
 		function unfoldMenu(character) { ///////////////////////////S'ha de fer
-			console.log(character);
-			var table = document.getElementById("table_" + character);
-			table.classList.remove("hidden");
-			table.style.display = "block";
+			// console.log(character);
+			// var table = document.getElementById("table_" + character);
+			// table.classList.remove("hidden");
+			// table.style.display = "block";
 
 
 		}
@@ -5453,7 +5486,7 @@
 			networkNodes.update(node);
 		}
 
-		/*return 
+		/*return
 					null means connection should not be done.
 					true means all done
 					false means pending.*/
