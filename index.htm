@@ -3889,7 +3889,7 @@
 								for (var s = 0; s < 3; s++) { //omplim select (3 opcions: and, or, not) FUNCIONA BÉ AMB ADD
 									var optionSelect = document.createElement("option");
 									if (s == 0) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert") { //no insert
+										if (button == "edit" || button == "delete" || button == "add" || button == "save") {
 											if (tableContentNew[r] == "and") { //r= 0,3,7,11...
 												optionSelect.setAttribute("selected", true);
 											}
@@ -3898,7 +3898,7 @@
 										optionSelect.innerHTML = "And";
 									}
 									else if (s == 1) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save") {
 											if (tableContentNew[r] == "or") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -3908,7 +3908,7 @@
 										optionSelect.innerHTML = "Or";
 									}
 									else if (s == 2) {
-										if (button == "edit" || button == "delete" || button == "add" || button == "save" || button == "insert") {
+										if (button == "edit" || button == "delete" || button == "add" || button == "save") {
 											if (tableContentNew[r] == "not") {
 												optionSelect.setAttribute("selected", true);
 											}
@@ -3928,10 +3928,10 @@
 
 							tableTr.appendChild(tableTh);
 
-							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")) {
+							if (button == "delete" || button == "add" || (button == "edit" & contador != row) || button == "save") {
 								tableTh.innerHTML = tableContentNew[(r + 1)]; //es la r +1 xq son les posicions del array 1,4,7...
 							}
-							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
+							else if ((button == "edit" & contador == row)) {
 								//muntar input/select amb opicio seleccionada
 
 								// console.log(tableContentNew[(r + 1)]);
@@ -3958,12 +3958,12 @@
 
 
 
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")) {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save") {
 								tableTh.innerHTML = [tableContentNew[r + 2]];
 								tableTh.setAttribute("value", [tableContentNew[r + 2]]);
 
 							}
-							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
+							else if ((button == "edit" & contador == row)) {
 								//muntar input/select amb opicio seleccionada
 								createSelect(2, "_tableResult", idCondition, nodeId, "no", tableContentNew, button, editRowContent);
 
@@ -3974,7 +3974,7 @@
 							var idValue = "th_" + nodeId + "_" + (contador) + "_value";
 							tableTr.appendChild(tableTh);
 							tableTh.setAttribute("id", idValue);
-							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save" || (button == "insert" & tableContentNew[(r + 1)] != "insertSelect")) {
+							if (button === "delete" || button == "add" || (button == "edit" & contador != row) || button == "save") {
 								if (Array.isArray(tableContentNew[(r + 3)]) == true) {
 									console.log(tableContentNew[(r + 3)]);
 									console.log("és un arraaay");
@@ -3986,7 +3986,7 @@
 								tableTh.innerHTML = tableContentNew[(r + 3)];
 
 							}
-							else if ((button == "edit" & contador == row) || (button == "insert" & tableContentNew[(r + 1)] == "insertSelect")) {
+							else if ((button == "edit" & contador == row)) {
 								// 	//muntar input/select amb opicio seleccionada
 								//console.log(tableContentNew[(r + 3)]);
 								createSelect(3, "_tableResult", idValue, nodeId, "no", tableContentNew, button, editRowContent);
@@ -4010,12 +4010,6 @@
 							buttonEdit.setAttribute("onclick", "editRow(" + (contador) + ",'" + nodeId + "')");
 							buttonEdit.innerHTML = "Edit ";
 							tableTh.appendChild(buttonEdit);
-							var buttonInsert = document.createElement("button");
-							buttonInsert.setAttribute("value", contador);
-							buttonInsert.setAttribute("id", "buttonInsert" + contador);
-							buttonInsert.setAttribute("onclick", "insertRow(" + (contador) + ",'" + nodeId + "')");
-							buttonInsert.innerHTML = "Insert ";
-							tableTh.appendChild(buttonInsert);
 							var buttonSave = document.createElement("button");
 							buttonSave.setAttribute("value", contador);
 							buttonSave.setAttribute("class", "hidden");
@@ -4068,48 +4062,6 @@
 			while (rowsNumbers > 1) { //borrem la taula menys la primera fila
 				table.deleteRow(a);
 				rowsNumbers = table.rows.length;
-			}
-		}
-		function insertRow(row, nodeId) {
-			event.preventDefault();
-			var tableContent = readTableFilterRow(nodeId, 0);//agafar el contingut, i afegir " " en el lloc on toqui.Per ccrear una fila buida on somplirà amb selects
-
-			var row2 = parseInt(row);
-			var position = (row2 - 1) * 5;
-
-			tableContent.splice(position, 0, "insertSelect", "insertSelect", "insertSelect", "insertSelect", "insertSelect");
-			//console.log(tableContent);
-
-			//borrar taula
-			eraseTable();
-
-
-			drawTable(nodeId, tableContent, "insert", row, "no");
-
-			//amagar els botons de edit,Insert, mostrar botó save i mantenir suprimir
-			var table = document.getElementById("tableResult");
-			var rowsNumbers = table.rows.length;
-			//desabilitar el add
-			var addButton = document.getElementById("addButton");
-			addButton.disabled = true;
-			var buttonEdit, buttonDelete, buttonInsert, buttonSave;
-
-			for (var i = 1; i < rowsNumbers; i++) {
-				buttonEdit = document.getElementById("buttonEdit" + i);
-				buttonDelete = document.getElementById("buttonDelete" + i);
-				buttonInsert = document.getElementById("buttonInsert" + i);
-
-
-				buttonEdit.classList.add("hidden");
-				buttonDelete.classList.add("hidden");
-				buttonInsert.classList.add("hidden");
-
-
-				if (row == i) {
-					buttonSave = document.getElementById("buttonSave" + i);
-					buttonSave.classList.remove("hidden");
-				}
-
 			}
 		}
 		function saveRow(row, nodeId) {
