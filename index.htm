@@ -4157,60 +4157,7 @@
 
 
 			//Eliminar l'element de la part gràfica
-			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
-			var elementToDelete = document.getElementById("th_" + nodeId + "_" + newRow + "_character");
-			var valueOfElementToDelete = elementToDelete.getAttribute("value");
-			console.log(valueOfElementToDelete);
-
-			for (var i = 0; i < divGraphicOrder_1.children.length; i++) {
-				var value = divGraphicOrder_1.children[i].getAttribute("value"); //per saber quin grup el conté
-				var id;
-				if (value.includes(tableCharacters[valueOfElementToDelete])) {
-					id = divGraphicOrder_1.children[i].getAttribute("id"); //agafo el id perque necessito el número final
-					var numberToId = id.substr(-1); //agafo el número final
-					//eliminar del value
-					var arrayValue = [];
-					if (value.length > 1) {
-						arrayValue.push(...value.split(","));
-						var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
-						var newCharactersInTable = charactersInTable.filter(element => element != tableCharacters[valueOfElementToDelete]);
-						charactersInTable = newCharactersInTable; //borrar la lletra que s'elimina
-						divGraphicOrder_1.children[i].setAttribute("value", newValue);
-
-
-					} else {
-						divGraphicOrder_1.children[i].setAttribute("value", "");
-
-
-					}
-
-
-				}
-				console.log(newCharactersInTable);
-			}
-
-			var divToDeleteParent = document.getElementById("characterBoxContainer_1_" + numberToId);
-			var divToDelete = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
-			divToDeleteParent.removeChild(divToDelete);
-
-
-			//Redimensionar
-			var boxLevel = document.getElementById("boxLevel_1_" + numberToId); //El que s'ha de redimensionar
-			var contentSplited;
-			if (newValue != null) {
-				if (newValue.length > 1) {
-					boxLevel.style.height = (35 * newValue.length) + "px";
-				}
-			} else if (null){
-				boxLevel.style.height = 70 + "px";
-			}else{
-				boxLevel.style.height = 70 + "px";
-			}
-
-
-			//eliminar de les instruccions [0]=>Nivell 1, numberToId =>1-1,1-2,1-3...
-			filteringInstructions[0][numberToId].toFilter = newValue;
-			console.log(filteringInstructions);
+			deleteCharacterInGraphic(nodeId, newRow);
 
 			///Borrar la taula
 			while (rowsNumbers2 > 1) { //borrem la taula menys la primera fila
@@ -4261,9 +4208,22 @@
 			boxLevel.setAttribute("class", "boxLevel1");
 			boxLevel.setAttribute("id", "boxLevel_1_" + newNumber);
 			//S'ha de posar després del que es seleciona indepentdentment del número
+			//mirar quin és el seleccionat per buscar el next sibling i afegir-ho amb el 
+			if (number != 0) {
+				var actualBoxLevel = document.getElementById("boxLevel_1_" + number);
+				var nextSibling = actualBoxLevel.nextSibling; //Si no n'hi ha donarà null
+				console.log(nextSibling);
+			}
+			if (nextSibling!=null){
+				divGraphicOrder1.insertBefore(boxLevel,nextSibling);
+			}else{
+				divGraphicOrder1.appendChild(boxLevel);
+			}
 
-			//
-			divGraphicOrder1.appendChild(boxLevel);
+
+
+
+			 //insert before
 
 
 
@@ -4395,6 +4355,7 @@
 			var characterUpButton = document.createElement("div");
 			var characterDownButton = document.createElement("div");
 
+
 			//characterBox,table
 			characterBox.setAttribute("value", character);
 			characterBox.setAttribute("class", "characterBox");
@@ -4407,7 +4368,9 @@
 			characterDeleteButton.setAttribute("class", "characterDeleteButton");
 			characterDeleteButton.setAttribute("onclick", "deleteRow('no','" + nodeId + "','" + character + "')");
 			characterUpButton.setAttribute("class", "characterUpButton");
+			characterUpButton.setAttribute("onclick", "upGroup('" + lastLevel + "','" + character + "')");
 			characterDownButton.setAttribute("class", "characterDownButton");
+			characterDownButton.setAttribute("onclick", "downGroup('" + lastLevel + "','" + character + "')");
 
 			characterBox.appendChild(characterBoxText);
 			characterBox.appendChild(characterDownButton);
@@ -4435,6 +4398,69 @@
 
 		}
 
+
+		function deleteCharacterInGraphic(nodeId, newRow) {
+			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
+			var elementToDelete = document.getElementById("th_" + nodeId + "_" + newRow + "_character");
+			var valueOfElementToDelete = elementToDelete.getAttribute("value");
+			console.log(valueOfElementToDelete);
+
+			for (var i = 0; i < divGraphicOrder_1.children.length; i++) {
+				var value = divGraphicOrder_1.children[i].getAttribute("value"); //per saber quin grup el conté
+				var id;
+				if (value.includes(tableCharacters[valueOfElementToDelete])) {
+					id = divGraphicOrder_1.children[i].getAttribute("id"); //agafo el id perque necessito el número final
+					var numberToId = id.substr(-1); //agafo el número final
+					//eliminar del value
+					var arrayValue = [];
+					if (value.length > 1) {
+						arrayValue.push(...value.split(","));
+						var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
+						var newCharactersInTable = charactersInTable.filter(element => element != tableCharacters[valueOfElementToDelete]);
+						charactersInTable = newCharactersInTable; //borrar la lletra que s'elimina
+						divGraphicOrder_1.children[i].setAttribute("value", newValue);
+
+
+					} else {
+						divGraphicOrder_1.children[i].setAttribute("value", "");
+
+
+					}
+
+
+				}
+				console.log(newCharactersInTable);
+			}
+
+			var divToDeleteParent = document.getElementById("characterBoxContainer_1_" + numberToId);
+			var divToDelete = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
+			divToDeleteParent.removeChild(divToDelete);
+
+
+			//Redimensionar
+			var boxLevel = document.getElementById("boxLevel_1_" + numberToId); //El que s'ha de redimensionar
+			var contentSplited;
+			if (newValue != null) {
+				if (newValue.length > 1) {
+					boxLevel.style.height = (35 * newValue.length) + "px";
+				}
+			} else if (null) {
+				boxLevel.style.height = 70 + "px";
+			} else {
+				boxLevel.style.height = 70 + "px";
+			}
+
+
+			//eliminar de les instruccions [0]=>Nivell 1, numberToId =>1-1,1-2,1-3...
+			filteringInstructions[0][numberToId].toFilter = newValue;
+			console.log(filteringInstructions);
+		}
+		function upGroup(groupNumber, character) {
+			console.log("upGroup");
+		}
+		function downGroup(groupNumber, character) {
+			console.log("downGroup");
+		}
 
 		function unfoldMenu(character) { ///////////////////////////S'ha de fer
 			// console.log(character);
