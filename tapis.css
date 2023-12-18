@@ -166,6 +166,11 @@ th.borderTable {
     width: 40%;
 
 }
+.selectConditionL2{
+    position: absolute;
+    top:40%;
+    margin-left: 10px;
+}
 
 
 .characterBoxContainer_1 {

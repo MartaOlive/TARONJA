@@ -4235,6 +4235,25 @@
 				conditionSelectorBoxL2.setAttribute("class", "conditionSelectorBoxL2");
 				conditionSelectorBoxL2.setAttribute("id", "conditionSelectorBox_2_1");
 				boxlevel2.appendChild(conditionSelectorBoxL2);
+				//select
+				var selectConditionL2 = document.createElement("select");
+				selectConditionL2.setAttribute("id", "selectCondition_2_" + newNumber);
+				selectConditionL2.setAttribute("class", "selectConditionL2");
+				for (var i = 0; i < 3; i++) {
+					var option = document.createElement("option");
+					var value;
+					if (i == 0) {
+						value = "and";
+					} else if (i == 1) {
+						value = "or";
+					} else if (i == 2) {
+						value = "not";
+					}
+					option.innerHTML = value;
+					option.setAttribute("value", value);
+					selectConditionL2.appendChild(option);
+				}
+				conditionSelectorBoxL2.appendChild(selectConditionL2);
 
 
 			}
@@ -4274,12 +4293,12 @@
 					boxlevel2.insertBefore(boxLevel, nextSibling);
 				} else { //últim
 					//boxlevel2.innerHTML = "buuuu"
-					if(creatingL2){
+					if (creatingL2) {
 						BoxForL1.appendChild(boxLevel);
-					}else{
+					} else {
 						boxlevel2.appendChild(boxLevel);
 					}
-					
+
 				}
 			} else { //el primer que es crea des de l'inici
 				divGraphicOrder1.appendChild(boxLevel);
