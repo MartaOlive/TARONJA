@@ -137,6 +137,14 @@ th.borderTable {
     margin-bottom: 20px;
 
 }
+.boxLevel2 {
+    min-height: 300px;
+    width:300px;
+    border: black 1px solid;
+    position: relative;
+    margin-bottom: 20px;
+
+}
 
 .characterBoxContainer_1 {
     position: absolute;
