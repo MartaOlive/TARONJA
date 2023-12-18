@@ -146,6 +146,28 @@ th.borderTable {
 
 }
 
+
+.boxForL1{
+    border: black 1px solid;
+    position: absolute;
+    left: 0;
+    display: inline-block;
+    height: 100%;
+
+
+}
+
+.conditionSelectorBoxL2{
+    border: black 1px solid;
+    position: absolute;
+    display: inline-block;
+    height: 100%;
+    left: 60%;
+    width: 40%;
+
+}
+
+
 .characterBoxContainer_1 {
     position: absolute;
     left: 0;

@@ -4204,6 +4204,7 @@
 			}
 			var boxLevel = document.createElement("div");
 			var data_boxL2;
+			var creatingL2 = false;
 
 			//Si és el 2n, crear un grup2
 			if (divGraphicOrder1.children.length == 1 & isNumber2 == "no") { //si es vol crear el segon
@@ -4218,10 +4219,27 @@
 				boxlevel2.appendChild(clonedNode);
 				divGraphicOrder1.setAttribute("data-isNumber2", "yes");
 				console.log("clone");
-				data_boxL2="1";
-				//renovar instruccions
-			} else {
-				
+				data_boxL2 = "1";
+				creatingL2 = true;
+				//renovar instruccions (està al final)
+
+				//estructura par esquerra
+				var BoxForL1 = document.createElement("div");
+				BoxForL1.setAttribute("class", "boxForL1");
+				BoxForL1.setAttribute("id", "boxForL1_2_1");
+				boxlevel2.appendChild(BoxForL1);
+				BoxForL1.appendChild(clonedNode);
+
+				//estructura del select
+				var conditionSelectorBoxL2 = document.createElement("div");
+				conditionSelectorBoxL2.setAttribute("class", "conditionSelectorBoxL2");
+				conditionSelectorBoxL2.setAttribute("id", "conditionSelectorBox_2_1");
+				boxlevel2.appendChild(conditionSelectorBoxL2);
+
+
+			}
+			else {
+
 				if (number != 0) { //quan ja hi ha més de dos i existeix un L2
 					data_boxL2 = actualBoxLevel.getAttribute("data-boxl2");
 					console.log(data_boxL2);
@@ -4231,10 +4249,9 @@
 					//boxLevel.setAttribute("data-boxl2", data_boxL2);
 
 				}
-				boxlevel2 = document.getElementById("boxLevel_2_" + data_boxL2);
+				boxlevel2 = document.getElementById("boxForL1_2_" + data_boxL2);
 
 			}
-
 
 			var characterBoxContainer = document.createElement("div");
 			var conditionSelectorBox = document.createElement("div");
@@ -4257,7 +4274,12 @@
 					boxlevel2.insertBefore(boxLevel, nextSibling);
 				} else { //últim
 					//boxlevel2.innerHTML = "buuuu"
-					boxlevel2.appendChild(boxLevel);
+					if(creatingL2){
+						BoxForL1.appendChild(boxLevel);
+					}else{
+						boxlevel2.appendChild(boxLevel);
+					}
+					
 				}
 			} else { //el primer que es crea des de l'inici
 				divGraphicOrder1.appendChild(boxLevel);
@@ -4317,8 +4339,29 @@
 
 					toFilter: [],
 					condition: "and"
-				}
+				};
+
 			};
+
+			//quan es crea L2
+			if (creatingL2) {
+				filteringInstructions.push({
+					1: { //2-1
+						join: [1, 2],
+						condition: "and"
+					}
+				})
+			};
+
+			if (creatingL2 == false & (newNumber != 2 & newNumber != 1)) { //si existeix ja un G2 i no s'acaba de crear
+				var oldJoin = [];
+				console.log(filteringInstructions[1][data_boxL2].join);
+				oldJoin.push(...filteringInstructions[1][data_boxL2].join);
+				console.log(oldJoin);
+				var newJoin = oldJoin.push(newNumber);
+				filteringInstructions[1][data_boxL2]["join"] = newJoin;
+			}
+
 			console.log(filteringInstructions);
 
 			//actualització
