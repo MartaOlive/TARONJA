@@ -131,15 +131,16 @@ th.borderTable {
 
 .boxLevel1 {
     min-height: 70px;
-    width:180px;
+    width: 180px;
     border: black 1px solid;
     position: relative;
     margin-bottom: 20px;
 
 }
+
 .boxLevel2 {
     min-height: 300px;
-    width:300px;
+    width: 300px;
     border: black 1px solid;
     position: relative;
     margin-bottom: 20px;
@@ -147,7 +148,7 @@ th.borderTable {
 }
 
 
-.boxForL1{
+.boxForL1 {
     border: black 1px solid;
     position: absolute;
     left: 0;
@@ -157,7 +158,7 @@ th.borderTable {
 
 }
 
-.conditionSelectorBoxL2{
+.conditionSelectorBoxL2 {
     border: black 1px solid;
     position: absolute;
     display: inline-block;
@@ -166,35 +167,38 @@ th.borderTable {
     width: 40%;
 
 }
-.selectConditionL2{
+
+.selectConditionL2 {
     position: absolute;
-    top:40%;
+    top: 40%;
     margin-left: 10px;
 }
 
-.divPlusL2{
+.divPlusL2 {
     position: relative;
     float: right;
     font-weight: bolder;
     margin-right: 10px;
 
 }
-.divPlusL2:hover{
+
+.divPlusL2:hover {
     cursor: pointer;
 }
 
-.divTrashL2{
+.divTrashL2 {
     position: absolute;
     background-image: url("trash_18x18.png");
     height: 18px;
     width: 18px;
     background-size: 80%;
     background-repeat: no-repeat;
-    bottom:0px;
-    margin-right:5px;
+    bottom: 0px;
+    margin-right: 5px;
     right: 0px;
 }
-.divTrashL2:hover{
+
+.divTrashL2:hover {
     cursor: pointer;
 }
 
@@ -205,7 +209,7 @@ th.borderTable {
     width: 60%;
     border: black 1px solid;
 
-    
+
 }
 
 .characterBox {
@@ -217,41 +221,58 @@ th.borderTable {
     border: black 1px solid;
     display: block;
 }
-.characterBox:hover{
+
+.characterBox:hover {
     cursor: pointer;
 }
 
-.characterBoxText{
+.characterBoxText {
     height: 20px;
     width: 20px;
-    display: inline-block;  
+    display: inline-block;
 }
 
-.characterDeleteButton{
+.characterDeleteButton {
     background-image: url("trash_18x18.png");
     height: 18px;
     width: 18px;
-   display: inline-block;
-  
-  
+    display: inline-block;
+
+
 }
-.characterUpButton{
+
+.characterUpButton {
     background-image: url("fletxaAmunt_18x11.png");
     height: 18px;
     width: 11px;
-    display: inline-block; 
-    margin-right: 5px; 
-   
+    display: inline-block;
+    margin-right: 5px;
+
 
 }
-.characterDownButton{
+
+.characterDownButton {
     background-image: url("fletxaAbaix_18x11.png");
     height: 18px;
     width: 11px;
-    margin-right: 5px; 
-    display: inline-block; 
+    margin-right: 5px;
+    display: inline-block;
 }
 
+.nextElement {
+    background-image: url("nextElement_19x12.png");
+    height: 12px;
+    width: 19px;
+    bottom: 0px;
+    left:0px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    position: absolute;
+}
+
+.nextElement:hover {
+    cursor: pointer;
+}
 
 .conditionSelectorBox {
     position: absolute;
@@ -261,36 +282,41 @@ th.borderTable {
     border: black 1px solid;
 
 }
-.divPlus{
+
+.divPlus {
     position: relative;
     float: right;
     font-weight: bolder;
-    margin-right: 10px;
+    margin-right: 5px;
+    font-size: 10px;
 
 }
-.divPlus:hover{
+
+.divPlus:hover {
     cursor: pointer;
 }
-.divTrash{
+
+.divTrash {
     position: absolute;
     background-image: url("trash_18x18.png");
     height: 18px;
     width: 18px;
     background-size: 80%;
     background-repeat: no-repeat;
-    bottom:0px;
-    margin-right:5px;
+    bottom: 0px;
+    margin-right: 5px;
     right: 0px;
 }
-.divTrash:hover{
+
+.divTrash:hover {
     cursor: pointer;
 }
 
 
 
-.selectCondition{
+.selectCondition {
     position: absolute;
-    top:40%;
+    top: 40%;
     margin-left: 10px;
 }
 
