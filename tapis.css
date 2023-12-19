@@ -172,6 +172,31 @@ th.borderTable {
     margin-left: 10px;
 }
 
+.divPlusL2{
+    position: relative;
+    float: right;
+    font-weight: bolder;
+    margin-right: 10px;
+
+}
+.divPlusL2:hover{
+    cursor: pointer;
+}
+
+.divTrashL2{
+    position: absolute;
+    background-image: url("trash_18x18.png");
+    height: 18px;
+    width: 18px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    bottom:0px;
+    margin-right:5px;
+    right: 0px;
+}
+.divTrashL2:hover{
+    cursor: pointer;
+}
 
 .characterBoxContainer_1 {
     position: absolute;

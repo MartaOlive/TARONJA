@@ -3219,6 +3219,7 @@
 			divGraphicOrder1.setAttribute("class", "divGraphicOrder1");
 			divGraphicOrder1.setAttribute("data-lastLevelAdded", "0");
 			divGraphicOrder1.setAttribute("data-isNumber2", "no");
+			divGraphicOrder1.setAttribute("data-isNumber3", "no");
 			divGraphicOrder1.innerHTML = "Arrange your filter";
 			divGraphicOrder.appendChild(divGraphicOrder1);
 
@@ -4137,6 +4138,7 @@
 
 			}
 		}
+		
 		function deleteRow(row, nodeId, character) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0); //agafar els valors de la taula
@@ -4254,6 +4256,21 @@
 					selectConditionL2.appendChild(option);
 				}
 				conditionSelectorBoxL2.appendChild(selectConditionL2);
+
+				//botons (+ i delete)
+				var divPlusL2 = document.createElement("div");
+				var divTrashL2 = document.createElement("div");
+				divPlusL2.setAttribute("onclick", "addNewGroupL2('1','" + nodeId + "')");
+				divPlusL2.setAttribute("class", "divPlusL2");
+				divPlusL2.innerHTML = "+";
+				divPlusL2.setAttribute("title", "Add new group");
+				divTrashL2.setAttribute("onclick", "deleteGroupL2('1','" + nodeId + "')");
+				divTrashL2.setAttribute("class", "divTrashL2");
+				divTrashL2.setAttribute("title", "Delete group");
+
+				conditionSelectorBoxL2.appendChild(divPlusL2);
+				conditionSelectorBoxL2.appendChild(divTrashL2);
+
 
 
 			}
@@ -4505,40 +4522,77 @@
 
 		function deleteCharacterInGraphic(nodeId, newRow) {
 			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
+			// var isLevel2 = false;
+			// var isLevel3 = false;
+			// var data_isNumber2 = divGraphicOrder_1.getAttribute("data-isNumber2");
+			// var data_isNumber3 = divGraphicOrder_1.getAttribute("data-isNumber3");
+			// if (data_isNumber2 == "yes") {
+			// 	isLevel2 = true;
+			// 	if (data_isNumber3 == "yes") {
+			// 		isLevel3 = true;
+			// 	}
+			// }
+
+
 			var elementToDelete = document.getElementById("th_" + nodeId + "_" + newRow + "_character");
 			var valueOfElementToDelete = elementToDelete.getAttribute("value");
 			console.log(valueOfElementToDelete);
-
-			for (var i = 0; i < divGraphicOrder_1.children.length; i++) {
-				var value = divGraphicOrder_1.children[i].getAttribute("value"); //per saber quin grup el conté
-				var id;
-				if (value.includes(tableCharacters[valueOfElementToDelete])) {
-					id = divGraphicOrder_1.children[i].getAttribute("id"); //agafo el id perque necessito el número final
-					var numberToId = id.substr(-1); //agafo el número final
-					//eliminar del value
-					var arrayValue = [];
-					if (value.length > 1) {
-						arrayValue.push(...value.split(","));
-						var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
-						var newCharactersInTable = charactersInTable.filter(element => element != tableCharacters[valueOfElementToDelete]);
-						charactersInTable = newCharactersInTable; //borrar la lletra que s'elimina
-						divGraphicOrder_1.children[i].setAttribute("value", newValue);
-
-
-					} else {
-						divGraphicOrder_1.children[i].setAttribute("value", "");
-
-
-					}
-
-
-				}
-				console.log(newCharactersInTable);
-			}
-
-			var divToDeleteParent = document.getElementById("characterBoxContainer_1_" + numberToId);
 			var divToDelete = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
-			divToDeleteParent.removeChild(divToDelete);
+			var parentNode=divToDelete.parentNode;
+			var id=parentNode.getAttribute("id");
+			console.log(id);
+			var numberToId = id.substr(-1); //agafo el número final
+			var boxLevel_1=document.getElementById("boxLevel_1_"+numberToId);
+			var value=boxLevel_1.getAttribute("value");
+			divToDelete.remove();
+			//borrar el value del parent 
+			var arrayValue = [];
+					if (value.length > 1) {
+			 			arrayValue.push(...value.split(","));
+						var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
+			 			var newCharactersInTable = charactersInTable.filter(element => element != tableCharacters[valueOfElementToDelete]);
+						charactersInTable = newCharactersInTable; //borrar la lletra que s'elimina
+						boxLevel_1.setAttribute("value", newValue);
+
+
+					} 
+					else {
+						boxLevel_1.setAttribute("value", "");
+
+
+			 		}
+
+
+
+			// for (var i = 0; i < divGraphicOrder_1.children.length; i++) {
+			// 	var value = divGraphicOrder_1.children[i].getAttribute("value"); //per saber quin grup el conté
+			// 	var id;
+			// 	if (value.includes(tableCharacters[valueOfElementToDelete])) {
+			// 		id = divGraphicOrder_1.children[i].getAttribute("id"); //agafo el id perque necessito el número final
+			// 		var numberToId = id.substr(-1); //agafo el número final
+			// 		//eliminar del value
+			// 		var arrayValue = [];
+			// 		if (value.length > 1) {
+			// 			arrayValue.push(...value.split(","));
+			// 			var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
+			// 			var newCharactersInTable = charactersInTable.filter(element => element != tableCharacters[valueOfElementToDelete]);
+			// 			charactersInTable = newCharactersInTable; //borrar la lletra que s'elimina
+			// 			divGraphicOrder_1.children[i].setAttribute("value", newValue);
+
+
+			// 		} else {
+			// 			divGraphicOrder_1.children[i].setAttribute("value", "");
+
+
+			// 		}
+
+			// 	}
+			// 	console.log(newCharactersInTable);
+			// }
+
+			// var divToDeleteParent = document.getElementById("characterBoxContainer_1_" + numberToId);
+			// = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
+			// divToDeleteParent.removeChild(divToDelete);
 
 
 			//Redimensionar
