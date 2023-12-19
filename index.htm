@@ -4238,14 +4238,15 @@
 			var divPlus = document.createElement("div");
 			var divTrash = document.createElement("div");
 
-			//mirar quants fills té per afegir un nou
+			//mirar quin es el numero mes gran
 			var newNumber;
-			if (number != "0") {
 
-				var childrenNumber = parentNode_node.children.length;
-				newNumber = childrenNumber + 1;
-			} else { //el pimer (és el primer child)
-				newNumber = "1";
+			if (number != "0") {
+				var data_l1 = divGraphicOrder1.getAttribute("data-L1");
+				var lastNumber = parseInt(data_l1.substr(-1));
+				newNumber = lastNumber + 1;
+			} else {
+				newNumber = 1;
 			}
 
 			boxLevel.setAttribute("class", "boxLevel1");
@@ -4471,23 +4472,20 @@
 			if (canErase) {
 				parentNode_node.removeChild(boxLevelToDelete);
 			}
-
+			//borrar del data-l1
+			var data_l1 =divGraphicOrder1.getAttribute("data-L1");
+			var data_l1Array=data_l1.split(",");
+			var newData_l1 =data_l1Array.filter(element=>element!=number);
+			
+			divGraphicOrder1.setAttribute("data-L1",newData_l1);
+			
 			//corregir el Last Level added
-			var lastChild = parentNode_node.lastChild;
-			//console.log(parentNode_node)
-			var id = lastChild.getAttribute("id");
-			var numberToIdLast = id.substr(-1); //agafo el número final
-			var data_lastLevelAddedL1 = divGraphicOrder1.getAttribute("data-lastLevelAddedL1");
-			if (data_lastLevelAddedL1 == number) {
-				divGraphicOrder1.setAttribute("data-lastLevelAddedL1", numberToIdLast);
-			}
-
+			divGraphicOrder1.setAttribute("data-lastLevelAddedL1",newData_l1[newData_l1.length - 1]);
+			
 			//Actualitzar instruccions
 			// delete filteringInstructions[0].number;
 
 			//borrar grup 2 si només queda un del grup1
-
-
 
 			if (parentNode_node.children.length == 1) { //parent: boxForL1_2_+numberToId (on hi ha els L1)
 				var parentNode_id = parentNode_node.getAttribute("id");
