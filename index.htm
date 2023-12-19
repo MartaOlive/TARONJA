@@ -4214,10 +4214,10 @@
 			//Si és el 2n, crear un grup2
 			if (number != 0) {
 				if (parentNode_node.children.length == 1) {
-					
+
 					//& isNumber2 == "no") { //si es vol crear el segon
 					console.log(number);
-						addNewGroupL2(number, nodeId); //crea el L2 afegint el primerboxLevel
+					addNewGroupL2(number, nodeId); //crea el L2 afegint el primerboxLevel
 					creatingL2 = true;
 					data_boxL2 = "1";
 				}
@@ -4230,7 +4230,6 @@
 				}
 			}
 
-
 			//estructura i botons
 			var boxLevel = document.createElement("div"); //es crea una box del L1
 			var characterBoxContainer = document.createElement("div");
@@ -4241,25 +4240,17 @@
 
 			//mirar quants fills té per afegir un nou
 			var newNumber;
-			 if (number != "0") {
-			 	
-			 	var childrenNumber = parentNode_node.children.length;
-			 	newNumber = childrenNumber + 1;
-			 } else { //el pimer (és el primer child)
-			 	newNumber = "1";
-			 }
+			if (number != "0") {
 
-			// var parentNode_id=parentNode.getAttribute("id");
-			// var numberToId = parentNode_id.substr(-1);
-
-
+				var childrenNumber = parentNode_node.children.length;
+				newNumber = childrenNumber + 1;
+			} else { //el pimer (és el primer child)
+				newNumber = "1";
+			}
 
 			boxLevel.setAttribute("class", "boxLevel1");
 			boxLevel.setAttribute("id", "boxLevel_1_" + newNumber);
 			boxLevel.setAttribute("data-boxl2", data_boxL2);
-
-
-
 			//S'ha de posar després del que es seleciona indepentdentment del número
 
 			if (number != 0) {
@@ -4279,8 +4270,6 @@
 			} else { //el primer que es crea des de l'inici
 				divGraphicOrder1.appendChild(boxLevel);
 			}
-
-
 			characterBoxContainer.setAttribute("class", "characterBoxContainer_1");
 			characterBoxContainer.setAttribute("id", "characterBoxContainer_1_" + newNumber);
 			boxLevel.appendChild(characterBoxContainer);
@@ -4364,6 +4353,15 @@
 			var content = oldContent + ",";
 			divGraphicOrder1.setAttribute("data-lastLevelAddedL1", newNumber);
 
+			//array de L1 
+			var oldArray = "";
+			if (number != 0) {
+				oldArray = divGraphicOrder1.getAttribute("data-L1");
+				oldArray += "," + newNumber;
+			} else {
+				oldArray += newNumber;
+			}
+			divGraphicOrder1.setAttribute("data-L1", oldArray);
 
 		}
 
@@ -4450,10 +4448,11 @@
 		function deleteGroupL1(number, nodeId) {
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var boxLevelToDelete = document.getElementById("boxLevel_1_" + number);
-			var parentNode = boxLevelToDelete.parentNode;
+			var parentNode_node = boxLevelToDelete.parentNode;
 			var canErase = true;
+			console.log(parentNode_node)
 			//Sempre hi ha d'haver un (mirar els childs ...)
-			if (parentNode.children.length == 1) {
+			if (parentNode_node.children.length == 1) {
 				canErase = false;
 				window.alert("You can't erase last group");
 			} else {
@@ -4470,21 +4469,36 @@
 
 			//Quan si es pugui borrar
 			if (canErase) {
-				parentNode.removeChild(boxLevelToDelete);
+				parentNode_node.removeChild(boxLevelToDelete);
 			}
 
 			//corregir el Last Level added
-			var lastChild = parentNode.lastChild;
-			console.log(parentNode)
+			var lastChild = parentNode_node.lastChild;
+			//console.log(parentNode_node)
 			var id = lastChild.getAttribute("id");
-			var numberToId = id.substr(-1); //agafo el número final
-			var data_lastLevelAddedL1 = divGraphicOrder1.getAttribute("data_lastLevelAddedL1");
+			var numberToIdLast = id.substr(-1); //agafo el número final
+			var data_lastLevelAddedL1 = divGraphicOrder1.getAttribute("data-lastLevelAddedL1");
 			if (data_lastLevelAddedL1 == number) {
-				divGraphicOrder1.setAttribute("data_lastLevelAddedL1", numberToId);
+				divGraphicOrder1.setAttribute("data-lastLevelAddedL1", numberToIdLast);
 			}
 
 			//Actualitzar instruccions
 			// delete filteringInstructions[0].number;
+
+			//borrar grup 2 si només queda un del grup1
+
+
+
+			if (parentNode_node.children.length == 1) { //parent: boxForL1_2_+numberToId (on hi ha els L1)
+				var parentNode_id = parentNode_node.getAttribute("id");
+				var numberToId = parentNode_id.substr(-1);
+				var l2ToRemove = document.getElementById("boxLevel_2_" + numberToId);
+				var nodeToClone = parentNode_node.children[0].cloneNode(true);//copiar el L1 interior
+				divGraphicOrder1.appendChild(nodeToClone);
+				console.log(nodeToClone)
+				l2ToRemove.remove(); //borrem el L2
+				divGraphicOrder1.setAttribute("data-isNumber2", "no");
+			}
 
 		}
 
