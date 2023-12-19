@@ -3146,7 +3146,7 @@
 
 			//afegir a la part gràfica --> S'haurà de modificar el tablecharacters blabla
 
-			addGraphicElement(nodeId, character, numberCharacter, tableContent, (table.rows.length - 1));
+			addGraphicElement(nodeId, numberCharacter, tableContent, (table.rows.length - 1));
 
 
 
@@ -3217,7 +3217,7 @@
 			var divGraphicOrder1 = document.createElement("div");
 			divGraphicOrder1.setAttribute("id", "divGraphicOrder_1_" + paramsNodeId);
 			divGraphicOrder1.setAttribute("class", "divGraphicOrder1");
-			divGraphicOrder1.setAttribute("data-lastLevelAdded", "0");
+			divGraphicOrder1.setAttribute("data-lastLevelAddedL1", "0");
 			divGraphicOrder1.setAttribute("data-isNumber2", "no");
 			divGraphicOrder1.setAttribute("data-isNumber3", "no");
 			divGraphicOrder1.innerHTML = "Arrange your filter";
@@ -4150,7 +4150,7 @@
 			//si ve del gràfic, la row s'ha de buscar
 			if (row == "no") {
 				console.log(character);
-				console.log(filteringInstructions);
+				// console.log(filteringInstructions);
 				newRow = (charactersInTable.indexOf(character)) + 1;
 			} else {
 				newRow = row;
@@ -4195,108 +4195,65 @@
 		var filteringInstructions = [];
 		function addNewGroupL1(number, nodeId) {
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
-			var boxlevel2;
+			var boxleveL2;
 			var actualBoxLevel;
 			var isNumber2 = divGraphicOrder1.getAttribute("data-isNumber2");
 
-			if (number == "0") {
-				//actualBoxLevel = document.getElementById("boxLevel_1_1");
-			} else {
+			// if (number == "0") {
+			// 	//actualBoxLevel = document.getElementById("boxLevel_1_1");
+			// } 
+			if (number != "0") {
 				actualBoxLevel = document.getElementById("boxLevel_1_" + number);
+				var parentNode_node = actualBoxLevel.parentNode;
+				//console.log(parentNode_node.children)
 			}
-			var boxLevel = document.createElement("div");
+
 			var data_boxL2;
 			var creatingL2 = false;
 
 			//Si és el 2n, crear un grup2
-			if (divGraphicOrder1.children.length == 1 & isNumber2 == "no") { //si es vol crear el segon
-				// var boxLevel1_1 = document.getElementById("boxLevel_1_1");
-				var clonedNode = actualBoxLevel.cloneNode(true);
-				actualBoxLevel.remove();
-				clonedNode.setAttribute("data-boxl2", "1");
-				boxlevel2 = document.createElement("div");
-				boxlevel2.setAttribute("id", "boxLevel_2_1");
-				boxlevel2.setAttribute("class", "boxLevel2");
-				divGraphicOrder1.appendChild(boxlevel2);
-				boxlevel2.appendChild(clonedNode);
-				divGraphicOrder1.setAttribute("data-isNumber2", "yes");
-				console.log("clone");
-				data_boxL2 = "1";
-				creatingL2 = true;
-				//renovar instruccions (està al final)
-
-				//estructura par esquerra
-				var BoxForL1 = document.createElement("div");
-				BoxForL1.setAttribute("class", "boxForL1");
-				BoxForL1.setAttribute("id", "boxForL1_2_1");
-				boxlevel2.appendChild(BoxForL1);
-				BoxForL1.appendChild(clonedNode);
-
-				//estructura del select
-				var conditionSelectorBoxL2 = document.createElement("div");
-				conditionSelectorBoxL2.setAttribute("class", "conditionSelectorBoxL2");
-				conditionSelectorBoxL2.setAttribute("id", "conditionSelectorBox_2_1");
-				boxlevel2.appendChild(conditionSelectorBoxL2);
-				//select
-				var selectConditionL2 = document.createElement("select");
-				selectConditionL2.setAttribute("id", "selectCondition_2_" + newNumber);
-				selectConditionL2.setAttribute("class", "selectConditionL2");
-				for (var i = 0; i < 3; i++) {
-					var option = document.createElement("option");
-					var value;
-					if (i == 0) {
-						value = "and";
-					} else if (i == 1) {
-						value = "or";
-					} else if (i == 2) {
-						value = "not";
+			if (number != 0) {
+				if (parentNode_node.children.length == 1) {
+					
+					//& isNumber2 == "no") { //si es vol crear el segon
+					console.log(number);
+						addNewGroupL2(number, nodeId); //crea el L2 afegint el primerboxLevel
+					creatingL2 = true;
+					data_boxL2 = "1";
+				}
+				else {
+					if (number != 0) { //quan ja hi ha més de dos i existeix un L2 !!!!!!!!!!!!!!
+						data_boxL2 = actualBoxLevel.getAttribute("data-boxl2"); //a quin L2 pertany
 					}
-					option.innerHTML = value;
-					option.setAttribute("value", value);
-					selectConditionL2.appendChild(option);
+					else { }//el primer. No hi haurà L2
+					boxleveL2 = document.getElementById("boxForL1_2_" + data_boxL2); //es selecciona el L2 on anirà el L1 que crearem
 				}
-				conditionSelectorBoxL2.appendChild(selectConditionL2);
-
-				//botons (+ i delete)
-				var divPlusL2 = document.createElement("div");
-				var divTrashL2 = document.createElement("div");
-				divPlusL2.setAttribute("onclick", "addNewGroupL2('1','" + nodeId + "')");
-				divPlusL2.setAttribute("class", "divPlusL2");
-				divPlusL2.innerHTML = "+";
-				divPlusL2.setAttribute("title", "Add new group");
-				divTrashL2.setAttribute("onclick", "deleteGroupL2('1','" + nodeId + "')");
-				divTrashL2.setAttribute("class", "divTrashL2");
-				divTrashL2.setAttribute("title", "Delete group");
-
-				conditionSelectorBoxL2.appendChild(divPlusL2);
-				conditionSelectorBoxL2.appendChild(divTrashL2);
-
-
-
-			}
-			else {
-
-				if (number != 0) { //quan ja hi ha més de dos i existeix un L2
-					data_boxL2 = actualBoxLevel.getAttribute("data-boxl2");
-					console.log(data_boxL2);
-				}
-				else { //el primer
-					//data_boxL2 = "1";
-					//boxLevel.setAttribute("data-boxl2", data_boxL2);
-
-				}
-				boxlevel2 = document.getElementById("boxForL1_2_" + data_boxL2);
-
 			}
 
+
+			//estructura i botons
+			var boxLevel = document.createElement("div"); //es crea una box del L1
 			var characterBoxContainer = document.createElement("div");
 			var conditionSelectorBox = document.createElement("div");
 			var selectCondition = document.createElement("select");
 			var divPlus = document.createElement("div");
 			var divTrash = document.createElement("div");
-			//mirar quin és l'ultim número per asignar al grup nou
-			var lastLevel = divGraphicOrder1.getAttribute("data-lastLevelAdded")
-			var newNumber = parseInt(lastLevel) + 1;
+
+			//mirar quants fills té per afegir un nou
+			var newNumber;
+			 if (number != "0") {
+			 	
+			 	var childrenNumber = parentNode_node.children.length;
+			 	newNumber = childrenNumber + 1;
+			 } else { //el pimer (és el primer child)
+			 	newNumber = "1";
+			 }
+
+			// var parentNode_id=parentNode.getAttribute("id");
+			// var numberToId = parentNode_id.substr(-1);
+
+
+
 			boxLevel.setAttribute("class", "boxLevel1");
 			boxLevel.setAttribute("id", "boxLevel_1_" + newNumber);
 			boxLevel.setAttribute("data-boxl2", data_boxL2);
@@ -4304,16 +4261,18 @@
 
 
 			//S'ha de posar després del que es seleciona indepentdentment del número
+
 			if (number != 0) {
 				var nextSibling = actualBoxLevel.nextSibling; //Si no n'hi ha donarà null
 				if (nextSibling != null) {
-					boxlevel2.insertBefore(boxLevel, nextSibling);
+					boxleveL2.insertBefore(boxLevel, nextSibling);
 				} else { //últim
-					//boxlevel2.innerHTML = "buuuu"
+					//boxleveL2.innerHTML = "buuuu"
 					if (creatingL2) {
+						var BoxForL1 = document.getElementById("boxForL1_2_1");
 						BoxForL1.appendChild(boxLevel);
 					} else {
-						boxlevel2.appendChild(boxLevel);
+						boxleveL2.appendChild(boxLevel);
 					}
 
 				}
@@ -4360,62 +4319,138 @@
 			conditionSelectorBox.appendChild(selectCondition);
 
 			//actualitzar instruccions
-			if (number == 0) {
-				filteringInstructions = []; //per quan es crei un altre filterRow que no arrosegui aquesta info
-				filteringInstructions.push({  //Crear la primera instrucció del filter
-					1: {
-						toFilter: [],
-						condition: "and"
-					}
-				}
-				);
-			}
-			else {
-				filteringInstructions[0][newNumber] = {
+			// if (number == 0) {
+			// 	filteringInstructions = []; //per quan es crei un altre filterRow que no arrosegui aquesta info
+			// 	filteringInstructions.push({  //Crear la primera instrucció del filter
+			// 		1: {
+			// 			toFilter: [],
+			// 			condition: "and"
+			// 		}
+			// 	}
+			// 	);
+			// }
+			// else {
+			// 	filteringInstructions[0][newNumber] = {
 
-					toFilter: [],
-					condition: "and"
-				};
+			// 		toFilter: [],
+			// 		condition: "and"
+			// 	};
 
-			};
+			// };
 
-			//quan es crea L2
-			if (creatingL2) {
-				filteringInstructions.push({
-					1: { //2-1
-						join: [1, 2],
-						condition: "and"
-					}
-				})
-			};
+			// //quan es crea L2
+			// if (creatingL2) {
+			// 	filteringInstructions.push({
+			// 		1: { //2-1
+			// 			join: [1, 2],
+			// 			condition: "and"
+			// 		}
+			// 	})
+			// };
 
-			if (creatingL2 == false & (newNumber != 2 & newNumber != 1)) { //si existeix ja un G2 i no s'acaba de crear
-				var oldJoin = [];
-				console.log(filteringInstructions[1][data_boxL2].join);
-				oldJoin.push(...filteringInstructions[1][data_boxL2].join);
-				console.log(oldJoin);
-				var newJoin = oldJoin.push(newNumber);
-				filteringInstructions[1][data_boxL2]["join"] = newJoin;
-			}
+			// if (creatingL2 == false & (newNumber != 2 & newNumber != 1& number !="0")) { //si existeix ja un G2 i no s'acaba de crear (0+1) i (1+1)
+			// 	var oldJoin = [];
+			// 	console.log(filteringInstructions[1][data_boxL2].join);
+			// 	oldJoin.push(...filteringInstructions[1][data_boxL2].join);
+			// 	console.log(oldJoin);
+			// 	var newJoin = oldJoin.push(newNumber);
+			// 	filteringInstructions[1][data_boxL2]["join"] = newJoin;
+			// }
 
-			console.log(filteringInstructions);
+			// console.log(filteringInstructions);
 
 			//actualització
 			var oldContent = divGraphicOrder1.getAttribute("data-isNumber2");
-			var content = oldContent + "," +
-				divGraphicOrder1.setAttribute("data-lastLevelAdded", newNumber);
+			var content = oldContent + ",";
+			divGraphicOrder1.setAttribute("data-lastLevelAddedL1", newNumber);
 
 
 		}
 
 
-		function addNewGroupL2() {
-			console.log("grup2")
+		function addNewGroupL2(number, nodeId) {
+			console.log("grup2");
+			var numberId;
+			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
+			var actualBoxLevel = document.getElementById("boxLevel_1_" + number);
+
+			if (number == "1") { //el primer, on es crea el G2 per primer cop
+				numberId = number;
+			} else {
+				//mirar quants fills hi ha per assignar-li el número següent
+				var parentNode_node = actualBoxLevel.parentNode;
+				var childrenNumber = parentNode_node.children.length;
+				numberId = childrenNumber + 1;
+				//numberId = children.lengh +1;
+			}
+
+			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
+			var actualBoxLevel = document.getElementById("boxLevel_1_" + number);
+			var clonedNode = actualBoxLevel.cloneNode(true);
+			actualBoxLevel.remove(); //borrem l'antic per poder afegir-lo dins del L2 (el clonat)
+			clonedNode.setAttribute("data-boxl2", numberId); //grup al que pertany
+			//Estructura
+			var boxleveL2 = document.createElement("div");
+			boxleveL2.setAttribute("id", "boxLevel_2_" + numberId);
+			boxleveL2.setAttribute("class", "boxLevel2");
+			divGraphicOrder1.appendChild(boxleveL2);
+			///boxleveL2.appendChild(clonedNode); //No va aqui
+			divGraphicOrder1.setAttribute("data-isNumber2", "yes");
+			console.log("clone");
+			//var data_boxL2 = "1";
+
+			//estructura part esquerra (on aniran els L1)
+			var BoxForL1 = document.createElement("div");
+			BoxForL1.setAttribute("class", "boxForL1");
+			BoxForL1.setAttribute("id", "boxForL1_2_" + numberId);
+			boxleveL2.appendChild(BoxForL1);
+			BoxForL1.appendChild(clonedNode);//afegim el copiat
+
+			//estructura part dreta (select i botons)
+			var conditionSelectorBoxL2 = document.createElement("div");
+			conditionSelectorBoxL2.setAttribute("class", "conditionSelectorBoxL2");
+			conditionSelectorBoxL2.setAttribute("id", "conditionSelectorBox_2_" + numberId);
+			boxleveL2.appendChild(conditionSelectorBoxL2);
+			//select
+			var selectConditionL2 = document.createElement("select");
+			selectConditionL2.setAttribute("id", "selectCondition_2_" + numberId);
+			selectConditionL2.setAttribute("class", "selectConditionL2");
+			for (var i = 0; i < 3; i++) {
+				var option = document.createElement("option");
+				var value;
+				if (i == 0) {
+					value = "and";
+				} else if (i == 1) {
+					value = "or";
+				} else if (i == 2) {
+					value = "not";
+				}
+				option.innerHTML = value;
+				option.setAttribute("value", value);
+				selectConditionL2.appendChild(option);
+			}
+			conditionSelectorBoxL2.appendChild(selectConditionL2);
+
+			//botons (+ i delete)
+			var divPlusL2 = document.createElement("div");
+			var divTrashL2 = document.createElement("div");
+			divPlusL2.setAttribute("onclick", "addNewGroupL2('" + numberId + "','" + nodeId + "')");
+			divPlusL2.setAttribute("class", "divPlusL2");
+			divPlusL2.innerHTML = "+";
+			divPlusL2.setAttribute("title", "Add new group");
+			divTrashL2.setAttribute("onclick", "deleteGroupL2('" + numberId + "','" + nodeId + "')");
+			divTrashL2.setAttribute("class", "divTrashL2");
+			divTrashL2.setAttribute("title", "Delete group");
+
+			conditionSelectorBoxL2.appendChild(divPlusL2);
+			conditionSelectorBoxL2.appendChild(divTrashL2);
+
 		}
+
 		function deleteGroupL1(number, nodeId) {
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var boxLevelToDelete = document.getElementById("boxLevel_1_" + number);
-			var parentNode =boxLevelToDelete.parentNode;
+			var parentNode = boxLevelToDelete.parentNode;
 			var canErase = true;
 			//Sempre hi ha d'haver un (mirar els childs ...)
 			if (parentNode.children.length == 1) {
@@ -4438,17 +4473,28 @@
 				parentNode.removeChild(boxLevelToDelete);
 			}
 
+			//corregir el Last Level added
+			var lastChild = parentNode.lastChild;
+			console.log(parentNode)
+			var id = lastChild.getAttribute("id");
+			var numberToId = id.substr(-1); //agafo el número final
+			var data_lastLevelAddedL1 = divGraphicOrder1.getAttribute("data_lastLevelAddedL1");
+			if (data_lastLevelAddedL1 == number) {
+				divGraphicOrder1.setAttribute("data_lastLevelAddedL1", numberToId);
+			}
+
+			//Actualitzar instruccions
+			// delete filteringInstructions[0].number;
 
 		}
 
-		function addGraphicElement(nodeId, character, numberCharacter, tableContent, row) { //character
+		function addGraphicElement(nodeId, numberCharacter, tableContent, row) { //character
 			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
-			var lastLevel = divGraphicOrder_1.getAttribute("data-lastLevelAdded");
-			// var listBoxLevel = divGraphicOrder_1.getAttribute("data-boxLevelNumbers").split(",");
-			var boxLevel = document.getElementById("boxLevel_1_" + lastLevel);
+			var lastLevelL1 = divGraphicOrder_1.getAttribute("data-lastLevelAddedL1");
+			var boxLevel = document.getElementById("boxLevel_1_" + lastLevelL1);
 			var table = document.createElement("div");
 			var content = boxLevel.getAttribute("value");
-
+			var character;
 
 			if (content == null) {
 				if (tableContent.length == 6) {
@@ -4466,7 +4512,7 @@
 				content += "," + character; //el que s'afegirà
 				boxLevel.setAttribute("value", content);
 			}
-			var characterBoxContainer = document.getElementById("characterBoxContainer_1_" + lastLevel);
+			var characterBoxContainer = document.getElementById("characterBoxContainer_1_" + lastLevelL1);
 			var characterBox = document.createElement("div");
 			var characterBoxText = document.createElement("div");
 			var characterDeleteButton = document.createElement("div");
@@ -4487,9 +4533,9 @@
 			characterDeleteButton.setAttribute("onclick", "deleteRow('no','" + nodeId + "','" + character + "')");
 			characterDeleteButton.setAttribute("title", "Delete item");
 			characterUpButton.setAttribute("class", "characterUpButton");
-			characterUpButton.setAttribute("onclick", "upGroup('" + lastLevel + "','" + character + "')");
+			characterUpButton.setAttribute("onclick", "upGroup('" + lastLevelL1 + "','" + character + "')");
 			characterDownButton.setAttribute("class", "characterDownButton");
-			characterDownButton.setAttribute("onclick", "downGroup('" + lastLevel + "','" + character + "')");
+			characterDownButton.setAttribute("onclick", "downGroup('" + lastLevelL1 + "','" + character + "')");
 
 			characterBox.appendChild(characterBoxText);
 			characterBox.appendChild(characterDownButton);
@@ -4504,16 +4550,16 @@
 
 
 			//actualitzar instruccions
-			var oldToFilter = [];
-			oldToFilter.push(...filteringInstructions[0][lastLevel].toFilter);
-			var character2;
-			if (character == ",A") {
-				character2 = character.substring(1); //eliminala coma
-			}
+			// var oldToFilter = [];
+			// oldToFilter.push(...filteringInstructions[0][lastLevelL1].toFilter);
+			// var character2;
+			// if (character == ",A") {
+			// 	character2 = character.substring(1); //eliminala coma
+			// }
 
-			oldToFilter.push(character);
-			filteringInstructions[0][lastLevel].toFilter = oldToFilter;
-			console.log(filteringInstructions);
+			// oldToFilter.push(character);
+			// filteringInstructions[0][lastLevelL1].toFilter = oldToFilter;
+			// console.log(filteringInstructions);
 
 		}
 
@@ -4575,8 +4621,8 @@
 
 
 			//eliminar de les instruccions [0]=>Nivell 1, numberToId =>1-1,1-2,1-3...
-			filteringInstructions[0][numberToId].toFilter = newValue;
-			console.log(filteringInstructions);
+			// filteringInstructions[0][numberToId].toFilter = newValue;
+			// console.log(filteringInstructions);
 		}
 		function upGroup(groupNumber, character) {
 			console.log("upGroup");
