@@ -4414,18 +4414,10 @@
 		}
 		function deleteGroupL1(number, nodeId) {
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
-			// var isNumber2 = divGraphicOrder1.getAttribute("data-isNumber2");
 			var boxLevelToDelete = document.getElementById("boxLevel_1_" + number);
 			var parentNode =boxLevelToDelete.parentNode;
-			// if (isNumber2 == "yes") {
-			// 	var boxLevel2
-			// }
-
-
-
 			var canErase = true;
 			//Sempre hi ha d'haver un (mirar els childs ...)
-			console.log(divGraphicOrder1.children);
 			if (parentNode.children.length == 1) {
 				canErase = false;
 				window.alert("You can't erase last group");
