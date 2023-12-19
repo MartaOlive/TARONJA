@@ -4138,7 +4138,7 @@
 
 			}
 		}
-		
+
 		function deleteRow(row, nodeId, character) {
 			event.preventDefault();
 			var tableContent = readTableFilterRow(nodeId, 0); //agafar els valors de la taula
@@ -4414,11 +4414,19 @@
 		}
 		function deleteGroupL1(number, nodeId) {
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
+			// var isNumber2 = divGraphicOrder1.getAttribute("data-isNumber2");
 			var boxLevelToDelete = document.getElementById("boxLevel_1_" + number);
+			var parentNode =boxLevelToDelete.parentNode;
+			// if (isNumber2 == "yes") {
+			// 	var boxLevel2
+			// }
+
+
+
 			var canErase = true;
 			//Sempre hi ha d'haver un (mirar els childs ...)
 			console.log(divGraphicOrder1.children);
-			if (divGraphicOrder1.children.length == 1) {
+			if (parentNode.children.length == 1) {
 				canErase = false;
 				window.alert("You can't erase last group");
 			} else {
@@ -4435,10 +4443,8 @@
 
 			//Quan si es pugui borrar
 			if (canErase) {
-				divGraphicOrder1.removeChild(boxLevelToDelete);
+				parentNode.removeChild(boxLevelToDelete);
 			}
-
-
 
 
 		}
@@ -4538,74 +4544,41 @@
 			var valueOfElementToDelete = elementToDelete.getAttribute("value");
 			console.log(valueOfElementToDelete);
 			var divToDelete = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
-			var parentNode=divToDelete.parentNode;
-			var id=parentNode.getAttribute("id");
+			var parentNode = divToDelete.parentNode;
+			var id = parentNode.getAttribute("id");
 			console.log(id);
 			var numberToId = id.substr(-1); //agafo el número final
-			var boxLevel_1=document.getElementById("boxLevel_1_"+numberToId);
-			var value=boxLevel_1.getAttribute("value");
+			var boxLevel_1 = document.getElementById("boxLevel_1_" + numberToId);
+			var value = boxLevel_1.getAttribute("value");
 			divToDelete.remove();
 			//borrar el value del parent 
 			var arrayValue = [];
-					if (value.length > 1) {
-			 			arrayValue.push(...value.split(","));
-						var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
-			 			var newCharactersInTable = charactersInTable.filter(element => element != tableCharacters[valueOfElementToDelete]);
-						charactersInTable = newCharactersInTable; //borrar la lletra que s'elimina
-						boxLevel_1.setAttribute("value", newValue);
+			if (value.length > 1) {
+				arrayValue.push(...value.split(","));
+				var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
+				var newCharactersInTable = charactersInTable.filter(element => element != tableCharacters[valueOfElementToDelete]);
+				charactersInTable = newCharactersInTable; //borrar la lletra que s'elimina
+				boxLevel_1.setAttribute("value", newValue);
 
 
-					} 
-					else {
-						boxLevel_1.setAttribute("value", "");
+			}
+			else {
+				boxLevel_1.setAttribute("value", "");
 
 
-			 		}
+			}
 
 
-
-			// for (var i = 0; i < divGraphicOrder_1.children.length; i++) {
-			// 	var value = divGraphicOrder_1.children[i].getAttribute("value"); //per saber quin grup el conté
-			// 	var id;
-			// 	if (value.includes(tableCharacters[valueOfElementToDelete])) {
-			// 		id = divGraphicOrder_1.children[i].getAttribute("id"); //agafo el id perque necessito el número final
-			// 		var numberToId = id.substr(-1); //agafo el número final
-			// 		//eliminar del value
-			// 		var arrayValue = [];
-			// 		if (value.length > 1) {
-			// 			arrayValue.push(...value.split(","));
-			// 			var newValue = arrayValue.filter(element => element != tableCharacters[valueOfElementToDelete]);
-			// 			var newCharactersInTable = charactersInTable.filter(element => element != tableCharacters[valueOfElementToDelete]);
-			// 			charactersInTable = newCharactersInTable; //borrar la lletra que s'elimina
-			// 			divGraphicOrder_1.children[i].setAttribute("value", newValue);
-
-
-			// 		} else {
-			// 			divGraphicOrder_1.children[i].setAttribute("value", "");
-
-
-			// 		}
-
-			// 	}
-			// 	console.log(newCharactersInTable);
-			// }
-
-			// var divToDeleteParent = document.getElementById("characterBoxContainer_1_" + numberToId);
-			// = document.getElementById("characterBox_" + tableCharacters[valueOfElementToDelete]);
-			// divToDeleteParent.removeChild(divToDelete);
-
-
-			//Redimensionar
-			var boxLevel = document.getElementById("boxLevel_1_" + numberToId); //El que s'ha de redimensionar
+			//Redimensionar 
 			var contentSplited;
 			if (newValue != null) {
 				if (newValue.length > 1) {
-					boxLevel.style.height = (35 * newValue.length) + "px";
+					boxLevel_1.style.height = (35 * newValue.length) + "px";
 				}
 			} else if (null) {
-				boxLevel.style.height = 70 + "px";
+				boxLevel_1.style.height = 70 + "px";
 			} else {
-				boxLevel.style.height = 70 + "px";
+				boxLevel_1.style.height = 70 + "px";
 			}
 
 
