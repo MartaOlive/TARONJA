@@ -123,8 +123,23 @@ th.borderTable {
 }
 
 
+.divGraphicOrder1  {
+    border: black 1px solid;
+    height: 50px;
+}
+.buttonAdd{
+     height: 30px;
+    display: inline-block;
+    border: black 1px solid;
+    margin-left: 10px;
 
-.divGraphicOrder1 {
+}
+.buttonAdd:hover{
+    cursor: pointer; 
+   
+    
+}
+.divGraphicOrder2  {
     border: black 1px solid;
     height: auto+50px;
 }
@@ -334,10 +349,10 @@ th.borderTable {
     cursor: pointer;    
 }
 
-.divGraphicOrder2 {
+/* .divGraphicOrder2 {
     border: black 1px solid;
     height: 50px;
-}
+} */
 
 
 /* Row Filter */
