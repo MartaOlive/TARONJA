@@ -4193,7 +4193,10 @@
 
 		//Funcions part gràfica
 		var filteringInstructions = [];
-		function addNewGroupL1(number, nodeId) {
+		function addNewGroupL1(number, nodeId,numberL2) {
+			if (number=="no"){
+				console.log("noooo")
+			}
 			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
 			var boxleveL2;
 			var actualBoxLevel;
@@ -4202,7 +4205,7 @@
 			// if (number == "0") {
 			// 	//actualBoxLevel = document.getElementById("boxLevel_1_1");
 			// } 
-			if (number != "0") {
+			if (number != "0"& number!="no") {
 				actualBoxLevel = document.getElementById("boxLevel_1_" + number);
 				var parentNode_node = actualBoxLevel.parentNode;
 				//console.log(parentNode_node.children)
@@ -4212,7 +4215,7 @@
 			var creatingL2 = false;
 
 			//Si és el 2n, crear un grup2
-			if (number != 0) {
+			if (number != 0 & number!="no") {
 				if (parentNode_node.children.length == 1 & isNumber2 == "no") {
 					console.log(number);
 					addNewGroupL2(number, nodeId,"clone"); //crea el L2 afegint el primerboxLevel
@@ -4220,12 +4223,15 @@
 					data_boxL2 = "1";
 				}else{//quan ja hi ha més de dos i existeix un L2 !!!!!!!!!!!!!!
 				data_boxL2 = actualBoxLevel.getAttribute("data-boxl2"); //a quin L2 pertany
-
 				}
 			}else{
-				boxleveL2 = document.getElementById("boxForL1_2_" + data_boxL2); //es selecciona el L2 on anirà el L1 que crearem
+				if (number=="no"){
+					boxleveL2 = document.getElementById("boxForL1_2_" + numberL2);
+				}else{
+					boxleveL2 = document.getElementById("boxForL1_2_" + data_boxL2); //es selecciona el L2 on anirà el L1 que crearem
+				}
+				
 			}
-
 
 			//estructura i botons
 			var boxLevel = document.createElement("div"); //es crea una box del L1
@@ -4253,23 +4259,29 @@
 
 
 			//S'ha de posar després del que es seleciona indepentdentment del número
-			var BoxForL1;
-			if (number != 0) {
+			var BoxForL1, parent;
+			
+			if (number != 0 & number!="no") {
+				parent=actualBoxLevel.parentNode;
 				var nextSibling = actualBoxLevel.nextSibling; //Si no n'hi ha donarà null
 				if (nextSibling != null) {
-					boxleveL2.insertBefore(boxLevel, nextSibling);
+					parent.insertBefore(boxLevel, nextSibling);
 				} else { //últim
 					//boxleveL2.innerHTML = "buuuu"
 					if (creatingL2) {
 						BoxForL1 = document.getElementById("boxForL1_2_1");
 						BoxForL1.appendChild(boxLevel);
 					} else {
-						var parent=actualBoxLevel.parentNode;
+						parent=actualBoxLevel.parentNode;
 						parent.appendChild(boxLevel); //Ha de ser boxForL1 xo mirar quin numero. Buscar el parent i posar-lo al mateix
 					}
 
 				}
-			} else { //el primer que es crea des de l'inici
+			}else if(number=="no"){
+				parent=document.getElementById("boxForL1_2_"+numberL2);
+				parent.appendChild(boxLevel);
+			}
+			else { //el primer que es crea des de l'inici
 				divGraphicOrder1.appendChild(boxLevel);
 			}
 			characterBoxContainer.setAttribute("class", "characterBoxContainer_1");
@@ -4285,7 +4297,7 @@
 
 			divPlus.setAttribute("onclick", "addNewGroupL1('" + newNumber + "','" + nodeId + "')");
 			divPlus.setAttribute("class", "divPlus");
-			divPlus.innerHTML = "+ New Group";
+			divPlus.innerHTML = "+ New Group after";
 			divPlus.setAttribute("title", "Add new group");
 
 			divTrash.setAttribute("onclick", "deleteGroupL1('" + newNumber + "','" + nodeId + "')");
@@ -4384,22 +4396,12 @@
 				numberId = parseInt(data_L2) + 1;
 			}
 
-			// var parentNode_node = actualBoxLevel.parentNode;
-			// var childrenNumber = parentNode_node.children.length;
-			// numberId = childrenNumber + 1;
-			//numberId = children.lengh +1;
-
-
-			var divGraphicOrder1 = document.getElementById("divGraphicOrder_1_" + nodeId);
-		
 			//Estructura
 			var boxleveL2 = document.createElement("div");
 			boxleveL2.setAttribute("id", "boxLevel_2_" + numberId);
 			boxleveL2.setAttribute("class", "boxLevel2");
 			divGraphicOrder1.appendChild(boxleveL2);
 			divGraphicOrder1.setAttribute("data-isNumber2", "yes");
-			console.log("clone");
-			//var data_boxL2 = "1";
 
 			//estructura part esquerra (on aniran els L1)
 			var BoxForL1 = document.createElement("div");
@@ -4418,6 +4420,7 @@
 			conditionSelectorBoxL2.setAttribute("class", "conditionSelectorBoxL2");
 			conditionSelectorBoxL2.setAttribute("id", "conditionSelectorBox_2_" + numberId);
 			boxleveL2.appendChild(conditionSelectorBoxL2);
+			
 			//select
 			var selectConditionL2 = document.createElement("select");
 			selectConditionL2.setAttribute("id", "selectCondition_2_" + numberId);
@@ -4438,6 +4441,12 @@
 			}
 			conditionSelectorBoxL2.appendChild(selectConditionL2);
 
+			var newL1=document.createElement("div");
+			newL1.setAttribute("onclick", "addNewGroupL1('" + "no" + "','" + nodeId + "','"+numberId+"')");
+			newL1.setAttribute("class", "newL1");
+			newL1.innerHTML="+ Add new group here";
+			conditionSelectorBoxL2.appendChild(newL1);
+
 			//botons (+ i delete)
 			var divPlusL2 = document.createElement("div");
 			var divTrashL2 = document.createElement("div");
@@ -4452,7 +4461,7 @@
 			conditionSelectorBoxL2.appendChild(divPlusL2);
 			conditionSelectorBoxL2.appendChild(divTrashL2);
 
-			//actualització data-L2. Incorporar el recient creat  (numberId)
+			//actualització data-L2. Incorporar el recient creat
 			var oldArray = "";
 			if (data_L2 == null) {
 				oldArray = numberId ;
@@ -4598,17 +4607,6 @@
 		}
 		function deleteCharacterInGraphic(nodeId, newRow) {
 			var divGraphicOrder_1 = document.getElementById("divGraphicOrder_1_" + nodeId);
-			// var isLevel2 = false;
-			// var isLevel3 = false;
-			// var data_isNumber2 = divGraphicOrder_1.getAttribute("data-isNumber2");
-			// var data_isNumber3 = divGraphicOrder_1.getAttribute("data-isNumber3");
-			// if (data_isNumber2 == "yes") {
-			// 	isLevel2 = true;
-			// 	if (data_isNumber3 == "yes") {
-			// 		isLevel3 = true;
-			// 	}
-			// }
-
 
 			var elementToDelete = document.getElementById("th_" + nodeId + "_" + newRow + "_character");
 			var valueOfElementToDelete = elementToDelete.getAttribute("value");

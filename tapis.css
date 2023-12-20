@@ -320,7 +320,19 @@ th.borderTable {
     margin-left: 10px;
 }
 
-
+.newL1{
+    position: absolute;
+    bottom: 0px;
+    margin-left: 5px;
+    margin-top: 5px;
+    left: -20px;
+    font-weight: bolder;
+    font-size: 10px;
+    width: 80px;
+}
+.newL1:hover{
+    cursor: pointer;    
+}
 
 .divGraphicOrder2 {
     border: black 1px solid;
