@@ -3246,7 +3246,7 @@
 
 
 
-			addNewGroupL1("0", paramsNodeId,"divGraphicOrder2");
+			addNewGroupL1("0", paramsNodeId, "divGraphicOrder2");
 
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
 			divIsAnObject.setAttribute("id", "divIsAnObject");
@@ -4219,7 +4219,7 @@
 		function addNewGroupL1(number, nodeId, parent) {
 			//parent: divGraphicOrder_2_" + nodeId, BoxForL1 (L2) , L1
 			var parentNode_node;
-			var divGraphicOrder2=document.getElementById("divGraphicOrder_2_" + nodeId);
+			var divGraphicOrder2 = document.getElementById("divGraphicOrder_2_" + nodeId);
 
 			if (parent == "divGraphicOrder2") {
 				parentNode_node = document.getElementById("divGraphicOrder_2_" + nodeId);
@@ -4288,7 +4288,7 @@
 			divPlus.innerHTML = "+ New Group after";
 			divPlus.setAttribute("title", "Add new group");
 
-			divTrash.setAttribute("onclick", "deleteGroupL1('" + newNumber + "','" + nodeId + "')");
+
 			divTrash.setAttribute("class", "divTrash");
 			divTrash.setAttribute("title", "Delete group");
 
@@ -4323,8 +4323,10 @@
 				else {
 					parentNode_node.appendChild(boxLevel);
 				}
-			}else{
+				divTrash.setAttribute("onclick", "deleteGroupL1('" + newNumber + "','" + nodeId + "','" + true + "')"); //L'últim és per marcar si està dins un L2
+			} else {
 				parentNode_node.appendChild(boxLevel);
+				divTrash.setAttribute("onclick", "deleteGroupL1('" + newNumber + "','" + nodeId + "','" + false + "')");
 			}
 
 			//array de L1, per poder afegir el següent
@@ -4502,7 +4504,7 @@
 			}
 			divGraphicOrder2.setAttribute("data-L2", oldArray);
 		}
-		function deleteGroupL1(number, nodeId) {
+		function deleteGroupL1(number, nodeId, L2) { //L2 = true o false
 			var divGraphicOrder2 = document.getElementById("divGraphicOrder_2_" + nodeId);
 			var boxLevelToDelete = document.getElementById("boxLevel_1_" + number);
 			var parentNode_node = boxLevelToDelete.parentNode;
@@ -4512,103 +4514,31 @@
 
 			//Sempre hi ha d'haver un (mirar els childs ...)
 
-			if (parentNode_node.children.length == 1) {
-				canErase = false;
-				window.alert("You can't erase last group");
-				if (data_l2 != null) {
+			// if (parentNode_node.children.length == 1) {
+			// 	canErase = false;
+			// 	window.alert("You can't erase last group");
+			// 	if (data_l2 != null) {
+			// 		canErase = false;
+			// 		window.alert("You can't erase last group");
+			// 	} else {
+			// 		if (data_l2.length == 1) {
+			// 			canErase = false;
+			// 			window.alert("You can't erase last group");
+			// 		}
+
+			// 	}
+
+			// } else {
+			//no pot borrar si te characters
+			var value = boxLevelToDelete.getAttribute("value");
+			if (value != null) {
+				if (value.length >= 1) {
 					canErase = false;
-					window.alert("You can't erase last group");
-				} else {
-					if (data_l2.length == 1) {
-						canErase = false;
-						window.alert("You can't erase last group");
-					}
-
+					window.alert("You can't erase a group with elements. Move or delete them first");
 				}
-
-			} else {
-				//no pot borrar si te characters
-				var value = boxLevelToDelete.getAttribute("value");
-				if (value != null) {
-					if (value.length >= 1) {
-						canErase = false;
-						window.alert("You can't erase a group with elements. Move or delete them first");
-					}
-				}
-
 			}
 
-			//Quan si es pugui borrar
-			if (canErase) {
-				parentNode_node.removeChild(boxLevelToDelete);
-			}
-			//borrar del data-l1
-			var data_l1 = divGraphicOrder2.getAttribute("data-L1");
-			var data_l1Array = data_l1.split(",");
-			var newData_l1 = data_l1Array.filter(element => element != number);
-
-			divGraphicOrder2.setAttribute("data-L1", newData_l1);
-
-			//corregir el Last Level added
-			divGraphicOrder2.setAttribute("data-lastLevelAddedL1", newData_l1[newData_l1.length - 1]);
-
-			//Actualitzar instruccions
-			// delete filteringInstructions[0].number;
-
-			//borrar grup 2 si només queda un del grup1
-			if (parentNode_node.children.length == 1) { //parent: boxForL1_2_+numberToId (on hi ha els L1)
-				var parentNode_id = parentNode_node.getAttribute("id");
-				var numberToId = parentNode_id.substr(-1);
-				var l2ToRemove = document.getElementById("boxLevel_2_" + numberToId);
-				var nodeToClone = parentNode_node.children[0].cloneNode(true);//copiar el L1 interior
-				divGraphicOrder2.appendChild(nodeToClone);
-				console.log(nodeToClone)
-				l2ToRemove.remove(); //borrem el L2
-				divGraphicOrder2.setAttribute("data-isNumber2", "no");
-
-				//actualitzar el data-L2
-				var data_l2 = divGraphicOrder2.getAttribute("data-L2");
-				var data_l2Array = data_l2.split(",");
-				var newData_l1 = data_l2Array.filter(element => element != numberToId);
-
-				divGraphicOrder2.setAttribute("data-L1", newData_l2);
-			}
-
-		}
-
-
-		function deleteGroupL1(number, nodeId) {
-			var divGraphicOrder2 = document.getElementById("divGraphicOrder_2_" + nodeId);
-			var boxLevelToDelete = document.getElementById("boxLevel_1_" + number);
-			var parentNode_node = boxLevelToDelete.parentNode;
-			var canErase = true;
-			console.log(parentNode_node)
-			var data_l2 = divGraphicOrder2.getAttribute("data-L2");
-
-			//Sempre hi ha d'haver un (mirar els childs ...)
-
-			if (parentNode_node.children.length == 1) {
-				if (data_l2 == null) {
-					canErase = false; //només hi ha un L1 al divGraphicOrder
-					window.alert("You can't erase last group");
-				} else {
-					if (data_l2.length == 1) {
-						canErase = false;
-						window.alert("You can't erase last group");
-					}
-				}
-
-			} else {
-				//no pot borrar si te characters
-				var value = boxLevelToDelete.getAttribute("value");
-				if (value != null) {
-					if (value.length >= 1) {
-						canErase = false;
-						window.alert("You can't erase a group with elements. Move or delete them first");
-					}
-				}
-
-			}
+			//}
 
 			//Quan si es pugui borrar
 			if (canErase) {
@@ -4618,33 +4548,13 @@
 			var data_l1 = divGraphicOrder2.getAttribute("data-L1");
 			var data_l1Array = data_l1.split(",");
 			var newData_l1 = data_l1Array.filter(element => element != number);
-
 			divGraphicOrder2.setAttribute("data-L1", newData_l1);
 
-			//corregir el Last Level added
+			//corregir el Last Level added (L'afegirà a l'últim creat)
 			divGraphicOrder2.setAttribute("data-lastLevelAddedL1", newData_l1[newData_l1.length - 1]);
 
 			//Actualitzar instruccions
 			// delete filteringInstructions[0].number;
-
-			//borrar grup 2 si només queda un del grup1
-			if (parentNode_node.children.length == 1) { //parent: boxForL1_2_+numberToId (on hi ha els L1)
-				var parentNode_id = parentNode_node.getAttribute("id");
-				var numberToId = parentNode_id.substr(-1);
-				var l2ToRemove = document.getElementById("boxLevel_2_" + numberToId);
-				var nodeToClone = parentNode_node.children[0].cloneNode(true);//copiar el L1 interior
-				divGraphicOrder2.appendChild(nodeToClone);
-				console.log(nodeToClone)
-				l2ToRemove.remove(); //borrem el L2
-				divGraphicOrder2.setAttribute("data-isNumber2", "no");
-
-				//actualitzar el data-L2
-				var data_l2 = divGraphicOrder2.getAttribute("data-L2");
-				var data_l2Array = data_l2.split(",");
-				var newData_l1 = data_l2Array.filter(element => element != numberToId);
-
-				divGraphicOrder2.setAttribute("data-L2", newData_l2);
-			}
 
 		}
 
