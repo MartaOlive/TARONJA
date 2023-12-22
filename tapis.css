@@ -226,6 +226,62 @@ th.borderTable {
 
 
 }
+/*L3*/
+.boxLevel3 {
+    min-height: 300px;
+    width: 400px;
+    border: black 1px solid;
+    position: relative;
+    margin-bottom: 20px;
+
+}
+
+
+.BoxForL1and2 {
+    border: black 1px solid;
+    position: absolute;
+    left: 0;
+    display: inline-block;
+    height: 100%;
+    width: 300px;
+
+
+}
+
+.conditionSelectorBoxL3 {
+    border: black 1px solid;
+    position: absolute;
+    display: inline-block;
+    height: 100%;
+    left: 60%;
+    width: 40%;
+
+}
+
+.selectConditionL3 {
+    position: absolute;
+    top: 40%;
+    margin-left: 10px;
+}
+
+
+.divTrashL3 {
+    position: absolute;
+    background-image: url("trash_18x18.png");
+    height: 18px;
+    width: 18px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    bottom: 0px;
+    margin-right: 5px;
+    right: 0px;
+}
+
+.divTrashL3:hover {
+    cursor: pointer;
+}
+
+/*L3*/
 
 .characterBox {
 
