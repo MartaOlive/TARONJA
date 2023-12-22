@@ -4511,25 +4511,6 @@
 			var canErase = true;
 			console.log(parentNode_node)
 			var data_l2 = divGraphicOrder2.getAttribute("data-L2");
-
-			//Sempre hi ha d'haver un (mirar els childs ...)
-
-			// if (parentNode_node.children.length == 1) {
-			// 	canErase = false;
-			// 	window.alert("You can't erase last group");
-			// 	if (data_l2 != null) {
-			// 		canErase = false;
-			// 		window.alert("You can't erase last group");
-			// 	} else {
-			// 		if (data_l2.length == 1) {
-			// 			canErase = false;
-			// 			window.alert("You can't erase last group");
-			// 		}
-
-			// 	}
-
-			// } else {
-			//no pot borrar si te characters
 			var value = boxLevelToDelete.getAttribute("value");
 			if (value != null) {
 				if (value.length >= 1) {
