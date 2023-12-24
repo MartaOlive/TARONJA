@@ -184,6 +184,7 @@
 				<span id="ButtonsContextMenuObjects"></span><br>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button>
 				<button onclick='renameCircularImage(event, "DialogContextMenu")'>Rename</button><br>
+				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
 			</p>
 			<div class="center">
 				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
@@ -1876,7 +1877,9 @@
 		function GetSelectRows(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectRows").close();
+console.log("parent: "+parent.id);
 
+console.log("current: "+currentNode.id);
 			var previousSTAURL = currentNode.STAURL;
 			var parentNode = GetFirstParentNode(currentNode);
 			if (parentNode) {
@@ -1904,12 +1907,14 @@
 			}
 			else {
 				alert("TBD");
+				
 			}
 			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
 			showInfoMessage("Selecting STA rows...");
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
+
 		}
 
 
@@ -3416,6 +3421,12 @@
 					});
 				}
 			}
+		}
+		function giveMeNetworkInformation(event) {
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectColumns").close();
+			console.log(networkNodes);
 		}
 	</script>
 
