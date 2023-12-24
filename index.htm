@@ -3171,17 +3171,16 @@
 
 		//Montar selectors
 		const tableCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-		function createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId) {
+		function createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId, count) {
 			//actualitzar STAdata del node
 			networkNodes.get(paramsNodeId).STAdata = networkNodes.get(nodeId).STAdata;
 			currentNode.id = paramsNodeId;
 			networkNodes.update(networkNodes.get(paramsNodeId));
-
 			var data = networkNodes.get(paramsNodeId).STAdata;
 
 			var selectorStructureRow;
-			var divFilterBox = document.getElementById("divSelectorRowsFilter");
-
+			var divFilterBox = document.getElementById("optionsRow_" + count);
+			console.log("count: " + count);
 			var optionsRow = document.createElement("div");
 			optionsRow.setAttribute("id", "optionsRow");
 			divFilterBox.appendChild(optionsRow);
@@ -3189,16 +3188,16 @@
 			label1.innerHTML = "Choose a Property";
 			optionsRow.appendChild(label1);
 
-
-			createSelect(1, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
-			createSelect(2, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
+			var place_Id = "optionsRow_" + count;
+			createSelect(1, "_optionsRow", place_Id, paramsNodeId, dataAttributes, "no", "initial", "no");
+			createSelect(2, "_optionsRow", place_Id, paramsNodeId, dataAttributes, "no", "initial", "no");
 
 			var label2 = document.createElement("label");
 			label2.setAttribute("id", "label2");
 			label2.innerHTML = "a Value";
 			optionsRow.appendChild(label2);
 
-			createSelect(3, "_optionsRow", "optionsRow", paramsNodeId, dataAttributes, "no", "initial", "no");
+			createSelect(3, "_optionsRow", place_Id, paramsNodeId, dataAttributes, "no", "initial", "no");
 
 			// var instructions = document.createElement("div");
 			// instructions.setAttribute("id", "instructions");
@@ -4190,192 +4189,197 @@
 
 		}
 
-////////////////////////////////////NOVA TAULAAAAAAAAAAAAAAAAAAAAA////////////////////
-var conditionsFilter=[ //valors de la taula
-	{property: "A"},
-	{property: "B"},
-	{property: "C"},
-	{property: "D"},
-	{property: "E"},
-	{property: "F"}
-]
+		////////////////////////////////////NOVA TAULAAAAAAAAAAAAAAAAAAAAA////////////////////
+		var conditionsFilter = [ //valors de la taula
+			{ property: "<div id='optionsRow_0'></div>" },
+			{ property: "<div id='optionsRow_1'></div>" },
+			{ property: "<div id='optionsRow_2'></div>" },
+			{ property: "<div id='optionsRow_3'></div>" },
+			{ property: "<div id='optionsRow_4'></div>" },
+			{ property: "<div id='optionsRow_5'></div>" }
+		]
 
-var elemFilter={ //estctura de la taula
-	elems: [
-		{
+		var elemFilter = { //estctura de la taula
 			elems: [
 				{
-					elems: [0, 1],
-					nexus: "or"
+					elems: [
+						{
+							elems: [0, 1],
+							nexus: "or"
+						},
+						{
+							elems: [2],
+							nexus: null
+						},
+						{
+							elems: [5],
+							nexus: null
+						}
+					],
+					nexus: "and"
 				},
 				{
-					elems: [2],
-					nexus: null
-				},
-				{
-					elems: [5],
-					nexus: null
+					elems: [
+						{
+							elems: [3, 4],
+							nexus: "or"
+						}
+					]
 				}
 			],
-			nexus: "and"
-		},
-		{
-			elems: [
-				{
-					elems: [3, 4],
-					nexus: "or"
-				}
-			]
+			nexus: "or"
 		}
-	],
-	nexus: "or"
-}
 
-function ChangeConditionFilterTable(elem, iConNew, iConCurrent)
-{
-	if (typeof elem === "object")
-	{
-		for (var i=0; i<elem.elems.length; i++)
-			if (ChangeConditionFilterTable(elem.elems[i], iConNew, iConCurrent))
-				elem.elems[i]=iConNew;
-	}
-	else
-	{
-		if (elem==iConCurrent)
-			return true //doIt
-	}
-	return false;
-}
-
-function MoveDownFilterCondition(iCon)
-{
-	alert(GiveNextConditionNextBoxFilterTable(elemFilter, iCon));	
-}
-
-function GiveNextConditionNextBoxFilterTable(elem, iCon)
-{
-	LookForNextConditionNextBoxFilterTableFound=0;
-	return LookForNextConditionNextBoxFilterTable(elem, iCon);
-}
-
-//DOwn button
-var LookForNextConditionNextBoxFilterTableFound;
-function LookForNextConditionNextBoxFilterTable(elem, iCon)
-{
-	var next;
-	if (typeof elem === "object")
-	{
-		for (var i=0; i<elem.elems.length; i++){
-			next=LookForNextConditionNextBoxFilterTable(elem.elems[i], iCon);
-			if (-1!=next)
-				return next;
-			if (LookForNextConditionNextBoxFilterTableFound==1){
-				LookForNextConditionNextBoxFilterTableFound=2;
-				break;
+		function ChangeConditionFilterTable(elem, iConNew, iConCurrent) {
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++)
+					if (ChangeConditionFilterTable(elem.elems[i], iConNew, iConCurrent))
+						elem.elems[i] = iConNew;
 			}
+			else {
+				if (elem == iConCurrent)
+					return true //doIt
+			}
+			return false;
 		}
-	}
-	else
-	{
-		if (elem==iCon)
-			LookForNextConditionNextBoxFilterTableFound=1;
-		else if (LookForNextConditionNextBoxFilterTableFound!=0)
-			return elem;
-	}
-	return -1;
-}
 
-function GiveNextConditionFilterTable(elem, iCon)
-{
-	LookForNextConditionFilterTableFound=false;
-	return LookForNextConditionFilterTable(elem, iCon);
-}
- 
-
-var LookForNextConditionFilterTableFound;
-function LookForNextConditionFilterTable(elem, iCon)
-{
-	var next;
-	if (typeof elem === "object")
-	{
-		for (var i=0; i<elem.elems.length; i++){
-			next=LookForNextConditionFilterTable(elem.elems[i], iCon);
-			if (-1!=next)
-				return next;
+		function MoveDownFilterCondition(iCon) {
+			alert(GiveNextConditionNextBoxFilterTable(elemFilter, iCon));
 		}
-	}
-	else
-	{
-		if (elem==iCon)
-			LookForNextConditionFilterTableFound=true;
-		else if (LookForNextConditionFilterTableFound)
-			return elem;
-	}
-	return -1;
-}
 
-function MoveUpFilterCondition(iCon)
-{
-	alert(GivePreviousConditionFilterTable(elemFilter, iCon));
-}
-
-function GivePreviousConditionFilterTable(elem, iCon)
-{
-	LookForPreviousConditionFilterTableFound=false;
-	return LookForPreviousConditionFilterTable(elem, iCon);
-}
-
-//up button
-var LookForPreviousConditionFilterTableFound; 
-function LookForPreviousConditionFilterTable(elem, iCon)
-{
-	var prev;
-	if (typeof elem === "object")
-	{
-		for (var i=elem.elems.length-1; i>=0; i--){
-			prev=LookForPreviousConditionFilterTable(elem.elems[i], iCon);
-			if (-1!=prev)
-				return prev;
+		function GiveNextConditionNextBoxFilterTable(elem, iCon) {
+			LookForNextConditionNextBoxFilterTableFound = 0;
+			return LookForNextConditionNextBoxFilterTable(elem, iCon);
 		}
-	}
-	else
-	{
-		if (elem==iCon)
-			LookForPreviousConditionFilterTableFound=true;
-		else if (LookForPreviousConditionFilterTableFound)
-			return elem;
-	}
-	return -1;
-}
 
-function GetFilterCondition(elem)
-{
-	return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')">Down</button> <button onClick="MoveUpFilterCondition(' + elem + ')">Up</button>';
-}
-
-function GetFilterTable(elem) //COnstrucio taula //El segon, serà cridat per el ShowFilter
-{
-	var s='<table border="1"><tr><td>';
-	if (typeof elem === "object")
-	{
-		for (var i=0; i<elem.elems.length; i++){  	
-			s+=GetFilterTable(elem.elems[i]);
+		//DOwn button
+		var LookForNextConditionNextBoxFilterTableFound;
+		function LookForNextConditionNextBoxFilterTable(elem, iCon) {
+			var next;
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					next = LookForNextConditionNextBoxFilterTable(elem.elems[i], iCon);
+					if (-1 != next)
+						return next;
+					if (LookForNextConditionNextBoxFilterTableFound == 1) {
+						LookForNextConditionNextBoxFilterTableFound = 2;
+						break;
+					}
+				}
+			}
+			else {
+				if (elem == iCon)
+					LookForNextConditionNextBoxFilterTableFound = 1;
+				else if (LookForNextConditionNextBoxFilterTableFound != 0)
+					return elem;
+			}
+			return -1;
 		}
-		if (elem.elems.length<2 && elem.nexus)
-			alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
-		else if (elem.nexus)
-			s+='</td><td valign="middle">'+elem.nexus;
-	}
-	else
-		s+=GetFilterCondition(elem);
-	s+='</td></tr></table>';
-	return s;
-}
 
-function ShowFilterTable() //posar la taula on sigui //El que inicia la taula
-{
-	document.getElementById("divSelectorRowsFilter").innerHTML=GetFilterTable(elemFilter);
-}
+		function GiveNextConditionFilterTable(elem, iCon) {
+			LookForNextConditionFilterTableFound = false;
+			return LookForNextConditionFilterTable(elem, iCon);
+		}
+
+
+		var LookForNextConditionFilterTableFound;
+		function LookForNextConditionFilterTable(elem, iCon) {
+			var next;
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					next = LookForNextConditionFilterTable(elem.elems[i], iCon);
+					if (-1 != next)
+						return next;
+				}
+			}
+			else {
+				if (elem == iCon)
+					LookForNextConditionFilterTableFound = true;
+				else if (LookForNextConditionFilterTableFound)
+					return elem;
+			}
+			return -1;
+		}
+
+		function MoveUpFilterCondition(iCon) {
+			alert(GivePreviousConditionFilterTable(elemFilter, iCon));
+		}
+
+		function GivePreviousConditionFilterTable(elem, iCon) {
+			LookForPreviousConditionFilterTableFound = false;
+			return LookForPreviousConditionFilterTable(elem, iCon);
+		}
+
+		//up button
+		var LookForPreviousConditionFilterTableFound;
+		function LookForPreviousConditionFilterTable(elem, iCon) {
+			var prev;
+			if (typeof elem === "object") {
+				for (var i = elem.elems.length - 1; i >= 0; i--) {
+					prev = LookForPreviousConditionFilterTable(elem.elems[i], iCon);
+					if (-1 != prev)
+						return prev;
+				}
+			}
+			else {
+				if (elem == iCon)
+					LookForPreviousConditionFilterTableFound = true;
+				else if (LookForPreviousConditionFilterTableFound)
+					return elem;
+			}
+			return -1;
+		}
+
+		function GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId) {
+			counter.push("a");
+			console.log(counter.length)
+
+			return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')">Down</button> <button onClick="MoveUpFilterCondition(' + elem + ')">Up</button>';
+
+		}
+		var counter = [];
+		function GetFilterTable(elem, dataAttributes, nodeId, paramsNodeId) //COnstrucio taula //El segon, serà cridat per el ShowFilter
+		{
+
+			var s = '<table border="1"><tr><td>';
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					s += GetFilterTable(elem.elems[i], dataAttributes, nodeId, paramsNodeId);
+				}
+				if (elem.elems.length < 2 && elem.nexus)
+					alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
+				else if (elem.nexus) {
+					s += '</td><td valign="middle">' + elem.nexus;
+
+
+				}
+
+			}
+			else {
+				s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
+
+			}
+
+			s += '</td></tr></table>';
+
+
+			return s;
+
+		}
+		function addingSelectors(dataAttributes, nodeId, paramsNodeId, count) {
+			console.log(counter.length)
+			for (var i = 0; i < count; i++) {
+				createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId, [i]);
+			}
+
+
+
+		}
+		async function ShowFilterTable(dataAttributes, nodeId, paramsNodeId) //posar la taula on sigui //El que inicia la taula
+		{
+			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, nodeId, paramsNodeId);
+			addingSelectors(dataAttributes, nodeId, paramsNodeId, (counter.length - 1));
+		}
 
 
 
@@ -5316,7 +5320,7 @@ function ShowFilterTable() //posar la taula on sigui //El que inicia la taula
 			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
 
 			//createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId); /////////////////////////////////////////////////////////
-			ShowFilterTable();
+			ShowFilterTable(dataAttributes, nodeId, paramsNodeId);
 		}
 
 		function ChangeTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId) {
