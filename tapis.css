@@ -58,10 +58,7 @@ body {
 }
 
 
-
-
-
-
+/*RowFilter*/
 #divSelectorRowsFilter {
     min-width: 1750px;
     height: 300px;
@@ -114,195 +111,7 @@ th.borderTable {
     border: black 1px solid;
 }
 
-#divGraphicOrder {
-    border: black 1px solid;
-    margin-top: 20px;
-    width: 40%;
-    height: content;
-    float: right;
-}
-
-
-.divGraphicOrder1  {
-    border: black 1px solid;
-    height: 50px;
-}
-.buttonAdd{
-     height: 30px;
-    display: inline-block;
-    border: black 1px solid;
-    margin-left: 10px;
-
-}
-.buttonAdd:hover{
-    cursor: pointer; 
-   
-    
-}
-.divGraphicOrder2  {
-    border: black 1px solid;
-    height: auto+50px;
-}
-
-.boxLevel1 {
-    min-height: 70px;
-    width: 180px;
-    border: black 1px solid;
-    position: relative;
-    margin-bottom: 20px;
-
-}
-
-.boxLevel2 {
-    min-height: 300px;
-    width: 300px;
-    border: black 1px solid;
-    position: relative;
-    margin-bottom: 20px;
-
-}
-
-
-.boxForL1 {
-    border: black 1px solid;
-    position: absolute;
-    left: 0;
-    display: inline-block;
-    height: 100%;
-
-
-}
-
-.conditionSelectorBoxL2 {
-    border: black 1px solid;
-    position: absolute;
-    display: inline-block;
-    height: 100%;
-    left: 60%;
-    width: 40%;
-
-}
-
-.selectConditionL2 {
-    position: absolute;
-    top: 40%;
-    margin-left: 10px;
-}
-
-.divPlusL2 {
-    position: relative;
-    float: right;
-    font-weight: bolder;
-    margin-right: 10px;
-
-}
-
-.divPlusL2:hover {
-    cursor: pointer;
-}
-
-.divTrashL2 {
-    position: absolute;
-    background-image: url("trash_18x18.png");
-    height: 18px;
-    width: 18px;
-    background-size: 80%;
-    background-repeat: no-repeat;
-    bottom: 0px;
-    margin-right: 5px;
-    right: 0px;
-}
-
-.divTrashL2:hover {
-    cursor: pointer;
-}
-
-.characterBoxContainer_1 {
-    position: absolute;
-    left: 0;
-    height: 100%;
-    width: 60%;
-    border: black 1px solid;
-
-
-}
-/*L3*/
-.boxLevel3 {
-    min-height: 300px;
-    width: 400px;
-    border: black 1px solid;
-    position: relative;
-    margin-bottom: 20px;
-
-}
-
-
-.BoxForL1and2 {
-    border: black 1px solid;
-    position: absolute;
-    left: 0;
-    display: inline-block;
-    height: 100%;
-    width: 300px;
-
-
-}
-
-.conditionSelectorBoxL3 {
-    border: black 1px solid;
-    position: absolute;
-    display: inline-block;
-    height: 100%;
-    left: 60%;
-    width: 40%;
-
-}
-
-.selectConditionL3 {
-    position: absolute;
-    top: 40%;
-    margin-left: 10px;
-}
-
-
-.divTrashL3 {
-    position: absolute;
-    background-image: url("trash_18x18.png");
-    height: 18px;
-    width: 18px;
-    background-size: 80%;
-    background-repeat: no-repeat;
-    bottom: 0px;
-    margin-right: 5px;
-    right: 0px;
-}
-
-.divTrashL3:hover {
-    cursor: pointer;
-}
-
-/*L3*/
-
-.characterBox {
-
-    margin-left: 5px;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    height: 20px;
-    border: black 1px solid;
-    display: block;
-}
-
-.characterBox:hover {
-    cursor: pointer;
-}
-
-.characterBoxText {
-    height: 20px;
-    width: 20px;
-    display: inline-block;
-}
-
+/*
 .characterDeleteButton {
     background-image: url("trash_18x18.png");
     height: 18px;
@@ -329,87 +138,7 @@ th.borderTable {
     margin-right: 5px;
     display: inline-block;
 }
-
-.nextElement {
-    background-image: url("nextElement_19x12.png");
-    height: 12px;
-    width: 19px;
-    bottom: 0px;
-    left:0px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    position: absolute;
-}
-
-.nextElement:hover {
-    cursor: pointer;
-}
-
-.conditionSelectorBox {
-    position: absolute;
-    height: 100%;
-    left: 60%;
-    width: 40%;
-    border: black 1px solid;
-
-}
-
-.divPlus {
-    position: relative;
-    float: right;
-    font-weight: bolder;
-    margin-right: 5px;
-    font-size: 10px;
-
-}
-
-.divPlus:hover {
-    cursor: pointer;
-}
-
-.divTrash {
-    position: absolute;
-    background-image: url("trash_18x18.png");
-    height: 18px;
-    width: 18px;
-    background-size: 80%;
-    background-repeat: no-repeat;
-    bottom: 0px;
-    margin-right: 5px;
-    right: 0px;
-}
-
-.divTrash:hover {
-    cursor: pointer;
-}
-
-
-
-.selectCondition {
-    position: absolute;
-    top: 40%;
-    margin-left: 10px;
-}
-
-.newL1{
-    position: absolute;
-    bottom: 0px;
-    margin-left: 5px;
-    margin-top: 5px;
-    left: -20px;
-    font-weight: bolder;
-    font-size: 10px;
-    width: 80px;
-}
-.newL1:hover{
-    cursor: pointer;    
-}
-
-/* .divGraphicOrder2 {
-    border: black 1px solid;
-    height: 50px;
-} */
-
+*/
 
 /* Row Filter */
 #fullFilterDiv {
@@ -490,22 +219,8 @@ th.borderTable {
 }
 
 /*..........*/
-.divInSelectedGraphic_condition {
-    border: black 1px solid;
-    display: inline-block;
-    margin-left: 5px;
-    margin-right: 5px;
-    background-color: aqua;
-}
 
 .inblock {
     display: inline-block;
 }
 
-.trash {
-    background-image: url("trash.png");
-    background-repeat: no-repeat;
-    background-size: contain;
-    height: 40px;
-
-}

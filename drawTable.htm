@@ -3,7 +3,8 @@
 <script>
 "use strict"
 
-var conditionsFilter=[
+////////////////////////////////////NOVA TAULAAAAAAAAAAAAAAAAAAAAA////////////////////
+var conditionsFilter=[ //valors de la taula
 	{property: "A"},
 	{property: "B"},
 	{property: "C"},
@@ -12,7 +13,7 @@ var conditionsFilter=[
 	{property: "F"}
 ]
 
-var elemFilter={
+var elemFilter={ //estctura de la taula
 	elems: [
 		{
 			elems: [
@@ -59,8 +60,6 @@ function ChangeConditionFilterTable(elem, iConNew, iConCurrent)
 	return false;
 }
 
-
-
 function MoveDownFilterCondition(iCon)
 {
 	alert(GiveNextConditionNextBoxFilterTable(elemFilter, iCon));	
@@ -72,6 +71,7 @@ function GiveNextConditionNextBoxFilterTable(elem, iCon)
 	return LookForNextConditionNextBoxFilterTable(elem, iCon);
 }
 
+//DOwn button
 var LookForNextConditionNextBoxFilterTableFound;
 function LookForNextConditionNextBoxFilterTable(elem, iCon)
 {
@@ -103,6 +103,7 @@ function GiveNextConditionFilterTable(elem, iCon)
 	LookForNextConditionFilterTableFound=false;
 	return LookForNextConditionFilterTable(elem, iCon);
 }
+ 
 
 var LookForNextConditionFilterTableFound;
 function LookForNextConditionFilterTable(elem, iCon)
@@ -137,7 +138,8 @@ function GivePreviousConditionFilterTable(elem, iCon)
 	return LookForPreviousConditionFilterTable(elem, iCon);
 }
 
-var LookForPreviousConditionFilterTableFound;
+//up button
+var LookForPreviousConditionFilterTableFound; 
 function LookForPreviousConditionFilterTable(elem, iCon)
 {
 	var prev;
@@ -164,7 +166,7 @@ function GetFilterCondition(elem)
 	return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')">Down</button> <button onClick="MoveUpFilterCondition(' + elem + ')">Up</button>';
 }
 
-function GetFilterTable(elem)
+function GetFilterTable(elem) //COnstrucio taula //El segon, serà cridat per el ShowFilter
 {
 	var s='<table border="1"><tr><td>';
 	if (typeof elem === "object")
@@ -183,7 +185,7 @@ function GetFilterTable(elem)
 	return s;
 }
 
-function ShowFilterTable()
+function ShowFilterTable() //posar la taula on sigui //El que inicia la taula
 {
 	document.getElementById("tableFilter").innerHTML=GetFilterTable(elemFilter);
 }

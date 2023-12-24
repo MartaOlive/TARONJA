@@ -3228,42 +3228,6 @@
 			// divGraphicOrder.setAttribute("class", "inblock");
 			divLine.appendChild(divGraphicOrder);
 
-			//capsa amb els botons
-			var divGraphicOrder1 = document.createElement("div");
-			divGraphicOrder1.setAttribute("id", "divGraphicOrder_1_" + paramsNodeId);
-			divGraphicOrder1.setAttribute("class", "divGraphicOrder1 ");
-			divGraphicOrder1.innerHTML = "Arrange your filter";
-			divGraphicOrder.appendChild(divGraphicOrder1);
-			var buttonAddL1 = document.createElement("div");
-			var buttonAddL2 = document.createElement("div");
-			var buttonAddL3 = document.createElement("div");
-			buttonAddL1.innerHTML = "Add new group 1";
-			buttonAddL2.innerHTML = "Add new group 2";
-			buttonAddL3.innerHTML = "Add new group 3";
-			buttonAddL1.setAttribute("class", "buttonAddL1 buttonAdd ");
-			buttonAddL2.setAttribute("class", "buttonAddL2 buttonAdd ");
-			buttonAddL3.setAttribute("class", "buttonAddL3 buttonAdd");
-			buttonAddL1.setAttribute("onclick", "addNewGroupL1('no','" + paramsNodeId + "','divGraphicOrder2')");
-			buttonAddL2.setAttribute("onclick", "addNewGroupL2('" + "no" + "','" + paramsNodeId + "','no')");
-			buttonAddL3.setAttribute("onclick", "addNewGroupL3('" + paramsNodeId + "')");
-
-			divGraphicOrder1.appendChild(buttonAddL1);
-			divGraphicOrder1.appendChild(buttonAddL2);
-			divGraphicOrder1.appendChild(buttonAddL3);
-
-			//capsa que conté els gràfics
-			var divGraphicOrder2 = document.createElement("div");
-			divGraphicOrder2.setAttribute("id", "divGraphicOrder_2_" + paramsNodeId);
-			divGraphicOrder2.setAttribute("class", "divGraphicOrder2 ");
-			divGraphicOrder2.setAttribute("data-lastLevelAddedL1", "0");
-			divGraphicOrder2.setAttribute("data-isNumber2", "no");
-			divGraphicOrder2.setAttribute("data-isNumber3", "no");
-			divGraphicOrder.appendChild(divGraphicOrder2);
-
-
-
-			addNewGroupL1("0", paramsNodeId, "divGraphicOrder2");
-
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
 			divIsAnObject.setAttribute("id", "divIsAnObject");
 			divIsAnObject.setAttribute("class", "hidden");
@@ -3312,8 +3276,6 @@
 				}
 				drawTable(paramsNodeId, elementsPreviouslySelected, "add");
 			}
-
-
 
 		}
 		function createSelect(number, place, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent, typeOfValues) {
@@ -4228,6 +4190,192 @@
 
 		}
 
+////////////////////////////////////NOVA TAULAAAAAAAAAAAAAAAAAAAAA////////////////////
+var conditionsFilter=[ //valors de la taula
+	{property: "A"},
+	{property: "B"},
+	{property: "C"},
+	{property: "D"},
+	{property: "E"},
+	{property: "F"}
+]
+
+var elemFilter={ //estctura de la taula
+	elems: [
+		{
+			elems: [
+				{
+					elems: [0, 1],
+					nexus: "or"
+				},
+				{
+					elems: [2],
+					nexus: null
+				},
+				{
+					elems: [5],
+					nexus: null
+				}
+			],
+			nexus: "and"
+		},
+		{
+			elems: [
+				{
+					elems: [3, 4],
+					nexus: "or"
+				}
+			]
+		}
+	],
+	nexus: "or"
+}
+
+function ChangeConditionFilterTable(elem, iConNew, iConCurrent)
+{
+	if (typeof elem === "object")
+	{
+		for (var i=0; i<elem.elems.length; i++)
+			if (ChangeConditionFilterTable(elem.elems[i], iConNew, iConCurrent))
+				elem.elems[i]=iConNew;
+	}
+	else
+	{
+		if (elem==iConCurrent)
+			return true //doIt
+	}
+	return false;
+}
+
+function MoveDownFilterCondition(iCon)
+{
+	alert(GiveNextConditionNextBoxFilterTable(elemFilter, iCon));	
+}
+
+function GiveNextConditionNextBoxFilterTable(elem, iCon)
+{
+	LookForNextConditionNextBoxFilterTableFound=0;
+	return LookForNextConditionNextBoxFilterTable(elem, iCon);
+}
+
+//DOwn button
+var LookForNextConditionNextBoxFilterTableFound;
+function LookForNextConditionNextBoxFilterTable(elem, iCon)
+{
+	var next;
+	if (typeof elem === "object")
+	{
+		for (var i=0; i<elem.elems.length; i++){
+			next=LookForNextConditionNextBoxFilterTable(elem.elems[i], iCon);
+			if (-1!=next)
+				return next;
+			if (LookForNextConditionNextBoxFilterTableFound==1){
+				LookForNextConditionNextBoxFilterTableFound=2;
+				break;
+			}
+		}
+	}
+	else
+	{
+		if (elem==iCon)
+			LookForNextConditionNextBoxFilterTableFound=1;
+		else if (LookForNextConditionNextBoxFilterTableFound!=0)
+			return elem;
+	}
+	return -1;
+}
+
+function GiveNextConditionFilterTable(elem, iCon)
+{
+	LookForNextConditionFilterTableFound=false;
+	return LookForNextConditionFilterTable(elem, iCon);
+}
+ 
+
+var LookForNextConditionFilterTableFound;
+function LookForNextConditionFilterTable(elem, iCon)
+{
+	var next;
+	if (typeof elem === "object")
+	{
+		for (var i=0; i<elem.elems.length; i++){
+			next=LookForNextConditionFilterTable(elem.elems[i], iCon);
+			if (-1!=next)
+				return next;
+		}
+	}
+	else
+	{
+		if (elem==iCon)
+			LookForNextConditionFilterTableFound=true;
+		else if (LookForNextConditionFilterTableFound)
+			return elem;
+	}
+	return -1;
+}
+
+function MoveUpFilterCondition(iCon)
+{
+	alert(GivePreviousConditionFilterTable(elemFilter, iCon));
+}
+
+function GivePreviousConditionFilterTable(elem, iCon)
+{
+	LookForPreviousConditionFilterTableFound=false;
+	return LookForPreviousConditionFilterTable(elem, iCon);
+}
+
+//up button
+var LookForPreviousConditionFilterTableFound; 
+function LookForPreviousConditionFilterTable(elem, iCon)
+{
+	var prev;
+	if (typeof elem === "object")
+	{
+		for (var i=elem.elems.length-1; i>=0; i--){
+			prev=LookForPreviousConditionFilterTable(elem.elems[i], iCon);
+			if (-1!=prev)
+				return prev;
+		}
+	}
+	else
+	{
+		if (elem==iCon)
+			LookForPreviousConditionFilterTableFound=true;
+		else if (LookForPreviousConditionFilterTableFound)
+			return elem;
+	}
+	return -1;
+}
+
+function GetFilterCondition(elem)
+{
+	return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')">Down</button> <button onClick="MoveUpFilterCondition(' + elem + ')">Up</button>';
+}
+
+function GetFilterTable(elem) //COnstrucio taula //El segon, serà cridat per el ShowFilter
+{
+	var s='<table border="1"><tr><td>';
+	if (typeof elem === "object")
+	{
+		for (var i=0; i<elem.elems.length; i++){  	
+			s+=GetFilterTable(elem.elems[i]);
+		}
+		if (elem.elems.length<2 && elem.nexus)
+			alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
+		else if (elem.nexus)
+			s+='</td><td valign="middle">'+elem.nexus;
+	}
+	else
+		s+=GetFilterCondition(elem);
+	s+='</td></tr></table>';
+	return s;
+}
+
+function ShowFilterTable() //posar la taula on sigui //El que inicia la taula
+{
+	document.getElementById("divSelectorRowsFilter").innerHTML=GetFilterTable(elemFilter);
+}
 
 
 
@@ -5167,7 +5315,8 @@
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
 			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
 
-			createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId); /////////////////////////////////////////////////////////
+			//createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId); /////////////////////////////////////////////////////////
+			ShowFilterTable();
 		}
 
 		function ChangeTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId) {
