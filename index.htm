@@ -3173,9 +3173,9 @@
 
 		//Montar selectors
 		//const tableCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-		function createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId, count) {
+		function createSelectorRowFilters(dataAttributes, paramsNodeId, count) {
 			//actualitzar STAdata del node
-			networkNodes.get(paramsNodeId).STAdata = networkNodes.get(nodeId).STAdata;
+			// networkNodes.get(paramsNodeId).STAdata = networkNodes.get(nodeId).STAdata;
 			currentNode.id = paramsNodeId;
 			networkNodes.update(networkNodes.get(paramsNodeId));
 			var data = networkNodes.get(paramsNodeId).STAdata;
@@ -4201,81 +4201,80 @@
 				property: "<div id='optionsRow_0'></div>",
 				number: "0"
 			},
-			{
-				property: "<div id='optionsRow_1'></div>",
-				number: "1"
-			},
-			{
-				property: "<div id='optionsRow_2'></div>",
-				number: "2"
-			},
-			{
-				property: "<div id='optionsRow_3'></div>",
-				number: "3"
-			},
-			{
-				property: "<div id='optionsRow_4'></div>",
-				number: "4"
-			},
-			{
-				property: "<div id='optionsRow_5'></div>",
-				number: "5"
-			}
+			// {
+			// 	property: "<div id='optionsRow_1'></div>",
+			// 	number: "1"
+			// },
+			// {
+			// 	property: "<div id='optionsRow_2'></div>",
+			// 	number: "2"
+			// },
+			// {
+			// 	property: "<div id='optionsRow_3'></div>",
+			// 	number: "3"
+			// },
+			// {
+			// 	property: "<div id='optionsRow_4'></div>",
+			// 	number: "4"
+			// },
+			// {
+			// 	property: "<div id='optionsRow_5'></div>",
+			// 	number: "5"
+			// }
 		]
 
 		var elemFilter = { //estctura de la taula
 
-			// 	elems: [0],
-			// 	nexus: null,
-			// 	boxName: "0_0"
-
-			// }
-			elems: [
-				{ //nivell2
-					elems: [//Nivell1
-						{
-							elems: [0, 1], //nivell 0
-							nexus: "or",
-							boxName: "0_0",
-						},
-						{
-							elems: [2],
-							nexus: null,
-							boxName: "0_1"
-						},
-						{
-							elems: [5],
-							nexus: null,
-							boxName: "0_2"
-						}
-					],
-					nexus: "and",
-					boxName: "1_0"
-				},
-				{
-					elems: [
-						{
-							elems: [3, 4],
-							nexus: "or",
-							boxName: "0_2"
-						}
-					]
-				}
-			],
-			nexus: "or",
-			boxName: "2_0"
-		}
+			 	elems: [0],
+			 	nexus: null,
+			 	boxName: "0_0"
+}
+		// 	elems: [
+		// 		{ //nivell2
+		// 			elems: [//Nivell1
+		// 				{
+		// 					elems: [0, 1], //nivell 0
+		// 					nexus: "or",
+		// 					boxName: "0_0",
+		// 				},
+		// 				{
+		// 					elems: [2],
+		// 					nexus: null,
+		// 					boxName: "0_1"
+		// 				},
+		// 				{
+		// 					elems: [5],
+		// 					nexus: null,
+		// 					boxName: "0_2"
+		// 				}
+		// 			],
+		// 			nexus: "and",
+		// 			boxName: "1_0"
+		// 		},
+		// 		{
+		// 			elems: [
+		// 				{
+		// 					elems: [3, 4],
+		// 					nexus: "or",
+		// 					boxName: "0_2"
+		// 				}
+		// 			]
+		// 		}
+		// 	],
+		// 	nexus: "or",
+		// 	boxName: "2_0"
+		// }
 		var counter = [];
-		function GetFilterTable(elem, dataAttributes, nodeId, paramsNodeId) //COnstrucio taula //El segon, serà cridat per el ShowFilter
+		function GetFilterTable(elem, dataAttributes,paramsNodeId) //COnstrucio taula //El segon, serà cridat per el ShowFilter
 		{
 			console.log(elem.boxName)
 			var s = '<table border="1"><tr><td id="' + elem["boxName"] + '">';
 			if (elem.boxName) {
-				s += `<button onclick="addNewCondition('${elem.boxName}')">Add new condition</button>`;
+				s += `<button onclick="addNewCondition('${elem.boxName}','${paramsNodeId}')">Add new condition</button>`;
 			}
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
-					s += GetFilterTable(elem.elems[i], dataAttributes, nodeId, paramsNodeId);
+					s += GetFilterTable(elem.elems[i], dataAttributes, paramsNodeId);
 				}
 				if (elem.elems.length < 2 && elem.nexus)
 					alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
@@ -4287,7 +4286,7 @@
 
 			}
 			else {
-				s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
+				s += GetFilterCondition(elem, dataAttributes, paramsNodeId);
 
 			}
 
@@ -4297,17 +4296,17 @@
 			return s;
 
 		}
-		function addingSelectors(dataAttributes, nodeId, paramsNodeId, count) {
+		function addingSelectors(dataAttributes, paramsNodeId, count) {
 			console.log(counter.length);
 			for (var i = 0; i < count; i++) {
-				createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId, [i]);
+				createSelectorRowFilters(dataAttributes, paramsNodeId, [i]);
 			}
 
 
 
 		}
 
-		function GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId) {
+		function GetFilterCondition(elem, dataAttributes, paramsNodeId) {
 			counter.push("a");
 			console.log(counter.length)
 
@@ -4316,11 +4315,11 @@
 		}
 
 
-		async function ShowFilterTable(dataAttributes, nodeId, paramsNodeId) //posar la taula on sigui //El que inicia la taula
+		async function ShowFilterTable(dataAttributes, paramsNodeId) //posar la taula on sigui //El que inicia la taula
 		{
 			counter = [];
-			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, nodeId, paramsNodeId);
-			addingSelectors(dataAttributes, nodeId, paramsNodeId, (counter.length));
+			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, paramsNodeId);
+			addingSelectors(dataAttributes, paramsNodeId, (counter.length));
 		}
 
 		function ChangeConditionFilterTable(elem, iConNew, iConCurrent) {
@@ -4425,24 +4424,24 @@
 
 		//add conditions
 
-		function addNewCondition(boxName) {
+		function addNewCondition(boxName,paramsNodeId) {
 			event.preventDefault();
 			console.log(boxName);
 			var elem = elemFilter;
-			searchFilterBoxName(boxName, elem);
+
+			searchFilterBoxName(boxName, elem, paramsNodeId);
 
 		}
-		function searchFilterBoxName(boxNamee, elem) { //el elem te el boxName i tal
+		function searchFilterBoxName(boxNamee, elem,paramsNodeId) { //el elem te el boxName i tal
 			var element;
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
-					element = searchFilterBoxName(boxNamee, elem.elems[i]);
+					element = searchFilterBoxName(boxNamee, elem.elems[i],paramsNodeId);
 				}
-				if (elem.boxName == boxNamee) {
-					var elements = elem.elems;
-					var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
-					var nextNumber = parseInt(lastNumber) + 1;
-					elem.elems.push(nextNumber);
+				if (elem.boxName == boxNamee) { //afegir a elems => elems[0,1...]
+					
+					addNewElement(elem, paramsNodeId);
+
 
 				}
 
@@ -4455,7 +4454,25 @@
 			console.log(elemFilter)
 		}
 
+		function addNewElement(elem, paramsNodeId) {
+			var elements = elem.elems;
+			var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
+			var nextNumber = parseInt(lastNumber) + 1;
+			elements.push(nextNumber); //add to elem array
+			if (elem.elems.length==2){ //change nexus if pass from one to two
+				elem.nexus="and"
+			}
+			conditionsFilter.push({ //add to conditionsFilter
+				property: "<div id='optionsRow_"+nextNumber+"'></div>",
+				number: nextNumber
+			})
+			//tornar a pintar els selects
+			var data = networkNodes.get(paramsNodeId).STAdata;
+			var dataAttributes = getDataAttributes(data); 
+			document.getElementById("divSelectorRowsFilter").innerHTML ="";
+			ShowFilterTable(dataAttributes, paramsNodeId)
 
+		}
 
 
 		//function addCondition(condition, nodeId) {
@@ -5394,7 +5411,7 @@
 			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
 
 			//createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId); /////////////////////////////////////////////////////////
-			ShowFilterTable(dataAttributes, nodeId, paramsNodeId);
+			ShowFilterTable(dataAttributes, paramsNodeId);
 		}
 
 		function ChangeTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId) {
