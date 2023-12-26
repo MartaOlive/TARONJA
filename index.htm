@@ -3182,9 +3182,6 @@
 
 			var selectorStructureRow;
 			var divFilterBox = document.getElementById("optionsRow_" + count);
-			var parent = divFilterBox.parentNode;
-			console.log(parent)
-			parent.setAttribute("class", "td_" + count);
 			console.log("count: " + count);
 			var optionsRow = document.createElement("div");
 			optionsRow.setAttribute("id", "optionsRow");
@@ -4225,10 +4222,10 @@
 
 		var elemFilter = { //estctura de la taula
 
-			 	elems: [0],
-			 	nexus: null,
-			 	boxName: "0_0"
-}
+			elems: [0],
+			nexus: null,
+			boxName: "0_0"
+		}
 		// 	elems: [
 		// 		{ //nivell2
 		// 			elems: [//Nivell1
@@ -4265,7 +4262,7 @@
 		// 	boxName: "2_0"
 		// }
 		var counter = [];
-		function GetFilterTable(elem, dataAttributes,paramsNodeId) //COnstrucio taula //El segon, serà cridat per el ShowFilter
+		function GetFilterTable(elem, dataAttributes, paramsNodeId) //COnstrucio taula //El segon, serà cridat per el ShowFilter
 		{
 			console.log(elem.boxName)
 			var s = '<table border="1"><tr><td id="' + elem["boxName"] + '">';
@@ -4309,8 +4306,8 @@
 		function GetFilterCondition(elem, dataAttributes, paramsNodeId) {
 			counter.push("a");
 			console.log(counter.length)
-
-			return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')"><img src="fletxaAbaix_18x11.png"></button> <button onClick="MoveUpFilterCondition(' + elem + ')"><img src="fletxaAmunt_18x11.png"></button><button onClick="DeleteElement(' + elem + ')"><img src="trash_18x18.png"></button>';
+			console.log(elem)
+			return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')"><img src="fletxaAbaix_18x11.png"></button> <button onClick="MoveUpFilterCondition(' + elem + ')"><img src="fletxaAmunt_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button>';
 
 		}
 
@@ -4424,7 +4421,7 @@
 
 		//add conditions
 
-		function addNewCondition(boxName,paramsNodeId) {
+		function addNewCondition(boxName, paramsNodeId) {
 			event.preventDefault();
 			console.log(boxName);
 			var elem = elemFilter;
@@ -4432,14 +4429,14 @@
 			searchFilterBoxName(boxName, elem, paramsNodeId);
 
 		}
-		function searchFilterBoxName(boxNamee, elem,paramsNodeId) { //el elem te el boxName i tal
+		function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //el elem te el boxName i tal
 			var element;
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
-					element = searchFilterBoxName(boxNamee, elem.elems[i],paramsNodeId);
+					element = searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
 				}
 				if (elem.boxName == boxNamee) { //afegir a elems => elems[0,1...]
-					
+
 					addNewElement(elem, paramsNodeId);
 
 
@@ -4459,21 +4456,57 @@
 			var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
 			var nextNumber = parseInt(lastNumber) + 1;
 			elements.push(nextNumber); //add to elem array
-			if (elem.elems.length==2){ //change nexus if pass from one to two
-				elem.nexus="and"
+			if (elem.elems.length == 2) { //change nexus if pass from one to two
+				elem.nexus = "and"
 			}
 			conditionsFilter.push({ //add to conditionsFilter
-				property: "<div id='optionsRow_"+nextNumber+"'></div>",
+				property: "<div id='optionsRow_" + nextNumber + "'></div>",
 				number: nextNumber
 			})
 			//tornar a pintar els selects
-			var data = networkNodes.get(paramsNodeId).STAdata;
-			var dataAttributes = getDataAttributes(data); 
-			document.getElementById("divSelectorRowsFilter").innerHTML ="";
-			ShowFilterTable(dataAttributes, paramsNodeId)
+			drawTableAgain(paramsNodeId)
 
 		}
 
+		//delete element
+
+		function DeleteElementButton(numberOfElement) {
+			event.preventDefault()
+			searchElementToDelete(numberOfElement, elemFilter, currentNode.id);
+		}
+		function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //el elem te el boxName i tal
+			var element;
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					element = searchElementToDelete(numberOfElement, elem.elems[i], paramsNodeId);
+				}
+				if (elem.elems.includes(numberOfElement)) { //afegir a elems => elems[0,1...]
+					DeleteElementInElemFilter(elem, paramsNodeId, numberOfElement);
+				}
+			}
+			else {
+				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
+			}
+		}
+		function DeleteElementInElemFilter(elem, paramsNodeId, numberOfElement) {
+			//no borrar del conditions filter perque es la posicio
+
+			var index = elem.elems.indexOf(parseInt(numberOfElement));
+			elem.elems.splice(index, 1); //eliminar de elemFilter	
+			console.log(elemFilter);
+			//tornar a pintar els selects
+			drawTableAgain(paramsNodeId);
+
+			//No es pot borrar l'últim!!!!! PEnsar que fer amb això 
+
+		}
+
+		function drawTableAgain(paramsNodeId){
+			var data = networkNodes.get(paramsNodeId).STAdata;
+			var dataAttributes = getDataAttributes(data);
+			document.getElementById("divSelectorRowsFilter").innerHTML = "";
+			ShowFilterTable(dataAttributes, paramsNodeId)
+		}
 
 		//function addCondition(condition, nodeId) {
 		// 	event.preventDefault();
