@@ -1,33 +1,27 @@
-<!-- https://citiobs.demo.secure-dimensions.de/staplus/v1.1/Observations?$select=result&$orderby=phenomenonTime%20desc&$filter=phenomenonTime%20ge%202023-09-04T00:00:00.000Z%20and%20phenomenonTime%20le%202023-09-04T00:59:59.999Z%20and%20Datastream/Party/displayName%20eq%20%27Joan%20Mas%C3%B3%27&$count=true -->
-<!-- https://citiobs.demo.secure-dimensions.de/staplus/v1.1/Datastreams(17)/Observations?$orderby=phenomenonTime%20desc&$filter=phenomenonTime%20ge%202023-09-04T00:00:00.000Z%20and%20phenomenonTime%20le%202023-09-04T23:59:59.999Z
-(recorda que un %20 és un espai). -->
-
-
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!-- saved from url=(0034)https://localhost/taronja/taronja/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
 	<title>TAPIS: Tables from APIs for Sensors (Sensor Things API plus Explorer)</title>
-	<link rel="icon" type="image/x-icon" href="favicon.ico">
-	<script type="text/javascript" src="vis.min.js"></script>
-	<script type="text/javascript" src="papaparse.min.js"></script>
-	<script type="text/javascript" src="hello.all.min.js"></script>
-	<script type="text/javascript" src="authenix.js"></script>
-	<script type="text/javascript" src="mmn_postmessage.js"></script>
+	<link rel="icon" type="image/x-icon" href="https://localhost/taronja/taronja/favicon.ico">
+	<script type="text/javascript" src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/vis.min.js.baixa"></script>
+	<script type="text/javascript" src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/papaparse.min.js.baixa"></script>
+	<script type="text/javascript" src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/hello.all.min.js.baixa"></script>
+	<script type="text/javascript" src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/authenix.js.baixa"></script>
+	<script type="text/javascript" src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/mmn_postmessage.js.baixa"></script>
 
-	<link rel="stylesheet" href="tapis.css">
-	<link rel="stylesheet" href="vis.min.css">
+	<link rel="stylesheet" href="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/tapis.css">
+	<link rel="stylesheet" href="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/vis.min.css">
 
 </head>
 
-<body onLoad="StartSTAPage();" onkeydown="KeySTAPage(event);">
+<body onload="StartSTAPage();" onkeydown="KeySTAPage(event);">
 	<table border="0" style="width:100%">
-		<tr>
+		<tbody><tr>
 			<td>
 				<table>
-					<tr>
-						<td><img src="logo.png" height="70"></td>
+					<tbody><tr>
+						<td><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/logo.png" height="70"></td>
 						<td>
 							<div style="font-size: 30px; font-weight: bold;">TAPIS</div>
 							<div style="font-size: 20px; font-weight: bold;">Tables from OGC APIs for Sensors</div>
@@ -35,63 +29,54 @@
 							</div>
 						</td>
 					</tr>
-				</table>
+				</tbody></table>
 			</td>
 			<td align="right" valign="top">
 				<span id="UserInfoText"></span>
-				<button id="buttonReloadSTA" onclick='reloadSTA(event);'><img src="reload.png" height="20"
-						valign="middle"> Refresh</button>
-				<label class=labelbotton><img src="OpenNetwork.png" height="20" valign="middle"> Open
-					<input type="file" id="openNetworkFileName" hidden onchange='openNetwork(event);' />
+				<button id="buttonReloadSTA" onclick="reloadSTA(event);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/reload.png" height="20" valign="middle"> Refresh</button>
+				<label class="labelbotton"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/OpenNetwork.png" height="20" valign="middle"> Open
+					<input type="file" id="openNetworkFileName" hidden="" onchange="openNetwork(event);">
 				</label>
 				<!-- https://dev.to/faddalibrahim/how-to-create-a-custom-file-upload-button-using-html-css-and-javascript-1c03 -->
-				<button onclick='saveNetwork(event);'><img src="SaveNetwork.png" height="20" valign="middle">
+				<button onclick="saveNetwork(event);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SaveNetwork.png" height="20" valign="middle">
 					Save</button>
-				<button id="buttonOpenLogin" onclick='OpenLogin(event);'><img src="login.png" height="20"
-						valign="middle"> Login</button>
-				<button id="buttonOpenLogout" onclick='OpenLogout(event);' style="display: none" );'><img
-						src="login.png" height="20" valign="middle"> Logout</button>
-				<button onclick='OpenConfiguration(event);'><img src="config.png" height="20"
-						valign="middle">Configuration</button><br>
-				<span style="font-size: 10px;"><a href="TermsOfUse.htm">Terms of Use</a><br>
-					<a href="PrivacyStatement.htm">Privacy Statement</a><br>
-					<a href="AccessPolicy.htm">Access Policy</a><br></span>
+				<button id="buttonOpenLogin" onclick="OpenLogin(event);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/login.png" height="20" valign="middle"> Login</button>
+				<button id="buttonOpenLogout" onclick="OpenLogout(event);" style="display: none" );'=""><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/login.png" height="20" valign="middle"> Logout</button>
+				<button onclick="OpenConfiguration(event);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/config.png" height="20" valign="middle">Configuration</button><br>
+				<span style="font-size: 10px;"><a href="https://localhost/taronja/taronja/TermsOfUse.htm">Terms of Use</a><br>
+					<a href="https://localhost/taronja/taronja/PrivacyStatement.htm">Privacy Statement</a><br>
+					<a href="https://localhost/taronja/taronja/AccessPolicy.htm">Access Policy</a><br></span>
 			</td>
 		</tr>
-	</table>
+	</tbody></table>
 
-	<button onclick='addCircularImage(null, null, "STAplus", "ogc.png");'><img src="ogc.png" height="20"
-			valign="middle"> Add STA service</button><br>
-	<span id="ButtonsSTAEntities"></span>
+	<button onclick="addCircularImage(null, null, &quot;STAplus&quot;, &quot;ogc.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ogc.png" height="20" valign="middle"> Add STA service</button><br>
+	<span id="ButtonsSTAEntities"><button onclick="addCircularImage(null, null, &quot;ObservedProperties&quot;, &quot;ObservedProperties.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ObservedProperties.png" height="20" valign="middle"> ObservedProperties</button> <button onclick="addCircularImage(null, null, &quot;Observations&quot;, &quot;Observations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Observations.png" height="20" valign="middle"> Observations</button> <button onclick="addCircularImage(null, null, &quot;FeaturesOfInterest&quot;, &quot;FeaturesOfInterest.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/FeaturesOfInterest.png" height="20" valign="middle"> FeaturesOfInterest</button> <button onclick="addCircularImage(null, null, &quot;Sensors&quot;, &quot;Sensors.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Sensors.png" height="20" valign="middle"> Sensors</button> <button onclick="addCircularImage(null, null, &quot;Things&quot;, &quot;Things.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Things.png" height="20" valign="middle"> Things</button> <button onclick="addCircularImage(null, null, &quot;Locations&quot;, &quot;Locations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Locations.png" height="20" valign="middle"> Locations</button> <button onclick="addCircularImage(null, null, &quot;HistoricalLocations&quot;, &quot;HistoricalLocations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/HistoricalLocations.png" height="20" valign="middle"> HistoricalLocations</button> <button onclick="addCircularImage(null, null, &quot;Datastreams&quot;, &quot;Datastreams.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Datastreams.png" height="20" valign="middle"> Datastreams</button> <button onclick="addCircularImage(null, null, &quot;MultiDatastreams&quot;, &quot;MultiDatastreams.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/MultiDatastreams.png" height="20" valign="middle"> MultiDatastreams</button> <button onclick="addCircularImage(null, null, &quot;Parties&quot;, &quot;Parties.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Parties.png" height="20" valign="middle"> Parties</button> <button onclick="addCircularImage(null, null, &quot;Campaigns&quot;, &quot;Campaigns.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Campaigns.png" height="20" valign="middle"> Campaigns</button> <button onclick="addCircularImage(null, null, &quot;Licenses&quot;, &quot;Licenses.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Licenses.png" height="20" valign="middle"> Licenses</button> <button onclick="addCircularImage(null, null, &quot;ObservationGroups&quot;, &quot;ObservationGroups.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ObservationGroups.png" height="20" valign="middle"> ObservationGroups</button> <button onclick="addCircularImage(null, null, &quot;Relations&quot;, &quot;Relations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Relations.png" height="20" valign="middle"> Relations</button> <br><button onclick="addCircularImage(null, null, &quot;ObsLayer&quot;, &quot;ObsLayer.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ObsLayer.png" height="20" valign="middle"> Observations Layer</button> <br><button onclick="addCircularImage(null, null, &quot;ImportCSV&quot;, &quot;ImportCSV.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ImportCSV.png" height="20" valign="middle"> Import CSV file</button> <button onclick="addCircularImage(null, null, &quot;Table&quot;, &quot;Table.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Table.png" height="20" valign="middle"> View Table</button> <button onclick="addCircularImage(null, null, &quot;SelectColumnsSTA&quot;, &quot;SelectColumnsSTA.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SelectColumnsSTA.png" height="20" valign="middle"> Select Columns</button> <button onclick="addCircularImage(null, null, &quot;SelectRowsSTA&quot;, &quot;SelectRowsSTA.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SelectRowsSTA.png" height="20" valign="middle"> Select Rows</button> <button onclick="addCircularImage(null, null, &quot;SortBySTA&quot;, &quot;SortBySTA.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SortBySTA.png" height="20" valign="middle"> Sort by</button> <button onclick="addCircularImage(null, null, &quot;ViewQuerySTA&quot;, &quot;ViewQuerySTA.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ViewQuerySTA.png" height="20" valign="middle"> View Query</button> <button onclick="addCircularImage(null, null, &quot;UploadObservations&quot;, &quot;UploadObservations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/UploadObservations.png" height="20" valign="middle"> Upload in STA</button> <button onclick="addCircularImage(null, null, &quot;SelectColumnsTable&quot;, &quot;SelectColumnsTable.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SelectColumnsTable.png" height="20" valign="middle"> Select Columns</button> <button onclick="addCircularImage(null, null, &quot;SelectRowsTable&quot;, &quot;SelectRowsTable.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SelectRowsTable.png" height="20" valign="middle"> Select Rows</button> <button onclick="addCircularImage(null, null, &quot;SeparateColumns&quot;, &quot;SeparateColumns.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SeparateColumns.png" height="20" valign="middle"> Separate Columns</button> <button onclick="addCircularImage(null, null, &quot;ScatterPlot&quot;, &quot;ScatterPlot.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ScatterPlot.png" height="20" valign="middle"> Scatter Plot</button> <button onclick="addCircularImage(null, null, &quot;OneValue&quot;, &quot;OneValue.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/OneValue.png" height="20" valign="middle"> One Value</button> <button onclick="addCircularImage(null, null, &quot;SaveTable&quot;, &quot;SaveTable.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SaveTable.png" height="20" valign="middle"> Save Table</button> <button onclick="addCircularImage(null, null, &quot;SaveLayer&quot;, &quot;SaveLayer.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SaveLayer.png" height="20" valign="middle"> Save Layer</button> <button onclick="addCircularImage(null, null, &quot;OpenMap&quot;, &quot;OpenMap.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/OpenMap.png" height="20" valign="middle"> Open Map</button> <br></span>
 	<button onclick="addEdge();">Connect two nodes</button><br>
 
 	<div>
-		<div id="mynetwork" style="float: left; width: 59.4%; height: 400px;"></div>
-		<div id="clarification"
-			style="float: left; width: 39.5%; margin-left: 0.2%; height: 400px; border: 1px solid gray; overflow-y: auto; overflow-x: scroll;">
-		</div>
+		<div id="mynetwork" style="float: left; width: 59.4%; height: 400px;"><div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;"><canvas width="607" style="position: relative; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;" height="440"></canvas></div></div>
+		<div id="clarification" style="float: left; width: 39.5%; margin-left: 0.2%; height: 400px; border: 1px solid gray; overflow-y: auto; overflow-x: scroll;">
+		Requesting STA landing page<br>Completed.<br></div>
 	</div>
 
 	<dialog id="DialogConfiguration">
 		<form>
 			<p>
 				<label>Table font size ratio:
-					<input type="text" id="DialogConfigurationFontSize" size="3" value="50"></input>%
+					<input type="text" id="DialogConfigurationFontSize" size="3" value="50">%
 				</label>
 				<br>
 				<span style="display: flex;align-items: center;">Window disposition:
-					<label style="display: flex;align-items: center;"><input type="radio" name="DialogConfigurationDiv"
-							id="DialogConfigurationDivSideBySide" checked="checked"></input><img
-							src="SideBySide.png"></label>
-					<label style="display: flex;align-items: center;"><input type="radio" name="DialogConfigurationDiv"
-							id="DialogConfigurationDivOverUnder"></input><img src="OverUnder.png"></label>
+					<label style="display: flex;align-items: center;"><input type="radio" name="DialogConfigurationDiv" id="DialogConfigurationDivSideBySide" checked="checked"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SideBySide.png"></label>
+					<label style="display: flex;align-items: center;"><input type="radio" name="DialogConfigurationDiv" id="DialogConfigurationDivOverUnder"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/OverUnder.png"></label>
 				</span>
 				<br>
-				<label><input type="checkbox" id="DialogConfigurationAddGeolocationHeader"></input>Add geolocation
+				<label><input type="checkbox" id="DialogConfigurationAddGeolocationHeader">Add geolocation
 					header</label>
 			</p>
 			<div class="center">
-				<button value="default" onClick="ChangeConfiguration(event)">OK</button>
+				<button value="default" onclick="ChangeConfiguration(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -102,11 +87,11 @@
 		<form>
 			<p>
 				<label>STA service URL:
-					<input type="text" id="DialogSTAURLInput" size="100"></input>
+					<input type="text" id="DialogSTAURLInput" size="100">
 				</label>
 			</p>
 			<div class="center">
-				<button value="default" id="DialogSTAURLOk" onClick="GetSTAURLEvent(event)">OK</button>
+				<button value="default" id="DialogSTAURLOk" onclick="GetSTAURLEvent(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -118,7 +103,7 @@
 			<span id="DialogSelectColumnsHTML">
 			</span>
 			<div class="center">
-				<button value="default" onClick="GetSelectColumns(event)">OK</button>
+				<button value="default" onclick="GetSelectColumns(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -133,10 +118,10 @@
 			</fieldset>
 			<br>
 			<label>Number records to request:
-				<input type="text" id="SelectExpandsNumberOfRecords" size="6" maxlength="6" value="100"></input>
+				<input type="text" id="SelectExpandsNumberOfRecords" size="6" maxlength="6" value="100">
 			</label>
 			<div class="center">
-				<button value="default" onClick="GetSelectExpands(event)">OK</button>
+				<button value="default" onclick="GetSelectExpands(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -150,32 +135,30 @@
 				</span>
 			</fieldset>
 			<br>
-			<label><input type="radio" id="SelectSortByAsc" name="SelectSortByArcDesc" checked />ascending</label>
-			<label><input type="radio" id="SelectSortByDesc" name="SelectSortByArcDesc" />descending</label>
+			<label><input type="radio" id="SelectSortByAsc" name="SelectSortByArcDesc" checked="">ascending</label>
+			<label><input type="radio" id="SelectSortByDesc" name="SelectSortByArcDesc">descending</label>
 			<br>
 			<label>Number records to request:
-				<input type="text" id="SelectSortByNumberOfRecords" size="6" maxlength="6" value="100"></input>
+				<input type="text" id="SelectSortByNumberOfRecords" size="6" maxlength="6" value="100">
 			</label>
 			<div class="center">
-				<button value="default" onClick="GetSelectSortBy(event)">OK</button>
+				<button value="default" onclick="GetSelectSortBy(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
 	</dialog>
 
-	<dialog id="DialogSelectRows">
+	<dialog id="DialogSelectRows" open="">
 		<form>
-			<span id="DialogSelectRowsTableInputSpan">
-			</span>
-			<span id="DialogSelectRowsTable">
-			</span>
+			<span id="DialogSelectRowsTableInputSpan"><label><input type="radio" name="DialogSelectRowsRadio" id="DialogSelectRowsTableRadio" checked="checked" onclick="ChangeTableFilterRowsDialog(&quot;1mdl1.kijgh0g&quot;,&quot;9g3uf.rrr142&quot;)"> Select an element:</label></span>
+			<span id="DialogSelectRowsTable"></span>
 			<br>
-			<span id="DialogSelectRowsFilterInputSpan">
-			</span>
-			<span id="DialogSelectRowsFilter">
-			</span>
+			<span id="DialogSelectRowsFilterInputSpan"><label><input type="radio" name="DialogSelectRowsRadio" id="DialogSelectRowsFilterRadio" onclick="ChangeTableFilterRowsDialog(&quot;1mdl1.kijgh0g&quot;,&quot;9g3uf.rrr142&quot;, &quot;9g3uf.rrr142&quot;)">  Filter:</label></span>
+			<span id="DialogSelectRowsFilter"><div id="selectorRowsContainer">
+
+				<div id="divSelectorRowsFilter"><table border="1"><tbody><tr><td id="0_0"><button onclick="addNewCondition(" 0_0")"="">Add new condition</button><table border="1"><tbody><tr><td id="undefined" class="td_0"><div id="optionsRow_0"><div id="optionsRow"><label>Choose a Property</label><label id="label2">a Value</label><button id="addButton" onclick="addSelected(&#39;9g3uf.rrr142&#39;,&#39;_optionsRow&#39;)">add</button></div><select id="selectorProperty_0" onchange="fillValueSelector(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_0&#39;)"><option value="name">name</option><option value="url">url</option></select><select id="selectorCondition_0" onchange="showIntervalSelector(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_0&#39;,&#39;0&#39;)"><option value=" = "> = </option><option value=" &amp;ne; "> ≠ </option><option value=" &amp;ge; "> ≥ </option><option value=" &gt; "> &gt; </option><option value=" &amp;le; "> ≤ </option><option value=" &lt; "> &lt; </option><option value=" [a,b] "> [a,b] </option><option value=" (a,b] "> (a,b] </option><option value=" [a,b) "> [a,b) </option><option value=" (a,b) "> (a,b) </option><option value="contains">contains</option><option value="no contains">no contains</option><option value="starts with">starts with</option><option value="ends with">ends with</option><option value="year">year</option><option value="month">month</option><option value="day">day</option><option value="hour">hour</option><option value="minute">minute</option><option value="date">date</option><option value="time">time</option><option value="min date time">min date time</option><option value="max date time">max date time</option></select><div id="divFilterContainer_0" class="hidden"><select id="selectorValue_0" onchange="isAnObject(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_0&#39;)"><option value="Campaigns">Campaigns</option><option value="Datastreams">Datastreams</option><option value="FeaturesOfInterest">FeaturesOfInterest</option><option value="HistoricalLocations">HistoricalLocations</option><option value="Licenses">Licenses</option><option value="Locations">Locations</option><option value="MultiDatastreams">MultiDatastreams</option><option value="Observations">Observations</option><option value="ObservationGroups">ObservationGroups</option><option value="ObservedProperties">ObservedProperties</option><option value="Parties">Parties</option><option value="Relations">Relations</option><option value="Sensors">Sensors</option><option value="Things">Things</option></select><button onclick="closeModalSelect(&#39;optionsRow_0&#39;,&#39;optionsRow_0&#39;,&#39;ok&#39;,NaN,&#39;simple&#39;,&#39;9g3uf.rrr142&#39;)" id="okButton_0">Ok</button><button onclick="closeModalSelect(&#39;optionsRow_0&#39;,&#39;optionsRow_0&#39;,&#39;cancel&#39;,NaN,&#39;simple&#39;,&#39;9g3uf.rrr142&#39;)" id="cancelButton_0">Cancel</button></div><input id="textInput_0" type="text"><button id="displaySelect_0" onclick="changeWriteToSelect(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_0&#39;,&#39;simple&#39;)"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/botoDesplegable.png" class="buttonImage"></button><div id="divFilterContainer2_0" class="hidden"><select id="selectorValueInterval1_0" onchange="isAnObject(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_0&#39;)"><option value="Campaigns">Campaigns</option><option value="Datastreams">Datastreams</option><option value="FeaturesOfInterest">FeaturesOfInterest</option><option value="HistoricalLocations">HistoricalLocations</option><option value="Licenses">Licenses</option><option value="Locations">Locations</option><option value="MultiDatastreams">MultiDatastreams</option><option value="Observations">Observations</option><option value="ObservationGroups">ObservationGroups</option><option value="ObservedProperties">ObservedProperties</option><option value="Parties">Parties</option><option value="Relations">Relations</option><option value="Sensors">Sensors</option><option value="Things">Things</option></select><select id="selectorValueInterval2_0" onchange="isAnObject(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_0&#39;)"><option value="Campaigns">Campaigns</option><option value="Datastreams">Datastreams</option><option value="FeaturesOfInterest">FeaturesOfInterest</option><option value="HistoricalLocations">HistoricalLocations</option><option value="Licenses">Licenses</option><option value="Locations">Locations</option><option value="MultiDatastreams">MultiDatastreams</option><option value="Observations">Observations</option><option value="ObservationGroups">ObservationGroups</option><option value="ObservedProperties">ObservedProperties</option><option value="Parties">Parties</option><option value="Relations">Relations</option><option value="Sensors">Sensors</option><option value="Things">Things</option></select><button onclick="closeModalSelect(&#39;optionsRow_0&#39;,&#39;optionsRow_0&#39;,&#39;ok&#39;,NaN,&#39;interval&#39;,&#39;9g3uf.rrr142&#39;)" id="okButtonInterval_0">Ok</button><button onclick="closeModalSelect(&#39;optionsRow_0&#39;,&#39;optionsRow_0&#39;,&#39;cancel&#39;,NaN,&#39;interval&#39;,&#39;9g3uf.rrr142&#39;)" id="cancelButtonInterval_0">Cancel</button></div><input id="textInputInterval1_0" type="text" class="hidden"><input id="textInputInterval2_0" type="text" class="hidden"><button id="displaySelectInterval_0" onclick="changeWriteToSelect(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_0&#39;,&#39;interval&#39;)" class="hidden">...</button></div><button onclick="MoveDownFilterCondition(0)"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/fletxaAbaix_18x11.png"></button> <button onclick="MoveUpFilterCondition(0)"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/fletxaAmunt_18x11.png"></button><button onclick="DeleteElement(0)"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/trash_18x18.png"></button></td></tr></tbody></table><table border="1"><tbody><tr><td id="undefined" class="td_1"><div id="optionsRow_1"><div id="optionsRow"><label>Choose a Property</label><label id="label2">a Value</label><button id="addButton" onclick="addSelected(&#39;9g3uf.rrr142&#39;,&#39;_optionsRow&#39;)">add</button></div><select id="selectorProperty_1" onchange="fillValueSelector(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_1&#39;)"><option value="name">name</option><option value="url">url</option></select><select id="selectorCondition_1" onchange="showIntervalSelector(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_1&#39;,&#39;1&#39;)"><option value=" = "> = </option><option value=" &amp;ne; "> ≠ </option><option value=" &amp;ge; "> ≥ </option><option value=" &gt; "> &gt; </option><option value=" &amp;le; "> ≤ </option><option value=" &lt; "> &lt; </option><option value=" [a,b] "> [a,b] </option><option value=" (a,b] "> (a,b] </option><option value=" [a,b) "> [a,b) </option><option value=" (a,b) "> (a,b) </option><option value="contains">contains</option><option value="no contains">no contains</option><option value="starts with">starts with</option><option value="ends with">ends with</option><option value="year">year</option><option value="month">month</option><option value="day">day</option><option value="hour">hour</option><option value="minute">minute</option><option value="date">date</option><option value="time">time</option><option value="min date time">min date time</option><option value="max date time">max date time</option></select><div id="divFilterContainer_1" class="hidden"><select id="selectorValue_1" onchange="isAnObject(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_1&#39;)"><option value="Campaigns">Campaigns</option><option value="Datastreams">Datastreams</option><option value="FeaturesOfInterest">FeaturesOfInterest</option><option value="HistoricalLocations">HistoricalLocations</option><option value="Licenses">Licenses</option><option value="Locations">Locations</option><option value="MultiDatastreams">MultiDatastreams</option><option value="Observations">Observations</option><option value="ObservationGroups">ObservationGroups</option><option value="ObservedProperties">ObservedProperties</option><option value="Parties">Parties</option><option value="Relations">Relations</option><option value="Sensors">Sensors</option><option value="Things">Things</option></select><button onclick="closeModalSelect(&#39;optionsRow_1&#39;,&#39;optionsRow_1&#39;,&#39;ok&#39;,NaN,&#39;simple&#39;,&#39;9g3uf.rrr142&#39;)" id="okButton_1">Ok</button><button onclick="closeModalSelect(&#39;optionsRow_1&#39;,&#39;optionsRow_1&#39;,&#39;cancel&#39;,NaN,&#39;simple&#39;,&#39;9g3uf.rrr142&#39;)" id="cancelButton_1">Cancel</button></div><input id="textInput_1" type="text"><button id="displaySelect_1" onclick="changeWriteToSelect(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_1&#39;,&#39;simple&#39;)"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/botoDesplegable.png" class="buttonImage"></button><div id="divFilterContainer2_1" class="hidden"><select id="selectorValueInterval1_1" onchange="isAnObject(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_1&#39;)"><option value="Campaigns">Campaigns</option><option value="Datastreams">Datastreams</option><option value="FeaturesOfInterest">FeaturesOfInterest</option><option value="HistoricalLocations">HistoricalLocations</option><option value="Licenses">Licenses</option><option value="Locations">Locations</option><option value="MultiDatastreams">MultiDatastreams</option><option value="Observations">Observations</option><option value="ObservationGroups">ObservationGroups</option><option value="ObservedProperties">ObservedProperties</option><option value="Parties">Parties</option><option value="Relations">Relations</option><option value="Sensors">Sensors</option><option value="Things">Things</option></select><select id="selectorValueInterval2_1" onchange="isAnObject(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_1&#39;)"><option value="Campaigns">Campaigns</option><option value="Datastreams">Datastreams</option><option value="FeaturesOfInterest">FeaturesOfInterest</option><option value="HistoricalLocations">HistoricalLocations</option><option value="Licenses">Licenses</option><option value="Locations">Locations</option><option value="MultiDatastreams">MultiDatastreams</option><option value="Observations">Observations</option><option value="ObservationGroups">ObservationGroups</option><option value="ObservedProperties">ObservedProperties</option><option value="Parties">Parties</option><option value="Relations">Relations</option><option value="Sensors">Sensors</option><option value="Things">Things</option></select><button onclick="closeModalSelect(&#39;optionsRow_1&#39;,&#39;optionsRow_1&#39;,&#39;ok&#39;,NaN,&#39;interval&#39;,&#39;9g3uf.rrr142&#39;)" id="okButtonInterval_1">Ok</button><button onclick="closeModalSelect(&#39;optionsRow_1&#39;,&#39;optionsRow_1&#39;,&#39;cancel&#39;,NaN,&#39;interval&#39;,&#39;9g3uf.rrr142&#39;)" id="cancelButtonInterval_1">Cancel</button></div><input id="textInputInterval1_1" type="text" class="hidden"><input id="textInputInterval2_1" type="text" class="hidden"><button id="displaySelectInterval_1" onclick="changeWriteToSelect(&#39;9g3uf.rrr142&#39;,&#39;optionsRow_1&#39;,&#39;interval&#39;)" class="hidden">...</button></div><button onclick="MoveDownFilterCondition(1)"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/fletxaAbaix_18x11.png"></button> <button onclick="MoveUpFilterCondition(1)"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/fletxaAmunt_18x11.png"></button><button onclick="DeleteElement(1)"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/trash_18x18.png"></button></td></tr></tbody></table></td><td valign="middle">and</td></tr></tbody></table></div></div></span>
 			<div class="center">
-				<button value="default" onClick="GetSelectRows(event)">OK</button>
+				<button value="default" onclick="GetSelectRows(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -184,15 +167,14 @@
 	<dialog id="DialogContextMenu">
 		<form>
 			<p>
-				<button onclick='addCircularImage(event, "DialogContextMenu", "STAplus", "ogc.png");'><img src="ogc.png"
-						height="20" valign="middle"> Add STA service</button><br>
-				<span id="ButtonsContextMenuObjects"></span><br>
-				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button>
-				<button onclick='renameCircularImage(event, "DialogContextMenu")'>Rename</button><br>
-				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
+				<button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;STAplus&quot;, &quot;ogc.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ogc.png" height="20" valign="middle"> Add STA service</button><br>
+				<span id="ButtonsContextMenuObjects"><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;ObservedProperties&quot;, &quot;ObservedProperties.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ObservedProperties.png" height="20" valign="middle"> ObservedProperties</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Observations&quot;, &quot;Observations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Observations.png" height="20" valign="middle"> Observations</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;FeaturesOfInterest&quot;, &quot;FeaturesOfInterest.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/FeaturesOfInterest.png" height="20" valign="middle"> FeaturesOfInterest</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Sensors&quot;, &quot;Sensors.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Sensors.png" height="20" valign="middle"> Sensors</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Things&quot;, &quot;Things.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Things.png" height="20" valign="middle"> Things</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Locations&quot;, &quot;Locations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Locations.png" height="20" valign="middle"> Locations</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;HistoricalLocations&quot;, &quot;HistoricalLocations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/HistoricalLocations.png" height="20" valign="middle"> HistoricalLocations</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Datastreams&quot;, &quot;Datastreams.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Datastreams.png" height="20" valign="middle"> Datastreams</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;MultiDatastreams&quot;, &quot;MultiDatastreams.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/MultiDatastreams.png" height="20" valign="middle"> MultiDatastreams</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Parties&quot;, &quot;Parties.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Parties.png" height="20" valign="middle"> Parties</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Campaigns&quot;, &quot;Campaigns.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Campaigns.png" height="20" valign="middle"> Campaigns</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Licenses&quot;, &quot;Licenses.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Licenses.png" height="20" valign="middle"> Licenses</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;ObservationGroups&quot;, &quot;ObservationGroups.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ObservationGroups.png" height="20" valign="middle"> ObservationGroups</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Relations&quot;, &quot;Relations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Relations.png" height="20" valign="middle"> Relations</button><br><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;ObsLayer&quot;, &quot;ObsLayer.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ObsLayer.png" height="20" valign="middle"> Observations Layer</button><br><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;ImportCSV&quot;, &quot;ImportCSV.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ImportCSV.png" height="20" valign="middle"> Import CSV file</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;Table&quot;, &quot;Table.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/Table.png" height="20" valign="middle"> View Table</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;SelectColumnsSTA&quot;, &quot;SelectColumnsSTA.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SelectColumnsSTA.png" height="20" valign="middle"> Select Columns</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;SelectRowsSTA&quot;, &quot;SelectRowsSTA.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SelectRowsSTA.png" height="20" valign="middle"> Select Rows</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;SortBySTA&quot;, &quot;SortBySTA.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SortBySTA.png" height="20" valign="middle"> Sort by</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;ViewQuerySTA&quot;, &quot;ViewQuerySTA.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ViewQuerySTA.png" height="20" valign="middle"> View Query</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;UploadObservations&quot;, &quot;UploadObservations.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/UploadObservations.png" height="20" valign="middle"> Upload in STA</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;SelectColumnsTable&quot;, &quot;SelectColumnsTable.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SelectColumnsTable.png" height="20" valign="middle"> Select Columns</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;SelectRowsTable&quot;, &quot;SelectRowsTable.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SelectRowsTable.png" height="20" valign="middle"> Select Rows</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;SeparateColumns&quot;, &quot;SeparateColumns.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SeparateColumns.png" height="20" valign="middle"> Separate Columns</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;ScatterPlot&quot;, &quot;ScatterPlot.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/ScatterPlot.png" height="20" valign="middle"> Scatter Plot</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;OneValue&quot;, &quot;OneValue.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/OneValue.png" height="20" valign="middle"> One Value</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;SaveTable&quot;, &quot;SaveTable.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SaveTable.png" height="20" valign="middle"> Save Table</button> <button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;SaveLayer&quot;, &quot;SaveLayer.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/SaveLayer.png" height="20" valign="middle"> Save Layer</button><br><button onclick="addCircularImage(event, &quot;DialogContextMenu&quot;, &quot;OpenMap&quot;, &quot;OpenMap.png&quot;);"><img src="./TAPIS_ Tables from APIs for Sensors (Sensor Things API plus Explorer)_files/OpenMap.png" height="20" valign="middle"> Open Map</button><br></span><br>
+				<button onclick="removeCircularImage(event, &quot;DialogContextMenu&quot;)">Remove</button>
+				<button onclick="renameCircularImage(event, &quot;DialogContextMenu&quot;)">Rename</button><br>
+				<button onclick="giveMeNetworkInformation(event, &quot;DialogContextMenu&quot;)">Network Info</button><br>
 			</p>
 			<div class="center">
-				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
+				<button value="cancel" onclick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
 	</dialog>
@@ -200,10 +182,10 @@
 	<dialog id="DialogEdgeContextMenu">
 		<form>
 			<p>
-				<button onclick='removeEdge(event, "DialogEdgeContextMenu")'>Remove</button>
+				<button onclick="removeEdge(event, &quot;DialogEdgeContextMenu&quot;)">Remove</button>
 			</p>
 			<div class="center">
-				<button value="cancel" onClick="startingEdgeContextId=null;" formmethod="dialog">Cancel</button>
+				<button value="cancel" onclick="startingEdgeContextId=null;" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
 	</dialog>
@@ -224,26 +206,23 @@
 			Import CSV file table.
 			<br>
 			<label>CSV delimiter:
-				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText"
-						checked></input> <input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1"
-						value=";"></input></label> <label><input type="radio" name="DialogImportCSVDelimiter"
-						id="DialogImportCSVDelimiterTab"></input> Tab</label>
+				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked=""> <input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=";"></label> <label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterTab"> Tab</label>
 			</label>
 			<br>
-			<label><input type="checkbox" id="DialogImportCSVHeader"></input>First line contains names of the
+			<label><input type="checkbox" id="DialogImportCSVHeader">First line contains names of the
 				fields</label>
 			<br>
 			<label>Choose a CSVW:
-				<input type="file" accept=".csvw,.json" onChange="ReadFileImportCSVW(event)"></input>
+				<input type="file" accept=".csvw,.json" onchange="ReadFileImportCSVW(event)">
 			</label>
 			<br>
 			<label>Choose a CSV:
-				<input type="file" accept=".csv,*.txt" onChange="ReadFileImportCSV(event)"></input>
+				<input type="file" accept=".csv,*.txt" onchange="ReadFileImportCSV(event)">
 			</label>
 			<div class="center">
 				<button value="ok" formmethod="dialog">Done</button>
 			</div>
-			<input type="hidden" id="DialogImportCSVdataAttributes" value=""></input>
+			<input type="hidden" id="DialogImportCSVdataAttributes" value="">
 		</form>
 	</dialog>
 
@@ -252,12 +231,12 @@
 			Save the table as CSV.
 			<br>
 			<label>CSV delimiter:
-				<input type="text" id="DialogSaveTableDelimiter" size="2" maxlength="1" value=";"></input>
+				<input type="text" id="DialogSaveTableDelimiter" size="2" maxlength="1" value=";">
 			</label>
 			<!--span id="DialogSaveTableOptions"></span--><br>
 			<div class="center">
-				<button value="default" onClick="SaveTable(event)">Save CSV</button>
-				<button value="csvw" onClick="SaveCSVW(event)">Save CSVW</button>
+				<button value="default" onclick="SaveTable(event)">Save CSV</button>
+				<button value="csvw" onclick="SaveCSVW(event)">Save CSVW</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -330,7 +309,7 @@
 
 	<dialog id="DialogScatterPlot">
 		<table border="0">
-			<tr>
+			<tbody><tr>
 				<td>
 					<span id="DialogScatterPlotTitle"></span>
 					<form>
@@ -357,9 +336,8 @@
 						</fieldset>
 						<br>
 						<div class="center">
-							<button value="draw" onClick="DrawScatterPlot(event)">Draw</button>
-							<button value="ok" onClick="CloseDialogScatterPlot(event)"
-								formmethod="dialog">Close</button>
+							<button value="draw" onclick="DrawScatterPlot(event)">Draw</button>
+							<button value="ok" onclick="CloseDialogScatterPlot(event)" formmethod="dialog">Close</button>
 						</div>
 					</form>
 				</td>
@@ -367,7 +345,7 @@
 					<div id="DialogScatterPlotVisualization" style="width:600px; height:500px;"></div>
 				</td>
 			</tr>
-		</table>
+		</tbody></table>
 	</dialog>
 
 	<dialog id="DialogOneValue">
@@ -383,14 +361,14 @@
 				</label>
 				<br>
 				<label>Refresh time:
-					<input type="text" id="DialogOneValueRefreshPeriod" size="3" value="20"></input> seconds
+					<input type="text" id="DialogOneValueRefreshPeriod" size="3" value="20"> seconds
 				</label>
 			</fieldset>
 			<br>
 			<div class="center">
-				<button value="ok" onClick="PrepareRefreshOneValue(event)">Ok</button>
-				<button value="ok" onClick="StopRefreshOneValue(event)">Stop refresh</button>
-				<button value="cancel" onClick="CloseDialogOneValue(event)" formmethod="dialog">Close</button>
+				<button value="ok" onclick="PrepareRefreshOneValue(event)">Ok</button>
+				<button value="ok" onclick="StopRefreshOneValue(event)">Stop refresh</button>
+				<button value="cancel" onclick="CloseDialogOneValue(event)" formmethod="dialog">Close</button>
 			</div>
 		</form>
 	</dialog>
@@ -407,12 +385,10 @@
 		<form id="DialogUploadObservationsForm">
 			Upload table as STA observations
 			<br>
-			<label><input type="radio" name="DialogUploadObservationsRadio" id="DialogUploadObservationsObsPropsInARow"
-					checked="checked"></input>Each row represents a feature of interest with several observed
+			<label><input type="radio" name="DialogUploadObservationsRadio" id="DialogUploadObservationsObsPropsInARow" checked="checked">Each row represents a feature of interest with several observed
 				properties</label>
 			<br>
-			<label><input type="radio" name="DialogUploadObservationsRadio"
-					id="DialogUploadObservationsObsPropsInAColumn" disabled></input>Several observed properties of the
+			<label><input type="radio" name="DialogUploadObservationsRadio" id="DialogUploadObservationsObsPropsInAColumn" disabled="">Several observed properties of the
 				same feature in a single column and in multiple rows</label>
 			<fieldset>
 				<legend>Position:</legend>
@@ -441,10 +417,10 @@
 			</label>
 			<br>
 			<label>STA service URL:
-				<input type="text" id="DialogSTAUploadURLInput" size="100"></input>
+				<input type="text" id="DialogSTAUploadURLInput" size="100">
 			</label>
 			<div class="center">
-				<button value="ok" onClick="UploadObservationsSTAURL(event)" formmethod="dialog">Upload</button>
+				<button value="ok" onclick="UploadObservationsSTAURL(event)" formmethod="dialog">Upload</button>
 			</div>
 		</form>
 	</dialog>
@@ -4197,73 +4173,56 @@
 
 		////////////////////////////////////NOVA TAULAAAAAAAAAAAAAAAAAAAAA////////////////////
 		var conditionsFilter = [ //valors de la taula
-			{
-				property: "<div id='optionsRow_0'></div>",
-				number: "0"
-			},
-			{
-				property: "<div id='optionsRow_1'></div>",
-				number: "1"
-			},
-			{
-				property: "<div id='optionsRow_2'></div>",
-				number: "2"
-			},
-			{
-				property: "<div id='optionsRow_3'></div>",
-				number: "3"
-			},
-			{
-				property: "<div id='optionsRow_4'></div>",
-				number: "4"
-			},
-			{
-				property: "<div id='optionsRow_5'></div>",
-				number: "5"
-			}
+			{ property: "<div id='optionsRow_0'></div>" },
+			{ property: "<div id='optionsRow_1'></div>" }
+			// { property: "<div id='optionsRow_2'></div>" },
+			// { property: "<div id='optionsRow_3'></div>" },
+			// { property: "<div id='optionsRow_4'></div>" },
+			// { property: "<div id='optionsRow_5'></div>" }
 		]
 
 		var elemFilter = { //estctura de la taula
 
-			// 	elems: [0],
-			// 	nexus: null,
-			// 	boxName: "0_0"
+			elems: [0, 1],
+			nexus: "and",
+			boxName: "0_0"
 
-			// }
-			elems: [
-				{ //nivell2
-					elems: [//Nivell1
-						{
-							elems: [0, 1], //nivell 0
-							nexus: "or",
-							boxName: "0_0",
-						},
-						{
-							elems: [2],
-							nexus: null,
-							boxName: "0_1"
-						},
-						{
-							elems: [5],
-							nexus: null,
-							boxName: "0_2"
-						}
-					],
-					nexus: "and",
-					boxName: "1_0"
-				},
-				{
-					elems: [
-						{
-							elems: [3, 4],
-							nexus: "or",
-							boxName: "0_2"
-						}
-					]
-				}
-			],
-			nexus: "or",
-			boxName: "2_0"
+
+			// elems: [
+			// 	{ //nivell2
+			// 		elems: [//Nivell1
+			// 			{
+			// 				elems: [0, 1], //nivell 0
+			// 				nexus: "or",
+			//				boxName:"0_0"
+			//				class:"tableTd_0"
+			// 			},
+			// 			{
+			// 				elems: [2],
+			// 				nexus: null,
+			//				boxName:"0_1"
+			// 			},
+			// 			{
+			// 				elems: [5],
+			// 				nexus: null,
+			//				boxName:"0_2"
+			// 			}
+			// 		],
+			// 		nexus: "and"
+			//		boxName:"1_0"
+			// 	},
+			// 	{
+			// 		elems: [
+			// 			{
+			// 				elems: [3, 4],
+			// 				nexus: "or",
+			// 				boxName:"0_2"
+			// 			}
+			// 		]
+			// 	}
+			// ],
+			// nexus: "or"
+			// boxName:"2_0"
 		}
 		var counter = [];
 		function GetFilterTable(elem, dataAttributes, nodeId, paramsNodeId) //COnstrucio taula //El segon, serà cridat per el ShowFilter
@@ -4271,7 +4230,7 @@
 			console.log(elem.boxName)
 			var s = '<table border="1"><tr><td id="' + elem["boxName"] + '">';
 			if (elem.boxName) {
-				s += `<button onclick="addNewCondition('${elem.boxName}')">Add new condition</button>`;
+				s += '<button onclick="addNewCondition(\"'+ elem.boxName + '\")">Add new condition</button>';
 			}
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
@@ -4424,39 +4383,10 @@
 		}
 
 		//add conditions
-
 		function addNewCondition(boxName) {
 			event.preventDefault();
-			console.log(boxName);
-			var elem = elemFilter;
-			searchFilterBoxName(boxName, elem);
-
+			console.log(boxName)
 		}
-		function searchFilterBoxName(boxNamee, elem) { //el elem te el boxName i tal
-			var element;
-			if (typeof elem === "object") {
-				for (var i = 0; i < elem.elems.length; i++) {
-					element = searchFilterBoxName(boxNamee, elem.elems[i]);
-				}
-				if (elem.boxName == boxNamee) {
-					var elements = elem.elems;
-					var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
-					var nextNumber = parseInt(lastNumber) + 1;
-					elem.elems.push(nextNumber);
-
-				}
-
-
-			}
-			else {
-				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
-
-			}
-			console.log(elemFilter)
-		}
-
-
-
 
 		//function addCondition(condition, nodeId) {
 		// 	event.preventDefault();
@@ -5938,7 +5868,7 @@
 
 	</script>
 
-</body>
 
 
-</html>
+
+</body></html>
