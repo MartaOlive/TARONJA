@@ -4293,10 +4293,10 @@
 			return s;
 
 		}
-		function addingSelectors(dataAttributes, paramsNodeId, count) {
+		function addingSelectors(dataAttributes, paramsNodeId,) {
 			console.log(counter.length);
-			for (var i = 0; i < count; i++) {
-				createSelectorRowFilters(dataAttributes, paramsNodeId, [i]);
+			for (var i = 0; i < counter.length; i++) {
+				createSelectorRowFilters(dataAttributes, paramsNodeId, counter[i]);
 			}
 
 
@@ -4304,9 +4304,7 @@
 		}
 
 		function GetFilterCondition(elem, dataAttributes, paramsNodeId) {
-			counter.push("a");
-			console.log(counter.length)
-			console.log(elem)
+			counter.push(elem);
 			return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')"><img src="fletxaAbaix_18x11.png"></button> <button onClick="MoveUpFilterCondition(' + elem + ')"><img src="fletxaAmunt_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button>';
 
 		}
@@ -4316,7 +4314,7 @@
 		{
 			counter = [];
 			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, paramsNodeId);
-			addingSelectors(dataAttributes, paramsNodeId, (counter.length));
+			addingSelectors(dataAttributes, paramsNodeId);
 		}
 
 		function ChangeConditionFilterTable(elem, iConNew, iConCurrent) {
