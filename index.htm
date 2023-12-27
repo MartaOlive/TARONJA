@@ -3182,7 +3182,6 @@
 
 			var selectorStructureRow;
 			var divFilterBox = document.getElementById("optionsRow_" + count);
-			console.log("count: " + count);
 			var optionsRow = document.createElement("div");
 			optionsRow.setAttribute("id", "optionsRow");
 			divFilterBox.appendChild(optionsRow);
@@ -4219,13 +4218,21 @@
 			// 	number: "5"
 			// }
 		]
+		var boxNames = ["0_0", "1_0"]
+		var elemFilter = {
+			elems: [
+				{ //estctura de la taula
 
-		var elemFilter = { //estctura de la taula
+					elems: [0],
+					nexus: null,
+					boxName: "0_0"
+				}
 
-			elems: [0],
+			],
 			nexus: null,
-			boxName: "0_0"
+			boxName: "1_0"
 		}
+
 		// 	elems: [
 		// 		{ //nivell2
 		// 			elems: [//Nivell1
@@ -4264,22 +4271,26 @@
 		var counter = [];
 		function GetFilterTable(elem, dataAttributes, paramsNodeId) //COnstrucio taula //El segon, serà cridat per el ShowFilter
 		{
-			console.log(elem.boxName)
+
 			var s = '<table border="1"><tr><td id="' + elem["boxName"] + '">';
 			if (elem.boxName) {
+				//if (elem.boxName.charAt(0) == "0") {
 				s += `<button onclick="addNewCondition('${elem.boxName}','${paramsNodeId}')">Add new condition</button>`;
+				//}
 			}
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
 					s += GetFilterTable(elem.elems[i], dataAttributes, paramsNodeId);
 				}
-				if (elem.elems.length < 2 && elem.nexus)
-					alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
-				else if (elem.nexus) {
+
+				if (elem.nexus) {
 					s += '</td><td valign="middle">' + elem.nexus;
-
-
 				}
+				// if (elem.elems.length < 2 && elem.nexus)
+				// 	alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
+				// else if (elem.nexus) {
+				// 	s += '</td><td valign="middle">' + elem.nexus;
+				// }
 
 			}
 			else {
@@ -4294,7 +4305,6 @@
 
 		}
 		function addingSelectors(dataAttributes, paramsNodeId,) {
-			console.log(counter.length);
 			for (var i = 0; i < counter.length; i++) {
 				createSelectorRowFilters(dataAttributes, paramsNodeId, counter[i]);
 			}
@@ -4315,6 +4325,8 @@
 			counter = [];
 			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, paramsNodeId);
 			addingSelectors(dataAttributes, paramsNodeId);
+
+
 		}
 
 		function ChangeConditionFilterTable(elem, iConNew, iConCurrent) {
@@ -4446,14 +4458,41 @@
 				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
 
 			}
-			console.log(elemFilter)
+			//console.log(elemFilter)
 		}
 
 		function addNewElement(elem, paramsNodeId) {
+
 			var elements = elem.elems;
 			var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
 			var nextNumber = parseInt(lastNumber) + 1;
-			elements.push(nextNumber); //add to elem array
+			console.log(elements)
+
+
+			if (typeof elements[0] === "object") {
+				var newBoxName = elem.boxName
+				//buscar, fer split , ordenar i lultim, mes un i afegir al boxNames
+				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == elem.boxName.charAt(0));
+				var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1;
+				var newBoxName = elem.boxName.charAt(0) + "_" + nextBoxNumber;
+				console.log(newBoxName)
+				elem.elems.push(
+					{
+						elems: [nextNumber], //nivell 0
+						nexus: null,
+						boxName: newBoxName,
+					}
+				);
+
+
+				//Si es el segon sha de crear un nivell superior i canvia el nexus q no sigui null
+			}
+			else {
+
+				elements.push(nextNumber); //add to elem array
+
+
+			}
 			if (elem.elems.length == 2) { //change nexus if pass from one to two
 				elem.nexus = "and"
 			}
@@ -4461,6 +4500,9 @@
 				property: "<div id='optionsRow_" + nextNumber + "'></div>",
 				number: nextNumber
 			})
+
+
+
 			//tornar a pintar els selects
 			drawTableAgain(paramsNodeId)
 
@@ -4499,7 +4541,7 @@
 
 		}
 
-		function drawTableAgain(paramsNodeId){
+		function drawTableAgain(paramsNodeId) {
 			var data = networkNodes.get(paramsNodeId).STAdata;
 			var dataAttributes = getDataAttributes(data);
 			document.getElementById("divSelectorRowsFilter").innerHTML = "";
