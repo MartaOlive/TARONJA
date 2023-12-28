@@ -4196,7 +4196,7 @@
 			{
 				property: "<div id='optionsRow_0'></div>",
 				number: "0"
-			},
+			}
 			// {
 			// 	property: "<div id='optionsRow_1'></div>",
 			// 	number: "1"
@@ -4269,10 +4269,14 @@
 		// 	boxName: "2_0"
 		// }
 		var counter = [];
-		function GetFilterTable(elem, dataAttributes, paramsNodeId) //COnstrucio taula //El segon, serà cridat per el ShowFilter
+		function GetFilterTable(elem, dataAttributes, paramsNodeId, first) //COnstrucio taula //El segon, serà cridat per el ShowFilter
 		{
+			//quan el element q et vingui es el elemFilter, afegeix un boto per afegir un nivell mes
 
-			var s = '<table border="1"><tr><td id="' + elem["boxName"] + '">';
+			var s = '<table border="1"><tr><td id="' + elem["boxName"] + '">'+elem["boxName"];
+			if (first) {
+				s += `<button onclick="biggestLevelButton('${elem.boxName}','${paramsNodeId}')">Add new bigger Level</button>`;
+			}
 			if (elem.boxName) {
 				//if (elem.boxName.charAt(0) == "0") {
 				s += `<button onclick="addNewCondition('${elem.boxName}','${paramsNodeId}')">Add new condition</button>`;
@@ -4284,7 +4288,7 @@
 				}
 
 				if (elem.nexus) {
-					s += '</td><td valign="middle">' + elem.nexus;
+					s += '</td><td valign="middle"><select><select name="select"><option value="and">And</option><option value="or" selected>Or</option><option value="not">Not</option></select>' + elem.nexus;
 				}
 				// if (elem.elems.length < 2 && elem.nexus)
 				// 	alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
@@ -4323,7 +4327,7 @@
 		async function ShowFilterTable(dataAttributes, paramsNodeId) //posar la taula on sigui //El que inicia la taula
 		{
 			counter = [];
-			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, paramsNodeId);
+			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, paramsNodeId, true);
 			addingSelectors(dataAttributes, paramsNodeId);
 
 
@@ -4440,10 +4444,12 @@
 
 		}
 		function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //el elem te el boxName i tal
+			
 			var element;
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
-					element = searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
+					searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
+				
 				}
 				if (elem.boxName == boxNamee) { //afegir a elems => elems[0,1...]
 
@@ -4458,6 +4464,7 @@
 				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
 
 			}
+			
 			//console.log(elemFilter)
 		}
 
@@ -4466,17 +4473,19 @@
 			var elements = elem.elems;
 			var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
 			var nextNumber = parseInt(lastNumber) + 1;
-			console.log(elements)
+
+			console.log(elem)
 
 
 			if (typeof elements[0] === "object") {
-				var newBoxName = elem.boxName
+				var newBoxName = elem.boxName;
+				var firstNumberBoxNameInside=parseInt(elem.boxName.charAt(0))-1
 				//buscar, fer split , ordenar i lultim, mes un i afegir al boxNames
-				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == elem.boxName.charAt(0));
+				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside);
 				var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1;
-				var newBoxName = elem.boxName.charAt(0) + "_" + nextBoxNumber;
+				var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
 				console.log(newBoxName)
-				elem.elems.push(
+				elements.push( //lhe de posar a la mateixa altura
 					{
 						elems: [nextNumber], //nivell 0
 						nexus: null,
@@ -4484,7 +4493,8 @@
 					}
 				);
 
-
+					boxNames.push(newBoxName)
+					console.log(boxNames)
 				//Si es el segon sha de crear un nivell superior i canvia el nexus q no sigui null
 			}
 			else {
@@ -4493,7 +4503,7 @@
 
 
 			}
-			if (elem.elems.length == 2) { //change nexus if pass from one to two
+			if (elements.length == 2) { //change nexus if pass from one to two
 				elem.nexus = "and"
 			}
 			conditionsFilter.push({ //add to conditionsFilter
@@ -4545,7 +4555,26 @@
 			var data = networkNodes.get(paramsNodeId).STAdata;
 			var dataAttributes = getDataAttributes(data);
 			document.getElementById("divSelectorRowsFilter").innerHTML = "";
+
 			ShowFilterTable(dataAttributes, paramsNodeId)
+			console.log(elemFilter);
+		}
+
+		//add bigger Level
+		function biggestLevelButton(boxName, paramsNodeId) {
+			event.preventDefault();
+			var newBoxName =(parseInt(boxName.charAt(0))+1)+"_0";
+
+			var newInsert = { elems: [], nexus: null, boxName: newBoxName };
+			var copy = Object.assign(elemFilter);
+			newInsert.elems.push(copy);
+
+			elemFilter=newInsert;
+
+			console.log(elemFilter)
+
+			drawTableAgain(paramsNodeId)
+
 		}
 
 		//function addCondition(condition, nodeId) {
