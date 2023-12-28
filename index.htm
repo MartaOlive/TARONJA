@@ -2797,14 +2797,14 @@
 			}
 			return resultsFiltered;
 		}
-		function typeOfValueFromInput(wichTextInput, count, place, value1, value2) {
+		function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 			var typeOfValues;
 			if (wichTextInput == "simple") {
-				var textInput = document.getElementById("textInput_" + count);
+				var textInput = document.getElementById("textInput_" + number);
 			}
 			else {
-				var textIputInterval1 = document.getElementById("textInputInterval1_" + count);
-				var textIputInterval2 = document.getElementById("textInputInterval2_" + count);
+				var textIputInterval1 = document.getElementById("textInputInterval1_" + number);
+				var textIputInterval2 = document.getElementById("textInputInterval2_" + number);
 			}
 			if (wichTextInput == "simple") {
 
@@ -2931,8 +2931,8 @@
 		}
 
 		//Es un objecte?
-		function isAnObject(nodeId, place) {
-			var select = document.getElementById("selectorValue" + place);
+		function isAnObject(nodeId, number) {
+			var select = document.getElementById("selectorValue_" + number);
 			var selectOption = select.options[select.selectedIndex].value;
 			if (selectOption === "[object Object]") {
 				console.log("object!!!!");
@@ -2944,18 +2944,18 @@
 		}
 
 		//Estructura general
-		function changeWriteToSelect(nodeId, place, selector) {  //Que pugui recollir el text del input
+		function changeWriteToSelect(nodeId, number, selector) {  //Que pugui recollir el text del input
 			event.preventDefault();
-			var divFilterContainer = document.getElementById("divFilterContainer" + place);
-			var textInput = document.getElementById("textInput" + place);
-			var displaySelect = document.getElementById("displaySelect" + place);
+			var divFilterContainer = document.getElementById("divFilterContainer_" + number);
+			var textInput = document.getElementById("textInput_" + number);
+			var displaySelect = document.getElementById("displaySelect_" + number);
 
-			var divFilterContainer2 = document.getElementById("divFilterContainer2" + place);
-			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
-			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
-			var displaySelectInterval = document.getElementById("displaySelectInterval" + place);
+			var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
+			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 
-			var addButton = document.getElementById("addButton");
+			//var addButton = document.getElementById("addButton");
 
 			//quin text està obert?
 			if (selector == "simple") {
@@ -2977,33 +2977,33 @@
 				divFilterContainer2.classList.add("inblock");
 			}
 
-			addButton.disabled = true;
+			// addButton.disabled = true;
 
-			var table = document.getElementById("tableResult");
-			var rowsNumbers = table.rows.length;
-			var saveButton;
+			// var table = document.getElementById("tableResult");
+			// //var rowsNumbers = table.rows.length;
+			// var saveButton;
 
-			for (var i = 1; i < rowsNumbers; i++) {
-				saveButton = document.getElementById("buttonSave" + i);
-				if (saveButton.classList.contains("hidden") == false) {
-					saveButton.disabled = true;
-				}
-			}
+			// for (var i = 1; i < rowsNumbers; i++) {
+			// 	saveButton = document.getElementById("buttonSave" + i);
+			// 	if (saveButton.classList.contains("hidden") == false) {
+			// 		saveButton.disabled = true;
+			// 	}
+			// }
 
 		}
-		function showIntervalSelector(nodeId, place, count) {
+		function showIntervalSelector(nodeId, number) {
 			event.preventDefault();
-			var selectorCondition = document.getElementById("selectorCondition_" + count);
+			var selectorCondition = document.getElementById("selectorCondition_" + number);
 			var selectedValue = selectorCondition.options[selectorCondition.selectedIndex].value;
 
-			var divFilterContainer = document.getElementById("divFilterContainer_" + count);
-			var textInput = document.getElementById("textInput_" + count);
-			var displaySelect = document.getElementById("displaySelect_" + count);
+			var divFilterContainer = document.getElementById("divFilterContainer_" + number);
+			var textInput = document.getElementById("textInput_" + number);
+			var displaySelect = document.getElementById("displaySelect_" + number);
 
-			var divFilterContainer2 = document.getElementById("divFilterContainer2_" + count);
-			var textInputInterval1 = document.getElementById("textInputInterval1_" + count);
-			var textInputInterval2 = document.getElementById("textInputInterval2_" + count);
-			var displaySelectInterval = document.getElementById("displaySelectInterval_" + count);
+			var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
+			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 
 
 
@@ -3134,7 +3134,7 @@
 		// 	if (textInput.classList.contains("hidden") == false) { //Agafar el Value segons quin textInput estigui actiu
 		// 		valueTextInput = textInput.value
 		// 		tableContent.push(valueTextInput);
-		// 		typeOfValues = typeOfValueFromInput("simple", count, place, valueTextInput);
+		// 		typeOfValues = typeOfValueFromInput("simple", number, place, valueTextInput);
 		// 		tableContent.push(typeOfValues);
 		// 	} else { //valors de l'interval
 		// 		var intervalValues = [];
@@ -3173,15 +3173,15 @@
 
 		//Montar selectors
 		//const tableCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-		function createSelectorRowFilters(dataAttributes, paramsNodeId, count) {
+		function createSelectorRowFilters(dataAttributes, nodeId, number) {
 			//actualitzar STAdata del node
-			// networkNodes.get(paramsNodeId).STAdata = networkNodes.get(nodeId).STAdata;
-			currentNode.id = paramsNodeId;
-			networkNodes.update(networkNodes.get(paramsNodeId));
-			var data = networkNodes.get(paramsNodeId).STAdata;
+			// networkNodes.get(nodeId).STAdata = networkNodes.get(nodeId).STAdata;
+			currentNode.id = nodeId; //mirar si cal
+			networkNodes.update(networkNodes.get(nodeId));
+			var data = networkNodes.get(nodeId).STAdata;
 
 			var selectorStructureRow;
-			var divFilterBox = document.getElementById("optionsRow_" + count);
+			var divFilterBox = document.getElementById("optionsRow_" + number);
 			var optionsRow = document.createElement("div");
 			optionsRow.setAttribute("id", "optionsRow");
 			divFilterBox.appendChild(optionsRow);
@@ -3189,16 +3189,16 @@
 			label1.innerHTML = "Choose a Property";
 			optionsRow.appendChild(label1);
 
-			var place_Id = "optionsRow_" + count;
-			createSelect(1, place_Id, paramsNodeId, dataAttributes, "no", "initial", "no", "no", count);
-			createSelect(2, place_Id, paramsNodeId, dataAttributes, "no", "initial", "no", "no", count);
+			var place_Id = "optionsRow_" + number;
+			createSelect(1, place_Id, nodeId, dataAttributes, "initial", "no", number);
+			createSelect(2, place_Id, nodeId, dataAttributes,  "initial", "no",  number);
 
 			var label2 = document.createElement("label");
 			label2.setAttribute("id", "label2");
 			label2.innerHTML = "a Value";
 			optionsRow.appendChild(label2);
 
-			createSelect(3, place_Id, paramsNodeId, dataAttributes, "no", "initial", "no", "no", count);
+			createSelect(3, place_Id, nodeId, dataAttributes,  "initial", "no", number);
 
 			// var instructions = document.createElement("div");
 			// instructions.setAttribute("id", "instructions");
@@ -3208,7 +3208,7 @@
 
 			var addButton = document.createElement("button");
 			addButton.setAttribute("id", "addButton");
-			addButton.setAttribute("onclick", "addSelected('" + paramsNodeId + "','_optionsRow')");
+			addButton.setAttribute("onclick", "addSelected('" + nodeId + "','_optionsRow')");
 			addButton.innerHTML = "add";
 			optionsRow.appendChild(addButton);
 
@@ -3229,9 +3229,9 @@
 			// divLine.appendChild(divGraphicOrder);
 
 			//!!!!!!!!!!!!!!!!!!!!!!
-			// var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
-			// divIsAnObject.setAttribute("id", "divIsAnObject");
-			// divIsAnObject.setAttribute("class", "hidden");
+			 var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
+			 divIsAnObject.setAttribute("id", "divIsAnObject");
+			divIsAnObject.setAttribute("class", "hidden");
 			// var textIsAnObject = document.createElement("h5");
 			// textIsAnObject.setAttribute("id", "textIsAnObject");
 			// textIsAnObject.innerHTML = 'This property contains a set of values, if you want to sail inside it to choose one value, please use "separate colums" option before using "Row filter" option to unfold the values. Follow example below';
@@ -3242,7 +3242,7 @@
 			// imageIsAnObject.setAttribute("id", "imageIsAnObject");
 
 			// divIsAnObject.appendChild(imageIsAnObject);
-			// divFilterBox.appendChild(divIsAnObject);
+			divFilterBox.appendChild(divIsAnObject);
 
 			// var table = document.createElement("table");
 			// table.setAttribute("id", "tableResult");
@@ -3279,14 +3279,13 @@
 			// }
 
 		}
-		function createSelect(number, place_Id, nodeId, dataAttributes, tableContent, button, editRowContent, typeOfValues, count) {
+		function createSelect(number, place_Id, nodeId, dataAttributes, button, editRowContent, count) {
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data, previousNode;
 
 			var actualNode = networkNodes.get(nodeId);
-			if (actualNode.image == "SelectRowsTable.png") { //actualitzar el STAdata del Node actual amb la info del previ
-
+			if (actualNode.image == "SelectRowsTable.png") { //actualitzar el STAdata del Node actual amb la info del previ !!!!!!(no se si va)
 				previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
 				console.log(previousNode);
 				// data = previousNode.STAdata;
@@ -3295,34 +3294,34 @@
 				data = actualNode.STAdata;
 
 			} else {
-				data = networkNodes.get(nodeId).STAdata;
+				data = networkNodes.get(nodeId).STAdata; //STAdata: Totes les dades que venen del node anterior(Api o ja filtrades en algun punt)
 			}
 
 
 
 			//console.log(nodeId)
-			var dataAttributes2;
-			if (button != "initial") {
+			//var dataAttributes2;
+			if (button != "initial") { //es l'unic q va ara? (pero aixo no serveix de res)
 				var table = document.getElementById("tableResult");
 				var rowsNumbers = table.rows.length;
 			}
 
-			if (dataAttributes === "no") {
-				dataAttributes2 = getDataAttributes(data);
-			}
-			else {
-				dataAttributes2 = dataAttributes;
-			};
+			// if (dataAttributes == "no") {
+			// 	dataAttributes2 = getDataAttributes(data);
+			// }
+			// else {
+			// 	dataAttributes2 = dataAttributes;
+			// };
 
 
-			var dataAttributesKeys = Object.keys(dataAttributes2); //Crear un array amb les keys de l'objecte
+			var dataAttributesKeys = Object.keys(dataAttributes); //Crear un array amb les keys de l'objecte
 			var dataAttributesFiltered = dataAttributesKeys.filter((element) =>
 				element != "@iot.selfLink"
-			);
+			); //treiem el @iot..
 			// console.log(dataAttributesFiltered);
 			if (number == 1) {
 				select.setAttribute("id", "selectorProperty_" + count);
-				select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + place_Id + "')");
+				select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + count + "')");
 				for (let i = 0; i < dataAttributesFiltered.length; i++) {// per omplir el de property/property
 					var option = document.createElement("option");
 					option.setAttribute("value", dataAttributesFiltered[i]);
@@ -3365,7 +3364,7 @@
 				for (var i = 0; i < selectConditionContent2.length; i++) { //crear les opcions del selector de condició
 					var opcioCondicio = document.createElement("option");
 					opcioCondicio.setAttribute("value", selectConditionContent2[i]);
-					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + place_Id + "','" + count + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
+					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + count + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
 					opcioCondicio.innerHTML = selectConditionContent2[i];
 					// console.log(selectConditionContent2[i])
 					if (editRowContent !== 'undefined' & (button == "edit")) {
@@ -3388,7 +3387,7 @@
 				placeId.appendChild(divFilterContainer);
 
 				select.setAttribute("id", "selectorValue_" + count);
-				select.setAttribute("onChange", "isAnObject('" + nodeId + "','" + place_Id + "')");
+				select.setAttribute("onChange", "isAnObject('" + nodeId + "','" + count+ "')");
 
 				var valor;
 				var arrayValors = [];
@@ -3419,7 +3418,7 @@
 				textInput.setAttribute("id", "textInput_" + count);
 				textInput.setAttribute("type", "text");
 				textInput.addEventListener("input", function () {
-					adjustWidth(place_Id, "simple", nodeId, count)
+					adjustWidth( "simple",count)
 				});
 				textInput.addEventListener("keypress", function (event) {
 					// If the user presses the "Enter" key on the keyboard
@@ -3435,25 +3434,25 @@
 				placeId.appendChild(textInput);
 				if (button == "edit") {
 					textInput.value = editRowContent[3];
-					adjustWidth(place_Id, "simple", nodeId, count);
+					adjustWidth( "simple", count);
 				}
 
 				var row = rowsNumbers - 1;
 				var okButton = document.createElement("button");
-				okButton.setAttribute("onclick", "closeModalSelect('" + place_Id + "','" + place_Id + "','ok'," + row + ",'simple','" + nodeId + "')");
+				okButton.setAttribute("onclick", "closeModalSelect('" + count + "','ok','simple')");
 				okButton.setAttribute("id", "okButton_" + count);
 				okButton.innerHTML = "Ok";
 
 				divFilterContainer.appendChild(select);
 				var cancelButton = document.createElement("button");
 				// console.log("inici place_id:  " + place_Id)
-				cancelButton.setAttribute("onclick", "closeModalSelect('" + place_Id + "','" + place_Id + "','cancel'," + row + ",'simple','" + nodeId + "')");
+				cancelButton.setAttribute("onclick", "closeModalSelect('" + count + "','cancel','simple')");
 				cancelButton.setAttribute("id", "cancelButton_" + count);
 				cancelButton.innerHTML = "Cancel";
 
 				var writeButton = document.createElement("button");
 				writeButton.setAttribute("id", "displaySelect_" + count);
-				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place_Id + "','simple')");
+				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','simple')");
 				placeId.appendChild(writeButton);
 				divFilterContainer.appendChild(okButton);
 				divFilterContainer.appendChild(cancelButton);
@@ -3483,29 +3482,29 @@
 				textInputInterval1.setAttribute("class", "hidden");
 				textInputInterval2.setAttribute("class", "hidden");
 				textInputInterval1.addEventListener("input", function () {
-					adjustWidth(place_Id, "interval", nodeId, count)
+					adjustWidth( "interval", count)
 				});
 				textInputInterval2.addEventListener("input", function () {
-					adjustWidth(place_Id, "interval", nodeId, count)
+					adjustWidth( "interval", count)
 				});
 				placeId.appendChild(textInputInterval1);
 				placeId.appendChild(textInputInterval2);
 
 
 				var okButtonInterval = document.createElement("button");
-				okButtonInterval.setAttribute("onclick", "closeModalSelect('" + place_Id + "','" + place_Id + "','ok'," + row + ",'interval','" + nodeId + "')");
+				okButtonInterval.setAttribute("onclick", "closeModalSelect('" + count + "','ok','interval')");
 				okButtonInterval.setAttribute("id", "okButtonInterval_" + count);
 				okButtonInterval.innerHTML = "Ok";
 
 				var cancelButtonInterval = document.createElement("button");
-				cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + place_Id + "','" + place_Id + "','cancel'," + row + ",'interval','" + nodeId + "')");
+				cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + count + "','cancel','interval')");
 				cancelButtonInterval.setAttribute("id", "cancelButtonInterval_" + count);
 				cancelButtonInterval.innerHTML = "Cancel";
 
 				var writeButton2 = document.createElement("button");
 				writeButton2.innerHTML = "...";
 				writeButton2.setAttribute("id", "displaySelectInterval_" + count);
-				writeButton2.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + place_Id + "','interval')");
+				writeButton2.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','interval')");
 				writeButton2.setAttribute("class", "hidden");
 
 				placeId.appendChild(writeButton2);
@@ -3516,19 +3515,22 @@
 			}
 
 		}
-		function fillValueSelector(nodeId, place) {
+		function fillValueSelector(nodeId, number) { //Quan canvia el selector primer, es reomple el segon
+			console.log(nodeId)
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
-			select = document.getElementById("selectorProperty" + place);
+			select = document.getElementById("selectorProperty_" + number);
+			
 			var selectedProperty = select.options[select.selectedIndex].value;
+			console.log(selectedProperty)
 			var selectorValue, selectorValueInterval, selectorValueInterval2;
 
 
-			selectorValue = document.getElementById("selectorValue" + place);
+			selectorValue = document.getElementById("selectorValue_" + number);
 			selectorValue.innerHTML = "";
-			selectorValueInterval = document.getElementById("selectorValueInterval1" + place);
+			selectorValueInterval = document.getElementById("selectorValueInterval1_" + number);
 			selectorValueInterval.innerHTML = "";
-			selectorValueInterval2 = document.getElementById("selectorValueInterval2" + place);
+			selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
 			selectorValueInterval2.innerHTML = "";
 
 			var valor;
@@ -3549,7 +3551,7 @@
 
 			console.log(arrayValors);
 
-			for (var i = 0; i < arrayValors.length; i++) { //omplir selector simple
+			for (var i = 0; i < arrayValors.length; i++) { //omplir selector simple (son 3 perque son el simple i els intervals)
 				var opcio = document.createElement("option");
 				var opcio2 = document.createElement("option");
 				var opcio3 = document.createElement("option");
@@ -3565,10 +3567,10 @@
 				selectorValueInterval2.appendChild(opcio3);
 			}
 			var divIsAnObject = document.getElementById("divIsAnObject");
-			var addButton = document.getElementById("addButton");
-			var table = document.getElementById("tableResult");
-			var rowsNumbers = table.rows.length;
-			var buttonSave;
+			//var addButton = document.getElementById("addButton");
+			// var table = document.getElementById("tableResult");
+			// var rowsNumbers = table.rows.length;
+			// var buttonSave;
 
 			if (isAnObject === "yes") { //no està acabat (falta interval i alguna cosa més)
 				selectorValue.setAttribute("class", "objectInSelect");
@@ -3576,43 +3578,43 @@
 				addButton.disabled = true;
 
 
-				for (var i = 1; i < rowsNumbers; i++) {
+				// for (var i = 1; i < rowsNumbers; i++) {
 
-					// if (row == i) {
-					// 	buttonSave = document.getElementById("buttonSave" + i);
-					// 	if (!buttonSave.contains("hidden")) {
-					// 		buttonSave.disabled = true;
-					// 	};
-					// }
+				// 	// if (row == i) {
+				// 	// 	buttonSave = document.getElementById("buttonSave" + i);
+				// 	// 	if (!buttonSave.contains("hidden")) {
+				// 	// 		buttonSave.disabled = true;
+				// 	// 	};
+				// 	// }
 
-				}
+				// }
 			} else {
 				selectorValue.classList.remove("objectInSelect");
 				divIsAnObject.classList.add("hidden");
-				addButton.disabled = false;
-				for (var i = 1; i < rowsNumbers; i++) {
-					// if (row == i) {
-					// 	buttonSave = document.getElementById("buttonSave" + i);
-					// 	if (!buttonSave.contains("hidden")) {
-					// 		buttonSave.disabled = false;
-					// 	};
-					// }
-				}
+				//addButton.disabled = false;
+				// for (var i = 1; i < rowsNumbers; i++) {
+				// 	// if (row == i) {
+				// 	// 	buttonSave = document.getElementById("buttonSave" + i);
+				// 	// 	if (!buttonSave.contains("hidden")) {
+				// 	// 		buttonSave.disabled = false;
+				// 	// 	};
+				// 	// }
+				// }
 			}
 		}
-		function closeModalSelect(place, place_Id, button, row, selector, nodeId) { //Botó càncel i ok dels selectors
+		function closeModalSelect(number, button,selector) { //Botó càncel i ok dels selectors
 			event.preventDefault();
-			var divFilterContainer = document.getElementById("divFilterContainer" + place);
-			var textInput = document.getElementById("textInput" + place);
-			var displaySelect = document.getElementById("displaySelect" + place);
+			var divFilterContainer = document.getElementById("divFilterContainer_" + number);
+			var textInput = document.getElementById("textInput_" + number);
+			var displaySelect = document.getElementById("displaySelect_" + number);
 
-			var divFilterContainer2 = document.getElementById("divFilterContainer2" + place);
-			var textInputInterval1 = document.getElementById("textInputInterval1" + place);
-			var textInputInterval2 = document.getElementById("textInputInterval2" + place);
-			var displaySelectInterval = document.getElementById("displaySelectInterval" + place);
+			var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
+			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 
-			var addButton = document.getElementById("addButton");
-			var saveButton = document.getElementById("buttonSave" + row);
+			// var addButton = document.getElementById("addButton");
+			// var saveButton = document.getElementById("buttonSave" + row);
 
 			var interval;
 
@@ -3637,23 +3639,23 @@
 				interval = true;
 			}
 
-			addButton.disabled = false;
-			if (place != "_optionsRow") {
-				saveButton.disabled = false;
-			}
+			//addButton.disabled = false;
+			// if (place != "_optionsRow") {
+			// 	saveButton.disabled = false;
+			// }
 
 			//Falta escriure l'opcio del select (???')')
 			if (button == "ok") {
 				if (interval == false) {
-					var selectorValue = document.getElementById("selectorValue" + place);
+					var selectorValue = document.getElementById("selectorValue_" + number);
 					textInput.value = selectorValue.options[selectorValue.selectedIndex].value;
-					adjustWidth(place_Id, "simple", nodeId, count);
+					adjustWidth( "simple",  number);
 				} else {
-					var selectorValueInterval1 = document.getElementById("selectorValueInterval1" + place);
-					var selectorValueInterval2 = document.getElementById("selectorValueInterval2" + place);
+					var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
+					var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
 					textInputInterval1.value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
 					textInputInterval2.value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
-					adjustWidth(place_Id, "interval", nodeId, count);
+					adjustWidth("interval",  number);
 
 				}
 
@@ -3661,15 +3663,15 @@
 
 
 		}
-		function changeSelectConditionValues(place, count, wichTextInput, value1, valueInput1, valueInput2) {
+		function changeSelectConditionValues(number, wichTextInput, value1, valueInput1, valueInput2) {
 			var typeOfValues;
-			var selectCondition = document.getElementById("selectorCondition_" + count);
+			var selectCondition = document.getElementById("selectorCondition_" + number);
 
 			if (wichTextInput == "simple") {
-				typeOfValues = typeOfValueFromInput(wichTextInput, count, place, value1);
+				typeOfValues = typeOfValueFromInput(wichTextInput, number, value1);
 
 			} else {
-				typeOfValues = typeOfValueFromInput(wichTextInput, count, place, valueInput1, valueInput2);
+				typeOfValues = typeOfValueFromInput(wichTextInput, number, valueInput1, valueInput2);
 			}
 			var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
 			if (wichTextInput == "simple") {
@@ -3698,12 +3700,12 @@
 				selectCondition.appendChild(opcioCondicio);
 			}
 		}
-		function adjustWidth(placeId, wichTextInput, nodeId, count) { //and refill conditionSelect (interval if it is a number or a date)
+		function adjustWidth(wichTextInput, number) { //and refill conditionSelect (interval if it is a number or a date)
 			var textInput, textIputInterval1, textIputInterval2;
-			if (wichTextInput == "simple") { textInput = document.getElementById("textInput_" + count); }
+			if (wichTextInput == "simple") { textInput = document.getElementById("textInput_" + number); }
 			else {
-				textIputInterval1 = document.getElementById("textInputInterval1_" + count);
-				textIputInterval2 = document.getElementById("textInputInterval2_" + count);
+				textIputInterval1 = document.getElementById("textInputInterval1_" + number);
+				textIputInterval2 = document.getElementById("textInputInterval2_" + number);
 			}
 
 			var value1, valueInput1, valueInput2;
@@ -3738,25 +3740,25 @@
 				}
 			}
 
-			changeSelectConditionValues(placeId, count, wichTextInput, value1, valueInput1, valueInput2); //canviar les opcions del selector en funció del tipus de valor del inputText
+			changeSelectConditionValues(number, wichTextInput, value1, valueInput1, valueInput2); //canviar les opcions del selector en funció del tipus de valor del inputText
 
 			//control del filter i el simple buit
-			var addButton = document.getElementById("addButton");
+			//var addButton = document.getElementById("addButton");
 			var typeOfValues;
 			if (wichTextInput == "interval") {
-				typeOfValues = typeOfValueFromInput(wichTextInput, count, placeId, valueInput1, valueInput2);
-				if (typeOfValues == "text" || typeOfValues == "empty") {
-					addButton.disabled = true;
-				} else {
-					addButton.disabled = false;
-				}
+				typeOfValues = typeOfValueFromInput(wichTextInput, number, valueInput1, valueInput2);
+				// if (typeOfValues == "text" || typeOfValues == "empty") {
+				// 	addButton.disabled = true;
+				// } else {
+				// 	addButton.disabled = false;
+				// }
 			} else {
-				typeOfValues = typeOfValueFromInput(wichTextInput, count, placeId, value1);
-				if (typeOfValues == "empty") {
-					addButton.disabled = true;
-				} else {
-					addButton.disabled = false;
-				}
+				typeOfValues = typeOfValueFromInput(wichTextInput, number,  value1);
+				// if (typeOfValues == "empty") {
+				// 	addButton.disabled = true;
+				// } else {
+				// 	addButton.disabled = false;
+				// }
 			}
 		}
 
