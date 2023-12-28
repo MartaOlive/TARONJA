@@ -4273,67 +4273,71 @@
 		{
 			//quan el element q et vingui es el elemFilter, afegeix un boto per afegir un nivell mes
 
-			var s = '<table border="1"><tr><td id="' + elem["boxName"] + '">' + elem["boxName"];
-			if (first) {
-				s += `<button onclick="biggestLevelButton('${elem.boxName}','${paramsNodeId}')">Add new bigger Level</button>`;
-			}
+			
 			if (elem.boxName) {
-				//if (elem.boxName.charAt(0) == "0") {
-				s += `<button onclick="addNewCondition('${elem.boxName}','${paramsNodeId}')">Add new condition</button>`;
+				var s='<table class="tableFilter"><tr class="trBoxName"><td id="boxName_' + elem.boxName + '">' + elem.boxName;
+			}else{
+				var s='<table><tr><td>';
+			}
+			
+				if (first) {
+					s += `<button onclick="biggestLevelButton('${elem.boxName}','${paramsNodeId}')">Add new bigger Level</button>`;
+			}
+				if (elem.boxName) {
+					//if (elem.boxName.charAt(0) == "0") {
+					s += `<button onclick="addNewCondition('${elem.boxName}','${paramsNodeId}')">Add new condition</button>`;
 				//}
 			}
-			if (typeof elem === "object") {
+				if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
 					s += GetFilterTable(elem.elems[i], dataAttributes, paramsNodeId);
 				}
 
 				if (elem.nexus) {
-					
-					s += '</td><td valign="middle"><select name="selectAndOrNot" id="selectAndOrNot_"' + elem.boxName + '>';
-					 
-					 	if (elem.nexus == "and") {
-					 		s += '<option value="and" selected>And</option>';
+
+					s += '</td><td valign="middle" class="tdSelectAndOrNot"><select name="selectAndOrNot" id="selectAndOrNot_' + elem.boxName + '">';
+
+				if (elem.nexus == "and") {
+					s += '<option value="and" selected>And</option>';
 
 					 	} else {
-							s +='<option value="and">And</option>';
+					s += '<option value="and">And</option>';
 					 	}
-					 	if (elem.nexus == "or") {
-					 		s += '<option value="or" selected>Or</option>';
+				if (elem.nexus == "or") {
+					s += '<option value="or" selected>Or</option>';
 
 					 	} else {
-							s +='<option value="or">Or</option>';
+					s += '<option value="or">Or</option>';
 					 	}
-					 	if (elem.nexus == "not") {
-					 		s += '<option value="not" selected>Not</option>';
+				if (elem.nexus == "not") {
+					s += '<option value="not" selected>Not</option>';
 
 					 	} else {
-							s +='<option value="not">Not</option>';
+					s += '<option value="not">Not</option>';
 					 	}
 
-					 s+='</select>';
-					//  if (elem.elems.length < 2 && elem.nexus)
-					//  	alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
-					//  else if (elem.nexus) {
-					//  	s += '</td><td valign="middle">' + elem.nexus;
-					//  }
+				s+='</select>';
+			//  if (elem.elems.length < 2 && elem.nexus)
+			//  	alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
+			//  else if (elem.nexus) {
+			//  	s += '</td><td valign="middle">' + elem.nexus;
+			//  }
 
-				}
+		}
 			}
 			else {
-				s += GetFilterCondition(elem, dataAttributes, paramsNodeId);
-
-			}
-
-			s += '</td></tr></table>';
-
-
-
-			return s;
+			s += GetFilterCondition(elem, dataAttributes, paramsNodeId);
 
 		}
-		function createSelect(nexus){
+
+		s += '</td></tr></table>';
+
+
+
+		return s;
 
 		}
+
 
 		function addingSelectors(dataAttributes, paramsNodeId,) {
 			for (var i = 0; i < counter.length; i++) {

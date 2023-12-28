@@ -86,7 +86,7 @@ body {
     /* left:20; */
 }
 
-.borderTable {
+/* .borderTable {
     border: black 1px solid;
 }
 
@@ -94,7 +94,7 @@ th.borderTable {
     min-width: 100px;
     padding-left: 10px;
     padding-right: 10px;
-}
+} */
 
 #divSelectorRowsFilter {
     margin-top: 20px;
@@ -110,10 +110,16 @@ th.borderTable {
     float: left;
     border: black 1px solid;
 }
-.td_0{
-    background-color: blue;
-    margin:10px;
+.tdSelectAndOrNot{
+    border-left: 2px solid red;
 }
+
+.tableFilter{
+    margin-top: 10px;
+    border: 2px solid black;
+}
+
+
 
 /*
 .characterDeleteButton {
