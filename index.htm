@@ -4273,7 +4273,7 @@
 		{
 			//quan el element q et vingui es el elemFilter, afegeix un boto per afegir un nivell mes
 
-			var s = '<table border="1"><tr><td id="' + elem["boxName"] + '">'+elem["boxName"];
+			var s = '<table border="1"><tr><td id="' + elem["boxName"] + '">' + elem["boxName"];
 			if (first) {
 				s += `<button onclick="biggestLevelButton('${elem.boxName}','${paramsNodeId}')">Add new bigger Level</button>`;
 			}
@@ -4288,14 +4288,36 @@
 				}
 
 				if (elem.nexus) {
-					s += '</td><td valign="middle"><select><select name="select"><option value="and">And</option><option value="or" selected>Or</option><option value="not">Not</option></select>' + elem.nexus;
-				}
-				// if (elem.elems.length < 2 && elem.nexus)
-				// 	alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
-				// else if (elem.nexus) {
-				// 	s += '</td><td valign="middle">' + elem.nexus;
-				// }
+					
+					s += '</td><td valign="middle"><select name="selectAndOrNot" id="selectAndOrNot_"' + elem.boxName + '>';
+					 
+					 	if (elem.nexus == "and") {
+					 		s += '<option value="and" selected>And</option>';
 
+					 	} else {
+							s +='<option value="and">And</option>';
+					 	}
+					 	if (elem.nexus == "or") {
+					 		s += '<option value="or" selected>Or</option>';
+
+					 	} else {
+							s +='<option value="or">Or</option>';
+					 	}
+					 	if (elem.nexus == "not") {
+					 		s += '<option value="not" selected>Not</option>';
+
+					 	} else {
+							s +='<option value="not">Not</option>';
+					 	}
+
+					 s+='</select>';
+					//  if (elem.elems.length < 2 && elem.nexus)
+					//  	alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
+					//  else if (elem.nexus) {
+					//  	s += '</td><td valign="middle">' + elem.nexus;
+					//  }
+
+				}
 			}
 			else {
 				s += GetFilterCondition(elem, dataAttributes, paramsNodeId);
@@ -4305,9 +4327,14 @@
 			s += '</td></tr></table>';
 
 
+
 			return s;
 
 		}
+		function createSelect(nexus){
+
+		}
+
 		function addingSelectors(dataAttributes, paramsNodeId,) {
 			for (var i = 0; i < counter.length; i++) {
 				createSelectorRowFilters(dataAttributes, paramsNodeId, counter[i]);
@@ -4444,12 +4471,12 @@
 
 		}
 		function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //el elem te el boxName i tal
-			
+
 			var element;
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
 					searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
-				
+
 				}
 				if (elem.boxName == boxNamee) { //afegir a elems => elems[0,1...]
 
@@ -4464,7 +4491,7 @@
 				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
 
 			}
-			
+
 			//console.log(elemFilter)
 		}
 
@@ -4479,7 +4506,7 @@
 
 			if (typeof elements[0] === "object") {
 				var newBoxName = elem.boxName;
-				var firstNumberBoxNameInside=parseInt(elem.boxName.charAt(0))-1
+				var firstNumberBoxNameInside = parseInt(elem.boxName.charAt(0)) - 1
 				//buscar, fer split , ordenar i lultim, mes un i afegir al boxNames
 				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside);
 				var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1;
@@ -4493,8 +4520,8 @@
 					}
 				);
 
-					boxNames.push(newBoxName)
-					console.log(boxNames)
+				boxNames.push(newBoxName)
+				console.log(boxNames)
 				//Si es el segon sha de crear un nivell superior i canvia el nexus q no sigui null
 			}
 			else {
@@ -4540,10 +4567,11 @@
 		}
 		function DeleteElementInElemFilter(elem, paramsNodeId, numberOfElement) {
 			//no borrar del conditions filter perque es la posicio
-
+			console.log(elem);
 			var index = elem.elems.indexOf(parseInt(numberOfElement));
 			elem.elems.splice(index, 1); //eliminar de elemFilter	
 			console.log(elemFilter);
+
 			//tornar a pintar els selects
 			drawTableAgain(paramsNodeId);
 
@@ -4563,13 +4591,13 @@
 		//add bigger Level
 		function biggestLevelButton(boxName, paramsNodeId) {
 			event.preventDefault();
-			var newBoxName =(parseInt(boxName.charAt(0))+1)+"_0";
+			var newBoxName = (parseInt(boxName.charAt(0)) + 1) + "_0";
 
 			var newInsert = { elems: [], nexus: null, boxName: newBoxName };
 			var copy = Object.assign(elemFilter);
 			newInsert.elems.push(copy);
 
-			elemFilter=newInsert;
+			elemFilter = newInsert;
 
 			console.log(elemFilter)
 
