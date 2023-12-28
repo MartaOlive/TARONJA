@@ -3191,14 +3191,14 @@
 
 			var place_Id = "optionsRow_" + number;
 			createSelect(1, place_Id, nodeId, dataAttributes, "initial", "no", number);
-			createSelect(2, place_Id, nodeId, dataAttributes,  "initial", "no",  number);
+			createSelect(2, place_Id, nodeId, dataAttributes, "initial", "no", number);
 
 			var label2 = document.createElement("label");
 			label2.setAttribute("id", "label2");
 			label2.innerHTML = "a Value";
 			optionsRow.appendChild(label2);
 
-			createSelect(3, place_Id, nodeId, dataAttributes,  "initial", "no", number);
+			createSelect(3, place_Id, nodeId, dataAttributes, "initial", "no", number);
 
 			// var instructions = document.createElement("div");
 			// instructions.setAttribute("id", "instructions");
@@ -3206,11 +3206,11 @@
 			// instructions.setAttribute("class", "instructions");
 			// optionsRow.appendChild(instructions);
 
-			var addButton = document.createElement("button");
-			addButton.setAttribute("id", "addButton");
-			addButton.setAttribute("onclick", "addSelected('" + nodeId + "','_optionsRow')");
-			addButton.innerHTML = "add";
-			optionsRow.appendChild(addButton);
+			// var addButton = document.createElement("button");
+			// addButton.setAttribute("id", "addButton");
+			// addButton.setAttribute("onclick", "addSelected('" + nodeId + "','_optionsRow')");
+			// addButton.innerHTML = "add";
+			// optionsRow.appendChild(addButton);
 
 			// var divLine = document.createElement("div");
 			// divLine.setAttribute("id", "divLine");
@@ -3229,8 +3229,8 @@
 			// divLine.appendChild(divGraphicOrder);
 
 			//!!!!!!!!!!!!!!!!!!!!!!
-			 var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
-			 divIsAnObject.setAttribute("id", "divIsAnObject");
+			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
+			divIsAnObject.setAttribute("id", "divIsAnObject");
 			divIsAnObject.setAttribute("class", "hidden");
 			// var textIsAnObject = document.createElement("h5");
 			// textIsAnObject.setAttribute("id", "textIsAnObject");
@@ -3326,11 +3326,11 @@
 					var option = document.createElement("option");
 					option.setAttribute("value", dataAttributesFiltered[i]);
 					option.innerHTML = dataAttributesFiltered[i];
-					if (editRowContent !== 'undefined' & button == "edit") {
-						if (dataAttributesFiltered[i] == editRowContent[number]) {
-							option.setAttribute("selected", true);
-						}
-					}
+					// if (editRowContent !== 'undefined' & button == "edit") {
+					// 	if (dataAttributesFiltered[i] == editRowContent[number]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+					// 		option.setAttribute("selected", true);
+					// 	}
+					// }
 					select.appendChild(option);
 					//}
 				}
@@ -3345,20 +3345,20 @@
 
 				//al for canviarho pel 2
 				var selectConditionContent2;
-				if (button == "edit") {
-					var typeOfValues = typeOfValueFromInput("simple", count, place_Id, editRowContent[2]);
-					console.log(typeOfValues);
-					if (typeOfValues == "number") {
-						selectConditionContent2 = selectConditionContentNumber;
-					} else if (typeOfValues == "text") { //text
-						selectConditionContent2 = selectConditionContentText;
-					} else { //data´and empty
-						selectConditionContent2 = selectConditionContent;
-					}
-				} else {
-					//console.log("no entra al edit")
-					selectConditionContent2 = selectConditionContent;
-				}
+				// if (button == "edit") { //////////////POTSER ES POT APROFITAAAAAAAAAAAAAAARRRRRRRRRRRRRRRRRRRRRRRRRRRR
+				// 	var typeOfValues = typeOfValueFromInput("simple", count, place_Id, editRowContent[2]);
+				// 	console.log(typeOfValues);
+				// 	if (typeOfValues == "number") {
+				// 		selectConditionContent2 = selectConditionContentNumber;
+				// 	} else if (typeOfValues == "text") { //text
+				// 		selectConditionContent2 = selectConditionContentText;
+				// 	} else { //data´and empty
+				// 		selectConditionContent2 = selectConditionContent;
+				// 	}
+				// } else {
+				//console.log("no entra al edit")
+				selectConditionContent2 = selectConditionContent;
+				//}
 
 
 				for (var i = 0; i < selectConditionContent2.length; i++) { //crear les opcions del selector de condició
@@ -3367,12 +3367,12 @@
 					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + count + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
 					opcioCondicio.innerHTML = selectConditionContent2[i];
 					// console.log(selectConditionContent2[i])
-					if (editRowContent !== 'undefined' & (button == "edit")) {
-						console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
-						if (selectConditionContent2[i] == editRowContent[2]) { //no acaba d'anar (xq ja no es i)
-							opcioCondicio.setAttribute("selected", true);
-						}
-					}
+					// if (editRowContent !== 'undefined' & (button == "edit")) {POTSER ES POT APROFITAAARRRRRRRRRRRRRRRRRRRRRRRRRRR
+					// 	console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
+					// 	if (selectConditionContent2[i] == editRowContent[2]) { //no acaba d'anar (xq ja no es i)
+					// 		opcioCondicio.setAttribute("selected", true);
+					// 	}
+					// }
 					select.appendChild(opcioCondicio);
 				}
 				placeId.appendChild(select);
@@ -3387,19 +3387,19 @@
 				placeId.appendChild(divFilterContainer);
 
 				select.setAttribute("id", "selectorValue_" + count);
-				select.setAttribute("onChange", "isAnObject('" + nodeId + "','" + count+ "')");
+				select.setAttribute("onChange", "isAnObject('" + nodeId + "','" + count + "')");
 
 				var valor;
 				var arrayValors = [];
 
 				for (let index = 0; index < data.length; index++) {
-					if (button == "edit") {
-						valor = data[index][editRowContent[1]];
-					}
-					else {
-						valor = data[index][dataAttributesFiltered[0]];
+					// 	if (button == "edit") {POTSER ES POT APROFITAR
+					// 		valor = data[index][editRowContent[1]];
+					// 	}
+					// 	else {
+					valor = data[index][dataAttributesFiltered[0]];
 
-					}
+					//}
 
 					if (!arrayValors.find(element => element == valor)) {
 						var option = document.createElement("option");
@@ -3418,26 +3418,26 @@
 				textInput.setAttribute("id", "textInput_" + count);
 				textInput.setAttribute("type", "text");
 				textInput.addEventListener("input", function () {
-					adjustWidth( "simple",count)
+					adjustWidth("simple", count)
 				});
 				textInput.addEventListener("keypress", function (event) {
-					// If the user presses the "Enter" key on the keyboard
+					// 	// If the user presses the "Enter" key on the keyboard
 					if (event.key === "Enter") {
 						event.preventDefault();
-						if (place_Id == "_optionsRow") {
-							addSelected(nodeId, place_Id);
-						}
+						// 		if (place_Id == "_optionsRow") {
+						// 			addSelected(nodeId, place_Id);
+						// 		}
 
 					}
 				});
 
 				placeId.appendChild(textInput);
-				if (button == "edit") {
-					textInput.value = editRowContent[3];
-					adjustWidth( "simple", count);
-				}
+				// if (button == "edit") {
+				// 	textInput.value = editRowContent[3];
+				// 	adjustWidth( "simple", count);
+				// }
 
-				var row = rowsNumbers - 1;
+				//var row = rowsNumbers - 1;
 				var okButton = document.createElement("button");
 				okButton.setAttribute("onclick", "closeModalSelect('" + count + "','ok','simple')");
 				okButton.setAttribute("id", "okButton_" + count);
@@ -3482,10 +3482,20 @@
 				textInputInterval1.setAttribute("class", "hidden");
 				textInputInterval2.setAttribute("class", "hidden");
 				textInputInterval1.addEventListener("input", function () {
-					adjustWidth( "interval", count)
+					adjustWidth("interval", count)
 				});
 				textInputInterval2.addEventListener("input", function () {
-					adjustWidth( "interval", count)
+					adjustWidth("interval", count)
+				});
+				textInputInterval1.addEventListener("keypress", function (event) {
+					if (event.key === "Enter") {
+						event.preventDefault();
+					}
+				});
+				textInputInterval2.addEventListener("keypress", function (event) {
+					if (event.key === "Enter") {
+						event.preventDefault();
+					}
 				});
 				placeId.appendChild(textInputInterval1);
 				placeId.appendChild(textInputInterval2);
@@ -3520,7 +3530,7 @@
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
 			select = document.getElementById("selectorProperty_" + number);
-			
+
 			var selectedProperty = select.options[select.selectedIndex].value;
 			console.log(selectedProperty)
 			var selectorValue, selectorValueInterval, selectorValueInterval2;
@@ -3575,7 +3585,7 @@
 			if (isAnObject === "yes") { //no està acabat (falta interval i alguna cosa més)
 				selectorValue.setAttribute("class", "objectInSelect");
 				divIsAnObject.classList.remove("hidden");
-				addButton.disabled = true;
+				//addButton.disabled = true;
 
 
 				// for (var i = 1; i < rowsNumbers; i++) {
@@ -3602,7 +3612,7 @@
 				// }
 			}
 		}
-		function closeModalSelect(number, button,selector) { //Botó càncel i ok dels selectors
+		function closeModalSelect(number, button, selector) { //Botó càncel i ok dels selectors
 			event.preventDefault();
 			var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 			var textInput = document.getElementById("textInput_" + number);
@@ -3649,13 +3659,13 @@
 				if (interval == false) {
 					var selectorValue = document.getElementById("selectorValue_" + number);
 					textInput.value = selectorValue.options[selectorValue.selectedIndex].value;
-					adjustWidth( "simple",  number);
+					adjustWidth("simple", number);
 				} else {
 					var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
 					var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
 					textInputInterval1.value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
 					textInputInterval2.value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
-					adjustWidth("interval",  number);
+					adjustWidth("interval", number);
 
 				}
 
@@ -3753,7 +3763,7 @@
 				// 	addButton.disabled = false;
 				// }
 			} else {
-				typeOfValues = typeOfValueFromInput(wichTextInput, number,  value1);
+				typeOfValues = typeOfValueFromInput(wichTextInput, number, value1);
 				// if (typeOfValues == "empty") {
 				// 	addButton.disabled = true;
 				// } else {
@@ -4275,22 +4285,22 @@
 		{
 			//quan el element q et vingui es el elemFilter, afegeix un boto per afegir un nivell mes
 
-			
+
 			if (elem.boxName) {
-				var s='<table class="tableFilter"><tr class="trBoxName"><td id="boxName_' + elem.boxName + '">' + elem.boxName;
-			}else{
-				var s='<table><tr><td>';
+				var s = '<table class="tableFilter"><tr class="trBoxName"><td id="boxName_' + elem.boxName + '">' + elem.boxName;
+			} else {
+				var s = '<table><tr><td>';
 			}
-			
-				if (first) {
-					s += `<button onclick="biggestLevelButton('${elem.boxName}','${paramsNodeId}')">Add new bigger Level</button>`;
+
+			if (first) {
+				s += `<button onclick="biggestLevelButton('${elem.boxName}','${paramsNodeId}')">Add new bigger Level</button>`;
 			}
-				if (elem.boxName) {
-					//if (elem.boxName.charAt(0) == "0") {
-					s += `<button onclick="addNewCondition('${elem.boxName}','${paramsNodeId}')">Add new condition</button>`;
+			if (elem.boxName) {
+				//if (elem.boxName.charAt(0) == "0") {
+				s += `<button onclick="addNewCondition('${elem.boxName}','${paramsNodeId}')">Add new condition</button>`;
 				//}
 			}
-				if (typeof elem === "object") {
+			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
 					s += GetFilterTable(elem.elems[i], dataAttributes, paramsNodeId);
 				}
@@ -4299,44 +4309,44 @@
 
 					s += '</td><td valign="middle" class="tdSelectAndOrNot"><select name="selectAndOrNot" id="selectAndOrNot_' + elem.boxName + '">';
 
-				if (elem.nexus == "and") {
-					s += '<option value="and" selected>And</option>';
+					if (elem.nexus == "and") {
+						s += '<option value="and" selected>And</option>';
 
-					 	} else {
-					s += '<option value="and">And</option>';
-					 	}
-				if (elem.nexus == "or") {
-					s += '<option value="or" selected>Or</option>';
+					} else {
+						s += '<option value="and">And</option>';
+					}
+					if (elem.nexus == "or") {
+						s += '<option value="or" selected>Or</option>';
 
-					 	} else {
-					s += '<option value="or">Or</option>';
-					 	}
-				if (elem.nexus == "not") {
-					s += '<option value="not" selected>Not</option>';
+					} else {
+						s += '<option value="or">Or</option>';
+					}
+					if (elem.nexus == "not") {
+						s += '<option value="not" selected>Not</option>';
 
-					 	} else {
-					s += '<option value="not">Not</option>';
-					 	}
+					} else {
+						s += '<option value="not">Not</option>';
+					}
 
-				s+='</select>';
-			//  if (elem.elems.length < 2 && elem.nexus)
-			//  	alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
-			//  else if (elem.nexus) {
-			//  	s += '</td><td valign="middle">' + elem.nexus;
-			//  }
+					s += '</select>';
+					//  if (elem.elems.length < 2 && elem.nexus)
+					//  	alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
+					//  else if (elem.nexus) {
+					//  	s += '</td><td valign="middle">' + elem.nexus;
+					//  }
 
-		}
+				}
 			}
 			else {
-			s += GetFilterCondition(elem, dataAttributes, paramsNodeId);
+				s += GetFilterCondition(elem, dataAttributes, paramsNodeId);
 
-		}
+			}
 
-		s += '</td></tr></table>';
+			s += '</td></tr></table>';
 
 
 
-		return s;
+			return s;
 
 		}
 
