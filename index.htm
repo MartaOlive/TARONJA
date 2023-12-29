@@ -3189,6 +3189,7 @@
 			label1.innerHTML = "Choose a Property";
 			optionsRow.appendChild(label1);
 
+			//agafar els valors del selector que s'ha de marca o escriure (amb el number)
 			var place_Id = "optionsRow_" + number;
 			createSelect(1, place_Id, nodeId, dataAttributes, "initial", "no", number);
 			createSelect(2, place_Id, nodeId, dataAttributes, "initial", "no", number);
@@ -4209,28 +4210,9 @@
 				property: "<div id='optionsRow_0'></div>",
 				number: "0"
 			}
-			// {
-			// 	property: "<div id='optionsRow_1'></div>",
-			// 	number: "1"
-			// },
-			// {
-			// 	property: "<div id='optionsRow_2'></div>",
-			// 	number: "2"
-			// },
-			// {
-			// 	property: "<div id='optionsRow_3'></div>",
-			// 	number: "3"
-			// },
-			// {
-			// 	property: "<div id='optionsRow_4'></div>",
-			// 	number: "4"
-			// },
-			// {
-			// 	property: "<div id='optionsRow_5'></div>",
-			// 	number: "5"
-			// }
-		]
-		var boxNames = ["0_0", "1_0"]
+		];
+		var boxNames = ["0_0", "1_0"];
+		var infoFilter=[];
 		var elemFilter = {
 			elems: [
 				{ //estctura de la taula
@@ -4369,6 +4351,7 @@
 
 		async function ShowFilterTable(dataAttributes, paramsNodeId) //posar la taula on sigui //El que inicia la taula
 		{
+			console.log(infoFilter);
 			counter = [];
 			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, paramsNodeId, true);
 			addingSelectors(dataAttributes, paramsNodeId);
@@ -4511,7 +4494,7 @@
 			//console.log(elemFilter)
 		}
 
-		function addNewElement(elem, paramsNodeId) {
+		function addNewElement(elem, nodeId) {
 
 			var elements = elem.elems;
 			var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
@@ -4555,10 +4538,44 @@
 			})
 
 
+			//agafar els valors dels selectors i actualitzar una variable externa 
+			takeSelectInformation(nodeId, nextNumber);
+
+
 
 			//tornar a pintar els selects
-			drawTableAgain(paramsNodeId)
+			drawTableAgain(nodeId)
 
+		}
+		function takeSelectInformation(nodeId, nextNumber) {
+			var optionsRow;
+			var selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
+			var selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
+			var arrayInfo;
+			infoFilter=[];
+			for (var i = 0; i <nextNumber; i++) {
+				optionsRow = document.getElementById("optionsRow_" + i);
+				arrayInfo=[];
+				//if (optionsRow != null) {
+					selectorProperty = document.getElementById("selectorProperty_" + i);
+					selectorPropertyValue=selectorProperty.options[selectorProperty.selectedIndex].value;
+					selectorCondition = document.getElementById("selectorCondition_" + i);
+					selectorConditionValue=selectorCondition.options[selectorCondition.selectedIndex].value;
+					arrayInfo.push(selectorPropertyValue,selectorConditionValue);
+					 if (selectorCondition == (' [a,b] ') || selectorCondition == (' (a,b] ') || selectorCondition == (' [a,b) ') || selectorCondition == (' (a,b) ')){
+					textInputInterval1 = document.getElementById("textInputInterval1_" + i);
+					textInputInterval2 = document.getElementById("textInputInterval2_" + i);
+						textInputInterval1Value=textInputInterval1.value;
+					 	textInputInterval2Value=textInputInterval2.value;
+					 	arrayInfo.push(textInputInterval1Value,textInputInterval2Value);
+					} else {
+					 	textInput = document.getElementById("textInput_" + i);
+						textInputValue=textInput.value;
+					 	arrayInfo.push(textInputValue);
+					}
+				//}
+				infoFilter.push(arrayInfo);		
+			}
 		}
 
 		//delete element
