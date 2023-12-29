@@ -3190,16 +3190,24 @@
 			optionsRow.appendChild(label1);
 
 			//agafar els valors del selector que s'ha de marca o escriure (amb el number)
+			var selectorInfo = [];
+			if (infoFilter.length != 0) {
+				//console.log(infoFilter);
+				selectorInfo.push(infoFilter[number]);
+			} else {
+				selectorInfo = "no";
+			}
+
 			var place_Id = "optionsRow_" + number;
-			createSelect(1, place_Id, nodeId, dataAttributes, "initial", "no", number);
-			createSelect(2, place_Id, nodeId, dataAttributes, "initial", "no", number);
+			createSelect(1, place_Id, nodeId, dataAttributes, "initial", selectorInfo, number);
+			createSelect(2, place_Id, nodeId, dataAttributes, "initial", selectorInfo, number);
 
 			var label2 = document.createElement("label");
 			label2.setAttribute("id", "label2");
 			label2.innerHTML = "a Value";
 			optionsRow.appendChild(label2);
 
-			createSelect(3, place_Id, nodeId, dataAttributes, "initial", "no", number);
+			createSelect(3, place_Id, nodeId, dataAttributes, "initial", selectorInfo, number);
 
 			// var instructions = document.createElement("div");
 			// instructions.setAttribute("id", "instructions");
@@ -3280,10 +3288,11 @@
 			// }
 
 		}
-		function createSelect(number, place_Id, nodeId, dataAttributes, button, editRowContent, count) {
+		function createSelect(number, place_Id, nodeId, dataAttributes, button, selectorInfo, count) {
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data, previousNode;
+			//console.log(selectorInfo);
 
 			var actualNode = networkNodes.get(nodeId);
 			if (actualNode.image == "SelectRowsTable.png") { //actualitzar el STAdata del Node actual amb la info del previ !!!!!!(no se si va)
@@ -3327,16 +3336,17 @@
 					var option = document.createElement("option");
 					option.setAttribute("value", dataAttributesFiltered[i]);
 					option.innerHTML = dataAttributesFiltered[i];
-					// if (editRowContent !== 'undefined' & button == "edit") {
-					// 	if (dataAttributesFiltered[i] == editRowContent[number]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
-					// 		option.setAttribute("selected", true);
-					// 	}
-					// }
+					if (selectorInfo !== 'no') {
+						if (dataAttributesFiltered[i] == selectorInfo[0]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+							option.setAttribute("selected", true);
+						}
+					}
 					select.appendChild(option);
-					//}
 				}
 				placeId.appendChild(select);
 			}
+
+
 			else if (number == 2) {
 				select.setAttribute("id", "selectorCondition_" + count);
 				var selectContent;
@@ -3346,20 +3356,20 @@
 
 				//al for canviarho pel 2
 				var selectConditionContent2;
-				// if (button == "edit") { //////////////POTSER ES POT APROFITAAAAAAAAAAAAAAARRRRRRRRRRRRRRRRRRRRRRRRRRRR
-				// 	var typeOfValues = typeOfValueFromInput("simple", count, place_Id, editRowContent[2]);
-				// 	console.log(typeOfValues);
-				// 	if (typeOfValues == "number") {
-				// 		selectConditionContent2 = selectConditionContentNumber;
-				// 	} else if (typeOfValues == "text") { //text
-				// 		selectConditionContent2 = selectConditionContentText;
-				// 	} else { //data´and empty
-				// 		selectConditionContent2 = selectConditionContent;
-				// 	}
-				// } else {
-				//console.log("no entra al edit")
-				selectConditionContent2 = selectConditionContent;
-				//}
+				if (selectorInfo !== 'no') { //////////////POTSER ES POT APROFITAAAAAAAAAAAAAAARRRRRRRRRRRRRRRRRRRRRRRRRRRR
+					var typeOfValues = typeOfValueFromInput("simple", count, place_Id, selectorInfo[1]);
+					// 	console.log(typeOfValues);
+					if (typeOfValues == "number") {
+						selectConditionContent2 = selectConditionContentNumber;
+					} else if (typeOfValues == "text") { //text
+						selectConditionContent2 = selectConditionContentText;
+					} else { //data´and empty
+						selectConditionContent2 = selectConditionContent;
+					}
+				} else {
+					
+					selectConditionContent2 = selectConditionContent;
+				}
 
 
 				for (var i = 0; i < selectConditionContent2.length; i++) { //crear les opcions del selector de condició
@@ -3368,12 +3378,12 @@
 					select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + count + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
 					opcioCondicio.innerHTML = selectConditionContent2[i];
 					// console.log(selectConditionContent2[i])
-					// if (editRowContent !== 'undefined' & (button == "edit")) {POTSER ES POT APROFITAAARRRRRRRRRRRRRRRRRRRRRRRRRRR
-					// 	console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
-					// 	if (selectConditionContent2[i] == editRowContent[2]) { //no acaba d'anar (xq ja no es i)
-					// 		opcioCondicio.setAttribute("selected", true);
-					// 	}
-					// }
+					if (selectorInfo !== 'no') {//POTSER ES POT APROFITAAARRRRRRRRRRRRRRRRRRRRRRRRRRR
+						// 	console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
+						if (selectConditionContent2[i] == selectorInfo[1]) { //no acaba d'anar (xq ja no es i)
+							opcioCondicio.setAttribute("selected", true);
+						}
+					}
 					select.appendChild(opcioCondicio);
 				}
 				placeId.appendChild(select);
@@ -3431,8 +3441,12 @@
 
 					}
 				});
-
+				
+					
+					
+				
 				placeId.appendChild(textInput);
+
 				// if (button == "edit") {
 				// 	textInput.value = editRowContent[3];
 				// 	adjustWidth( "simple", count);
@@ -3465,8 +3479,7 @@
 
 				//Selects dels intervals
 				var divFilterContainer2 = document.createElement("div");
-				divFilterContainer2.setAttribute("id", "divFilterContainer2_" + count);
-				divFilterContainer2.setAttribute("class", "hidden");
+				divFilterContainer2.setAttribute("id", "divFilterContainer2" + count);
 				placeId.appendChild(divFilterContainer2);
 
 				var selectorValueInterval1 = select.cloneNode(true); //així ja s'omple com l'altre
@@ -3480,8 +3493,7 @@
 				textInputInterval1.setAttribute("id", "textInputInterval1_" + count);
 				var textInputInterval2 = textInput.cloneNode(true);
 				textInputInterval2.setAttribute("id", "textInputInterval2_" + count);
-				textInputInterval1.setAttribute("class", "hidden");
-				textInputInterval2.setAttribute("class", "hidden");
+
 				textInputInterval1.addEventListener("input", function () {
 					adjustWidth("interval", count)
 				});
@@ -3498,6 +3510,7 @@
 						event.preventDefault();
 					}
 				});
+
 				placeId.appendChild(textInputInterval1);
 				placeId.appendChild(textInputInterval2);
 
@@ -3522,7 +3535,22 @@
 				divFilterContainer2.appendChild(okButtonInterval);
 				divFilterContainer2.appendChild(cancelButtonInterval);
 
+				if (selectorInfo.length == 3||selectorInfo == "no") {//simple
+					divFilterContainer2.setAttribute("class", "hidden");
+					textInputInterval1.setAttribute("class", "hidden");
+					textInputInterval2.setAttribute("class", "hidden");
+					if (selectorInfo != "no")textInput.value = selectorInfo[2];
 
+
+				} else if (selectorInfo.length == 4){
+					//hidden a la resta
+					textInput.setAttribute("class", "hidden");
+					divFilterContainer.setAttribute("class", "hidden");
+					writeButton.setAttribute("class", "hidden");
+					textInputInterval1.value = selectorInfo[2];
+					textInputInterval2.value = selectorInfo[e];
+
+				}
 			}
 
 		}
@@ -4212,7 +4240,7 @@
 			}
 		];
 		var boxNames = ["0_0", "1_0"];
-		var infoFilter=[];
+		var infoFilter = [];
 		var elemFilter = {
 			elems: [
 				{ //estctura de la taula
@@ -4335,6 +4363,7 @@
 
 		function addingSelectors(dataAttributes, paramsNodeId,) {
 			for (var i = 0; i < counter.length; i++) {
+
 				createSelectorRowFilters(dataAttributes, paramsNodeId, counter[i]);
 			}
 
@@ -4374,6 +4403,7 @@
 
 		function MoveDownFilterCondition(iCon) {
 			alert(GiveNextConditionNextBoxFilterTable(elemFilter, iCon));
+			//que no es pugui moure amb els selects desplegats
 		}
 
 		function GiveNextConditionNextBoxFilterTable(elem, iCon) {
@@ -4432,6 +4462,7 @@
 
 		function MoveUpFilterCondition(iCon) {
 			alert(GivePreviousConditionFilterTable(elemFilter, iCon));
+			//que no es pugui moure amb els selects desplegats
 		}
 
 		function GivePreviousConditionFilterTable(elem, iCon) {
@@ -4475,20 +4506,13 @@
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
 					searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
-
 				}
 				if (elem.boxName == boxNamee) { //afegir a elems => elems[0,1...]
-
 					addNewElement(elem, paramsNodeId);
-
-
 				}
-
-
 			}
 			else {
 				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
-
 			}
 
 			//console.log(elemFilter)
@@ -4537,7 +4561,6 @@
 				number: nextNumber
 			})
 
-
 			//agafar els valors dels selectors i actualitzar una variable externa 
 			takeSelectInformation(nodeId, nextNumber);
 
@@ -4552,29 +4575,29 @@
 			var selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
 			var selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
 			var arrayInfo;
-			infoFilter=[];
-			for (var i = 0; i <nextNumber; i++) {
+			infoFilter = [];
+			for (var i = 0; i < nextNumber; i++) {
 				optionsRow = document.getElementById("optionsRow_" + i);
-				arrayInfo=[];
+				arrayInfo = [];
 				//if (optionsRow != null) {
-					selectorProperty = document.getElementById("selectorProperty_" + i);
-					selectorPropertyValue=selectorProperty.options[selectorProperty.selectedIndex].value;
-					selectorCondition = document.getElementById("selectorCondition_" + i);
-					selectorConditionValue=selectorCondition.options[selectorCondition.selectedIndex].value;
-					arrayInfo.push(selectorPropertyValue,selectorConditionValue);
-					 if (selectorCondition == (' [a,b] ') || selectorCondition == (' (a,b] ') || selectorCondition == (' [a,b) ') || selectorCondition == (' (a,b) ')){
+				selectorProperty = document.getElementById("selectorProperty_" + i);
+				selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
+				selectorCondition = document.getElementById("selectorCondition_" + i);
+				selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
+				arrayInfo.push(selectorPropertyValue, selectorConditionValue);
+				if (selectorCondition == (' [a,b] ') || selectorCondition == (' (a,b] ') || selectorCondition == (' [a,b) ') || selectorCondition == (' (a,b) ')) {
 					textInputInterval1 = document.getElementById("textInputInterval1_" + i);
 					textInputInterval2 = document.getElementById("textInputInterval2_" + i);
-						textInputInterval1Value=textInputInterval1.value;
-					 	textInputInterval2Value=textInputInterval2.value;
-					 	arrayInfo.push(textInputInterval1Value,textInputInterval2Value);
-					} else {
-					 	textInput = document.getElementById("textInput_" + i);
-						textInputValue=textInput.value;
-					 	arrayInfo.push(textInputValue);
-					}
+					textInputInterval1Value = textInputInterval1.value;
+					textInputInterval2Value = textInputInterval2.value;
+					arrayInfo.push(textInputInterval1Value, textInputInterval2Value);
+				} else {
+					textInput = document.getElementById("textInput_" + i);
+					textInputValue = textInput.value;
+					arrayInfo.push(textInputValue);
+				}
 				//}
-				infoFilter.push(arrayInfo);		
+				infoFilter.push(arrayInfo);
 			}
 		}
 
