@@ -2952,6 +2952,12 @@
 			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
 			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 
+			//desconectar botons fletxa
+			var buttonUp = document.getElementById("buttonUp_" + number);
+			var buttonDown = document.getElementById("buttonDown_" + number);
+			buttonDown.setAttribute("disabled", true);
+			buttonUp.setAttribute("disabled", true);
+
 			//quin text està obert?
 			if (selector == "simple") {
 				textInput.classList.remove("inblock");
@@ -3097,14 +3103,14 @@
 
 			var selectorInfo = [];
 			if (infoFilter.length != 0) {
-				if (infoFilter.length != number) {
-					for (var i = 0; i < infoFilter.length; i++) {
-						if (infoFilter[i][0] == number) {
-							selectorInfo.push(infoFilter[i]);
-						}
+				// if (infoFilter.length != number) {
+				for (var i = 0; i < infoFilter.length; i++) {
+					if (infoFilter[i][0] == number) {
+						selectorInfo.push(infoFilter[i]);
 					}
-
 				}
+
+				//}
 			}
 
 			var place_Id = "optionsRow_" + number;
@@ -3126,7 +3132,7 @@
 		}
 		function createSelect(number, place_Id, nodeId, dataAttributes, button, selectorInfo, count) {
 
-			if (number == 3) console.log(selectorInfo)
+			//if (number == 3) console.log(selectorInfo)
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data, previousNode;
@@ -3348,7 +3354,6 @@
 						writeButton2.setAttribute("class", "hidden");
 						textInput.value = selectorInfo[0][3];
 					} else if (selectorInfo[0].length == 5) { //interval
-
 						textInput.setAttribute("class", "hidden");
 						divFilterContainer.setAttribute("class", "hidden");
 						divFilterContainer2.setAttribute("class", "hidden");
@@ -3361,7 +3366,7 @@
 					divFilterContainer2.setAttribute("class", "hidden");
 					textInputInterval1.setAttribute("class", "hidden");
 					textInputInterval2.setAttribute("class", "hidden");
-					writeButton.setAttribute("class", "hidden");
+					writeButton2.setAttribute("class", "hidden");
 				}
 			}
 		}
@@ -3431,9 +3436,12 @@
 			var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
 			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
 			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-
-
 			var interval;
+
+			var buttonUp = document.getElementById("buttonUp_" + number);
+			var buttonDown = document.getElementById("buttonDown_" + number);
+			buttonDown.disabled = false;
+			buttonUp.disabled = false;
 
 			//Si ve del senzill. Amagar el container i mostrar el text i el display
 			if (divFilterContainer.classList.contains("hidden") == false) {
@@ -3708,7 +3716,7 @@
 
 		function GetFilterCondition(elem, dataAttributes, nodeId) {
 			counter.push(elem);
-			return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')"><img src="fletxaAbaix_18x11.png"></button> <button onClick="MoveUpFilterCondition(' + elem + ')"><img src="fletxaAmunt_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button>';
+			return conditionsFilter[elem].property + '<button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="fletxaAbaix_18x11.png"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="fletxaAmunt_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button>';
 
 		}
 
@@ -3737,9 +3745,44 @@
 			return false;
 		}
 
-		function MoveDownFilterCondition(iCon) {
-			alert(GiveNextConditionNextBoxFilterTable(elemFilter, iCon));
-			//que no es pugui moure amb els selects desplegats
+		async function MoveDownFilterCondition(currentNumber) {
+			event.preventDefault();
+			var nextElement = GiveNextConditionNextBoxFilterTable(elemFilter, currentNumber);
+
+			if (nextElement != -1) {
+				searchBoxName(elemFilter, currentNumber, "no", nextElement);
+			}
+
+
+		}
+		function searchBoxName(elem, iCon, fatherElement, nextElement) {
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					searchBoxName(elem.elems[i], iCon, elem, nextElement);
+				}
+			}
+			else {
+				if (elem == iCon) {
+					changeElements(fatherElement, nextElement, iCon);
+				}
+				
+
+			}
+			takeSelectInformation(currentNode.id);
+			console.log(currentNode.id)
+			drawTableAgain(currentNode.id)
+		}
+		function changeElements(currentElement, nextElement, iCon) {
+			var arrayElements = []
+			for (var i = 0; i<currentElement.elems.length; i++) {
+				if (currentElement.elems[i] != iCon) {
+					arrayElements.push(currentElement.elems[i])
+				}
+			}
+			currentElement.elems=arrayElements;
+			nextElement.elems.push(iCon)
+			
+
 		}
 
 		function GiveNextConditionNextBoxFilterTable(elem, iCon) {
@@ -3755,7 +3798,7 @@
 				for (var i = 0; i < elem.elems.length; i++) {
 					next = LookForNextConditionNextBoxFilterTable(elem.elems[i], iCon);
 					if (-1 != next)
-						return next;
+						return elem.elems[i];
 					if (LookForNextConditionNextBoxFilterTableFound == 1) {
 						LookForNextConditionNextBoxFilterTableFound = 2;
 						break;
@@ -3766,7 +3809,7 @@
 				if (elem == iCon)
 					LookForNextConditionNextBoxFilterTableFound = 1;
 				else if (LookForNextConditionNextBoxFilterTableFound != 0)
-					return elem;
+					return elem; //perque necessito el boxName
 			}
 			return -1;
 		}
@@ -3863,12 +3906,12 @@
 				var newBoxName = elem.boxName;
 				var firstNumberBoxNameInside = parseInt(elem.boxName.charAt(0)) - 1; //primer número:grup interior
 				//buscar, fer split , ordenar i lultim, mes un i afegir al boxNames
-				console.log(boxNames)
+				//console.log(boxNames)
 				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside); //filtrar ls que exsteixen ja del grup que es crearà
-				console.log(boxNamesFiltered);//!!!!!!!!!!!!!!!!!!!!!!!!!!
+				//console.log(boxNamesFiltered);//!!!!!!!!!!!!!!!!!!!!!!!!!!
 				var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
 				var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
-				console.log(newBoxName)
+				//console.log(newBoxName)
 				if (elem.boxName.charAt(0) != 1) {
 					elements.push( //lhe de posar a la mateixa altura
 						{
@@ -3888,7 +3931,7 @@
 
 
 				boxNames.push(newBoxName)
-				console.log(boxNames)
+				//console.log(boxNames)
 				//Si es el segon sha de crear un nivell superior i canvia el nexus q no sigui null
 			}
 			else { //dins de grup 0_...
@@ -3904,21 +3947,22 @@
 			})
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
-			takeSelectInformation(nodeId, nextNumber);
+			takeSelectInformation(nodeId);
 
-			console.log(elemFilter)
+			//console.log(elemFilter)
 
 			//tornar a pintar els selects
 			drawTableAgain(nodeId)
 
 		}
-		function takeSelectInformation(nodeId, nextNumber) {
+		function takeSelectInformation(nodeId) {
 			var optionsRow;
 			var selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
 			var selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
 			var arrayInfo;
 			infoFilter = [];
 			for (var i = 0; i < counter.length; i++) {
+				//console.log(counter[i]);
 				optionsRow = document.getElementById("optionsRow_" + counter[i]);
 				arrayInfo = [];
 				if (optionsRow != null) {
@@ -3926,7 +3970,7 @@
 					selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
 					selectorCondition = document.getElementById("selectorCondition_" + counter[i]);
 					selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
-					arrayInfo.push(i);
+					arrayInfo.push(counter[i]); //com que estan desordenats, és necessari per posar cada info al seu lloc al pintar el select
 					arrayInfo.push(selectorPropertyValue, selectorConditionValue);
 					//console.log(selectorConditionValue)
 					if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
@@ -3972,10 +4016,10 @@
 		}
 		function DeleteElementInElemFilter(elem, nodeId, numberOfElement) {
 			//no borrar del conditions filter perque es la posicio
-			console.log(elem);
+			//console.log(elem);
 			var index = elem.elems.indexOf(parseInt(numberOfElement));
 			elem.elems.splice(index, 1); //eliminar de elemFilter	
-			console.log(elemFilter);
+			//console.log(elemFilter);
 			//borrarlo del counter
 			// var newCounter = counter.filter(element=>element!=numberOfElement);
 			// counter=newCounter;
@@ -3983,8 +4027,8 @@
 
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
-			var lastNumber = counter.length;
-			takeSelectInformation(nodeId, lastNumber);
+
+			takeSelectInformation(nodeId);
 
 
 			//tornar a pintar els selects
@@ -4032,28 +4076,27 @@
 			boxNames = actualizeBoxNames(elemFilter, arrayBoxNumbers);
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
-			var lastNumber = counter[counter.length - 1];
-			takeSelectInformation(nodeId, lastNumber);
+			takeSelectInformation(nodeId);
 			//tornar a pintar els selects
 			drawTableAgain(nodeId);
 
-			console.log(counter);
+			//console.log(counter);
 
 		}
 		function actualizeBoxNames(elem, arrayBoxNumbers) {
 			//console.log(elem)
 			//console.log(arrayBoxNumbers)
 			if (typeof elem === "object") {
-				console.log("object")
+				//console.log("object")
 				arrayBoxNumbers.push(elem.boxName)
 				for (var i = 0; i < elem.elems.length; i++) {
 					actualizeBoxNames(elem.elems[i], arrayBoxNumbers);
-					console.log(elem.elems[i])
+					//console.log(elem.elems[i])
 				}
 
 			}
 
-			console.log(arrayBoxNumbers)
+			//console.log(arrayBoxNumbers)
 			return arrayBoxNumbers;
 		}
 
@@ -4066,6 +4109,7 @@
 
 			ShowFilterTable(dataAttributes, paramsNodeId)
 			//console.log(elemFilter);
+			//console.log(counter);
 		}
 
 		//add bigger Level
@@ -4080,8 +4124,8 @@
 			elemFilter = newInsert;
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
-			var lastNumber = counter[counter.length - 1];
-			takeSelectInformation(nodeId, lastNumber);
+
+			takeSelectInformation(nodeId);
 
 
 			drawTableAgain(nodeId)
