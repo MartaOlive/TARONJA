@@ -3099,11 +3099,11 @@
 			if (infoFilter.length != 0) {
 				if (infoFilter.length != number) {
 					for (var i = 0; i < infoFilter.length; i++) {
-						if (infoFilter[i][0]==number){
+						if (infoFilter[i][0] == number) {
 							selectorInfo.push(infoFilter[i]);
 						}
 					}
-					
+
 				}
 			}
 
@@ -3125,8 +3125,8 @@
 
 		}
 		function createSelect(number, place_Id, nodeId, dataAttributes, button, selectorInfo, count) {
-			
-			if (number ==3)console.log(selectorInfo)
+
+			if (number == 3) console.log(selectorInfo)
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data, previousNode;
@@ -3179,7 +3179,7 @@
 				//al for canviarho pel 2
 				var selectConditionContent2;
 
-				if (selectorInfo.length != 0) { 
+				if (selectorInfo.length != 0) {
 					var typeOfValues = typeOfValueFromInput("simple", count, selectorInfo[0][3]);
 					if (typeOfValues == "number") {
 						selectConditionContent2 = selectConditionContentNumber;
@@ -3628,7 +3628,7 @@
 		// 	boxName: "2_0"
 		// }
 		var counter = [];
-		function GetFilterTable(elem, dataAttributes, paramsNodeId, first) //COnstrucio taula //El segon, serà cridat per el ShowFilter
+		function GetFilterTable(elem, dataAttributes, nodeId, first) //COnstrucio taula //El segon, serà cridat per el ShowFilter
 		{
 			//quan el element q et vingui es el elemFilter, afegeix un boto per afegir un nivell mes
 
@@ -3640,16 +3640,16 @@
 			}
 
 			if (first) {
-				s += `<button onclick="biggestLevelButton('${elem.boxName}','${paramsNodeId}')">Add new bigger Level</button>`;
+				s += `<button onclick="biggestLevelButton('${elem.boxName}','${nodeId}')">Add new bigger Level</button>`;
 			}
 			if (elem.boxName) {
 				//if (elem.boxName.charAt(0) == "0") {
-				s += `<button onclick="addNewCondition('${elem.boxName}','${paramsNodeId}')">Add new condition</button>`;
+				s += `<button onclick="addNewCondition('${elem.boxName}','${nodeId}')">Add new condition</button><button onclick="deleteGroup('${elem.boxName}','${nodeId}')">Delete group</button>`;
 				//}
 			}
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
-					s += GetFilterTable(elem.elems[i], dataAttributes, paramsNodeId);
+					s += GetFilterTable(elem.elems[i], dataAttributes, nodeId);
 				}
 
 				if (elem.nexus) {
@@ -3685,7 +3685,7 @@
 				}
 			}
 			else {
-				s += GetFilterCondition(elem, dataAttributes, paramsNodeId);
+				s += GetFilterCondition(elem, dataAttributes, nodeId);
 
 			}
 
@@ -3698,29 +3698,29 @@
 		}
 
 
-		function addingSelectors(dataAttributes, paramsNodeId,) {
+		function addingSelectors(dataAttributes, nodeId,) {
 			for (var i = 0; i < counter.length; i++) {
 
-				createSelectorRowFilters(dataAttributes, paramsNodeId, counter[i]);
+				createSelectorRowFilters(dataAttributes, nodeId, counter[i]);
 			}
 
 
 
 		}
 
-		function GetFilterCondition(elem, dataAttributes, paramsNodeId) {
+		function GetFilterCondition(elem, dataAttributes, nodeId) {
 			counter.push(elem);
 			return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')"><img src="fletxaAbaix_18x11.png"></button> <button onClick="MoveUpFilterCondition(' + elem + ')"><img src="fletxaAmunt_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button>';
 
 		}
 
 
-		async function ShowFilterTable(dataAttributes, paramsNodeId) //posar la taula on sigui //El que inicia la taula
+		async function ShowFilterTable(dataAttributes, nodeId) //posar la taula on sigui //El que inicia la taula
 		{
 			//console.log(infoFilter);
 			counter = [];
-			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, paramsNodeId, true);
-			addingSelectors(dataAttributes, paramsNodeId);
+			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, nodeId, true);
+			addingSelectors(dataAttributes, nodeId);
 
 
 		}
@@ -3861,7 +3861,7 @@
 			var nextNumber = parseInt(lastNumber) + 1;
 
 			// if (typeof elements[0] === "object") {
-				if (elem.boxName.charAt(0)!=0){
+			if (elem.boxName.charAt(0) != 0) {
 
 				//}
 				var newBoxName = elem.boxName;
@@ -3871,23 +3871,23 @@
 				var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1;
 				var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
 				console.log(newBoxName)
-				if (elem.boxName.charAt(0)!=1){
+				if (elem.boxName.charAt(0) != 1) {
 					elements.push( //lhe de posar a la mateixa altura
-					{
-						elems: [],
-						nexus: null,
-						boxName: newBoxName,
-					}
-				);
-				}else{ //1 farà un 0 i per tant pot crear un nou
+						{
+							elems: [],
+							nexus: null,
+							boxName: newBoxName,
+						}
+					);
+				} else { //1 farà un 0 i per tant pot crear un nou
 					elements.push( //lhe de posar a la mateixa altura
-					{
-						elems: [nextNumber], //nivell 1
-						nexus: null,
-						boxName: newBoxName,
-					})
+						{
+							elems: [nextNumber], //nivell 1
+							nexus: null,
+							boxName: newBoxName,
+						})
 				}
-			
+
 
 				boxNames.push(newBoxName)
 				console.log(boxNames)
@@ -3910,7 +3910,7 @@
 			//agafar els valors dels selectors i actualitzar una variable externa 
 			takeSelectInformation(nodeId, nextNumber);
 
-console.log(elemFilter)
+			console.log(elemFilter)
 
 			//tornar a pintar els selects
 			drawTableAgain(nodeId)
@@ -3940,12 +3940,12 @@ console.log(elemFilter)
 						textInputInterval2Value = textInputInterval2.value;
 						arrayInfo.push(textInputInterval1Value);
 						arrayInfo.push(textInputInterval2Value);
-						console.log("interval: "+textInputInterval1Value+", "+textInputInterval2Value)
+						console.log("interval: " + textInputInterval1Value + ", " + textInputInterval2Value)
 					} else {
 						textInput = document.getElementById("textInput_" + counter[i]);
 						textInputValue = textInput.value;
 						arrayInfo.push(textInputValue);
-						console.log("Simple: "+textInputValue)
+						console.log("Simple: " + textInputValue)
 					}
 				}
 				infoFilter.push(arrayInfo);
@@ -3998,7 +3998,55 @@ console.log(elemFilter)
 			//No es pot borrar l'últim!!!!! PEnsar que fer amb això 
 
 		}
+		//delete group
+		function deleteGroup(numberOfElement, nodeId) {
+			event.preventDefault();
+			searchGroupToDelete(numberOfElement, elemFilter, nodeId, "no");
+		}
 
+		function searchGroupToDelete(numberOfElement, elem, nodeId, oldElem) { //el elem te el boxName i tal
+
+			var element;
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					element = searchGroupToDelete(numberOfElement, elem.elems[i], nodeId, elem);
+				}
+				if (elem.boxName == numberOfElement) { //afegir a elems => elems[0,1...]
+					console.log("holi")
+					DeleteGroupInElemFilter(elem, nodeId, numberOfElement, oldElem);
+
+				}
+			}
+			else {
+				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
+			}
+		}
+		function DeleteGroupInElemFilter(elem, nodeId, numberOfElement, oldElem) {
+			var newArray = [];
+			console.log(oldElem)
+			for (var i = 0; i < oldElem.elems.length; i++) {
+				if (oldElem.elems[i].boxName != elem.boxName) {
+				 	newArray.push(oldElem.elems[i])
+				 }
+			}
+			oldElem.elems = newArray;
+
+			//agafar els valors dels selectors i actualitzar una variable externa 
+			var lastNumber = counter[counter.length-1];
+			takeSelectInformation(nodeId, lastNumber);
+
+
+			//tornar a pintar els selects
+			drawTableAgain(nodeId);
+
+
+			//No es pot borrar l'últim!!!!! PEnsar que fer amb això 
+
+		}
+
+
+
+		//drawTable
 		function drawTableAgain(paramsNodeId) {
 			var data = networkNodes.get(paramsNodeId).STAdata;
 			var dataAttributes = getDataAttributes(data);
@@ -4020,9 +4068,9 @@ console.log(elemFilter)
 			elemFilter = newInsert;
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
-			var lastNumber = counter.length;
+			var lastNumber = counter[counter.length-1];
 			takeSelectInformation(nodeId, lastNumber);
-			
+
 
 			drawTableAgain(nodeId)
 
