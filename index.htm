@@ -3088,7 +3088,7 @@
 			optionsRow.setAttribute("id", "optionsRow");
 			divFilterBox.appendChild(optionsRow);
 			var label1 = document.createElement("label");
-			label1.innerHTML = "Choose a Property";
+			label1.innerHTML = number + " Choose a Property";
 			optionsRow.appendChild(label1);
 
 			//agafar els valors del selector que s'ha de marca o escriure (amb el number)
@@ -3133,7 +3133,7 @@
 			var actualNode = networkNodes.get(nodeId);
 			if (actualNode.image == "SelectRowsTable.png") { //actualitzar el STAdata del Node actual amb la info del previ !!!!!!(no se si va)
 				previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
-				console.log(previousNode);
+				//console.log(previousNode);
 				// data = previousNode.STAdata;
 				actualNode.STAdata = previousNode[0].STAdata;
 				networkNodes.update(actualNode);
@@ -3365,8 +3365,6 @@
 				}
 			}
 		}
-
-
 		function fillValueSelector(nodeId, number) { //Quan canvia el selector primer, es reomple el segon
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
@@ -3859,17 +3857,16 @@
 
 			var elements = elem.elems;
 			var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
-			var nextNumber = parseInt(lastNumber) + 1;
+			var nextNumber = parseInt(lastNumber) + 1; //per els que estan dins del 0_...
 
-			// if (typeof elements[0] === "object") {
-			if (elem.boxName.charAt(0) != 0) {
-
-				//}
+			if (elem.boxName.charAt(0) != 0) {//grups que no són el 0 i han de crear un grup i no un element
 				var newBoxName = elem.boxName;
-				var firstNumberBoxNameInside = parseInt(elem.boxName.charAt(0)) - 1
+				var firstNumberBoxNameInside = parseInt(elem.boxName.charAt(0)) - 1; //primer número:grup interior
 				//buscar, fer split , ordenar i lultim, mes un i afegir al boxNames
-				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside);
-				var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1;
+				console.log(boxNames)
+				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside); //filtrar ls que exsteixen ja del grup que es crearà
+				console.log(boxNamesFiltered);//!!!!!!!!!!!!!!!!!!!!!!!!!!
+				var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
 				var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
 				console.log(newBoxName)
 				if (elem.boxName.charAt(0) != 1) {
@@ -3894,12 +3891,10 @@
 				console.log(boxNames)
 				//Si es el segon sha de crear un nivell superior i canvia el nexus q no sigui null
 			}
-			else {
-
+			else { //dins de grup 0_...
 				elements.push(nextNumber); //add to elem array
-
-
 			}
+
 			if (elements.length == 2) { //change nexus if pass from one to two
 				elem.nexus = "and"
 			}
@@ -4031,10 +4026,10 @@
 			}
 			fatherElem.elems = newArray;
 			//console.log(elemFilter)
-			
+
 			//borrar del boxNames (Si hi ha grups a dins tmb s'han de borrar)
-			var arrayBoxNumbers=[];
-			boxNames=actualizeBoxNames(elemFilter, arrayBoxNumbers);
+			var arrayBoxNumbers = [];
+			boxNames = actualizeBoxNames(elemFilter, arrayBoxNumbers);
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
 			var lastNumber = counter[counter.length - 1];
@@ -4042,22 +4037,22 @@
 			//tornar a pintar els selects
 			drawTableAgain(nodeId);
 
-			//console.log(boxNames);
+			console.log(counter);
 
 		}
 		function actualizeBoxNames(elem, arrayBoxNumbers) {
-			console.log(elem)
-			console.log(arrayBoxNumbers)
+			//console.log(elem)
+			//console.log(arrayBoxNumbers)
 			if (typeof elem === "object") {
-				console.log ("object")
+				console.log("object")
 				arrayBoxNumbers.push(elem.boxName)
 				for (var i = 0; i < elem.elems.length; i++) {
 					actualizeBoxNames(elem.elems[i], arrayBoxNumbers);
 					console.log(elem.elems[i])
 				}
-				
+
 			}
-			
+
 			console.log(arrayBoxNumbers)
 			return arrayBoxNumbers;
 		}
@@ -4081,7 +4076,7 @@
 			var newInsert = { elems: [], nexus: null, boxName: newBoxName };
 			var copy = Object.assign(elemFilter);
 			newInsert.elems.push(copy);
-
+			boxNames.push(newBoxName);
 			elemFilter = newInsert;
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
