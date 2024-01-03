@@ -3730,6 +3730,7 @@
 				for (var i = 0; i < elem.elems.length; i++)
 					if (ChangeConditionFilterTable(elem.elems[i], iConNew, iConCurrent))
 						elem.elems[i] = iConNew;
+
 			}
 			else {
 				if (elem == iConCurrent)
@@ -3932,7 +3933,7 @@
 					selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
 					arrayInfo.push(i);
 					arrayInfo.push(selectorPropertyValue, selectorConditionValue);
-					console.log(selectorConditionValue)
+					//console.log(selectorConditionValue)
 					if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
 						textInputInterval1 = document.getElementById("textInputInterval1_" + counter[i]);
 						textInputInterval2 = document.getElementById("textInputInterval2_" + counter[i]);
@@ -3940,17 +3941,17 @@
 						textInputInterval2Value = textInputInterval2.value;
 						arrayInfo.push(textInputInterval1Value);
 						arrayInfo.push(textInputInterval2Value);
-						console.log("interval: " + textInputInterval1Value + ", " + textInputInterval2Value)
+						//console.log("interval: " + textInputInterval1Value + ", " + textInputInterval2Value)
 					} else {
 						textInput = document.getElementById("textInput_" + counter[i]);
 						textInputValue = textInput.value;
 						arrayInfo.push(textInputValue);
-						console.log("Simple: " + textInputValue)
+						//console.log("Simple: " + textInputValue)
 					}
 				}
 				infoFilter.push(arrayInfo);
-				console.log("infoFilter")
-				console.log(infoFilter)
+				//console.log("infoFilter")
+				//console.log(infoFilter)
 			}
 		}
 
@@ -4004,7 +4005,7 @@
 			searchGroupToDelete(numberOfElement, elemFilter, nodeId, "no");
 		}
 
-		function searchGroupToDelete(numberOfElement, elem, nodeId, oldElem) { //el elem te el boxName i tal
+		function searchGroupToDelete(numberOfElement, elem, nodeId, fatherElem) { //el elem te el boxName i tal
 
 			var element;
 			if (typeof elem === "object") {
@@ -4012,8 +4013,7 @@
 					element = searchGroupToDelete(numberOfElement, elem.elems[i], nodeId, elem);
 				}
 				if (elem.boxName == numberOfElement) { //afegir a elems => elems[0,1...]
-					console.log("holi")
-					DeleteGroupInElemFilter(elem, nodeId, numberOfElement, oldElem);
+					DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem);
 
 				}
 			}
@@ -4021,29 +4021,46 @@
 				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
 			}
 		}
-		function DeleteGroupInElemFilter(elem, nodeId, numberOfElement, oldElem) {
+		function DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem) {
 			var newArray = [];
-			console.log(oldElem)
-			for (var i = 0; i < oldElem.elems.length; i++) {
-				if (oldElem.elems[i].boxName != elem.boxName) {
-				 	newArray.push(oldElem.elems[i])
-				 }
+			//console.log(fatherElem)
+			for (var i = 0; i < fatherElem.elems.length; i++) {
+				if (fatherElem.elems[i].boxName != elem.boxName) {
+					newArray.push(fatherElem.elems[i])
+				}
 			}
-			oldElem.elems = newArray;
+			fatherElem.elems = newArray;
+			//console.log(elemFilter)
+			
+			//borrar del boxNames (Si hi ha grups a dins tmb s'han de borrar)
+			var arrayBoxNumbers=[];
+			boxNames=actualizeBoxNames(elemFilter, arrayBoxNumbers);
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
-			var lastNumber = counter[counter.length-1];
+			var lastNumber = counter[counter.length - 1];
 			takeSelectInformation(nodeId, lastNumber);
-
-
 			//tornar a pintar els selects
 			drawTableAgain(nodeId);
 
-
-			//No es pot borrar l'últim!!!!! PEnsar que fer amb això 
+			//console.log(boxNames);
 
 		}
-
+		function actualizeBoxNames(elem, arrayBoxNumbers) {
+			console.log(elem)
+			console.log(arrayBoxNumbers)
+			if (typeof elem === "object") {
+				console.log ("object")
+				arrayBoxNumbers.push(elem.boxName)
+				for (var i = 0; i < elem.elems.length; i++) {
+					actualizeBoxNames(elem.elems[i], arrayBoxNumbers);
+					console.log(elem.elems[i])
+				}
+				
+			}
+			
+			console.log(arrayBoxNumbers)
+			return arrayBoxNumbers;
+		}
 
 
 		//drawTable
@@ -4053,7 +4070,7 @@
 			document.getElementById("divSelectorRowsFilter").innerHTML = "";
 
 			ShowFilterTable(dataAttributes, paramsNodeId)
-			console.log(elemFilter);
+			//console.log(elemFilter);
 		}
 
 		//add bigger Level
@@ -4068,7 +4085,7 @@
 			elemFilter = newInsert;
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
-			var lastNumber = counter[counter.length-1];
+			var lastNumber = counter[counter.length - 1];
 			takeSelectInformation(nodeId, lastNumber);
 
 
