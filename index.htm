@@ -3745,16 +3745,22 @@
 			return false;
 		}
 
-		async function MoveDownFilterCondition(currentNumber) {
+
+		//DOwn button
+		var stop;
+		function MoveDownFilterCondition(currentNumber) {
 			event.preventDefault();
 			var nextElement = GiveNextConditionNextBoxFilterTable(elemFilter, currentNumber);
 
 			if (nextElement != -1) {
 				searchBoxName(elemFilter, currentNumber, "no", nextElement);
+				stop = false;
+
 			}
 
 
 		}
+
 		function searchBoxName(elem, iCon, fatherElement, nextElement) {
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
@@ -3762,26 +3768,29 @@
 				}
 			}
 			else {
-				if (elem == iCon) {
+				if (elem == iCon & stop == false) {
 					changeElements(fatherElement, nextElement, iCon);
+					takeSelectInformation(currentNode.id);
+					console.log(currentNode.id)
+					drawTableAgain(currentNode.id)
+					stop = true;
+
 				}
-				
+
 
 			}
-			takeSelectInformation(currentNode.id);
-			console.log(currentNode.id)
-			drawTableAgain(currentNode.id)
+
 		}
 		function changeElements(currentElement, nextElement, iCon) {
 			var arrayElements = []
-			for (var i = 0; i<currentElement.elems.length; i++) {
+			for (var i = 0; i < currentElement.elems.length; i++) {
 				if (currentElement.elems[i] != iCon) {
 					arrayElements.push(currentElement.elems[i])
 				}
 			}
-			currentElement.elems=arrayElements;
+			currentElement.elems = arrayElements;
 			nextElement.elems.push(iCon)
-			
+
 
 		}
 
@@ -3790,7 +3799,7 @@
 			return LookForNextConditionNextBoxFilterTable(elem, iCon);
 		}
 
-		//DOwn button
+
 		var LookForNextConditionNextBoxFilterTableFound;
 		function LookForNextConditionNextBoxFilterTable(elem, iCon) {
 			var next;
