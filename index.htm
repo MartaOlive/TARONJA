@@ -3747,7 +3747,7 @@
 
 
 		//DOwn button
-		var stopp;
+		var stopp, stopp2;
 		function MoveDownFilterCondition(currentNumber) {
 			event.preventDefault();
 			stopp = false;
@@ -3763,7 +3763,7 @@
 			}
 			else {
 				if (elem == iCon & stopp == false) {
-					changeElements(fatherElement, iCon);	
+					changeElements(fatherElement, iCon);
 					console.log(currentNode.id)
 					stopp = true;
 
@@ -3784,21 +3784,103 @@
 			currentElement.elems = arrayElements;
 
 			//Buscar la capsa següent
-			var boxNameFiltered=boxNames.filter(element => element.charAt(0) == "0")
+			var boxNameFiltered = boxNames.filter(element => element.charAt(0) == "0")
 			console.log(boxNameFiltered)
-			var index=boxNameFiltered.indexOf(currentElement.boxName);
+			var index = boxNameFiltered.indexOf(currentElement.boxName);
 			console.log(index)
-			if(boxNameFiltered.length!=index+1){
-				var nextBox=boxNameFiltered[index+1];
-				console.log(nextBox)
+			if (boxNameFiltered.length != index + 1) {
+				var nextBox = boxNameFiltered[index + 1];
+				console.log(nextBox);
+				//Afegir l'element en la capsa q toca
+				stopp2 = false;
+				searchBoxNameDown(elemFilter, nextBox, iCon);
+				takeSelectInformation(currentNode.id);
+				drawTableAgain(currentNode.id);
+
 			}
-			
-			//Afegir l'element en la capsa q toca
-
-			
-
 
 		}
+		function searchBoxNameDown(elem, nextBox, iCon) {
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					searchBoxNameDown(elem.elems[i], nextBox, iCon);
+				}
+				if (elem.boxName == nextBox & stopp2 == false) { //afegir a elems => elems[0,1...]
+					elem.elems.push(iCon)
+					console.log(elem)
+					stopp2 = true;
+				}
+			}
+		}
+
+
+		//Up button
+		var stopp3, stopp4;
+		function MoveUpFilterCondition(currentNumber) {
+			event.preventDefault();
+			stopp3 = false;
+			searchCurrentBoxNameUp(elemFilter, currentNumber, "no");
+
+		}
+
+		function searchCurrentBoxNameUp(elem, iCon, fatherElement) {
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					searchCurrentBoxNameUp(elem.elems[i], iCon, elem);
+				}
+			}
+			else {
+				if (elem == iCon & stopp3 == false) {
+					changeElementsUp(fatherElement, iCon);
+					console.log(currentNode.id)
+					stopp3 = true;
+
+				}
+
+
+			}
+
+		}
+
+		function changeElementsUp(currentElement, iCon) {
+			var arrayElements = []
+			for (var i = 0; i < currentElement.elems.length; i++) {
+				if (currentElement.elems[i] != iCon) {
+					arrayElements.push(currentElement.elems[i])
+				}
+			}
+			currentElement.elems = arrayElements;
+
+			//Buscar la capsa anterior
+			var boxNameFiltered = boxNames.filter(element => element.charAt(0) == "0")
+			console.log(boxNameFiltered)
+			var index = boxNameFiltered.indexOf(currentElement.boxName);
+			console.log(index)
+			if (index!=0) {
+				var previousBox = boxNameFiltered[index - 1];
+				console.log(previousBox);
+				//Afegir l'element en la capsa q toca
+				stopp4 = false;
+				searchBoxNameUp(elemFilter, previousBox, iCon);
+				takeSelectInformation(currentNode.id);
+				drawTableAgain(currentNode.id);
+
+			}
+
+		}
+		function searchBoxNameUp(elem, previousBox, iCon) {
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					searchBoxNameUp(elem.elems[i], previousBox, iCon);
+				}
+				if (elem.boxName == previousBox & stopp4 == false) { //afegir a elems => elems[0,1...]
+					elem.elems.push(iCon)
+					console.log(elem)
+					stopp4 = true;
+				}
+			}
+		}
+
 
 		// function GiveNextConditionNextBoxFilterTable(elem, iCon) {
 		// 	LookForNextConditionNextBoxFilterTableFound = 0;
@@ -3854,35 +3936,35 @@
 		// 	return -1;
 		// }
 
-		function MoveUpFilterCondition(iCon) {
-			alert(GivePreviousConditionFilterTable(elemFilter, iCon));
-			//que no es pugui moure amb els selects desplegats
-		}
+		// function MoveUpFilterCondition(iCon) {
+		// 	alert(GivePreviousConditionFilterTable(elemFilter, iCon));
+		// 	//que no es pugui moure amb els selects desplegats
+		// }
 
-		function GivePreviousConditionFilterTable(elem, iCon) {
-			LookForPreviousConditionFilterTableFound = false;
-			return LookForPreviousConditionFilterTable(elem, iCon);
-		}
+		// function GivePreviousConditionFilterTable(elem, iCon) {
+		// 	LookForPreviousConditionFilterTableFound = false;
+		// 	return LookForPreviousConditionFilterTable(elem, iCon);
+		// }
 
-		//up button
-		var LookForPreviousConditionFilterTableFound;
-		function LookForPreviousConditionFilterTable(elem, iCon) {
-			var prev;
-			if (typeof elem === "object") {
-				for (var i = elem.elems.length - 1; i >= 0; i--) {
-					prev = LookForPreviousConditionFilterTable(elem.elems[i], iCon);
-					if (-1 != prev)
-						return prev;
-				}
-			}
-			else {
-				if (elem == iCon)
-					LookForPreviousConditionFilterTableFound = true;
-				else if (LookForPreviousConditionFilterTableFound)
-					return elem;
-			}
-			return -1;
-		}
+		// //up button
+		// var LookForPreviousConditionFilterTableFound;
+		// function LookForPreviousConditionFilterTable(elem, iCon) {
+		// 	var prev;
+		// 	if (typeof elem === "object") {
+		// 		for (var i = elem.elems.length - 1; i >= 0; i--) {
+		// 			prev = LookForPreviousConditionFilterTable(elem.elems[i], iCon);
+		// 			if (-1 != prev)
+		// 				return prev;
+		// 		}
+		// 	}
+		// 	else {
+		// 		if (elem == iCon)
+		// 			LookForPreviousConditionFilterTableFound = true;
+		// 		else if (LookForPreviousConditionFilterTableFound)
+		// 			return elem;
+		// 	}
+		// 	return -1;
+		// }
 
 		//add conditions
 
