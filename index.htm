@@ -3864,6 +3864,7 @@
 				searchBoxNameUp(elemFilter, previousBox, iCon);
 				takeSelectInformation(currentNode.id);
 				drawTableAgain(currentNode.id);
+				console.log(boxNames)
 
 			}
 
@@ -3970,10 +3971,7 @@
 
 		function addNewCondition(boxName, paramsNodeId) {
 			event.preventDefault();
-
-			var elem = elemFilter;
-
-			searchFilterBoxName(boxName, elem, paramsNodeId);
+			searchFilterBoxName(boxName,  elemFilter, paramsNodeId);
 
 		}
 		function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //el elem te el boxName i tal
@@ -4006,7 +4004,12 @@
 				//console.log(boxNames)
 				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside); //filtrar ls que exsteixen ja del grup que es crearà
 				//console.log(boxNamesFiltered);//!!!!!!!!!!!!!!!!!!!!!!!!!!
-				var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
+				var nextBoxNumber ;
+				if(boxNamesFiltered.length!=0){
+					nextBoxNumber=parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
+				} else{
+					nextBoxNumber="0";
+				}
 				var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
 				//console.log(newBoxName)
 				if (elem.boxName.charAt(0) != 1) {
