@@ -204,3 +204,56 @@ function ShowFilterTable() //posar la taula on sigui //El que inicia la taula
 </div>
 </body>
 </html>
+
+
+
+function addNewElement(elem, nodeId) {
+	var elements = elem.elems;
+	var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
+	var nextNumber = parseInt(lastNumber) + 1; //per els que estan dins del 0_...
+	if (elem.boxName.charAt(0) != 0) {//grups que no són el 0 i han de crear un grup i no un element
+		var newBoxName = elem.boxName;
+		var firstNumberBoxNameInside = parseInt(elem.boxName.charAt(0)) - 1; //primer número:grup interior
+		//buscar, fer split , ordenar i lultim, mes un i afegir al boxNames
+		//console.log(boxNames)
+		var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside); //filtrar ls que exsteixen ja del grup que es crearà
+		//console.log(boxNamesFiltered);//!!!!!!!!!!!!!!!!!!!!!!!!!!
+		var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
+		var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
+		//console.log(newBoxName)
+		if (elem.boxName.charAt(0) != 1) {
+			elements.push( //lhe de posar a la mateixa altura
+				{
+					elems: [],
+					nexus: null,
+					boxName: newBoxName,
+				}
+			);
+		} else { //1 farà un 0 i per tant pot crear un nou
+			elements.push( //lhe de posar a la mateixa altura
+				{
+					elems: [nextNumber], //nivell 1
+					nexus: null,
+					boxName: newBoxName,
+				})
+		}
+		boxNames.push(newBoxName)
+		//console.log(boxNames)
+		//Si es el segon sha de crear un nivell superior i canvia el nexus q no sigui null
+	}
+	else { //dins de grup 0_...
+		elements.push(nextNumber); //add to elem array
+	}
+	if (elements.length == 2) { //change nexus if pass from one to two
+		elem.nexus = "and"
+	}
+	conditionsFilter.push({ //add to conditionsFilter
+		property: "<div id='optionsRow_" + nextNumber + "'></div>",
+		number: nextNumber
+	})
+	//agafar els valors dels selectors i actualitzar una variable externa 
+	takeSelectInformation(nodeId);
+	//console.log(elemFilter)
+	//tornar a pintar els selects
+	drawTableAgain(nodeId)
+}
