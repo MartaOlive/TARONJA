@@ -3860,7 +3860,7 @@
 		}
 
 		function GivePreviousConditionFilterTable(elem, iCon) {
-			LookForPreviousConditionFilterTableFound = false;
+			LookForPreviousConditionFilterTableFound = 0;
 			return LookForPreviousConditionFilterTable(elem, iCon);
 		}
 
@@ -3874,6 +3874,10 @@
 			prev=LookForPreviousConditionFilterTable(elem.elems[i], iCon,elem);
 			if (-1!=prev)
 				return prev;
+				if (LookForPreviousConditionFilterTableFound==1){
+				LookForPreviousConditionFilterTableFound=2;
+				break;
+			}
 		}
 	}
 	else
