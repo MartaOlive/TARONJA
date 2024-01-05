@@ -3660,7 +3660,7 @@
 
 				if (elem.nexus) {
 
-					s += '</td><td valign="middle" class="tdSelectAndOrNot"><select name="selectAndOrNot" id="selectAndOrNot_' + elem.boxName + '">';
+					s += `</td><td valign="middle" class="tdSelectAndOrNot"><select name="selectAndOrNot" onchange= "actualizeSelectChoice('${elem.boxName}')" id="selectAndOrNot_${elem.boxName}">`;
 
 					if (elem.nexus == "and") {
 						s += '<option value="and" selected>And</option>';
@@ -3745,6 +3745,25 @@
 			return false;
 		}
 
+		function actualizeSelectChoice(boxName) {
+			console.log(boxName);
+			var select =document.getElementById("selectAndOrNot_"+boxName);
+			var option=select.options[select.selectedIndex].value
+			searchGrouptoChangeSelectChoice(boxName, elemFilter, option);
+
+		}
+
+		function searchGrouptoChangeSelectChoice(boxName, elem,option) { 
+			
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					searchGrouptoChangeSelectChoice(boxName, elem.elems[i],option);
+				}
+				if (elem.boxName == boxName) { //afegir a elems => elems[0,1...]
+					elem.nexus=option;
+				}
+			}
+		}
 
 		//DOwn button
 		var stopp;
@@ -3921,11 +3940,11 @@
 				//console.log(boxNames)
 				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside); //filtrar ls que exsteixen ja del grup que es crearà
 				//console.log(boxNamesFiltered);//!!!!!!!!!!!!!!!!!!!!!!!!!!
-				var nextBoxNumber ;
-				if(boxNamesFiltered.length!=0){
-					nextBoxNumber=parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
-				} else{
-					nextBoxNumber="0";
+				var nextBoxNumber;
+				if (boxNamesFiltered.length != 0) {
+					nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
+				} else {
+					nextBoxNumber = "0";
 				}
 				var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
 				//console.log(newBoxName)
@@ -4031,7 +4050,7 @@
 			var index = elem.elems.indexOf(parseInt(numberOfElement));
 			elem.elems.splice(index, 1); //eliminar de elemFilter	
 			if (elem.elems.length == 1) { //només quedi un, q es tregui el nexe
-				elem.nexus =null;
+				elem.nexus = null;
 			}
 
 			if (elem.elems.length == 0) {
@@ -4054,7 +4073,7 @@
 			drawTableAgain(nodeId);
 			//console.log(counter);
 		}
-		
+
 		function searchGroupToDelete(numberOfElement, elem, nodeId, fatherElem) { //el elem te el boxName i tal
 			var element;
 			if (typeof elem === "object") {
@@ -4077,8 +4096,8 @@
 					newArray.push(fatherElem.elems[i])
 				}
 			}
-			if (newArray.length==1){ //si és l'ultim que elimini el nexe
-				fatherElem.nexus=null;
+			if (newArray.length == 1) { //si és l'ultim que elimini el nexe
+				fatherElem.nexus = null;
 			}
 			fatherElem.elems = newArray;
 			//console.log(elemFilter)
