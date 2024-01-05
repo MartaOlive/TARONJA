@@ -4030,28 +4030,18 @@
 			//console.log(elem);
 			var index = elem.elems.indexOf(parseInt(numberOfElement));
 			elem.elems.splice(index, 1); //eliminar de elemFilter	
+			if (elem.elems.length == 1) { //només quedi un, q es tregui el nexe
+				elem.nexus =null;
+			}
 
 			if (elem.elems.length == 0) {
 				deleteGroup(elem.boxName, currentNode.id)
 			}
-			//eliminar de elemFilter	
-			//console.log(elemFilter);
-			//borrarlo del counter
-			// var newCounter = counter.filter(element=>element!=numberOfElement);
-			// counter=newCounter;
-
-
 
 			//agafar els valors dels selectors i actualitzar una variable externa 
-
 			takeSelectInformation(nodeId);
-
-
 			//tornar a pintar els selects
 			drawTableAgain(nodeId);
-
-
-			//No es pot borrar l'últim!!!!! PEnsar que fer amb això 
 
 		}
 		//delete group
@@ -4086,6 +4076,9 @@
 				if (fatherElem.elems[i].boxName != elem.boxName) {
 					newArray.push(fatherElem.elems[i])
 				}
+			}
+			if (newArray.length==1){ //si és l'ultim que elimini el nexe
+				fatherElem.nexus=null;
 			}
 			fatherElem.elems = newArray;
 			//console.log(elemFilter)
