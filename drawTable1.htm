@@ -3,8 +3,7 @@
 <script>
 "use strict"
 
-////////////////////////////////////NOVA TAULAAAAAAAAAAAAAAAAAAAAA////////////////////
-var conditionsFilter=[ //valors de la taula
+var conditionsFilter=[
 	{property: "A"},
 	{property: "B"},
 	{property: "C"},
@@ -13,7 +12,7 @@ var conditionsFilter=[ //valors de la taula
 	{property: "F"}
 ]
 
-var elemFilter={ //estctura de la taula
+var elemFilter={
 	elems: [
 		{
 			elems: [
@@ -60,6 +59,8 @@ function ChangeConditionFilterTable(elem, iConNew, iConCurrent)
 	return false;
 }
 
+
+
 function MoveDownFilterCondition(iCon)
 {
 	alert(GiveNextConditionNextBoxFilterTable(elemFilter, iCon));	
@@ -71,7 +72,6 @@ function GiveNextConditionNextBoxFilterTable(elem, iCon)
 	return LookForNextConditionNextBoxFilterTable(elem, iCon);
 }
 
-//DOwn button
 var LookForNextConditionNextBoxFilterTableFound;
 function LookForNextConditionNextBoxFilterTable(elem, iCon)
 {
@@ -103,7 +103,6 @@ function GiveNextConditionFilterTable(elem, iCon)
 	LookForNextConditionFilterTableFound=false;
 	return LookForNextConditionFilterTable(elem, iCon);
 }
- 
 
 var LookForNextConditionFilterTableFound;
 function LookForNextConditionFilterTable(elem, iCon)
@@ -127,10 +126,6 @@ function LookForNextConditionFilterTable(elem, iCon)
 	return -1;
 }
 
-
-
-
-//up button
 function MoveUpFilterCondition(iCon)
 {
 	alert(GivePreviousConditionFilterTable(elemFilter, iCon));
@@ -142,8 +137,7 @@ function GivePreviousConditionFilterTable(elem, iCon)
 	return LookForPreviousConditionFilterTable(elem, iCon);
 }
 
-
-var LookForPreviousConditionFilterTableFound; 
+var LookForPreviousConditionFilterTableFound;
 function LookForPreviousConditionFilterTable(elem, iCon)
 {
 	var prev;
@@ -170,7 +164,7 @@ function GetFilterCondition(elem)
 	return conditionsFilter[elem].property + '<button onClick="MoveDownFilterCondition(' + elem + ')">Down</button> <button onClick="MoveUpFilterCondition(' + elem + ')">Up</button>';
 }
 
-function GetFilterTable(elem) //COnstrucio taula //El segon, serà cridat per el ShowFilter
+function GetFilterTable(elem)
 {
 	var s='<table border="1"><tr><td>';
 	if (typeof elem === "object")
@@ -189,25 +183,14 @@ function GetFilterTable(elem) //COnstrucio taula //El segon, serà cridat per el
 	return s;
 }
 
-function ShowFilterTable() //posar la taula on sigui //El que inicia la taula
+function ShowFilterTable()
 {
 	document.getElementById("tableFilter").innerHTML=GetFilterTable(elemFilter);
 }
 
 </script>
 </head>
- <body ></body>
-	<onLoad="ShowFilterTable();"> 
+<body onLoad="ShowFilterTable();">
 <div id="tableFilter"></div>
-<div>
-	<table>
-		<tr>
-			<td></tr>
-		</tr>
-	</table>
-</div>
 </body>
 </html>
-
-
-

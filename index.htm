@@ -3754,11 +3754,8 @@
 
 			if (nextElement != -1) {
 				searchBoxName(elemFilter, currentNumber, "no", nextElement);
-				stopp = false;
-
+				 stopp= false;
 			}
-
-
 		}
 
 		function searchBoxName(elem, iCon, fatherElement, nextElement) {
@@ -3775,8 +3772,6 @@
 					stopp = true;
 
 				}
-
-
 			}
 
 		}
@@ -3787,7 +3782,7 @@
 					arrayElements.push(currentElement.elems[i]);
 				}
 			}
-			var nodeId=currentNode.id;
+			var nodeId = currentNode.id;
 			currentElement.elems = arrayElements;
 			nextElement.elems.push(iCon);
 			if (currentElement.elems.length == 0) {
@@ -3799,1828 +3794,1836 @@
 
 			}
 		}
-			function GiveNextConditionNextBoxFilterTable(elem, iCon) {
-				LookForNextConditionNextBoxFilterTableFound = 0;
-				return LookForNextConditionNextBoxFilterTable(elem, iCon);
+		function GiveNextConditionNextBoxFilterTable(elem, iCon) {
+			LookForNextConditionNextBoxFilterTableFound = 0;
+			return LookForNextConditionNextBoxFilterTable(elem, iCon);
+		}
+
+
+		var LookForNextConditionNextBoxFilterTableFound;
+		function LookForNextConditionNextBoxFilterTable(elem, iCon) {
+			var next;
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					next = LookForNextConditionNextBoxFilterTable(elem.elems[i], iCon);
+					if (-1 != next)
+						return elem.elems[i];
+					if (LookForNextConditionNextBoxFilterTableFound == 1) {
+						LookForNextConditionNextBoxFilterTableFound = 2;
+						break;
+					}
+				}
+			}
+			else {
+				if (elem == iCon)
+					LookForNextConditionNextBoxFilterTableFound = 1;
+				else if (LookForNextConditionNextBoxFilterTableFound != 0)
+					return elem; //perque necessito el boxName
+			}
+			return -1;
+		}
+
+		function GiveNextConditionFilterTable(elem, iCon) {
+			LookForNextConditionFilterTableFound = false;
+			return LookForNextConditionFilterTable(elem, iCon);
+		}
+
+
+		var LookForNextConditionFilterTableFound;
+		function LookForNextConditionFilterTable(elem, iCon) {
+			var next;
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					next = LookForNextConditionFilterTable(elem.elems[i], iCon);
+					if (-1 != next)
+						return next;
+				}
+			}
+			else {
+				if (elem == iCon)
+					LookForNextConditionFilterTableFound = true;
+				else if (LookForNextConditionFilterTableFound)
+					return elem;
+			}
+			return -1;
+		}
+
+
+		//up button
+		function MoveUpFilterCondition(iCon) {
+			var previousElement = GivePreviousConditionFilterTable(elemFilter, iCon,"no");
+			console.log(previousElement)
+			if (previousElement != -1) {
+				searchBoxName(elemFilter, iCon, "no", previousElement);
+				stopp = false;
+			}
+		}
+
+		function GivePreviousConditionFilterTable(elem, iCon) {
+			LookForPreviousConditionFilterTableFound = false;
+			return LookForPreviousConditionFilterTable(elem, iCon);
+		}
+
+		var LookForPreviousConditionFilterTableFound;
+		function LookForPreviousConditionFilterTable(elem, iCon,parent)
+{
+	var prev;
+	if (typeof elem === "object")
+	{
+		for (var i=elem.elems.length-1; i>=0; i--){
+			prev=LookForPreviousConditionFilterTable(elem.elems[i], iCon,elem);
+			if (-1!=prev)
+				return prev;
+		}
+	}
+	else
+	{
+		if (elem==iCon)
+			LookForPreviousConditionFilterTableFound=true;
+		else if (LookForPreviousConditionFilterTableFound)
+			return parent; //necessito el boxName
+	}
+	return -1;
+}
+
+		//add conditions
+
+		function addNewCondition(boxName, paramsNodeId) {
+			event.preventDefault();
+
+			var elem = elemFilter;
+
+			searchFilterBoxName(boxName, elem, paramsNodeId);
+
+		}
+		function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //el elem te el boxName i tal
+			var element;
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
+				}
+				if (elem.boxName == boxNamee) { //afegir a elems => elems[0,1...]
+					addNewElement(elem, paramsNodeId);
+				}
+			}
+			else {
+				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
 			}
 
+			//console.log(elemFilter)
+		}
 
-			var LookForNextConditionNextBoxFilterTableFound;
-			function LookForNextConditionNextBoxFilterTable(elem, iCon) {
-				var next;
-				if (typeof elem === "object") {
-					for (var i = 0; i < elem.elems.length; i++) {
-						next = LookForNextConditionNextBoxFilterTable(elem.elems[i], iCon);
-						if (-1 != next)
-							return elem.elems[i];
-						if (LookForNextConditionNextBoxFilterTableFound == 1) {
-							LookForNextConditionNextBoxFilterTableFound = 2;
-							break;
+		function addNewElement(elem, nodeId) {
+			var elements = elem.elems;
+			var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
+			var nextNumber = parseInt(lastNumber) + 1; //per els que estan dins del 0_...
+			if (elem.boxName.charAt(0) != 0) {//grups que no són el 0 i han de crear un grup i no un element
+				var newBoxName = elem.boxName;
+				var firstNumberBoxNameInside = parseInt(elem.boxName.charAt(0)) - 1; //primer número:grup interior
+				//buscar, fer split , ordenar i lultim, mes un i afegir al boxNames
+				//console.log(boxNames)
+				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside); //filtrar ls que exsteixen ja del grup que es crearà
+				//console.log(boxNamesFiltered);//!!!!!!!!!!!!!!!!!!!!!!!!!!
+				var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
+				var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
+				//console.log(newBoxName)
+				if (elem.boxName.charAt(0) != 1) {
+					elements.push( //lhe de posar a la mateixa altura
+						{
+							elems: [],
+							nexus: null,
+							boxName: newBoxName,
 						}
+					);
+				} else { //1 farà un 0 i per tant pot crear un nou
+					elements.push( //lhe de posar a la mateixa altura
+						{
+							elems: [nextNumber], //nivell 1
+							nexus: null,
+							boxName: newBoxName,
+						})
+				}
+				boxNames.push(newBoxName)
+				//console.log(boxNames)
+				//Si es el segon sha de crear un nivell superior i canvia el nexus q no sigui null
+			}
+			else { //dins de grup 0_...
+				elements.push(nextNumber); //add to elem array
+			}
+			if (elements.length == 2) { //change nexus if pass from one to two
+				elem.nexus = "and"
+			}
+			conditionsFilter.push({ //add to conditionsFilter
+				property: "<div id='optionsRow_" + nextNumber + "'></div>",
+				number: nextNumber
+			})
+			//agafar els valors dels selectors i actualitzar una variable externa 
+			takeSelectInformation(nodeId);
+			//console.log(elemFilter)
+			//tornar a pintar els selects
+			drawTableAgain(nodeId)
+		}
+
+		function takeSelectInformation(nodeId) {
+			var optionsRow;
+			var selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
+			var selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
+			var arrayInfo;
+			infoFilter = [];
+			for (var i = 0; i < counter.length; i++) {
+				//console.log(counter[i]);
+				optionsRow = document.getElementById("optionsRow_" + counter[i]);
+				arrayInfo = [];
+				if (optionsRow != null) {
+					selectorProperty = document.getElementById("selectorProperty_" + counter[i]);
+					selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
+					selectorCondition = document.getElementById("selectorCondition_" + counter[i]);
+					selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
+					arrayInfo.push(counter[i]); //com que estan desordenats, és necessari per posar cada info al seu lloc al pintar el select
+					arrayInfo.push(selectorPropertyValue, selectorConditionValue);
+					//console.log(selectorConditionValue)
+					if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
+						textInputInterval1 = document.getElementById("textInputInterval1_" + counter[i]);
+						textInputInterval2 = document.getElementById("textInputInterval2_" + counter[i]);
+						textInputInterval1Value = textInputInterval1.value;
+						textInputInterval2Value = textInputInterval2.value;
+						arrayInfo.push(textInputInterval1Value);
+						arrayInfo.push(textInputInterval2Value);
+						//console.log("interval: " + textInputInterval1Value + ", " + textInputInterval2Value)
+					} else {
+						textInput = document.getElementById("textInput_" + counter[i]);
+						textInputValue = textInput.value;
+						arrayInfo.push(textInputValue);
+						//console.log("Simple: " + textInputValue)
 					}
 				}
-				else {
-					if (elem == iCon)
-						LookForNextConditionNextBoxFilterTableFound = 1;
-					else if (LookForNextConditionNextBoxFilterTableFound != 0)
-						return elem; //perque necessito el boxName
-				}
-				return -1;
+				infoFilter.push(arrayInfo);
+				//console.log("infoFilter")
+				//console.log(infoFilter)
 			}
+		}
 
-			function GiveNextConditionFilterTable(elem, iCon) {
-				LookForNextConditionFilterTableFound = false;
-				return LookForNextConditionFilterTable(elem, iCon);
-			}
+		//delete element
 
-
-			var LookForNextConditionFilterTableFound;
-			function LookForNextConditionFilterTable(elem, iCon) {
-				var next;
-				if (typeof elem === "object") {
-					for (var i = 0; i < elem.elems.length; i++) {
-						next = LookForNextConditionFilterTable(elem.elems[i], iCon);
-						if (-1 != next)
-							return next;
-					}
+		function DeleteElementButton(numberOfElement) {
+			event.preventDefault()
+			searchElementToDelete(numberOfElement, elemFilter, currentNode.id);
+		}
+		function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //el elem te el boxName i tal
+			var element;
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					element = searchElementToDelete(numberOfElement, elem.elems[i], paramsNodeId);
 				}
-				else {
-					if (elem == iCon)
-						LookForNextConditionFilterTableFound = true;
-					else if (LookForNextConditionFilterTableFound)
-						return elem;
-				}
-				return -1;
-			}
-
-			function MoveUpFilterCondition(iCon) {
-				alert(GivePreviousConditionFilterTable(elemFilter, iCon));
-				//que no es pugui moure amb els selects desplegats
-			}
-
-			function GivePreviousConditionFilterTable(elem, iCon) {
-				LookForPreviousConditionFilterTableFound = false;
-				return LookForPreviousConditionFilterTable(elem, iCon);
-			}
-
-			//up button
-			var LookForPreviousConditionFilterTableFound;
-			function LookForPreviousConditionFilterTable(elem, iCon) {
-				var prev;
-				if (typeof elem === "object") {
-					for (var i = elem.elems.length - 1; i >= 0; i--) {
-						prev = LookForPreviousConditionFilterTable(elem.elems[i], iCon);
-						if (-1 != prev)
-							return prev;
-					}
-				}
-				else {
-					if (elem == iCon)
-						LookForPreviousConditionFilterTableFound = true;
-					else if (LookForPreviousConditionFilterTableFound)
-						return elem;
-				}
-				return -1;
-			}
-
-			//add conditions
-
-			function addNewCondition(boxName, paramsNodeId) {
-				event.preventDefault();
-
-				var elem = elemFilter;
-
-				searchFilterBoxName(boxName, elem, paramsNodeId);
-
-			}
-			function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //el elem te el boxName i tal
-				var element;
-				if (typeof elem === "object") {
-					for (var i = 0; i < elem.elems.length; i++) {
-						searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
-					}
-					if (elem.boxName == boxNamee) { //afegir a elems => elems[0,1...]
-						addNewElement(elem, paramsNodeId);
-					}
-				}
-				else {
-					//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
-				}
-
-				//console.log(elemFilter)
-			}
-
-			function addNewElement(elem, nodeId) {
-				var elements = elem.elems;
-				var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
-				var nextNumber = parseInt(lastNumber) + 1; //per els que estan dins del 0_...
-				if (elem.boxName.charAt(0) != 0) {//grups que no són el 0 i han de crear un grup i no un element
-					var newBoxName = elem.boxName;
-					var firstNumberBoxNameInside = parseInt(elem.boxName.charAt(0)) - 1; //primer número:grup interior
-					//buscar, fer split , ordenar i lultim, mes un i afegir al boxNames
-					//console.log(boxNames)
-					var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside); //filtrar ls que exsteixen ja del grup que es crearà
-					//console.log(boxNamesFiltered);//!!!!!!!!!!!!!!!!!!!!!!!!!!
-					var nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
-					var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
-					//console.log(newBoxName)
-					if (elem.boxName.charAt(0) != 1) {
-						elements.push( //lhe de posar a la mateixa altura
-							{
-								elems: [],
-								nexus: null,
-								boxName: newBoxName,
-							}
-						);
-					} else { //1 farà un 0 i per tant pot crear un nou
-						elements.push( //lhe de posar a la mateixa altura
-							{
-								elems: [nextNumber], //nivell 1
-								nexus: null,
-								boxName: newBoxName,
-							})
-					}
-					boxNames.push(newBoxName)
-					//console.log(boxNames)
-					//Si es el segon sha de crear un nivell superior i canvia el nexus q no sigui null
-				}
-				else { //dins de grup 0_...
-					elements.push(nextNumber); //add to elem array
-				}
-				if (elements.length == 2) { //change nexus if pass from one to two
-					elem.nexus = "and"
-				}
-				conditionsFilter.push({ //add to conditionsFilter
-					property: "<div id='optionsRow_" + nextNumber + "'></div>",
-					number: nextNumber
-				})
-				//agafar els valors dels selectors i actualitzar una variable externa 
-				takeSelectInformation(nodeId);
-				//console.log(elemFilter)
-				//tornar a pintar els selects
-				drawTableAgain(nodeId)
-			}
-
-			function takeSelectInformation(nodeId) {
-				var optionsRow;
-				var selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
-				var selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
-				var arrayInfo;
-				infoFilter = [];
-				for (var i = 0; i < counter.length; i++) {
-					//console.log(counter[i]);
-					optionsRow = document.getElementById("optionsRow_" + counter[i]);
-					arrayInfo = [];
-					if (optionsRow != null) {
-						selectorProperty = document.getElementById("selectorProperty_" + counter[i]);
-						selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
-						selectorCondition = document.getElementById("selectorCondition_" + counter[i]);
-						selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
-						arrayInfo.push(counter[i]); //com que estan desordenats, és necessari per posar cada info al seu lloc al pintar el select
-						arrayInfo.push(selectorPropertyValue, selectorConditionValue);
-						//console.log(selectorConditionValue)
-						if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
-							textInputInterval1 = document.getElementById("textInputInterval1_" + counter[i]);
-							textInputInterval2 = document.getElementById("textInputInterval2_" + counter[i]);
-							textInputInterval1Value = textInputInterval1.value;
-							textInputInterval2Value = textInputInterval2.value;
-							arrayInfo.push(textInputInterval1Value);
-							arrayInfo.push(textInputInterval2Value);
-							//console.log("interval: " + textInputInterval1Value + ", " + textInputInterval2Value)
-						} else {
-							textInput = document.getElementById("textInput_" + counter[i]);
-							textInputValue = textInput.value;
-							arrayInfo.push(textInputValue);
-							//console.log("Simple: " + textInputValue)
-						}
-					}
-					infoFilter.push(arrayInfo);
-					//console.log("infoFilter")
-					//console.log(infoFilter)
+				if (elem.elems.includes(numberOfElement)) { //afegir a elems => elems[0,1...]
+					DeleteElementInElemFilter(elem, paramsNodeId, numberOfElement);
 				}
 			}
-
-			//delete element
-
-			function DeleteElementButton(numberOfElement) {
-				event.preventDefault()
-				searchElementToDelete(numberOfElement, elemFilter, currentNode.id);
+			else {
+				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
 			}
-			function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //el elem te el boxName i tal
-				var element;
-				if (typeof elem === "object") {
-					for (var i = 0; i < elem.elems.length; i++) {
-						element = searchElementToDelete(numberOfElement, elem.elems[i], paramsNodeId);
-					}
-					if (elem.elems.includes(numberOfElement)) { //afegir a elems => elems[0,1...]
-						DeleteElementInElemFilter(elem, paramsNodeId, numberOfElement);
-					}
-				}
-				else {
-					//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
-				}
+		}
+		function DeleteElementInElemFilter(elem, nodeId, numberOfElement) {
+			//no borrar del conditions filter perque es la posicio
+			//console.log(elem);
+			var index = elem.elems.indexOf(parseInt(numberOfElement));
+			elem.elems.splice(index, 1);
+
+			if (elem.elems.length == 0) {
+				deleteGroup(elem.boxName, currentNode.id)
 			}
-			function DeleteElementInElemFilter(elem, nodeId, numberOfElement) {
-				//no borrar del conditions filter perque es la posicio
-				//console.log(elem);
-				var index = elem.elems.indexOf(parseInt(numberOfElement));
-				elem.elems.splice(index, 1);
+			//eliminar de elemFilter	
+			//console.log(elemFilter);
+			//borrarlo del counter
+			// var newCounter = counter.filter(element=>element!=numberOfElement);
+			// counter=newCounter;
 
-				if (elem.elems.length == 0) {
-					deleteGroup(elem.boxName, currentNode.id)
+
+
+			//agafar els valors dels selectors i actualitzar una variable externa 
+
+			takeSelectInformation(nodeId);
+
+
+			//tornar a pintar els selects
+			drawTableAgain(nodeId);
+
+
+			//No es pot borrar l'últim!!!!! PEnsar que fer amb això 
+
+		}
+		//delete group
+		function deleteGroup(numberOfElement, nodeId) {
+			event.preventDefault();
+			searchGroupToDelete(numberOfElement, elemFilter, nodeId, "no");
+			//agafar els valors dels selectors i actualitzar una variable externa 
+			takeSelectInformation(nodeId);
+			//tornar a pintar els selects
+			drawTableAgain(nodeId);
+		}
+
+		function searchGroupToDelete(numberOfElement, elem, nodeId, fatherElem) { //el elem te el boxName i tal
+
+			var element;
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++) {
+					element = searchGroupToDelete(numberOfElement, elem.elems[i], nodeId, elem);
 				}
-				//eliminar de elemFilter	
-				//console.log(elemFilter);
-				//borrarlo del counter
-				// var newCounter = counter.filter(element=>element!=numberOfElement);
-				// counter=newCounter;
+				if (elem.boxName == numberOfElement) { //afegir a elems => elems[0,1...]
+					DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem);
 
-
-
-				//agafar els valors dels selectors i actualitzar una variable externa 
-
-				takeSelectInformation(nodeId);
-
-
-				//tornar a pintar els selects
-				drawTableAgain(nodeId);
-
-
-				//No es pot borrar l'últim!!!!! PEnsar que fer amb això 
-
-			}
-			//delete group
-			function deleteGroup(numberOfElement, nodeId) {
-				event.preventDefault();
-				searchGroupToDelete(numberOfElement, elemFilter, nodeId, "no");
-				//agafar els valors dels selectors i actualitzar una variable externa 
-				takeSelectInformation(nodeId);
-				//tornar a pintar els selects
-				drawTableAgain(nodeId);
-			}
-
-			function searchGroupToDelete(numberOfElement, elem, nodeId, fatherElem) { //el elem te el boxName i tal
-
-				var element;
-				if (typeof elem === "object") {
-					for (var i = 0; i < elem.elems.length; i++) {
-						element = searchGroupToDelete(numberOfElement, elem.elems[i], nodeId, elem);
-					}
-					if (elem.boxName == numberOfElement) { //afegir a elems => elems[0,1...]
-						DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem);
-
-					}
-				}
-				else {
-					//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
 				}
 			}
-			function DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem) {
-				var newArray = [];
-				//console.log(fatherElem)
-				for (var i = 0; i < fatherElem.elems.length; i++) {
-					if (fatherElem.elems[i].boxName != elem.boxName) {
-						newArray.push(fatherElem.elems[i])
-					}
+			else {
+				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
+			}
+		}
+		function DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem) {
+			var newArray = [];
+			//console.log(fatherElem)
+			for (var i = 0; i < fatherElem.elems.length; i++) {
+				if (fatherElem.elems[i].boxName != elem.boxName) {
+					newArray.push(fatherElem.elems[i])
 				}
-				fatherElem.elems = newArray;
-				//console.log(elemFilter)
-
-				//borrar del boxNames (Si hi ha grups a dins tmb s'han de borrar)
-				var arrayBoxNumbers = [];
-				boxNames = actualizeBoxNames(elemFilter, arrayBoxNumbers);
-
-
-
-				//console.log(counter);
-
 			}
-			function actualizeBoxNames(elem, arrayBoxNumbers) {
-				//console.log(elem)
-				//console.log(arrayBoxNumbers)
-				if (typeof elem === "object") {
-					//console.log("object")
-					arrayBoxNumbers.push(elem.boxName)
-					for (var i = 0; i < elem.elems.length; i++) {
-						actualizeBoxNames(elem.elems[i], arrayBoxNumbers);
-						//console.log(elem.elems[i])
-					}
+			fatherElem.elems = newArray;
+			//console.log(elemFilter)
 
+			//borrar del boxNames (Si hi ha grups a dins tmb s'han de borrar)
+			var arrayBoxNumbers = [];
+			boxNames = actualizeBoxNames(elemFilter, arrayBoxNumbers);
+
+
+
+			//console.log(counter);
+
+		}
+		function actualizeBoxNames(elem, arrayBoxNumbers) {
+			//console.log(elem)
+			//console.log(arrayBoxNumbers)
+			if (typeof elem === "object") {
+				//console.log("object")
+				arrayBoxNumbers.push(elem.boxName)
+				for (var i = 0; i < elem.elems.length; i++) {
+					actualizeBoxNames(elem.elems[i], arrayBoxNumbers);
+					//console.log(elem.elems[i])
 				}
 
-				//console.log(arrayBoxNumbers)
-				return arrayBoxNumbers;
 			}
 
-
-			//drawTable
-			function drawTableAgain(paramsNodeId) {
-				var data = networkNodes.get(paramsNodeId).STAdata;
-				var dataAttributes = getDataAttributes(data);
-				document.getElementById("divSelectorRowsFilter").innerHTML = "";
-
-				ShowFilterTable(dataAttributes, paramsNodeId)
-				//console.log(elemFilter);
-				//console.log(counter);
-			}
-
-			//add bigger Level
-			function biggestLevelButton(boxName, nodeId) {
-				event.preventDefault();
-				var newBoxName = (parseInt(boxName.charAt(0)) + 1) + "_0";
-
-				var newInsert = { elems: [], nexus: null, boxName: newBoxName };
-				var copy = Object.assign(elemFilter);
-				newInsert.elems.push(copy);
-				boxNames.push(newBoxName);
-				elemFilter = newInsert;
-
-				//agafar els valors dels selectors i actualitzar una variable externa 
-
-				takeSelectInformation(nodeId);
+			//console.log(arrayBoxNumbers)
+			return arrayBoxNumbers;
+		}
 
 
-				drawTableAgain(nodeId)
+		//drawTable
+		function drawTableAgain(paramsNodeId) {
+			var data = networkNodes.get(paramsNodeId).STAdata;
+			var dataAttributes = getDataAttributes(data);
+			document.getElementById("divSelectorRowsFilter").innerHTML = "";
 
-			}
+			ShowFilterTable(dataAttributes, paramsNodeId)
+			//console.log(elemFilter);
+			//console.log(counter);
+		}
 
-			//function addCondition(condition, nodeId) {
-			// 	event.preventDefault();
-			// 	console.log(condition);
-			// 	var divGraphicOrder_1 = document.getElementById("divGraphicOrder_2_" + nodeId);
-			// 	var divCondition = document.createElement("div");
-			// 	divCondition.innerHTML = condition;
-			// 	divCondition.setAttribute("class", "divInSelectedGraphic_condition divInSelectedGraphic");
-			// 	divCondition.value = condition;
-			// 	divGraphicOrder_1.appendChild(divCondition);
-			// 	divCondition.draggable = true;
-			// 	divGraphicOrder_1.appendChild(newDiv);
+		//add bigger Level
+		function biggestLevelButton(boxName, nodeId) {
+			event.preventDefault();
+			var newBoxName = (parseInt(boxName.charAt(0)) + 1) + "_0";
 
-			// }
+			var newInsert = { elems: [], nexus: null, boxName: newBoxName };
+			var copy = Object.assign(elemFilter);
+			newInsert.elems.push(copy);
+			boxNames.push(newBoxName);
+			elemFilter = newInsert;
 
-			//Elements draggables (Part gràfica del FilterRow)
-			// var draggedElement = null;
-			// var items;
+			//agafar els valors dels selectors i actualitzar una variable externa 
 
-			// function addDraggableFunctions() {
-			// 	items = document.querySelectorAll(".divGraphicOrder2  .divInSelectedGraphic");
-
-			// 	items.forEach(function (item) {
-			// 		item.addEventListener("dragstart", handleDragStart);
-			// 		item.addEventListener("dragenter", handleDragEnter);
-			// 		item.addEventListener("dragover", handleDragOver);
-			// 		item.addEventListener("dragleave", handleDragLeave);
-			// 		item.addEventListener("drop", handleDrop);
-			// 		item.addEventListener("dragend", handleDragEnd);
-			// 	});
-			// }
-
-			// function handleDragStart(e) {
-			// 	//this.style.opacity = "0.8";
-			// 	draggedElement = this; //This es el Div sencer
-			// 	console.log(this);
-
-			// 	e.dataTransfer.effectAllowed = "move"; //https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
-			// 	e.dataTransfer.setData("text", this.innerHTML); //
-			// 	e.dataTransfer.setData("id", this.id); //data-id
-			// 	e.dataTransfer.setData("value", this.value); //data-value
-			// }
-
-			// function handleDragOver(e) {
-			// 	e.preventDefault();
-
-			// 	e.dataTransfer.dropEffect = "move";
-			// 	return false;
-			// }
-
-			// function handleDragEnter(e) {
-			// 	//this.classList.add("dragover");
-			// }
-
-			// function handleDragLeave(e) {
-			// 	//this.classList.remove("dragover");
-			// }
-
-			// function handleDrop(e) {
-			// 	// if (e.stopPropagation)
-			// 	// 	e.stopPropagation();
-
-			// 	if (draggedElement != this) {
-			// 		draggedElement.innerHTML = this.innerHTML;
-			// 		draggedElement.setAttribute("text", this.innerHTML);
-			// 		draggedElement.setAttribute("id", this.id);
-			// 		draggedElement.setAttribute("value", this.value);
-
-			// 		var replacedItem = e.dataTransfer.getData("text");
-			// 		var replacedValue= e.dataTransfer.getData("value");
-			// 		var replacedId= e.dataTransfer.getData("id");
-
-			// 		this.innerHTML = replacedItem;
-
-			// 		this.setAttribute("text", replacedItem);
-			// 		this.setAttribute("id",replacedId);
-			// 		this.setAttribute("value", replacedValue);
-			// 	}
-
-			// 	return false;
-			// }
-
-			// function handleDragEnd(e) {
-			// 	this.style.opacity = "1";
-
-			// 	items.forEach(function (item) {
-			// 		item.classList.remove("dragover");
-			// 	});
-			// }
-
-			////Fi draggables
+			takeSelectInformation(nodeId);
 
 
+			drawTableAgain(nodeId)
+
+		}
+
+		//function addCondition(condition, nodeId) {
+		// 	event.preventDefault();
+		// 	console.log(condition);
+		// 	var divGraphicOrder_1 = document.getElementById("divGraphicOrder_2_" + nodeId);
+		// 	var divCondition = document.createElement("div");
+		// 	divCondition.innerHTML = condition;
+		// 	divCondition.setAttribute("class", "divInSelectedGraphic_condition divInSelectedGraphic");
+		// 	divCondition.value = condition;
+		// 	divGraphicOrder_1.appendChild(divCondition);
+		// 	divCondition.draggable = true;
+		// 	divGraphicOrder_1.appendChild(newDiv);
+
+		// }
+
+		//Elements draggables (Part gràfica del FilterRow)
+		// var draggedElement = null;
+		// var items;
+
+		// function addDraggableFunctions() {
+		// 	items = document.querySelectorAll(".divGraphicOrder2  .divInSelectedGraphic");
+
+		// 	items.forEach(function (item) {
+		// 		item.addEventListener("dragstart", handleDragStart);
+		// 		item.addEventListener("dragenter", handleDragEnter);
+		// 		item.addEventListener("dragover", handleDragOver);
+		// 		item.addEventListener("dragleave", handleDragLeave);
+		// 		item.addEventListener("drop", handleDrop);
+		// 		item.addEventListener("dragend", handleDragEnd);
+		// 	});
+		// }
+
+		// function handleDragStart(e) {
+		// 	//this.style.opacity = "0.8";
+		// 	draggedElement = this; //This es el Div sencer
+		// 	console.log(this);
+
+		// 	e.dataTransfer.effectAllowed = "move"; //https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
+		// 	e.dataTransfer.setData("text", this.innerHTML); //
+		// 	e.dataTransfer.setData("id", this.id); //data-id
+		// 	e.dataTransfer.setData("value", this.value); //data-value
+		// }
+
+		// function handleDragOver(e) {
+		// 	e.preventDefault();
+
+		// 	e.dataTransfer.dropEffect = "move";
+		// 	return false;
+		// }
+
+		// function handleDragEnter(e) {
+		// 	//this.classList.add("dragover");
+		// }
+
+		// function handleDragLeave(e) {
+		// 	//this.classList.remove("dragover");
+		// }
+
+		// function handleDrop(e) {
+		// 	// if (e.stopPropagation)
+		// 	// 	e.stopPropagation();
+
+		// 	if (draggedElement != this) {
+		// 		draggedElement.innerHTML = this.innerHTML;
+		// 		draggedElement.setAttribute("text", this.innerHTML);
+		// 		draggedElement.setAttribute("id", this.id);
+		// 		draggedElement.setAttribute("value", this.value);
+
+		// 		var replacedItem = e.dataTransfer.getData("text");
+		// 		var replacedValue= e.dataTransfer.getData("value");
+		// 		var replacedId= e.dataTransfer.getData("id");
+
+		// 		this.innerHTML = replacedItem;
+
+		// 		this.setAttribute("text", replacedItem);
+		// 		this.setAttribute("id",replacedId);
+		// 		this.setAttribute("value", replacedValue);
+		// 	}
+
+		// 	return false;
+		// }
+
+		// function handleDragEnd(e) {
+		// 	this.style.opacity = "1";
+
+		// 	items.forEach(function (item) {
+		// 		item.classList.remove("dragover");
+		// 	});
+		// }
+
+		////Fi draggables
 
 
 
-			function GetSelectorsForRowFilter(nodeId) {
-				var divSelectorStructure;
-				divSelectorStructure = `<div id=selectorRowsContainer>
+
+
+		function GetSelectorsForRowFilter(nodeId) {
+			var divSelectorStructure;
+			divSelectorStructure = `<div id=selectorRowsContainer>
 
 				<div id='divSelectorRowsFilter'></div></div>`;
-				return divSelectorStructure;
-			}
+			return divSelectorStructure;
+		}
 
-			function GetHTMLTable(data, dataAttributesInput, rowNumbers, selectedEntityId) {
-				var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
-				var cdns = [], needhref = [], record, cell, dataAttribute;
-				var dataAttributesArray = Object.keys(dataAttributes);
+		function GetHTMLTable(data, dataAttributesInput, rowNumbers, selectedEntityId) {
+			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
+			var cdns = [], needhref = [], record, cell, dataAttribute;
+			var dataAttributesArray = Object.keys(dataAttributes);
 
-				cdns.push("<table class='tablesmall'><tr>");
-				if (rowNumbers)
-					cdns.push("<th></th>");
-				if (selectedEntityId !== null && typeof selectedEntityId !== "undefined")
-					cdns.push("<th></th>");
-				for (var a = 0; a < dataAttributesArray.length; a++) {
-					cdns.push("<th>");
-					dataAttribute = dataAttributes[dataAttributesArray[a]];
-					if (dataAttribute.definition)
-						cdns.push("<a href='", dataAttribute.definition, "' target='_blank'>");
-					cdns.push(dataAttributesArray[a]);
-					if (dataAttribute.definition)
+			cdns.push("<table class='tablesmall'><tr>");
+			if (rowNumbers)
+				cdns.push("<th></th>");
+			if (selectedEntityId !== null && typeof selectedEntityId !== "undefined")
+				cdns.push("<th></th>");
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				cdns.push("<th>");
+				dataAttribute = dataAttributes[dataAttributesArray[a]];
+				if (dataAttribute.definition)
+					cdns.push("<a href='", dataAttribute.definition, "' target='_blank'>");
+				cdns.push(dataAttributesArray[a]);
+				if (dataAttribute.definition)
+					cdns.push("</a>");
+				if (dataAttribute.UoM || dataAttribute.UoMSymbol) {
+					cdns.push(" (");
+					if (dataAttribute.UoMDefinition)
+						cdns.push("<a href='", dataAttribute.UoMDefinition, "' target='_blank'>");
+					cdns.push(dataAttribute.UoMSymbol ? dataAttribute.UoMSymbol : dataAttribute.UoM);
+					if (dataAttribute.UoMDefinition)
 						cdns.push("</a>");
-					if (dataAttribute.UoM || dataAttribute.UoMSymbol) {
-						cdns.push(" (");
-						if (dataAttribute.UoMDefinition)
-							cdns.push("<a href='", dataAttribute.UoMDefinition, "' target='_blank'>");
-						cdns.push(dataAttribute.UoMSymbol ? dataAttribute.UoMSymbol : dataAttribute.UoM);
-						if (dataAttribute.UoMDefinition)
-							cdns.push("</a>");
-						cdns.push(")");
-					}
-					cdns.push("</th>");
-					needhref[a] = isAttributeAnyURI(dataAttributesArray[a]);
+					cdns.push(")");
 				}
-
-				cdns.push("</tr>");
-				for (var i = 0; i < data.length; i++) {
-					record = data[i];
-					cdns.push("<tr>");
-					if (rowNumbers)
-						cdns.push("<td align='right'>", i + 1, "</td>");
-					if (selectedEntityId !== null && typeof selectedEntityId !== "undefined") {
-						var s = record["@iot.id"] ? record["@iot.id"] : i;
-						cdns.push("<td><input type='radio' name='SelectRowRadio' id='SelectRow_", s, "' ", s == selectedEntityId ? "checked='checked'" : "", "/></td>");
-					}
-					for (var a = 0; a < dataAttributesArray.length; a++) {
-						cell = record[dataAttributesArray[a]];
-						cdns.push((dataAttributes[dataAttributesArray[a]].type == "number" || dataAttributes[dataAttributesArray[a]].type == "integer") ? "<td align='right'>" : "<td>");
-						if (typeof cell !== "undefined") {
-							if (needhref[a] && cell.length)
-								cdns.push("<a href='", cell, "' target='_blank'>", cell, "</a>");
-							else if (typeof cell === "object")
-								cdns.push(JSON.stringify(cell));
-							else
-								cdns.push(cell);
-						}
-						cdns.push("</td>");
-					}
-					cdns.push("</tr>");
-				}
-				cdns.push("</table>");
-				return cdns.join("");
+				cdns.push("</th>");
+				needhref[a] = isAttributeAnyURI(dataAttributesArray[a]);
 			}
 
-			function ShowTableDialog(nodeId) {
-				var data = networkNodes.get(nodeId).STAdata;
-
-				if (!data || !data.length) {
-					document.getElementById("DialogOKHTML").innerHTML = "No data to show.";
-					return;
+			cdns.push("</tr>");
+			for (var i = 0; i < data.length; i++) {
+				record = data[i];
+				cdns.push("<tr>");
+				if (rowNumbers)
+					cdns.push("<td align='right'>", i + 1, "</td>");
+				if (selectedEntityId !== null && typeof selectedEntityId !== "undefined") {
+					var s = record["@iot.id"] ? record["@iot.id"] : i;
+					cdns.push("<td><input type='radio' name='SelectRowRadio' id='SelectRow_", s, "' ", s == selectedEntityId ? "checked='checked'" : "", "/></td>");
 				}
-
-				document.getElementById("DialogOKHTML").innerHTML = GetHTMLTable(data, networkNodes.get(nodeId).STAdataAttributes,
-					document.getElementById("ShowTableRowNumberDialogOK").checked ? true : false,
-					null);
-			}
-
-			function StringifyObjectElements(data, dataAttributesInput) {
-				var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
-				var jsonTable = [];
-				var dataAttributesArray = Object.keys(dataAttributes);
-
-				for (var i = 0; i < data.length; i++) {
-					jsonTable[i] = {};
-					for (var a = 0; a < dataAttributesArray.length; a++) {
-						if (typeof data[i][dataAttributesArray[a]] === "object")  //"arrays" are also objects.
-							jsonTable[i][dataAttributesArray[a]] = JSON.stringify(data[i][dataAttributesArray[a]]);
+				for (var a = 0; a < dataAttributesArray.length; a++) {
+					cell = record[dataAttributesArray[a]];
+					cdns.push((dataAttributes[dataAttributesArray[a]].type == "number" || dataAttributes[dataAttributesArray[a]].type == "integer") ? "<td align='right'>" : "<td>");
+					if (typeof cell !== "undefined") {
+						if (needhref[a] && cell.length)
+							cdns.push("<a href='", cell, "' target='_blank'>", cell, "</a>");
+						else if (typeof cell === "object")
+							cdns.push(JSON.stringify(cell));
 						else
-							jsonTable[i][dataAttributesArray[a]] = data[i][dataAttributesArray[a]];
+							cdns.push(cell);
 					}
+					cdns.push("</td>");
 				}
-				return jsonTable;
+				cdns.push("</tr>");
+			}
+			cdns.push("</table>");
+			return cdns.join("");
+		}
+
+		function ShowTableDialog(nodeId) {
+			var data = networkNodes.get(nodeId).STAdata;
+
+			if (!data || !data.length) {
+				document.getElementById("DialogOKHTML").innerHTML = "No data to show.";
+				return;
 			}
 
+			document.getElementById("DialogOKHTML").innerHTML = GetHTMLTable(data, networkNodes.get(nodeId).STAdataAttributes,
+				document.getElementById("ShowTableRowNumberDialogOK").checked ? true : false,
+				null);
+		}
 
-			function GetGeoJSON(data, selectedOptions) {
-				var dataSorted = deapCopy(data), geojson = { "type": "FeatureCollection", "features": [] };
+		function StringifyObjectElements(data, dataAttributesInput) {
+			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
+			var jsonTable = [];
+			var dataAttributesArray = Object.keys(dataAttributes);
 
-				//Sorted by place, variable and date (older first).
-				dataSorted.sort(function (a, b) {
-					if (a[selectedOptions.place] < b[selectedOptions.place])
-						return -1;
-					if (a[selectedOptions.place] > b[selectedOptions.place])
-						return 1;
-					if (a[selectedOptions.longitude] - b[selectedOptions.longitude] < -0.0000001)
-						return -1;
-					if (a[selectedOptions.longitude] - b[selectedOptions.longitude] > 0.0000001)
-						return 1;
-					if (a[selectedOptions.latitude] - b[selectedOptions.latitude] < -0.0000001)
-						return -1;
-					if (a[selectedOptions.latitude] - b[selectedOptions.latitude] > 0.0000001)
-						return 1;
-					if (a[selectedOptions.variable] < b[selectedOptions.variable])
-						return -1;
-					if (a[selectedOptions.variable] > b[selectedOptions.variable])
-						return 1;
-					if (a[selectedOptions.time] < b[selectedOptions.time])
-						return -1;
-					if (a[selectedOptions.time] > b[selectedOptions.time])
-						return 1;
-					return 0;
-				});
-				var a, b;
-				for (var i = 0, f = -1; i < dataSorted.length; i++) {
-					a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
-					if (i == 0 || a[selectedOptions.place] != b[selectedOptions.place] ||
-						a[selectedOptions.longitude] > b[selectedOptions.longitude] + 0.0000001 ||
-						a[selectedOptions.latitude] < b[selectedOptions.latitude] - 0.0000001 ||
-						a[selectedOptions.latitude] > b[selectedOptions.latitude] + 0.0000001) {
-						f++;
-						geojson.features[f] = {
-							"type": "Feature",
-							"geometry": {
-								"type": "Point",
-								"coordinates": [
-									a[selectedOptions.longitude],
-									a[selectedOptions.latitude]
-								]
-							},
+			for (var i = 0; i < data.length; i++) {
+				jsonTable[i] = {};
+				for (var a = 0; a < dataAttributesArray.length; a++) {
+					if (typeof data[i][dataAttributesArray[a]] === "object")  //"arrays" are also objects.
+						jsonTable[i][dataAttributesArray[a]] = JSON.stringify(data[i][dataAttributesArray[a]]);
+					else
+						jsonTable[i][dataAttributesArray[a]] = data[i][dataAttributesArray[a]];
+				}
+			}
+			return jsonTable;
+		}
+
+
+		function GetGeoJSON(data, selectedOptions) {
+			var dataSorted = deapCopy(data), geojson = { "type": "FeatureCollection", "features": [] };
+
+			//Sorted by place, variable and date (older first).
+			dataSorted.sort(function (a, b) {
+				if (a[selectedOptions.place] < b[selectedOptions.place])
+					return -1;
+				if (a[selectedOptions.place] > b[selectedOptions.place])
+					return 1;
+				if (a[selectedOptions.longitude] - b[selectedOptions.longitude] < -0.0000001)
+					return -1;
+				if (a[selectedOptions.longitude] - b[selectedOptions.longitude] > 0.0000001)
+					return 1;
+				if (a[selectedOptions.latitude] - b[selectedOptions.latitude] < -0.0000001)
+					return -1;
+				if (a[selectedOptions.latitude] - b[selectedOptions.latitude] > 0.0000001)
+					return 1;
+				if (a[selectedOptions.variable] < b[selectedOptions.variable])
+					return -1;
+				if (a[selectedOptions.variable] > b[selectedOptions.variable])
+					return 1;
+				if (a[selectedOptions.time] < b[selectedOptions.time])
+					return -1;
+				if (a[selectedOptions.time] > b[selectedOptions.time])
+					return 1;
+				return 0;
+			});
+			var a, b;
+			for (var i = 0, f = -1; i < dataSorted.length; i++) {
+				a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
+				if (i == 0 || a[selectedOptions.place] != b[selectedOptions.place] ||
+					a[selectedOptions.longitude] > b[selectedOptions.longitude] + 0.0000001 ||
+					a[selectedOptions.latitude] < b[selectedOptions.latitude] - 0.0000001 ||
+					a[selectedOptions.latitude] > b[selectedOptions.latitude] + 0.0000001) {
+					f++;
+					geojson.features[f] = {
+						"type": "Feature",
+						"geometry": {
+							"type": "Point",
+							"coordinates": [
+								a[selectedOptions.longitude],
+								a[selectedOptions.latitude]
+							]
+						},
+						"properties": {
+							"Place": a[selectedOptions.place],
+						}
+					};
+				}
+				geojson.features[f].properties[a[selectedOptions.variable] + "_" + a[selectedOptions.time]] = a[selectedOptions.value];
+			}
+			return geojson;
+		}
+
+		function GetGeoJSONSchema(data, selectedOptions) {
+			return {
+				"$id": "https://meaning.ad4gd.eu/meaning.schema.json",
+				"$schema": "https://meaning.ad4gd.eu/json-meta/meaning",
+				"type": "object",
+				"properties": {
+					"features": {
+						"type": "array",
+						"items": {
+							"type": "object",
 							"properties": {
-								"Place": a[selectedOptions.place],
+								"geometry": {
+									"type": "object",
+									"properties": {
+										"type": { "type": "string" },
+										"coordinates": { "type": "array" }
+									}
+								},
+								"properties": {
+									"type": "object",
+									"properties": GetGeoJSONPropertiesSchema(data, selectedOptions)
+								}
 							}
-						};
+						}
 					}
-					geojson.features[f].properties[a[selectedOptions.variable] + "_" + a[selectedOptions.time]] = a[selectedOptions.value];
 				}
-				return geojson;
-			}
+			};
+		}
 
-			function GetGeoJSONSchema(data, selectedOptions) {
-				return {
-					"$id": "https://meaning.ad4gd.eu/meaning.schema.json",
-					"$schema": "https://meaning.ad4gd.eu/json-meta/meaning",
-					"type": "object",
-					"properties": {
-						"features": {
-							"type": "array",
-							"items": {
+		function GetGeoJSONPropertiesSchema(data, selectedOptions) {
+			var dataSorted = deapCopy(data);
+			// var dataSorted = JSON.parse(JSON.stringify(data));
+
+			var attributes = {
+				"Place": {
+					"description": "Place name",
+					"mostrar": "si"
+				}
+			};
+
+			//Sorted by variable.
+			dataSorted.sort(function (a, b) {
+				if (a[selectedOptions.variable] < b[selectedOptions.variable])
+					return -1;
+				if (a[selectedOptions.variable] > b[selectedOptions.variable])
+					return 1;
+				return 0;
+			});
+			var a, b, UoMSymbol;
+			for (var i = 0; i < dataSorted.length; i++) {
+				a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
+				if (i == 0 || a[selectedOptions.variable] != b[selectedOptions.variable]) {
+					UoMSymbol = a[selectedOptions.variableUoMSymbol];
+					if (UoMSymbol == "ug/m3")
+						UoMSymbol == "µg/m³";
+					attributes[a[selectedOptions.variable] + "_{time?f=ISO}"] = {
+						"description": a[selectedOptions.variableDescription],
+						"definition": a[selectedOptions.variableDefinition],
+						"UoM": a[selectedOptions.variableUoM],
+						"UoMSymbol": UoMSymbol,
+						"UoMDefinition": a[selectedOptions.variableUoMDefinition],
+						"mostrar": "si",
+						"serieTemporal": {
+							"color": "#ff0000"
+						}
+					};
+				}
+			}
+			return attributes;
+		}
+
+		function GetGeoJSONMetaschema() {
+			return {
+				"title": "GeoJSON properties meaning schema",
+				"$schema": "http://json-schema.org/draft/2019-09/schema#",
+				"$id": "https://meaning.ad4gd.eu/json-meta/meaning",
+				"$vocabulary": {
+					"https://json-schema.org/draft/2019-09/vocab/core": true,
+					"https://json-schema.org/draft/2019-09/vocab/applicator": true,
+					"https://json-schema.org/draft/2019-09/vocab/validation": true,
+					"https://json-schema.org/draft/2019-09/vocab/meta-data": true,
+					"https://json-schema.org/draft/2019-09/vocab/format": false,
+					"https://json-schema.org/draft/2019-09/vocab/content": true,
+					"https://meaning.ad4gd.eu/json-meta/meaning": false
+				},
+				"$recursiveAnchor": true,
+				"allOf": [
+					{
+						"$ref": "https://json-schema.org/draft/2019-09/schema"
+					},
+					{
+						"$ref": "#/definitions/AttributeDescription"
+					}
+				],
+				"definitions": {
+					"AttributeDescription": {
+						"title": "GeoJSON meaning vocabulary meta-schema",
+						"type": "object",
+						"$comment": "The name of the property is the name of the attribute. If the server is SOS there are 2 special names can be used __om_time__, __om_sensor__ and the rest match the field names of the table containing the data. The properties that define each attribute can be de ones defined below or properties from JSON schema itself if indicated in this comment. For the moment, only 'description' is implemented. Others from 'string' (https://json-schema.org/understanding-json-schema/reference/string.html) or number can be useful (https://json-schema.org/understanding-json-schema/reference/numeric.html).",
+						"properties": {
+							"originalName": {
+								"description": "Name of the original attribute. Optional. If the attributes are taken from a CSV and are transformed into one or more attributes (because they are associated with time). In this case the nomOri maybe different from the property name.",
+								"type": ["string", "null"]
+							},
+							"symbol": {
+								"description": "Symbol of the attribute. Note that it is not the units of measurement symbol but the attribute itself. For example, the letter 'σ' (sigma) usually represents the standard deviation. It will be used in the compact display (coordinates box) if defined. Created for statistical attributes, but can be used elsewhere.",
+								"type": ["string", "null"]
+							},
+							"descripcio": {
+								"description": "Description of the attribute in multiple languages. If you do not need multilanguage support, please use 'description'",
+								"$ref": "#/definitions/StringOCadenaLang"
+							},
+							"definition": {
+								"description": "A URI that defines the observedProperty or the variable. You may find the right definitions in https://qudt.org/2.1/vocab/quantitykind, http://vocabs.lter-europe.net/EnvThes or https://www.eea.europa.eu/help/glossary/eea-glossary.",
+								"type": ["string", "null"],
+								"format": "uri"
+							},
+							"UoM": {
+								"description": "Units of measurement of the attribute. Formerly refered as 'unitats'",
+								"type": ["string", "null"]
+							},
+							"UoMSymbol": {
+								"description": "Symbol of the units of measurement of the atributte.",
+								"type": ["string", "null"]
+							},
+							"UoMDefinition": {
+								"description": "A URI that defines the units of measurement of the observedProperty or variable. You may find the right definitions in https://qudt.org/2.1/vocab/unit",
+								"type": ["string", "null"],
+								"format": "uri"
+							},
+							"calcul": {
+								"description": "Mathematical formula to transform the values of one or more properties of another vector or raster 'capa'. To point to a raster 'capa', see the explanation in 'component'; to point to a vector 'capa', we should use {'i_capa': 2, 'prop': 'flower_name'} to refer to 'capa' 2 which is of 'model' ='vector'. Can only be used if there are capa.objectes on the given 'capa'. If you do not specify i_capa, this 'capa' is assumed. For each 'objecte' {'i_capa': 2, 'prop': 'flower_name'} (or the equivalent for raster 'capa' for each pixel) is transformed into the value and, once done, the formula is evaluated as JavaScript syntax.",
+								"type": "string"
+							},
+							"FormulaConsulta": {
+								"description": "Mathematical formula to transform the values of objectes[].feature[].properties of this 'capa' (or into values[]). To know about v[0] etc see the explanation under 'component'. Use p['name'] to indicate the name of the property inside properties. You can also specify nomPropId to refer to the feature identifier (e.g. the feature id, in case of GeoJSON). Can only be used if there is capa.valors or capa.objectes. If you want to choose a value from another 'capa' use 'calcul' instead. Internally, 'FormulaConsulta' is transformed into 'calcul'.",
+								"type": "string"
+							},
+							"separador": {
+								"description": "Separator of the next block of attributes",
+								"$ref": "#/definitions/StringOCadenaLang"
+							},
+							"esLink": {
+								"description": "Is the attribute value a link?",
+								"type": "boolean"
+							},
+							"descLink": {
+								"description": "Description of the link",
+								"$ref": "#/definitions/StringOCadenaLang"
+							},
+							"esImatge": {
+								"description": "Is the attribute value a image URI?. This forces the attribute to appear as an embedded image in the query box",
+								"type": "boolean"
+							},
+							"FormatVideo": {
+								"description": "If the attribute is a link to a video, this is the video format. This forces the attribute to appear as an embedded video with a play button in the query box. It should be a MIME type. Example: video/mp4. optional",
+								"type": "string",
+								"format": "uri"
+							},
+							"mostrar": {
+								"description": "Should it be shown in the query box? Can be 'si' (always), 'no' (never), 'si_ple' (it will only be displayed if the attribute has content).",
+								"enum": ["si", "no", "si_ple"]
+							},
+							"mida": {
+								"description": "Implementation pending (maxLength should be used instead of 'mida'). Attribute size. Optional. Maximum width the field type can have. In the case of numerical types it is the maximum precision. In the case of strings it is the maximum length in characters. In the case of date-time it is the maximum length in characters of the representation of the date-time as text.",
+								"type": "number"
+							},
+							"pDecimals": {
+								"description": "Implementation pending. Number of decimals places of the attribute. It only applies if the attribute is of type 'number'. Optional. (Note: do not confused with NDecimals, which is the number of decimals to display in the screen).",
+								"type": "number"
+							},
+							"presentation": {
+								"description": "It is the format in which we receive the value from the server. Currently it is only used for a very specific thing in the interpretation of dates. In the future it could be combined with to the JSON schema 'type' to indicate whether string, date, number, float... and 'format'.",
+								"enum": ["dd/mm/yyyy"]
+							},
+							"NDecimals": {
+								"description": "Number of decimal places to be displayed in the screen. Optional, when not indicated, precision is not truncated.",
+								"type": "number",
+								"minimum": 0,
+								"maximum": 20,
+								"multipleOf": 1
+							},
+							"serieTemporal": {
+								"description": "The values of this attribute form a time series that will be displayed as a graph.",
+								"type": "object",
+								"required": ["color"],
+								"properties": {
+									"color": {
+										"description": "Line color in the graph",
+										"type": "string"
+									}
+								}
+							}
+						}
+					},
+					"StringOCadenaLang": {
+						"description": "String or multilanguage object.",
+						"oneOf": [
+							{
+								"type": ["string", "null"]
+							},
+							{
 								"type": "object",
 								"properties": {
-									"geometry": {
-										"type": "object",
-										"properties": {
-											"type": { "type": "string" },
-											"coordinates": { "type": "array" }
-										}
+									"cat": {
+										"description": "Català",
+										"type": ["string", "null"]
 									},
-									"properties": {
-										"type": "object",
-										"properties": GetGeoJSONPropertiesSchema(data, selectedOptions)
+									"spa": {
+										"description": "Español",
+										"type": ["string", "null"]
+									},
+									"eng": {
+										"description": "English",
+										"type": ["string", "null"]
+									},
+									"fre": {
+										"description": "Français",
+										"type": ["string", "null"]
+									},
+									"cze": {
+										"description": "Čeština",
+										"type": ["string", "null"]
+									},
+									"ger": {
+										"description": "Deutsch",
+										"type": ["string", "null"]
 									}
 								}
 							}
-						}
-					}
-				};
-			}
-
-			function GetGeoJSONPropertiesSchema(data, selectedOptions) {
-				var dataSorted = deapCopy(data);
-				// var dataSorted = JSON.parse(JSON.stringify(data));
-
-				var attributes = {
-					"Place": {
-						"description": "Place name",
-						"mostrar": "si"
-					}
-				};
-
-				//Sorted by variable.
-				dataSorted.sort(function (a, b) {
-					if (a[selectedOptions.variable] < b[selectedOptions.variable])
-						return -1;
-					if (a[selectedOptions.variable] > b[selectedOptions.variable])
-						return 1;
-					return 0;
-				});
-				var a, b, UoMSymbol;
-				for (var i = 0; i < dataSorted.length; i++) {
-					a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
-					if (i == 0 || a[selectedOptions.variable] != b[selectedOptions.variable]) {
-						UoMSymbol = a[selectedOptions.variableUoMSymbol];
-						if (UoMSymbol == "ug/m3")
-							UoMSymbol == "µg/m³";
-						attributes[a[selectedOptions.variable] + "_{time?f=ISO}"] = {
-							"description": a[selectedOptions.variableDescription],
-							"definition": a[selectedOptions.variableDefinition],
-							"UoM": a[selectedOptions.variableUoM],
-							"UoMSymbol": UoMSymbol,
-							"UoMDefinition": a[selectedOptions.variableUoMDefinition],
-							"mostrar": "si",
-							"serieTemporal": {
-								"color": "#ff0000"
-							}
-						};
+						]
 					}
 				}
-				return attributes;
-			}
+			};
+		}
 
-			function GetGeoJSONMetaschema() {
-				return {
-					"title": "GeoJSON properties meaning schema",
-					"$schema": "http://json-schema.org/draft/2019-09/schema#",
-					"$id": "https://meaning.ad4gd.eu/json-meta/meaning",
-					"$vocabulary": {
-						"https://json-schema.org/draft/2019-09/vocab/core": true,
-						"https://json-schema.org/draft/2019-09/vocab/applicator": true,
-						"https://json-schema.org/draft/2019-09/vocab/validation": true,
-						"https://json-schema.org/draft/2019-09/vocab/meta-data": true,
-						"https://json-schema.org/draft/2019-09/vocab/format": false,
-						"https://json-schema.org/draft/2019-09/vocab/content": true,
-						"https://meaning.ad4gd.eu/json-meta/meaning": false
-					},
-					"$recursiveAnchor": true,
-					"allOf": [
-						{
-							"$ref": "https://json-schema.org/draft/2019-09/schema"
-						},
-						{
-							"$ref": "#/definitions/AttributeDescription"
-						}
-					],
-					"definitions": {
-						"AttributeDescription": {
-							"title": "GeoJSON meaning vocabulary meta-schema",
-							"type": "object",
-							"$comment": "The name of the property is the name of the attribute. If the server is SOS there are 2 special names can be used __om_time__, __om_sensor__ and the rest match the field names of the table containing the data. The properties that define each attribute can be de ones defined below or properties from JSON schema itself if indicated in this comment. For the moment, only 'description' is implemented. Others from 'string' (https://json-schema.org/understanding-json-schema/reference/string.html) or number can be useful (https://json-schema.org/understanding-json-schema/reference/numeric.html).",
-							"properties": {
-								"originalName": {
-									"description": "Name of the original attribute. Optional. If the attributes are taken from a CSV and are transformed into one or more attributes (because they are associated with time). In this case the nomOri maybe different from the property name.",
-									"type": ["string", "null"]
-								},
-								"symbol": {
-									"description": "Symbol of the attribute. Note that it is not the units of measurement symbol but the attribute itself. For example, the letter 'σ' (sigma) usually represents the standard deviation. It will be used in the compact display (coordinates box) if defined. Created for statistical attributes, but can be used elsewhere.",
-									"type": ["string", "null"]
-								},
-								"descripcio": {
-									"description": "Description of the attribute in multiple languages. If you do not need multilanguage support, please use 'description'",
-									"$ref": "#/definitions/StringOCadenaLang"
-								},
-								"definition": {
-									"description": "A URI that defines the observedProperty or the variable. You may find the right definitions in https://qudt.org/2.1/vocab/quantitykind, http://vocabs.lter-europe.net/EnvThes or https://www.eea.europa.eu/help/glossary/eea-glossary.",
-									"type": ["string", "null"],
-									"format": "uri"
-								},
-								"UoM": {
-									"description": "Units of measurement of the attribute. Formerly refered as 'unitats'",
-									"type": ["string", "null"]
-								},
-								"UoMSymbol": {
-									"description": "Symbol of the units of measurement of the atributte.",
-									"type": ["string", "null"]
-								},
-								"UoMDefinition": {
-									"description": "A URI that defines the units of measurement of the observedProperty or variable. You may find the right definitions in https://qudt.org/2.1/vocab/unit",
-									"type": ["string", "null"],
-									"format": "uri"
-								},
-								"calcul": {
-									"description": "Mathematical formula to transform the values of one or more properties of another vector or raster 'capa'. To point to a raster 'capa', see the explanation in 'component'; to point to a vector 'capa', we should use {'i_capa': 2, 'prop': 'flower_name'} to refer to 'capa' 2 which is of 'model' ='vector'. Can only be used if there are capa.objectes on the given 'capa'. If you do not specify i_capa, this 'capa' is assumed. For each 'objecte' {'i_capa': 2, 'prop': 'flower_name'} (or the equivalent for raster 'capa' for each pixel) is transformed into the value and, once done, the formula is evaluated as JavaScript syntax.",
-									"type": "string"
-								},
-								"FormulaConsulta": {
-									"description": "Mathematical formula to transform the values of objectes[].feature[].properties of this 'capa' (or into values[]). To know about v[0] etc see the explanation under 'component'. Use p['name'] to indicate the name of the property inside properties. You can also specify nomPropId to refer to the feature identifier (e.g. the feature id, in case of GeoJSON). Can only be used if there is capa.valors or capa.objectes. If you want to choose a value from another 'capa' use 'calcul' instead. Internally, 'FormulaConsulta' is transformed into 'calcul'.",
-									"type": "string"
-								},
-								"separador": {
-									"description": "Separator of the next block of attributes",
-									"$ref": "#/definitions/StringOCadenaLang"
-								},
-								"esLink": {
-									"description": "Is the attribute value a link?",
-									"type": "boolean"
-								},
-								"descLink": {
-									"description": "Description of the link",
-									"$ref": "#/definitions/StringOCadenaLang"
-								},
-								"esImatge": {
-									"description": "Is the attribute value a image URI?. This forces the attribute to appear as an embedded image in the query box",
-									"type": "boolean"
-								},
-								"FormatVideo": {
-									"description": "If the attribute is a link to a video, this is the video format. This forces the attribute to appear as an embedded video with a play button in the query box. It should be a MIME type. Example: video/mp4. optional",
-									"type": "string",
-									"format": "uri"
-								},
-								"mostrar": {
-									"description": "Should it be shown in the query box? Can be 'si' (always), 'no' (never), 'si_ple' (it will only be displayed if the attribute has content).",
-									"enum": ["si", "no", "si_ple"]
-								},
-								"mida": {
-									"description": "Implementation pending (maxLength should be used instead of 'mida'). Attribute size. Optional. Maximum width the field type can have. In the case of numerical types it is the maximum precision. In the case of strings it is the maximum length in characters. In the case of date-time it is the maximum length in characters of the representation of the date-time as text.",
-									"type": "number"
-								},
-								"pDecimals": {
-									"description": "Implementation pending. Number of decimals places of the attribute. It only applies if the attribute is of type 'number'. Optional. (Note: do not confused with NDecimals, which is the number of decimals to display in the screen).",
-									"type": "number"
-								},
-								"presentation": {
-									"description": "It is the format in which we receive the value from the server. Currently it is only used for a very specific thing in the interpretation of dates. In the future it could be combined with to the JSON schema 'type' to indicate whether string, date, number, float... and 'format'.",
-									"enum": ["dd/mm/yyyy"]
-								},
-								"NDecimals": {
-									"description": "Number of decimal places to be displayed in the screen. Optional, when not indicated, precision is not truncated.",
-									"type": "number",
-									"minimum": 0,
-									"maximum": 20,
-									"multipleOf": 1
-								},
-								"serieTemporal": {
-									"description": "The values of this attribute form a time series that will be displayed as a graph.",
-									"type": "object",
-									"required": ["color"],
-									"properties": {
-										"color": {
-											"description": "Line color in the graph",
-											"type": "string"
+		function GetGeoJSONStyles(data, selectedOptions) {
+			var dataSorted = deapCopy(data), estil = [];
+			// var dataSorted = JSON.parse(JSON.stringify(data)), estil = [];
+
+			//Sorted by variable.
+			dataSorted.sort(function (a, b) {
+				if (a[selectedOptions.variable] < b[selectedOptions.variable])
+					return -1;
+				if (a[selectedOptions.variable] > b[selectedOptions.variable])
+					return 1;
+				return 0;
+			});
+			var a, b, maximum;
+			for (var i = 0, f = -1; i < dataSorted.length; i++) {
+				a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
+				if (i == 0 || a[selectedOptions.variable] != b[selectedOptions.variable]) {
+					if (f >= 0)
+						estil[f].simbols[0].simbol[0].icona.r = maximum > 0.001 ? 10 / maximum : 1;
+					f++;
+					maximum = a[selectedOptions.value];
+					estil[f] = {
+						"nom": null,
+						"desc": a[selectedOptions.variableDescription],
+						"DescItems": a[selectedOptions.variableUoMSymbol],
+						"TipusObj": "P",
+						"ItemLleg": [
+							{
+								"color": "#ff0000",
+								"DescColor": a[selectedOptions.variableDescription]
+							}
+						],
+						"ncol": 1,
+						"simbols": [
+							{
+								"NomCampFEscala": a[selectedOptions.variable] + "_{time?f=ISO}",
+								"simbol": [
+									{
+										"icona": {
+											"type": "circle",
+											"r": 1
 										}
 									}
+								]
+							}
+						],
+						"formes": [{
+							"vora": {
+								"paleta": {
+									"colors": [
+										"#ff0000"
+									]
+								}
+							},
+							"interior": {
+								"paleta": {
+									"colors": [
+										"rgba(255,0,0,0.4)"
+									]
 								}
 							}
-						},
-						"StringOCadenaLang": {
-							"description": "String or multilanguage object.",
-							"oneOf": [
+						}],
+						"fonts": {
+							"NomCampText": a[selectedOptions.variable] + "_{time?f=ISO}",
+							"aspecte": [
 								{
-									"type": ["string", "null"]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"cat": {
-											"description": "Català",
-											"type": ["string", "null"]
-										},
-										"spa": {
-											"description": "Español",
-											"type": ["string", "null"]
-										},
-										"eng": {
-											"description": "English",
-											"type": ["string", "null"]
-										},
-										"fre": {
-											"description": "Français",
-											"type": ["string", "null"]
-										},
-										"cze": {
-											"description": "Čeština",
-											"type": ["string", "null"]
-										},
-										"ger": {
-											"description": "Deutsch",
-											"type": ["string", "null"]
-										}
+									"font": {
+										"font": "12px Verdana",
+										"color": "#B50000",
+										"align": "center",
+										"i": 0,
+										"j": -5
 									}
 								}
 							]
 						}
-					}
-				};
-			}
-
-			function GetGeoJSONStyles(data, selectedOptions) {
-				var dataSorted = deapCopy(data), estil = [];
-				// var dataSorted = JSON.parse(JSON.stringify(data)), estil = [];
-
-				//Sorted by variable.
-				dataSorted.sort(function (a, b) {
-					if (a[selectedOptions.variable] < b[selectedOptions.variable])
-						return -1;
-					if (a[selectedOptions.variable] > b[selectedOptions.variable])
-						return 1;
-					return 0;
-				});
-				var a, b, maximum;
-				for (var i = 0, f = -1; i < dataSorted.length; i++) {
-					a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
-					if (i == 0 || a[selectedOptions.variable] != b[selectedOptions.variable]) {
-						if (f >= 0)
-							estil[f].simbols[0].simbol[0].icona.r = maximum > 0.001 ? 10 / maximum : 1;
-						f++;
-						maximum = a[selectedOptions.value];
-						estil[f] = {
-							"nom": null,
-							"desc": a[selectedOptions.variableDescription],
-							"DescItems": a[selectedOptions.variableUoMSymbol],
-							"TipusObj": "P",
-							"ItemLleg": [
-								{
-									"color": "#ff0000",
-									"DescColor": a[selectedOptions.variableDescription]
-								}
-							],
-							"ncol": 1,
-							"simbols": [
-								{
-									"NomCampFEscala": a[selectedOptions.variable] + "_{time?f=ISO}",
-									"simbol": [
-										{
-											"icona": {
-												"type": "circle",
-												"r": 1
-											}
-										}
-									]
-								}
-							],
-							"formes": [{
-								"vora": {
-									"paleta": {
-										"colors": [
-											"#ff0000"
-										]
-									}
-								},
-								"interior": {
-									"paleta": {
-										"colors": [
-											"rgba(255,0,0,0.4)"
-										]
-									}
-								}
-							}],
-							"fonts": {
-								"NomCampText": a[selectedOptions.variable] + "_{time?f=ISO}",
-								"aspecte": [
-									{
-										"font": {
-											"font": "12px Verdana",
-											"color": "#B50000",
-											"align": "center",
-											"i": 0,
-											"j": -5
-										}
-									}
-								]
-							}
-						};
-					}
-					else {
-						if (maximum < a[selectedOptions.value])
-							maximum = a[selectedOptions.value];
-					}
-				}
-				if (f >= 0)
-					estil[f].simbols[0].simbol[0].icona.r = maximum > 0.001 ? 10 / maximum : 1;
-				return estil;
-			}
-
-			function GetGeoJSONDates(data, selectedOptions) {
-				var dataSorted = deapCopy(data), datetimes = [];
-				// var dataSorted = JSON.parse(JSON.stringify(data)), datetimes = [];
-
-				//Sorted by date (older first).
-				dataSorted.sort(function (a, b) {
-					if (a[selectedOptions.time] < b[selectedOptions.time])
-						return -1;
-					if (a[selectedOptions.time] > b[selectedOptions.time])
-						return 1;
-					return 0;
-				});
-				var a, b;
-				for (var i = 0; i < dataSorted.length; i++) {
-					a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
-					if (i == 0 || a[selectedOptions.time] != b[selectedOptions.time])
-						datetimes.push(a[selectedOptions.time]);
-				}
-				return datetimes;
-			}
-
-			/*function ShowSaveTableDialog(nodeId) {
-			;   //Nothing to do
-		}*/
-
-			function PopulateSelectSaveLayerDialog(id, dataAttributes, selectedOption) {
-				var thereIsSelectionOption = false;
-				var dataAttributesArray = Object.keys(dataAttributes);
-
-				var s = "<select id=\"" + id + "Select" + "\">";
-				for (var a = 0; a < dataAttributesArray.length; a++) {
-					if (dataAttributesArray[a] == selectedOption) {
-						thereIsSelectionOption = true;
-						break;
-					}
-				}
-				s += "<option value=\"\"" + (!thereIsSelectionOption ? "selected=\"selected\"" : "") + "></option>";
-				for (var a = 0; a < dataAttributesArray.length; a++)
-					s += "<option value=\"" + dataAttributesArray[a] + "\"" + (dataAttributesArray[a] == selectedOption ? "selected=\"selected\"" : "") + ">" + dataAttributesArray[a] + "</option>";
-				s += "</select>";
-				document.getElementById(id).innerHTML = s;
-			}
-
-			function ShowSaveLayerDialogSelects(nodeId, descripUoM) {
-				var parentNode = GetFirstParentNode(currentNode);
-				if (parentNode) {
-					var data = networkNodes.get(nodeids[0]).STAdata;
-					var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
-					var s, elem;
-					PopulateSelectSaveLayerDialog("DialogSaveLayerPlace", dataAttributes, "FeatureOfInterest/description");
-					PopulateSelectSaveLayerDialog("DialogSaveLayerLongitude", dataAttributes, "FeatureOfInterest/feature/coordinates_0");
-					PopulateSelectSaveLayerDialog("DialogSaveLayerLatitude", dataAttributes, "FeatureOfInterest/feature/coordinates_1");
-					PopulateSelectSaveLayerDialog("DialogSaveLayerTime", dataAttributes, "PhenomenonTime");
-					PopulateSelectSaveLayerDialog("DialogSaveLayerVariable", dataAttributes, "Datastream/ObservedProperty/name");
-					if (descripUoM) {
-						document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display = "inline-block";
-						PopulateSelectSaveLayerDialog("DialogSaveLayerVariableDescription", dataAttributes, "Datastream/ObservedProperty/description");
-						PopulateSelectSaveLayerDialog("DialogSaveLayerVariableDefinition", dataAttributes, "Datastream/ObservedProperty/definition");
-						PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoM", dataAttributes, "Datastream/unitOfMeasurement/name");
-						PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoMSymbol", dataAttributes, "Datastream/unitOfMeasurement/symbol");
-						PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoMDefinition", dataAttributes, "Datastream/unitOfMeasurement/definition");
-					}
-					else
-						document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display = "none";
-
-					PopulateSelectSaveLayerDialog("DialogSaveLayerValue", dataAttributes, "result");
-				}
-			}
-
-			function GetSelectedOptionsSaveLayer(descripUoM) {
-				var selectedOptions = {};
-				selectedOptions.place = document.getElementById("DialogSaveLayerPlaceSelect").value;
-				selectedOptions.longitude = document.getElementById("DialogSaveLayerLongitudeSelect").value;
-				selectedOptions.latitude = document.getElementById("DialogSaveLayerLatitudeSelect").value;
-				selectedOptions.time = document.getElementById("DialogSaveLayerTimeSelect").value;
-				selectedOptions.variable = document.getElementById("DialogSaveLayerVariableSelect").value;
-				if (descripUoM) {
-					selectedOptions.variableDescription = document.getElementById("DialogSaveLayerVariableDescriptionSelect").value;
-					selectedOptions.variableDefinition = document.getElementById("DialogSaveLayerVariableDefinitionSelect").value;
-					selectedOptions.variableUoM = document.getElementById("DialogSaveLayerVariableUoMSelect").value;
-					selectedOptions.variableUoMSymbol = document.getElementById("DialogSaveLayerVariableUoMSymbolSelect").value;
-					selectedOptions.variableUoMDefinition = document.getElementById("DialogSaveLayerVariableUoMDefinitionSelect").value;
-				}
-				selectedOptions.value = document.getElementById("DialogSaveLayerValueSelect").value;
-				return selectedOptions;
-			}
-
-			function ShowSaveLayerDialog(nodeId) {
-				ShowSaveLayerDialogSelects(nodeId, true);
-				document.getElementById("DialogSaveLayerTitle").innerHTML = "Save table as GeoJSON";
-				document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"SaveLayer(event)\">Save GeoJSON</button> " +
-					"<button onClick=\"SaveLayerSchema(event)\">Save JSON Schema</button> " +
-					"<button onClick=\"SaveLayerMetaschema(event)\">Save JSON Metaschema</button>";
-			}
-
-			function ShowOpenMapDialog(nodeId) {
-				ShowSaveLayerDialogSelects(nodeId, true);
-				document.getElementById("DialogSaveLayerTitle").innerHTML = "Open in the Map Browser";
-				document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"OpenMap(event)\">Open</button>";
-			}
-
-			function SaveTable(event) {
-				event.preventDefault(); // We don't want to submit this form
-				var delimiter = document.getElementById("DialogSaveTableDelimiter").value;
-				document.getElementById("DialogSaveTable").close();
-				var parentNode = GetFirstParentNode(currentNode);
-				if (parentNode) {
-					SaveLocalDataFile(Papa.unparse(StringifyObjectElements(parentNode.STAdata, parentNode.STAdataAttributes), { quotes: false, quoteChar: '"', escapeChar: '"', delimiter: (delimiter ? delimiter : ";"), header: true, newline: "\r\n", skipEmptyLines: "greedy" }),
-						(IdOfSTAEntity(parentNode) == -1) ? "table" : STAEntitiesArray[IdOfSTAEntity(parentNode)], ".csv", "application/vnd.ms-excel");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
-				}
-			}
-
-			//https://csvw.org/
-			//https://w3c.github.io/csvw/metadata/#dialect-descriptions
-			function CreateCSVW(data, dataAttributesInput, delimiter) {
-				var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
-				var dataAttributesArray = Object.keys(dataAttributes);
-
-				var csvw = {
-					tableSchema: {
-						"columns": []
-					},
-					"dialect": {
-						"header": true,
-						"delimiter": delimiter
-					}
-				};
-				for (var a = 0; a < dataAttributesArray.length; a++) {
-					csvw.tableSchema.columns.push({
-						"name": dataAttributesArray[a],
-						"datatype": getCSVWTypeFromAttributeType(dataAttributes[dataAttributesArray[a]].type),
-					});
-				}
-				return csvw;
-			}
-
-
-			function SaveCSVW(event) {
-				event.preventDefault(); // We don't want to submit this form
-				var delimiter = document.getElementById("DialogSaveTableDelimiter").value;
-				document.getElementById("DialogSaveTable").close();
-				var parentNode = GetFirstParentNode(currentNode);
-				if (parentNode) {
-					SaveLocalDataFile(JSON.stringify(CreateCSVW(parentNode.STAdata, parentNode.STAdataAttributes, delimiter ? delimiter : ";"), null, "\t"),
-						(IdOfSTAEntity(parentNode) == -1 ? "table" : STAEntitiesArray[IdOfSTAEntity(parentNode)]) + "_csvw", ".json", "application/json");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
-				}
-			}
-
-			function getDataAttributesCSVW(csvw) {
-				var dataAttributes = {}, c;
-				for (var a = 0; a < csvw.tableSchema.columns.length; a++) {
-					c = csvw.tableSchema.columns[a];
-					dataAttributes[c.name] = {
-						"type": getAttributeTypeFromCSVWType(c.datatype),
-						"description": (c.titles && Array.isArray(c.titles)) ? c.titles[0] : c.titles,
-						"definition": c.propertyUrl,
-						"UoM": c.unitMeasureTitles && Array.isArray(c.unitMeasureTitles) ? c.unitMeasureTitles[0] : c.unitMeasureTitles,
-						"UoMSymbol": c.unitMeasureSymbol,
-						"UoMDefinition": c.unitMeasureUrl
 					};
 				}
-				return dataAttributes;
-			}
-
-			function getCSVReadParams(csvw) {
-				return csvw.dialect;
-			}
-
-			function SaveLayer(event) {
-				event.preventDefault(); // We don't want to submit this form
-				document.getElementById("DialogSaveLayer").close();
-				var parentNode = GetFirstParentNode(currentNode);
-				if (parentNode) {
-					SaveLocalDataFile(JSON.stringify(GetGeoJSON(parentNode.STAdata, GetSelectedOptionsSaveLayer(false)), null, "\t"), "GeoJSON", ".geojson", "application/geo+json");
-				}
-			}
-
-			function SaveLayerSchema(event) {
-				event.preventDefault(); // We don't want to submit this form
-				document.getElementById("DialogSaveLayer").close();
-				var parentNode = GetFirstParentNode(currentNode);
-				if (parentNode) {
-					SaveLocalDataFile(JSON.stringify(GetGeoJSONSchema(parentNode.STAdata, GetSelectedOptionsSaveLayer(true)), null, "\t"), "JSON", ".json", "application/json");
-				}
-			}
-
-			function SaveLayerMetaschema(event) {
-				event.preventDefault(); // We don't want to submit this form
-				document.getElementById("DialogSaveLayer").close();
-				SaveLocalDataFile(JSON.stringify(GetGeoJSONMetaschema(), null, "\t"), "JSON", ".json", "application/json");
-			}
-
-			function OpenMap(event) {
-				event.preventDefault(); // We don't want to submit this form
-				document.getElementById("DialogSaveLayer").close();
-				var parentNode = GetFirstParentNode(currentNode);
-				if (parentNode) {
-					var selectedOptionsSaveLayer = GetSelectedOptionsSaveLayer(true);
-					OpenMapMMN(getAbsoluteURL(config.MMNpath) + (config.MMNpath.indexOf('?') > 0 ? "&" : "?") + "reset=1", GetGeoJSON(parentNode.STAdata, selectedOptionsSaveLayer), GetGeoJSONPropertiesSchema(parentNode.STAdata, selectedOptionsSaveLayer), GetGeoJSONStyles(parentNode.STAdata, selectedOptionsSaveLayer), GetGeoJSONDates(parentNode.STAdata, selectedOptionsSaveLayer));
-				}
-			}
-
-			var MiraMonMapBrowserVars = {};
-
-			function DisplayMapMMN() {
-				MiraMonMapBrowserVars.mmn.postMessage("CommandMMNAddGeoJSONLayer('SensorThings API data', " + JSON.stringify(MiraMonMapBrowserVars.geojson) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonSchema) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonStyle) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonDates) + ")", GetCleanURLMiraMonMapBrowser(MiraMonMapBrowserVars.mmnURL));
-			}
-
-			function OpenMapMMN(url, geojson, geojsonSchema, geojsonStyle, geojsonDates) {
-				MiraMonMapBrowserVars.geojson = geojson;
-				MiraMonMapBrowserVars.geojsonSchema = geojsonSchema;
-				MiraMonMapBrowserVars.geojsonStyle = geojsonStyle;
-				MiraMonMapBrowserVars.geojsonDates = geojsonDates;
-				if (MiraMonMapBrowserVars.mmn)
-					DisplayMapMMN();
 				else {
-					window.addEventListener("message", ProcessMessageFromMiraMonMapBrowser);
-					MiraMonMapBrowserVars.mmnURL = url;
-					MiraMonMapBrowserVars.mmn = window.open(url, "_blank", "width=1000,height=800");
+					if (maximum < a[selectedOptions.value])
+						maximum = a[selectedOptions.value];
 				}
 			}
+			if (f >= 0)
+				estil[f].simbols[0].simbol[0].icona.r = maximum > 0.001 ? 10 / maximum : 1;
+			return estil;
+		}
 
-			function ProcessMessageFromMiraMonMapBrowser(event) {
-				if (!IsTrustedMiraMonMapBrowser(event, MiraMonMapBrowserVars.mmnURL))
-					return;
+		function GetGeoJSONDates(data, selectedOptions) {
+			var dataSorted = deapCopy(data), datetimes = [];
+			// var dataSorted = JSON.parse(JSON.stringify(data)), datetimes = [];
 
-				try {
-					var data = JSON.parse(event.data);
-				}
-				catch (e) {
-					showInfoMessage("JSON message parse error: " + e + " The response was:\n" + event.data);
-					return;
-				}
+			//Sorted by date (older first).
+			dataSorted.sort(function (a, b) {
+				if (a[selectedOptions.time] < b[selectedOptions.time])
+					return -1;
+				if (a[selectedOptions.time] > b[selectedOptions.time])
+					return 1;
+				return 0;
+			});
+			var a, b;
+			for (var i = 0; i < dataSorted.length; i++) {
+				a = dataSorted[i], b = dataSorted[i == 0 ? 0 : i - 1];
+				if (i == 0 || a[selectedOptions.time] != b[selectedOptions.time])
+					datetimes.push(a[selectedOptions.time]);
+			}
+			return datetimes;
+		}
 
-				if (data.msg === MMN_PM_IsListening) {
-					showInfoMessage("MiraMon Map Browser is open and ready to show layers.");
-					DisplayMapMMN();
-					return;
-				}
+		/*function ShowSaveTableDialog(nodeId) {
+		;   //Nothing to do
+	}*/
 
-				if (data.msg === MMN_PM_Closed) {
-					showInfoMessage("MiraMon Map Browser has been closed.");
-					MiraMonMapBrowserVars.mmn = null;
-					MiraMonMapBrowserVars.mmnURL = null;
-					return;
+		function PopulateSelectSaveLayerDialog(id, dataAttributes, selectedOption) {
+			var thereIsSelectionOption = false;
+			var dataAttributesArray = Object.keys(dataAttributes);
+
+			var s = "<select id=\"" + id + "Select" + "\">";
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (dataAttributesArray[a] == selectedOption) {
+					thereIsSelectionOption = true;
+					break;
 				}
-				/*if (data.msg === MMN_PM_CurrentLocationText)
-				{
-					MiraMonMapBrowserVars.currentLocText=data.text;
-					return;
-				}*/
+			}
+			s += "<option value=\"\"" + (!thereIsSelectionOption ? "selected=\"selected\"" : "") + "></option>";
+			for (var a = 0; a < dataAttributesArray.length; a++)
+				s += "<option value=\"" + dataAttributesArray[a] + "\"" + (dataAttributesArray[a] == selectedOption ? "selected=\"selected\"" : "") + ">" + dataAttributesArray[a] + "</option>";
+			s += "</select>";
+			document.getElementById(id).innerHTML = s;
+		}
+
+		function ShowSaveLayerDialogSelects(nodeId, descripUoM) {
+			var parentNode = GetFirstParentNode(currentNode);
+			if (parentNode) {
+				var data = networkNodes.get(nodeids[0]).STAdata;
+				var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
+				var s, elem;
+				PopulateSelectSaveLayerDialog("DialogSaveLayerPlace", dataAttributes, "FeatureOfInterest/description");
+				PopulateSelectSaveLayerDialog("DialogSaveLayerLongitude", dataAttributes, "FeatureOfInterest/feature/coordinates_0");
+				PopulateSelectSaveLayerDialog("DialogSaveLayerLatitude", dataAttributes, "FeatureOfInterest/feature/coordinates_1");
+				PopulateSelectSaveLayerDialog("DialogSaveLayerTime", dataAttributes, "PhenomenonTime");
+				PopulateSelectSaveLayerDialog("DialogSaveLayerVariable", dataAttributes, "Datastream/ObservedProperty/name");
+				if (descripUoM) {
+					document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display = "inline-block";
+					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableDescription", dataAttributes, "Datastream/ObservedProperty/description");
+					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableDefinition", dataAttributes, "Datastream/ObservedProperty/definition");
+					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoM", dataAttributes, "Datastream/unitOfMeasurement/name");
+					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoMSymbol", dataAttributes, "Datastream/unitOfMeasurement/symbol");
+					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoMDefinition", dataAttributes, "Datastream/unitOfMeasurement/definition");
+				}
+				else
+					document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display = "none";
+
+				PopulateSelectSaveLayerDialog("DialogSaveLayerValue", dataAttributes, "result");
+			}
+		}
+
+		function GetSelectedOptionsSaveLayer(descripUoM) {
+			var selectedOptions = {};
+			selectedOptions.place = document.getElementById("DialogSaveLayerPlaceSelect").value;
+			selectedOptions.longitude = document.getElementById("DialogSaveLayerLongitudeSelect").value;
+			selectedOptions.latitude = document.getElementById("DialogSaveLayerLatitudeSelect").value;
+			selectedOptions.time = document.getElementById("DialogSaveLayerTimeSelect").value;
+			selectedOptions.variable = document.getElementById("DialogSaveLayerVariableSelect").value;
+			if (descripUoM) {
+				selectedOptions.variableDescription = document.getElementById("DialogSaveLayerVariableDescriptionSelect").value;
+				selectedOptions.variableDefinition = document.getElementById("DialogSaveLayerVariableDefinitionSelect").value;
+				selectedOptions.variableUoM = document.getElementById("DialogSaveLayerVariableUoMSelect").value;
+				selectedOptions.variableUoMSymbol = document.getElementById("DialogSaveLayerVariableUoMSymbolSelect").value;
+				selectedOptions.variableUoMDefinition = document.getElementById("DialogSaveLayerVariableUoMDefinitionSelect").value;
+			}
+			selectedOptions.value = document.getElementById("DialogSaveLayerValueSelect").value;
+			return selectedOptions;
+		}
+
+		function ShowSaveLayerDialog(nodeId) {
+			ShowSaveLayerDialogSelects(nodeId, true);
+			document.getElementById("DialogSaveLayerTitle").innerHTML = "Save table as GeoJSON";
+			document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"SaveLayer(event)\">Save GeoJSON</button> " +
+				"<button onClick=\"SaveLayerSchema(event)\">Save JSON Schema</button> " +
+				"<button onClick=\"SaveLayerMetaschema(event)\">Save JSON Metaschema</button>";
+		}
+
+		function ShowOpenMapDialog(nodeId) {
+			ShowSaveLayerDialogSelects(nodeId, true);
+			document.getElementById("DialogSaveLayerTitle").innerHTML = "Open in the Map Browser";
+			document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"OpenMap(event)\">Open</button>";
+		}
+
+		function SaveTable(event) {
+			event.preventDefault(); // We don't want to submit this form
+			var delimiter = document.getElementById("DialogSaveTableDelimiter").value;
+			document.getElementById("DialogSaveTable").close();
+			var parentNode = GetFirstParentNode(currentNode);
+			if (parentNode) {
+				SaveLocalDataFile(Papa.unparse(StringifyObjectElements(parentNode.STAdata, parentNode.STAdataAttributes), { quotes: false, quoteChar: '"', escapeChar: '"', delimiter: (delimiter ? delimiter : ";"), header: true, newline: "\r\n", skipEmptyLines: "greedy" }),
+					(IdOfSTAEntity(parentNode) == -1) ? "table" : STAEntitiesArray[IdOfSTAEntity(parentNode)], ".csv", "application/vnd.ms-excel");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
+			}
+		}
+
+		//https://csvw.org/
+		//https://w3c.github.io/csvw/metadata/#dialect-descriptions
+		function CreateCSVW(data, dataAttributesInput, delimiter) {
+			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
+			var dataAttributesArray = Object.keys(dataAttributes);
+
+			var csvw = {
+				tableSchema: {
+					"columns": []
+				},
+				"dialect": {
+					"header": true,
+					"delimiter": delimiter
+				}
+			};
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				csvw.tableSchema.columns.push({
+					"name": dataAttributesArray[a],
+					"datatype": getCSVWTypeFromAttributeType(dataAttributes[dataAttributesArray[a]].type),
+				});
+			}
+			return csvw;
+		}
+
+
+		function SaveCSVW(event) {
+			event.preventDefault(); // We don't want to submit this form
+			var delimiter = document.getElementById("DialogSaveTableDelimiter").value;
+			document.getElementById("DialogSaveTable").close();
+			var parentNode = GetFirstParentNode(currentNode);
+			if (parentNode) {
+				SaveLocalDataFile(JSON.stringify(CreateCSVW(parentNode.STAdata, parentNode.STAdataAttributes, delimiter ? delimiter : ";"), null, "\t"),
+					(IdOfSTAEntity(parentNode) == -1 ? "table" : STAEntitiesArray[IdOfSTAEntity(parentNode)]) + "_csvw", ".json", "application/json");   //https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv
+			}
+		}
+
+		function getDataAttributesCSVW(csvw) {
+			var dataAttributes = {}, c;
+			for (var a = 0; a < csvw.tableSchema.columns.length; a++) {
+				c = csvw.tableSchema.columns[a];
+				dataAttributes[c.name] = {
+					"type": getAttributeTypeFromCSVWType(c.datatype),
+					"description": (c.titles && Array.isArray(c.titles)) ? c.titles[0] : c.titles,
+					"definition": c.propertyUrl,
+					"UoM": c.unitMeasureTitles && Array.isArray(c.unitMeasureTitles) ? c.unitMeasureTitles[0] : c.unitMeasureTitles,
+					"UoMSymbol": c.unitMeasureSymbol,
+					"UoMDefinition": c.unitMeasureUrl
+				};
+			}
+			return dataAttributes;
+		}
+
+		function getCSVReadParams(csvw) {
+			return csvw.dialect;
+		}
+
+		function SaveLayer(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSaveLayer").close();
+			var parentNode = GetFirstParentNode(currentNode);
+			if (parentNode) {
+				SaveLocalDataFile(JSON.stringify(GetGeoJSON(parentNode.STAdata, GetSelectedOptionsSaveLayer(false)), null, "\t"), "GeoJSON", ".geojson", "application/geo+json");
+			}
+		}
+
+		function SaveLayerSchema(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSaveLayer").close();
+			var parentNode = GetFirstParentNode(currentNode);
+			if (parentNode) {
+				SaveLocalDataFile(JSON.stringify(GetGeoJSONSchema(parentNode.STAdata, GetSelectedOptionsSaveLayer(true)), null, "\t"), "JSON", ".json", "application/json");
+			}
+		}
+
+		function SaveLayerMetaschema(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSaveLayer").close();
+			SaveLocalDataFile(JSON.stringify(GetGeoJSONMetaschema(), null, "\t"), "JSON", ".json", "application/json");
+		}
+
+		function OpenMap(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSaveLayer").close();
+			var parentNode = GetFirstParentNode(currentNode);
+			if (parentNode) {
+				var selectedOptionsSaveLayer = GetSelectedOptionsSaveLayer(true);
+				OpenMapMMN(getAbsoluteURL(config.MMNpath) + (config.MMNpath.indexOf('?') > 0 ? "&" : "?") + "reset=1", GetGeoJSON(parentNode.STAdata, selectedOptionsSaveLayer), GetGeoJSONPropertiesSchema(parentNode.STAdata, selectedOptionsSaveLayer), GetGeoJSONStyles(parentNode.STAdata, selectedOptionsSaveLayer), GetGeoJSONDates(parentNode.STAdata, selectedOptionsSaveLayer));
+			}
+		}
+
+		var MiraMonMapBrowserVars = {};
+
+		function DisplayMapMMN() {
+			MiraMonMapBrowserVars.mmn.postMessage("CommandMMNAddGeoJSONLayer('SensorThings API data', " + JSON.stringify(MiraMonMapBrowserVars.geojson) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonSchema) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonStyle) + ", " + JSON.stringify(MiraMonMapBrowserVars.geojsonDates) + ")", GetCleanURLMiraMonMapBrowser(MiraMonMapBrowserVars.mmnURL));
+		}
+
+		function OpenMapMMN(url, geojson, geojsonSchema, geojsonStyle, geojsonDates) {
+			MiraMonMapBrowserVars.geojson = geojson;
+			MiraMonMapBrowserVars.geojsonSchema = geojsonSchema;
+			MiraMonMapBrowserVars.geojsonStyle = geojsonStyle;
+			MiraMonMapBrowserVars.geojsonDates = geojsonDates;
+			if (MiraMonMapBrowserVars.mmn)
+				DisplayMapMMN();
+			else {
+				window.addEventListener("message", ProcessMessageFromMiraMonMapBrowser);
+				MiraMonMapBrowserVars.mmnURL = url;
+				MiraMonMapBrowserVars.mmn = window.open(url, "_blank", "width=1000,height=800");
+			}
+		}
+
+		function ProcessMessageFromMiraMonMapBrowser(event) {
+			if (!IsTrustedMiraMonMapBrowser(event, MiraMonMapBrowserVars.mmnURL))
+				return;
+
+			try {
+				var data = JSON.parse(event.data);
+			}
+			catch (e) {
+				showInfoMessage("JSON message parse error: " + e + " The response was:\n" + event.data);
+				return;
 			}
 
-			function ShowTableSelectColumnsDialog(parentNode, node) {
+			if (data.msg === MMN_PM_IsListening) {
+				showInfoMessage("MiraMon Map Browser is open and ready to show layers.");
+				DisplayMapMMN();
+				return;
+			}
 
-				var data = parentNode.STAdata ? parentNode.STAdata : node.STAdata,
-					selectedColumns = node.STASelectedColumns;
+			if (data.msg === MMN_PM_Closed) {
+				showInfoMessage("MiraMon Map Browser has been closed.");
+				MiraMonMapBrowserVars.mmn = null;
+				MiraMonMapBrowserVars.mmnURL = null;
+				return;
+			}
+			/*if (data.msg === MMN_PM_CurrentLocationText)
+			{
+				MiraMonMapBrowserVars.currentLocText=data.text;
+				return;
+			}*/
+		}
+
+		function ShowTableSelectColumnsDialog(parentNode, node) {
+
+			var data = parentNode.STAdata ? parentNode.STAdata : node.STAdata,
+				selectedColumns = node.STASelectedColumns;
+
+			if (!data || !data.length) {
+				document.getElementById("DialogSelectColumnsHTML").innerHTML = "No data to show.";
+				return;
+			}
+			var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
+			const dataAttributesArray = Object.keys(dataAttributes);
+
+			var s = "<table>";
+			for (var a = 0; a < dataAttributesArray.length; a++)
+				s += "<tr><td><label><input type='checkbox'" + ((!selectedColumns || a >= selectedColumns.length || selectedColumns[a]) ? "checked='checked'" : "") + " id='SelectColumn_" + a + "' /> " + dataAttributesArray[a] + "</label></td></tr>";
+			s += "</table>";
+			document.getElementById("DialogSelectColumnsHTML").innerHTML = s;
+		}
+
+		function ShowTableSelectExpandsDialog(nodeId, expandCheckboxes) {
+			var node = networkNodes.get(nodeId);
+			if (expandCheckboxes) {
+				var data = node.STAdata,
+					entities = STAEntities[STAEntitiesArray[IdOfSTAEntity(node)]].entities,
+					selectedExpands = node.STASelectedExpands;
 
 				if (!data || !data.length) {
-					document.getElementById("DialogSelectColumnsHTML").innerHTML = "No data to show.";
+					document.getElementById("DialogSelectExpandsCheckBoxes").innerHTML = "No data to show.";
 					return;
 				}
-				var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
+
+				var dataAttributes = selectedExpands ? selectedExpands.dataAttributesUnexpanded : (node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data));
 				const dataAttributesArray = Object.keys(dataAttributes);
 
 				var s = "<table>";
-				for (var a = 0; a < dataAttributesArray.length; a++)
-					s += "<tr><td><label><input type='checkbox'" + ((!selectedColumns || a >= selectedColumns.length || selectedColumns[a]) ? "checked='checked'" : "") + " id='SelectColumn_" + a + "' /> " + dataAttributesArray[a] + "</label></td></tr>";
-				s += "</table>";
-				document.getElementById("DialogSelectColumnsHTML").innerHTML = s;
-			}
-
-			function ShowTableSelectExpandsDialog(nodeId, expandCheckboxes) {
-				var node = networkNodes.get(nodeId);
-				if (expandCheckboxes) {
-					var data = node.STAdata,
-						entities = STAEntities[STAEntitiesArray[IdOfSTAEntity(node)]].entities,
-						selectedExpands = node.STASelectedExpands;
-
-					if (!data || !data.length) {
-						document.getElementById("DialogSelectExpandsCheckBoxes").innerHTML = "No data to show.";
-						return;
-					}
-
-					var dataAttributes = selectedExpands ? selectedExpands.dataAttributesUnexpanded : (node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data));
-					const dataAttributesArray = Object.keys(dataAttributes);
-
-					var s = "<table>";
-					for (var a = 0; a < dataAttributesArray.length; a++) {
-						if (dataAttributesArray[a].endsWith("@iot.navigationLink")) {
-							var da = dataAttributesArray[a].substring(0, dataAttributesArray[a].length - "@iot.navigationLink".length);
-							for (var e = 0; e < entities.length; e++) {
-								if (entities[e] == da) {
-									s += "<tr><td><label><input type='checkbox'" + ((selectedExpands && a < selectedExpands.selected.length && selectedExpands.selected[a]) ? "checked='checked'" : "") + " id='SelectExpand_" + a + "' /> " + da + "</label></td></tr>";
-									break;
-								}
-							}
-						}
-					}
-					s += "</table>";
-					document.getElementById("DialogSelectExpandsCheckBoxes").innerHTML = s;
-					document.getElementById("DialogSelectExpandsHTML").style.display = "inline-block";
-				}
-				else
-					document.getElementById("DialogSelectExpandsHTML").style.display = "none";
-				document.getElementById("SelectExpandsNumberOfRecords").value = node.STAExpectedLength;
-
-			}
-
-			function ShowTableSelectSortByDialog(node) {
-				var data = node.STAdata;
-
-				if (!data || !data.length) {
-					document.getElementById("DialogSelectSortByRadioButtons").innerHTML = "No data to show.";
-					return;
-				}
-
-				var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
-
-				const dataAttributesArray = Object.keys(dataAttributes);
-
-				var s = "";
-				var first = true;
 				for (var a = 0; a < dataAttributesArray.length; a++) {
-					if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0) != '@') {
-						s += "<label><input type='radio'" + (first ? "checked='checked'" : "") + " id='SelectSortByEntity_" + a + "' name='SelectSortByEntity'/> " + dataAttributesArray[a] + "</label><br>";
-						first = false;
-					}
-				}
-				document.getElementById("DialogSelectSortByRadioButtons").innerHTML = s;
-				//document.getElementById("DialogSelectSortByHTML").style.display = "inline-block";
-				document.getElementById("SelectSortByNumberOfRecords").value = node.STAExpectedLength;
-			}
-
-			function ShowTableSelectRowsDialog(parentNodeId, nodeId) {
-				var data = networkNodes.get(parentNodeId).STAdata;
-
-				if (!data || !data.length) {
-					document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
-					return;
-				}
-
-				document.getElementById("DialogSelectRowsTableRadio").checked = true;
-				document.getElementById("DialogSelectRowsTable").innerHTML = GetHTMLTable(data, networkNodes.get(parentNodeId).STAdataAttributes, false, networkNodes.get(nodeId).STAURLIdSelected ? networkNodes.get(nodeId).STAURLIdSelected : 0);
-
-				document.getElementById("DialogSelectRowsFilterRadio").checked = false;
-				document.getElementById("DialogSelectRowsFilter").innerHTML = "";
-			}
-
-			function ShowTableFilterRowsDialog(nodeId, paramsNodeId) {
-				var data = networkNodes.get(nodeId).STAdata;
-				var dataAttributes = getDataAttributes(data);  //no borrar
-
-				if (!data || !data.length) {
-					document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
-					return;
-				}
-
-				document.getElementById("DialogSelectRowsTableRadio").checked = false;
-				document.getElementById("DialogSelectRowsTable").innerHTML = "";
-
-				document.getElementById("DialogSelectRowsFilterRadio").checked = true;
-				document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
-
-				//createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId); /////////////////////////////////////////////////////////
-				ShowFilterTable(dataAttributes, paramsNodeId);
-			}
-
-			function ChangeTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId) {
-				if (document.getElementById("DialogSelectRowsTableRadio").checked)
-					ShowTableSelectRowsDialog(parentNodeId, nodeId);
-				else
-					ShowTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId);
-			}
-
-			function SeparatePropertyIfNeeded(record, property, baseName) {
-				if (typeof property === "object" && property !== null)  //"arrays" and 'null' are also objects.
-				{
-					if (Array.isArray(property)) {
-						//Array: creating multifields
-						for (var j = 0; j < property.length; j++) {
-							if (typeof property[j] === "object") {
-								if (Array.isArray(property[j])) {
-									for (var jj = 0; jj < property[j].length; jj++)
-										SeparatePropertyIfNeeded(record, property[j][jj], baseName + "_" + j + "_" + jj);
-								}
-								else {
-									var subkeys = Object.keys(property[j]);
-									for (var kk = 0; kk < subkeys.length; kk++)
-										SeparatePropertyIfNeeded(record, property[j][subkeys[kk]], baseName + "/" + subkeys[kk] + "_" + j)
-								}
-							}
-							else
-								record[baseName + "_" + j] = property[j];
-						}
-					}
-					else {
-						//Object; lets separate it.
-						var subkeys = Object.keys(property);
-						for (var kk = 0; kk < subkeys.length; kk++)
-							SeparatePropertyIfNeeded(record, property[subkeys[kk]], baseName + "/" + subkeys[kk])
-					}
-				}
-				else
-					record[baseName] = property;
-			}
-
-			function SeparateColumns(node, parentNode) {
-				var record, recordParent, data = parentNode.STAdata;
-
-				if (!data)
-					showInfoMessage("No data loaded in the parent node.");
-				if (parentNode.STAURL)
-					node.STAURL = parentNode.STAURL;
-
-				node.STAExpectedLength = parentNode.STAExpectedLength;
-				node.STAdata = [];
-				for (var i = 0; i < data.length; i++) {
-					record = node.STAdata[i] = {};
-					recordParent = data[i]
-					var keys = Object.keys(recordParent);
-					for (var k = 0; k < keys.length; k++)
-						SeparatePropertyIfNeeded(record, recordParent[keys[k]], keys[k]);
-				}
-				if (parentNode.STAdataAttributes) {
-					var dataAttributes = getDataAttributes(data);
-					var dataAttributesArray = Object.keys(dataAttributes);
-					for (var i = 0; i < dataAttributesArray.length; i++) {
-						node.STAdataAttributes[dataAttributesArray[i]] = deapCopy((parentNode.STAdataAttributes[dataAttributesArray[i]]) ? parentNode.STAdataAttributes[dataAttributesArray[i]] : dataAttributes[dataAttributesArray[i]]);
-					}
-				}
-				networkNodes.update(node);
-			}
-
-			/*return
-						null means connection should not be done.
-						true means all done
-						false means pending.*/
-			function StartCircularImage(nodeTo, nodeFrom, calUnir) {
-				var errorText = reasonNodeDoesNotFitWithPrevious(nodeTo, nodeFrom);
-				if (errorText) {
-					alert("Node incompatible. " + errorText + ". It has not been added.");
-					return null;
-				}
-				if (nodeFrom.STAURL && IdOfSTAEntity(nodeTo) != -1) {
-					if (nodeFrom.image == "ogc.png")
-						nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAEntity(nodeTo)];
-					else
-						nodeTo.STAURL = nodeFrom.STAURL + "/" + getConnectionSTAEntity(nodeFrom, nodeTo).entity;
-					nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
-
-					networkNodes.update(nodeTo);
-					if (calUnir)
-						networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
-					showInfoMessage("Requesting " + STAEntitiesArray[IdOfSTAEntity(nodeTo)] + " to STA...");
-					LoadJSONNodeSTAData(nodeTo);
-					return true;
-				}
-				if (nodeFrom.STAURL && IdOfSTASpecialQueries(nodeTo) != -1) {
-					nodeTo.STAURL = nodeFrom.STAURL + "/" + STASpecialQueries[STASpecialQueriesArray[IdOfSTASpecialQueries(nodeTo)]].query;
-					nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
-					networkNodes.update(nodeTo);
-					if (calUnir)
-						networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
-					showInfoMessage("Requesting " + STASpecialQueriesArray[IdOfSTASpecialQueries(nodeTo)] + " to STA...");
-					LoadJSONNodeSTAData(nodeTo);
-					return true;
-				}
-				if (nodeFrom.STAURL && (nodeTo.image == "SelectColumnsSTA.png" || nodeTo.image == "SelectRowsSTA.png" || nodeTo.image == "SortBySTA.png")) {
-					nodeTo.STAURL = nodeFrom.STAURL;
-					nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
-					if (nodeFrom.STAdata)
-						nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
-					if (nodeFrom.STAdataAttributes)
-						nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
-					networkNodes.update(nodeTo);
-					if (calUnir)
-						networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
-					//showInfoMessage("Selecting " + (nodeTo.image == "SelectColumnsSTA.png" ? "columns" : "rows") + " to STA...");
-					//LoadJSONNodeSTAData(nodeTo);
-					return true;
-				}
-				if (nodeFrom.STAdata && (nodeTo.image == "SelectColumnsTable.png" || nodeTo.image == "SelectRowsTable.png")) { //afegir SelectRowsTable.png
-					nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
-					if (nodeFrom.STAdataAttributes)
-						nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
-					networkNodes.update(nodeTo);
-					if (calUnir)
-						networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
-					return true;
-				}
-				if (nodeTo.image == "SeparateColumns.png") {
-					if (calUnir)
-						networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
-					SeparateColumns(nodeTo, nodeFrom);
-					return true;
-				}
-
-				return false;
-			}
-
-			function KeySTAPage(event) {
-				//if (event.keyCode == 113)  //F2
-				if (event.code == "F2" || event.code == "Delete") {
-					event.preventDefault();
-					var nodeId = network.getSelectedNodes();
-					if (nodeId && nodeId.length) {
-						switch (event.code) {
-							case "F2":
-								renameNode(nodeId[0]);
+					if (dataAttributesArray[a].endsWith("@iot.navigationLink")) {
+						var da = dataAttributesArray[a].substring(0, dataAttributesArray[a].length - "@iot.navigationLink".length);
+						for (var e = 0; e < entities.length; e++) {
+							if (entities[e] == da) {
+								s += "<tr><td><label><input type='checkbox'" + ((selectedExpands && a < selectedExpands.selected.length && selectedExpands.selected[a]) ? "checked='checked'" : "") + " id='SelectExpand_" + a + "' /> " + da + "</label></td></tr>";
 								break;
-							case "Delete":
-								removeNode(nodeId[0]);
-								break;
-						}
-					}
-				}
-			}
-
-			// create an array with nodes
-			var networkNodes = new vis.DataSet([]);
-
-			// create an array with edges
-			var networkEdges = new vis.DataSet([]);
-			var networkOptions = {
-				interaction: { hover: true },
-				manipulation: {  //https://stackoverflow.com/questions/39701703/add-edge-dynamically-visjs
-					enabled: false,
-					addEdge: function (data, callback) {
-						console.log('add edge', data);
-						if (data.from == data.to)
-							showInfoMessage("Connection to the same node is not allowed.");
-						else {
-							networkEdges.add([{ from: data.to, to: data.from, arrows: "from" }]);
-							showInfoMessage("Connected.");
-							StartCircularImage(networkNodes.get(data.from), networkNodes.get(data.to), false);
-						}
-						connectionInProcess = false;
-					}
-				}
-			};
-
-			var network = new vis.Network(document.getElementById("mynetwork"), {
-				nodes: networkNodes,
-				edges: networkEdges
-			}, networkOptions);
-
-			/*network.on("click", function (params) {
-				params.event = "[original event]";
-				document.getElementById("eventSpanHeading").innerText = "Click event:";
-				document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
-				console.log("click event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
-			});*/
-			function networkDoubleClick(params) {
-				/*params.event = "[original event]";
-				document.getElementById("eventSpanHeading").innerText = "doubleClick event:";
-				document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);*/
-
-				if (params.nodes && params.nodes.length && !connectionInProcess) {
-					currentNode = networkNodes.get(params.nodes[0])
-					if (currentNode.image == "ogc.png") {
-						document.getElementById("DialogSTAURLInput").value = currentNode.STAURL;
-						document.getElementById("DialogSTAURLInput").readOnly = false;
-						document.getElementById("DialogSTAURLOk").style.display = "inline-block";
-						document.getElementById("DialogSTAURL").showModal();
-					}
-					else if (currentNode.image == "ViewQuerySTA.png") {
-						document.getElementById("DialogSTAURLInput").value = "";
-						var parentNode = GetFirstParentNode(currentNode);
-						if (parentNode)
-							document.getElementById("DialogSTAURLInput").value = parentNode.STAURL;
-						document.getElementById("DialogSTAURLInput").readOnly = true;
-						document.getElementById("DialogSTAURLOk").style.display = "none";
-						document.getElementById("DialogSTAURL").showModal();
-					}
-					else if (currentNode.image == "ImportCSV.png") {
-						//ShowImportCSVDialog(currentNode.id);
-						document.getElementById("DialogImportCSV").showModal();
-					}
-					else if (currentNode.image == "Table.png") {
-						///Determining the parent node.
-						var nodeids = network.getConnectedNodes(currentNode.id, "from");
-						if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
-							var data = networkNodes.get(nodeids[0]).STAdata;
-							if (data && data.length)
-								document.getElementById("DialogOKOptions").innerHTML = "<label><input type='checkbox' checked='checked' id='ShowTableRowNumberDialogOK' onChange='ShowTableDialog(\"" + nodeids[0] + "\");'/> Show row numbers</label>";
-							else
-								document.getElementById("DialogOKOptions").innerHTML = "";
-							ShowTableDialog(nodeids[0]);
-							document.getElementById("DialogOK").showModal();
-						}
-					}
-					else if (currentNode.image == "UploadObservations.png") {
-						ShowUploadObservationsDialog(currentNode);
-						document.getElementById("DialogUploadObservations").showModal();
-					}
-					else if (currentNode.image == "UploadTimeAverages.png") {
-						ShowUploadTimeAveragesDialog(currentNode.id);
-						document.getElementById("UploadTimeAverages").showModal();
-					}
-					else if (currentNode.image == "SaveTable.png") {
-						//ShowSaveTableDialog(currentNode.id);
-						document.getElementById("DialogSaveTable").showModal();
-					}
-					else if (currentNode.image == "ScatterPlot.png") {
-						var parentNodes = GetParentNodes(currentNode);
-						if (parentNodes && parentNodes[0]) {
-							if (parentNodes[0].STAURL)
-								ShowScatterPlotDialog(parentNodes);
-							document.getElementById("DialogScatterPlot").showModal();
-						}
-					}
-					else if (currentNode.image == "OneValue.png") {
-						ShowOneValueDialog(currentNode);
-						document.getElementById("DialogOneValue").showModal();
-					}
-					else if (currentNode.image == "SaveLayer.png") {
-						ShowSaveLayerDialog(currentNode.id);
-						document.getElementById("DialogSaveLayer").showModal();
-					}
-					else if (currentNode.image == "OpenMap.png") {
-						ShowOpenMapDialog(currentNode.id);
-						document.getElementById("DialogSaveLayer").showModal();
-					}
-					else if (currentNode.image == "SelectColumnsSTA.png" || currentNode.image == "SelectColumnsTable.png") {
-						var parentNode = GetFirstParentNode(currentNode);
-						if (parentNode) {
-							ShowTableSelectColumnsDialog(parentNode, currentNode);
-							document.getElementById("DialogSelectColumns").showModal();
-						}
-					}
-					else if (currentNode.image == "SelectRowsSTA.png" || currentNode.image == "SelectRowsTable.png") { //afegir el SelectRowsTable.png?
-						//Determining the parent node.
-						var nodeids = network.getConnectedNodes(currentNode.id, "from");
-						if (nodeids && nodeids.length) {
-							if (networkNodes.get(nodeids[0]) && (networkNodes.get(nodeids[0]).STAURL || networkNodes.get(nodeids[0]).STAdata)) {
-								document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/> Select an element:</label>";
-								document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\", \"" + params["nodes"][0] + "\")'/>  Filter:</label>";
-								ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
 							}
-							document.getElementById("DialogSelectRows").showModal();
 						}
 					}
-					else if (currentNode.image == "SortBySTA.png") {
-						var parentNode = GetFirstParentNode(currentNode);
-						if (parentNode) {
-							if (parentNode.STAURL)
-								ShowTableSelectSortByDialog(parentNode);
-							document.getElementById("DialogSelectSortBy").showModal();
+				}
+				s += "</table>";
+				document.getElementById("DialogSelectExpandsCheckBoxes").innerHTML = s;
+				document.getElementById("DialogSelectExpandsHTML").style.display = "inline-block";
+			}
+			else
+				document.getElementById("DialogSelectExpandsHTML").style.display = "none";
+			document.getElementById("SelectExpandsNumberOfRecords").value = node.STAExpectedLength;
+
+		}
+
+		function ShowTableSelectSortByDialog(node) {
+			var data = node.STAdata;
+
+			if (!data || !data.length) {
+				document.getElementById("DialogSelectSortByRadioButtons").innerHTML = "No data to show.";
+				return;
+			}
+
+			var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
+
+			const dataAttributesArray = Object.keys(dataAttributes);
+
+			var s = "";
+			var first = true;
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (!dataAttributesArray[a].endsWith("@iot.navigationLink") && dataAttributesArray[a].charAt(0) != '@') {
+					s += "<label><input type='radio'" + (first ? "checked='checked'" : "") + " id='SelectSortByEntity_" + a + "' name='SelectSortByEntity'/> " + dataAttributesArray[a] + "</label><br>";
+					first = false;
+				}
+			}
+			document.getElementById("DialogSelectSortByRadioButtons").innerHTML = s;
+			//document.getElementById("DialogSelectSortByHTML").style.display = "inline-block";
+			document.getElementById("SelectSortByNumberOfRecords").value = node.STAExpectedLength;
+		}
+
+		function ShowTableSelectRowsDialog(parentNodeId, nodeId) {
+			var data = networkNodes.get(parentNodeId).STAdata;
+
+			if (!data || !data.length) {
+				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
+				return;
+			}
+
+			document.getElementById("DialogSelectRowsTableRadio").checked = true;
+			document.getElementById("DialogSelectRowsTable").innerHTML = GetHTMLTable(data, networkNodes.get(parentNodeId).STAdataAttributes, false, networkNodes.get(nodeId).STAURLIdSelected ? networkNodes.get(nodeId).STAURLIdSelected : 0);
+
+			document.getElementById("DialogSelectRowsFilterRadio").checked = false;
+			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
+		}
+
+		function ShowTableFilterRowsDialog(nodeId, paramsNodeId) {
+			var data = networkNodes.get(nodeId).STAdata;
+			var dataAttributes = getDataAttributes(data);  //no borrar
+
+			if (!data || !data.length) {
+				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
+				return;
+			}
+
+			document.getElementById("DialogSelectRowsTableRadio").checked = false;
+			document.getElementById("DialogSelectRowsTable").innerHTML = "";
+
+			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
+			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
+
+			//createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId); /////////////////////////////////////////////////////////
+			ShowFilterTable(dataAttributes, paramsNodeId);
+		}
+
+		function ChangeTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId) {
+			if (document.getElementById("DialogSelectRowsTableRadio").checked)
+				ShowTableSelectRowsDialog(parentNodeId, nodeId);
+			else
+				ShowTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId);
+		}
+
+		function SeparatePropertyIfNeeded(record, property, baseName) {
+			if (typeof property === "object" && property !== null)  //"arrays" and 'null' are also objects.
+			{
+				if (Array.isArray(property)) {
+					//Array: creating multifields
+					for (var j = 0; j < property.length; j++) {
+						if (typeof property[j] === "object") {
+							if (Array.isArray(property[j])) {
+								for (var jj = 0; jj < property[j].length; jj++)
+									SeparatePropertyIfNeeded(record, property[j][jj], baseName + "_" + j + "_" + jj);
+							}
+							else {
+								var subkeys = Object.keys(property[j]);
+								for (var kk = 0; kk < subkeys.length; kk++)
+									SeparatePropertyIfNeeded(record, property[j][subkeys[kk]], baseName + "/" + subkeys[kk] + "_" + j)
+							}
 						}
+						else
+							record[baseName + "_" + j] = property[j];
 					}
-					else if (IdOfSTAEntity(currentNode) != -1) {
-						//Offering expand
-						ShowTableSelectExpandsDialog(currentNode.id, true);
-						document.getElementById("DialogSelectExpands").showModal();
-					}
-					else if (IdOfSTASpecialQueries(currentNode) != -1) {
-						ShowTableSelectExpandsDialog(currentNode.id, false);
-						document.getElementById("DialogSelectExpands").showModal();
-					}
-				}
-			}
-			network.on("doubleClick", networkDoubleClick);
-			function networkContext(params) {
-				params.event.preventDefault();  //https://stackoverflow.com/questions/38258940/open-an-extension-popup-html-list-on-right-click-of-node-contextmenu-in-visj
-
-				var nodeId = network.getNodeAt(params.pointer.DOM); //params.nodes is not useful here as params.nodes are the selected ones and not the ones rightclicked.
-				if (nodeId) {
-					startingNodeContextId = nodeId;
-					document.getElementById("DialogContextMenu").showModal();
-					return;
-				}
-				var edgeId = network.getEdgeAt(params.pointer.DOM);
-				if (edgeId) {
-					startingEdgeContextId = edgeId;
-					document.getElementById("DialogEdgeContextMenu").showModal();
-				}
-				/*params.event = "[original event]";
-				document.getElementById("eventSpanHeading").innerText = "oncontext (right click) event:";
-				document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);*/
-			}
-			network.on("oncontext", networkContext);
-			/*network.on("dragStart", function (params) {
-				// There's no point in displaying this event on screen, it gets immediately overwritten
-				params.event = "[original event]";
-				console.log("dragStart Event:", params);
-				console.log("dragStart event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
-			});
-			network.on("dragging", function (params) {
-				params.event = "[original event]";
-				document.getElementById("eventSpanHeading").innerText = "dragging event:";
-				document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
-			});
-			network.on("dragEnd", function (params) {
-				params.event = "[original event]";
-				document.getElementById("eventSpanHeading").innerText = "dragEnd event:";
-				document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
-				console.log("dragEnd Event:", params);
-				console.log("dragEnd event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
-			});
-			network.on("controlNodeDragging", function (params) {
-				params.event = "[original event]";
-				document.getElementById("eventSpanHeading").innerText = "control node dragging event:";
-				document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
-			});
-			network.on("controlNodeDragEnd", function (params) {
-				params.event = "[original event]";
-				document.getElementById("eventSpanHeading").innerText = "control node drag end event:";
-				document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
-				console.log("controlNodeDragEnd Event:", params);
-			});
-			network.on("zoom", function (params) {
-				document.getElementById("eventSpanHeading").innerText = "zoom event:";
-				document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
-			});
-			network.on("showPopup", function (params) {
-				document.getElementById("eventSpanHeading").innerText = "showPopup event: ";
-				document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
-			});
-			network.on("hidePopup", function () {
-				console.log("hidePopup Event");
-			});
-			network.on("select", function (params) {
-				console.log("select Event:", params);
-			});
-			network.on("selectNode", function (params) {
-				console.log("selectNode Event:", params);
-			});
-			network.on("selectEdge", function (params) {
-				console.log("selectEdge Event:", params);
-			});
-			network.on("deselectNode", function (params) {
-				console.log("deselectNode Event:", params);
-			});
-			network.on("deselectEdge", function (params) {
-				console.log("deselectEdge Event:", params);
-			});
-			network.on("hoverNode", function (params) {
-				console.log("hoverNode Event:", params);
-			});
-			network.on("hoverEdge", function (params) {
-				console.log("hoverEdge Event:", params);
-			});
-			network.on("blurNode", function (params) {
-				console.log("blurNode Event:", params);
-			});
-			network.on("blurEdge", function (params) {
-				console.log("blurEdge Event:", params);
-			});*/
-
-
-			function addCircularImage(event, dialog, label, image) {
-				var returnStart = false;
-				if (event)
-					event.preventDefault(); // We don't want to submit this form
-				if (dialog)
-					document.getElementById(dialog).close();
-				var newId = (Math.random() * 1e7).toString(32);
-				var node = { id: newId, label: label, image: image, shape: "circularImage" };
-
-				if (image == "ogc.png") {
-					node.STAURL = config.STAurl;
-					node.STAExpectedLength = 100;
-					networkNodes.add(node);
-					showInfoMessage("Requesting STA landing page");
-					LoadJSONNodeSTAData(node);
 				}
 				else {
-					if (!startingNodeContextId)
-						networkNodes.add(node);
+					//Object; lets separate it.
+					var subkeys = Object.keys(property);
+					for (var kk = 0; kk < subkeys.length; kk++)
+						SeparatePropertyIfNeeded(record, property[subkeys[kk]], baseName + "/" + subkeys[kk])
+				}
+			}
+			else
+				record[baseName] = property;
+		}
+
+		function SeparateColumns(node, parentNode) {
+			var record, recordParent, data = parentNode.STAdata;
+
+			if (!data)
+				showInfoMessage("No data loaded in the parent node.");
+			if (parentNode.STAURL)
+				node.STAURL = parentNode.STAURL;
+
+			node.STAExpectedLength = parentNode.STAExpectedLength;
+			node.STAdata = [];
+			for (var i = 0; i < data.length; i++) {
+				record = node.STAdata[i] = {};
+				recordParent = data[i]
+				var keys = Object.keys(recordParent);
+				for (var k = 0; k < keys.length; k++)
+					SeparatePropertyIfNeeded(record, recordParent[keys[k]], keys[k]);
+			}
+			if (parentNode.STAdataAttributes) {
+				var dataAttributes = getDataAttributes(data);
+				var dataAttributesArray = Object.keys(dataAttributes);
+				for (var i = 0; i < dataAttributesArray.length; i++) {
+					node.STAdataAttributes[dataAttributesArray[i]] = deapCopy((parentNode.STAdataAttributes[dataAttributesArray[i]]) ? parentNode.STAdataAttributes[dataAttributesArray[i]] : dataAttributes[dataAttributesArray[i]]);
+				}
+			}
+			networkNodes.update(node);
+		}
+
+		/*return
+					null means connection should not be done.
+					true means all done
+					false means pending.*/
+		function StartCircularImage(nodeTo, nodeFrom, calUnir) {
+			var errorText = reasonNodeDoesNotFitWithPrevious(nodeTo, nodeFrom);
+			if (errorText) {
+				alert("Node incompatible. " + errorText + ". It has not been added.");
+				return null;
+			}
+			if (nodeFrom.STAURL && IdOfSTAEntity(nodeTo) != -1) {
+				if (nodeFrom.image == "ogc.png")
+					nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAEntity(nodeTo)];
+				else
+					nodeTo.STAURL = nodeFrom.STAURL + "/" + getConnectionSTAEntity(nodeFrom, nodeTo).entity;
+				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
+
+				networkNodes.update(nodeTo);
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				showInfoMessage("Requesting " + STAEntitiesArray[IdOfSTAEntity(nodeTo)] + " to STA...");
+				LoadJSONNodeSTAData(nodeTo);
+				return true;
+			}
+			if (nodeFrom.STAURL && IdOfSTASpecialQueries(nodeTo) != -1) {
+				nodeTo.STAURL = nodeFrom.STAURL + "/" + STASpecialQueries[STASpecialQueriesArray[IdOfSTASpecialQueries(nodeTo)]].query;
+				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
+				networkNodes.update(nodeTo);
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				showInfoMessage("Requesting " + STASpecialQueriesArray[IdOfSTASpecialQueries(nodeTo)] + " to STA...");
+				LoadJSONNodeSTAData(nodeTo);
+				return true;
+			}
+			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumnsSTA.png" || nodeTo.image == "SelectRowsSTA.png" || nodeTo.image == "SortBySTA.png")) {
+				nodeTo.STAURL = nodeFrom.STAURL;
+				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
+				if (nodeFrom.STAdata)
+					nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
+				if (nodeFrom.STAdataAttributes)
+					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
+				networkNodes.update(nodeTo);
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				//showInfoMessage("Selecting " + (nodeTo.image == "SelectColumnsSTA.png" ? "columns" : "rows") + " to STA...");
+				//LoadJSONNodeSTAData(nodeTo);
+				return true;
+			}
+			if (nodeFrom.STAdata && (nodeTo.image == "SelectColumnsTable.png" || nodeTo.image == "SelectRowsTable.png")) { //afegir SelectRowsTable.png
+				nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
+				if (nodeFrom.STAdataAttributes)
+					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
+				networkNodes.update(nodeTo);
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				return true;
+			}
+			if (nodeTo.image == "SeparateColumns.png") {
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				SeparateColumns(nodeTo, nodeFrom);
+				return true;
+			}
+
+			return false;
+		}
+
+		function KeySTAPage(event) {
+			//if (event.keyCode == 113)  //F2
+			if (event.code == "F2" || event.code == "Delete") {
+				event.preventDefault();
+				var nodeId = network.getSelectedNodes();
+				if (nodeId && nodeId.length) {
+					switch (event.code) {
+						case "F2":
+							renameNode(nodeId[0]);
+							break;
+						case "Delete":
+							removeNode(nodeId[0]);
+							break;
+					}
+				}
+			}
+		}
+
+		// create an array with nodes
+		var networkNodes = new vis.DataSet([]);
+
+		// create an array with edges
+		var networkEdges = new vis.DataSet([]);
+		var networkOptions = {
+			interaction: { hover: true },
+			manipulation: {  //https://stackoverflow.com/questions/39701703/add-edge-dynamically-visjs
+				enabled: false,
+				addEdge: function (data, callback) {
+					console.log('add edge', data);
+					if (data.from == data.to)
+						showInfoMessage("Connection to the same node is not allowed.");
 					else {
-						returnStart = StartCircularImage(node, networkNodes.get(startingNodeContextId), true);
-						if (returnStart == null)
-							return;
-						if (!returnStart) {
-							networkNodes.add(node);
-							networkEdges.add([{ from: startingNodeContextId, to: newId, arrows: "from" }]);
+						networkEdges.add([{ from: data.to, to: data.from, arrows: "from" }]);
+						showInfoMessage("Connected.");
+						StartCircularImage(networkNodes.get(data.from), networkNodes.get(data.to), false);
+					}
+					connectionInProcess = false;
+				}
+			}
+		};
+
+		var network = new vis.Network(document.getElementById("mynetwork"), {
+			nodes: networkNodes,
+			edges: networkEdges
+		}, networkOptions);
+
+		/*network.on("click", function (params) {
+			params.event = "[original event]";
+			document.getElementById("eventSpanHeading").innerText = "Click event:";
+			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
+			console.log("click event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
+		});*/
+		function networkDoubleClick(params) {
+			/*params.event = "[original event]";
+			document.getElementById("eventSpanHeading").innerText = "doubleClick event:";
+			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);*/
+
+			if (params.nodes && params.nodes.length && !connectionInProcess) {
+				currentNode = networkNodes.get(params.nodes[0])
+				if (currentNode.image == "ogc.png") {
+					document.getElementById("DialogSTAURLInput").value = currentNode.STAURL;
+					document.getElementById("DialogSTAURLInput").readOnly = false;
+					document.getElementById("DialogSTAURLOk").style.display = "inline-block";
+					document.getElementById("DialogSTAURL").showModal();
+				}
+				else if (currentNode.image == "ViewQuerySTA.png") {
+					document.getElementById("DialogSTAURLInput").value = "";
+					var parentNode = GetFirstParentNode(currentNode);
+					if (parentNode)
+						document.getElementById("DialogSTAURLInput").value = parentNode.STAURL;
+					document.getElementById("DialogSTAURLInput").readOnly = true;
+					document.getElementById("DialogSTAURLOk").style.display = "none";
+					document.getElementById("DialogSTAURL").showModal();
+				}
+				else if (currentNode.image == "ImportCSV.png") {
+					//ShowImportCSVDialog(currentNode.id);
+					document.getElementById("DialogImportCSV").showModal();
+				}
+				else if (currentNode.image == "Table.png") {
+					///Determining the parent node.
+					var nodeids = network.getConnectedNodes(currentNode.id, "from");
+					if (nodeids && nodeids.length && networkNodes.get(nodeids[0])) {
+						var data = networkNodes.get(nodeids[0]).STAdata;
+						if (data && data.length)
+							document.getElementById("DialogOKOptions").innerHTML = "<label><input type='checkbox' checked='checked' id='ShowTableRowNumberDialogOK' onChange='ShowTableDialog(\"" + nodeids[0] + "\");'/> Show row numbers</label>";
+						else
+							document.getElementById("DialogOKOptions").innerHTML = "";
+						ShowTableDialog(nodeids[0]);
+						document.getElementById("DialogOK").showModal();
+					}
+				}
+				else if (currentNode.image == "UploadObservations.png") {
+					ShowUploadObservationsDialog(currentNode);
+					document.getElementById("DialogUploadObservations").showModal();
+				}
+				else if (currentNode.image == "UploadTimeAverages.png") {
+					ShowUploadTimeAveragesDialog(currentNode.id);
+					document.getElementById("UploadTimeAverages").showModal();
+				}
+				else if (currentNode.image == "SaveTable.png") {
+					//ShowSaveTableDialog(currentNode.id);
+					document.getElementById("DialogSaveTable").showModal();
+				}
+				else if (currentNode.image == "ScatterPlot.png") {
+					var parentNodes = GetParentNodes(currentNode);
+					if (parentNodes && parentNodes[0]) {
+						if (parentNodes[0].STAURL)
+							ShowScatterPlotDialog(parentNodes);
+						document.getElementById("DialogScatterPlot").showModal();
+					}
+				}
+				else if (currentNode.image == "OneValue.png") {
+					ShowOneValueDialog(currentNode);
+					document.getElementById("DialogOneValue").showModal();
+				}
+				else if (currentNode.image == "SaveLayer.png") {
+					ShowSaveLayerDialog(currentNode.id);
+					document.getElementById("DialogSaveLayer").showModal();
+				}
+				else if (currentNode.image == "OpenMap.png") {
+					ShowOpenMapDialog(currentNode.id);
+					document.getElementById("DialogSaveLayer").showModal();
+				}
+				else if (currentNode.image == "SelectColumnsSTA.png" || currentNode.image == "SelectColumnsTable.png") {
+					var parentNode = GetFirstParentNode(currentNode);
+					if (parentNode) {
+						ShowTableSelectColumnsDialog(parentNode, currentNode);
+						document.getElementById("DialogSelectColumns").showModal();
+					}
+				}
+				else if (currentNode.image == "SelectRowsSTA.png" || currentNode.image == "SelectRowsTable.png") { //afegir el SelectRowsTable.png?
+					//Determining the parent node.
+					var nodeids = network.getConnectedNodes(currentNode.id, "from");
+					if (nodeids && nodeids.length) {
+						if (networkNodes.get(nodeids[0]) && (networkNodes.get(nodeids[0]).STAURL || networkNodes.get(nodeids[0]).STAdata)) {
+							document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/> Select an element:</label>";
+							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\", \"" + params["nodes"][0] + "\")'/>  Filter:</label>";
+							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
 						}
+						document.getElementById("DialogSelectRows").showModal();
 					}
 				}
-
-				if (startingNodeContextId)
-					startingNodeContextId = null;
-
-				network.selectNodes([newId]);
-			}
-
-			function removeNode(nodeId) {
-				var node = networkNodes.get(nodeId);
-				if (confirm("Do you want to remove the node '" + node.label + "'?")) {
-					networkNodes.remove(nodeId);
-					return 0;
-				}
-				return 1;
-			}
-
-			function removeCircularImage(event, dialog) {
-				if (event)
-					event.preventDefault(); // We don't want to submit this form
-				if (dialog)
-					document.getElementById(dialog).close();
-				if (startingNodeContextId) {
-					if (0 == removeNode(startingNodeContextId))
-						startingNodeContextId = null;
-				}
-			}
-
-			function renameNode(nodeId) {
-				var node = networkNodes.get(nodeId);
-				node.label = prompt("Change node label to:", node.label);
-				networkNodes.update(node);
-			}
-
-			function renameCircularImage(event, dialog) {
-				if (event)
-					event.preventDefault(); // We don't want to submit this form
-				if (dialog)
-					document.getElementById(dialog).close();
-				if (startingNodeContextId) {
-					renameNode(startingNodeContextId);
-					startingNodeContextId = null;
-				}
-			}
-
-			function addEdge() {
-				network.addEdgeMode();
-				connectionInProcess = true;
-				showInfoMessage("Press the mouse botton on the starting node (child node), and drag and drop the mouse on the end node (parent node).");
-			}
-
-			function removeEdge(event, dialog) {
-				if (event)
-					event.preventDefault(); // We don't want to submit this form
-				if (dialog)
-					document.getElementById(dialog).close();
-				if (startingEdgeContextId) {
-					if (confirm("Do you want to remove the edge?")) {
-						networkEdges.remove(startingEdgeContextId);
-						startingEdgeContextId = null;
+				else if (currentNode.image == "SortBySTA.png") {
+					var parentNode = GetFirstParentNode(currentNode);
+					if (parentNode) {
+						if (parentNode.STAURL)
+							ShowTableSelectSortByDialog(parentNode);
+						document.getElementById("DialogSelectSortBy").showModal();
 					}
 				}
+				else if (IdOfSTAEntity(currentNode) != -1) {
+					//Offering expand
+					ShowTableSelectExpandsDialog(currentNode.id, true);
+					document.getElementById("DialogSelectExpands").showModal();
+				}
+				else if (IdOfSTASpecialQueries(currentNode) != -1) {
+					ShowTableSelectExpandsDialog(currentNode.id, false);
+					document.getElementById("DialogSelectExpands").showModal();
+				}
 			}
+		}
+		network.on("doubleClick", networkDoubleClick);
+		function networkContext(params) {
+			params.event.preventDefault();  //https://stackoverflow.com/questions/38258940/open-an-extension-popup-html-list-on-right-click-of-node-contextmenu-in-visj
 
-			function openNetwork(event) {
-				var input = event.target;
+			var nodeId = network.getNodeAt(params.pointer.DOM); //params.nodes is not useful here as params.nodes are the selected ones and not the ones rightclicked.
+			if (nodeId) {
+				startingNodeContextId = nodeId;
+				document.getElementById("DialogContextMenu").showModal();
+				return;
+			}
+			var edgeId = network.getEdgeAt(params.pointer.DOM);
+			if (edgeId) {
+				startingEdgeContextId = edgeId;
+				document.getElementById("DialogEdgeContextMenu").showModal();
+			}
+			/*params.event = "[original event]";
+			document.getElementById("eventSpanHeading").innerText = "oncontext (right click) event:";
+			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);*/
+		}
+		network.on("oncontext", networkContext);
+		/*network.on("dragStart", function (params) {
+			// There's no point in displaying this event on screen, it gets immediately overwritten
+			params.event = "[original event]";
+			console.log("dragStart Event:", params);
+			console.log("dragStart event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
+		});
+		network.on("dragging", function (params) {
+			params.event = "[original event]";
+			document.getElementById("eventSpanHeading").innerText = "dragging event:";
+			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
+		});
+		network.on("dragEnd", function (params) {
+			params.event = "[original event]";
+			document.getElementById("eventSpanHeading").innerText = "dragEnd event:";
+			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
+			console.log("dragEnd Event:", params);
+			console.log("dragEnd event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
+		});
+		network.on("controlNodeDragging", function (params) {
+			params.event = "[original event]";
+			document.getElementById("eventSpanHeading").innerText = "control node dragging event:";
+			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
+		});
+		network.on("controlNodeDragEnd", function (params) {
+			params.event = "[original event]";
+			document.getElementById("eventSpanHeading").innerText = "control node drag end event:";
+			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
+			console.log("controlNodeDragEnd Event:", params);
+		});
+		network.on("zoom", function (params) {
+			document.getElementById("eventSpanHeading").innerText = "zoom event:";
+			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
+		});
+		network.on("showPopup", function (params) {
+			document.getElementById("eventSpanHeading").innerText = "showPopup event: ";
+			document.getElementById("eventSpanContent").innerText = JSON.stringify(params, null, 4);
+		});
+		network.on("hidePopup", function () {
+			console.log("hidePopup Event");
+		});
+		network.on("select", function (params) {
+			console.log("select Event:", params);
+		});
+		network.on("selectNode", function (params) {
+			console.log("selectNode Event:", params);
+		});
+		network.on("selectEdge", function (params) {
+			console.log("selectEdge Event:", params);
+		});
+		network.on("deselectNode", function (params) {
+			console.log("deselectNode Event:", params);
+		});
+		network.on("deselectEdge", function (params) {
+			console.log("deselectEdge Event:", params);
+		});
+		network.on("hoverNode", function (params) {
+			console.log("hoverNode Event:", params);
+		});
+		network.on("hoverEdge", function (params) {
+			console.log("hoverEdge Event:", params);
+		});
+		network.on("blurNode", function (params) {
+			console.log("blurNode Event:", params);
+		});
+		network.on("blurEdge", function (params) {
+			console.log("blurEdge Event:", params);
+		});*/
 
-				var reader = new FileReader();
-				reader.onload = function () {
-					//Transform the JSON text in something in memory
-					try {
-						var data = JSON.parse(reader.result);
-						network.destroy();
-						networkNodes = new vis.DataSet(data.nodes);
-						networkEdges = new vis.DataSet(data.edges);
-						network = new vis.Network(document.getElementById("mynetwork"), {
-							nodes: networkNodes,
-							edges: networkEdges
-						}, networkOptions);
-						network.on("doubleClick", networkDoubleClick);
-						network.on("oncontext", networkContext);
-						document.getElementById("openNetworkFileName").value = null;  //https://stackoverflow.com/questions/3528359/html-input-type-file-file-selection-event
-					}
-					catch (e) {
-						showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
+
+		function addCircularImage(event, dialog, label, image) {
+			var returnStart = false;
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			if (dialog)
+				document.getElementById(dialog).close();
+			var newId = (Math.random() * 1e7).toString(32);
+			var node = { id: newId, label: label, image: image, shape: "circularImage" };
+
+			if (image == "ogc.png") {
+				node.STAURL = config.STAurl;
+				node.STAExpectedLength = 100;
+				networkNodes.add(node);
+				showInfoMessage("Requesting STA landing page");
+				LoadJSONNodeSTAData(node);
+			}
+			else {
+				if (!startingNodeContextId)
+					networkNodes.add(node);
+				else {
+					returnStart = StartCircularImage(node, networkNodes.get(startingNodeContextId), true);
+					if (returnStart == null)
 						return;
-					}
-				};
-				reader.readAsText(input.files[0]);
-			}
-
-			function saveNetwork(event) {
-				var pos = network.getPositions()
-				var posArray = Object.keys(pos);
-				var data = { nodes: [], edges: [] };
-				for (var i = 0; i < posArray.length; i++) {
-					data.nodes.push(deapCopy(networkNodes._data[posArray[i]]));
-					data.nodes[i].x = pos[posArray[i]].x;
-					data.nodes[i].y = pos[posArray[i]].y;
-				}
-				var edgesArray = Object.keys(networkEdges._data);
-				for (var i = 0; i < edgesArray.length; i++) {
-					data.edges.push(deapCopy(networkEdges._data[edgesArray[i]]));
-					delete data.edges[i].id;
-				}
-				SaveLocalDataFile(JSON.stringify(data, null, "\t"), "network", ".json", "application/json");
-			}
-
-			async function reloadSTA(event) {
-				var nodesArray = Object.keys(networkNodes._data);
-				for (var i = 0; i < nodesArray.length; i++) {
-					var node = networkNodes._data[nodesArray[i]];
-					if (node.image == "ogc.png") {
-						showInfoMessage("Reload STA home page and dependencies...");
-						showInfoMessage("Requesting STA page...");
-						await LoadJSONNodeSTAData(node, function () {
-							showInfoMessage("Reload STA home page and dependencies completed.");
-						});
+					if (!returnStart) {
+						networkNodes.add(node);
+						networkEdges.add([{ from: startingNodeContextId, to: newId, arrows: "from" }]);
 					}
 				}
 			}
-			function giveMeNetworkInformation(event) {
-				if (event)
-					event.preventDefault(); // We don't want to submit this form
-				document.getElementById("DialogSelectColumns").close();
-				console.log(networkNodes);
+
+			if (startingNodeContextId)
+				startingNodeContextId = null;
+
+			network.selectNodes([newId]);
+		}
+
+		function removeNode(nodeId) {
+			var node = networkNodes.get(nodeId);
+			if (confirm("Do you want to remove the node '" + node.label + "'?")) {
+				networkNodes.remove(nodeId);
+				return 0;
 			}
+			return 1;
+		}
+
+		function removeCircularImage(event, dialog) {
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			if (dialog)
+				document.getElementById(dialog).close();
+			if (startingNodeContextId) {
+				if (0 == removeNode(startingNodeContextId))
+					startingNodeContextId = null;
+			}
+		}
+
+		function renameNode(nodeId) {
+			var node = networkNodes.get(nodeId);
+			node.label = prompt("Change node label to:", node.label);
+			networkNodes.update(node);
+		}
+
+		function renameCircularImage(event, dialog) {
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			if (dialog)
+				document.getElementById(dialog).close();
+			if (startingNodeContextId) {
+				renameNode(startingNodeContextId);
+				startingNodeContextId = null;
+			}
+		}
+
+		function addEdge() {
+			network.addEdgeMode();
+			connectionInProcess = true;
+			showInfoMessage("Press the mouse botton on the starting node (child node), and drag and drop the mouse on the end node (parent node).");
+		}
+
+		function removeEdge(event, dialog) {
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			if (dialog)
+				document.getElementById(dialog).close();
+			if (startingEdgeContextId) {
+				if (confirm("Do you want to remove the edge?")) {
+					networkEdges.remove(startingEdgeContextId);
+					startingEdgeContextId = null;
+				}
+			}
+		}
+
+		function openNetwork(event) {
+			var input = event.target;
+
+			var reader = new FileReader();
+			reader.onload = function () {
+				//Transform the JSON text in something in memory
+				try {
+					var data = JSON.parse(reader.result);
+					network.destroy();
+					networkNodes = new vis.DataSet(data.nodes);
+					networkEdges = new vis.DataSet(data.edges);
+					network = new vis.Network(document.getElementById("mynetwork"), {
+						nodes: networkNodes,
+						edges: networkEdges
+					}, networkOptions);
+					network.on("doubleClick", networkDoubleClick);
+					network.on("oncontext", networkContext);
+					document.getElementById("openNetworkFileName").value = null;  //https://stackoverflow.com/questions/3528359/html-input-type-file-file-selection-event
+				}
+				catch (e) {
+					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
+					return;
+				}
+			};
+			reader.readAsText(input.files[0]);
+		}
+
+		function saveNetwork(event) {
+			var pos = network.getPositions()
+			var posArray = Object.keys(pos);
+			var data = { nodes: [], edges: [] };
+			for (var i = 0; i < posArray.length; i++) {
+				data.nodes.push(deapCopy(networkNodes._data[posArray[i]]));
+				data.nodes[i].x = pos[posArray[i]].x;
+				data.nodes[i].y = pos[posArray[i]].y;
+			}
+			var edgesArray = Object.keys(networkEdges._data);
+			for (var i = 0; i < edgesArray.length; i++) {
+				data.edges.push(deapCopy(networkEdges._data[edgesArray[i]]));
+				delete data.edges[i].id;
+			}
+			SaveLocalDataFile(JSON.stringify(data, null, "\t"), "network", ".json", "application/json");
+		}
+
+		async function reloadSTA(event) {
+			var nodesArray = Object.keys(networkNodes._data);
+			for (var i = 0; i < nodesArray.length; i++) {
+				var node = networkNodes._data[nodesArray[i]];
+				if (node.image == "ogc.png") {
+					showInfoMessage("Reload STA home page and dependencies...");
+					showInfoMessage("Requesting STA page...");
+					await LoadJSONNodeSTAData(node, function () {
+						showInfoMessage("Reload STA home page and dependencies completed.");
+					});
+				}
+			}
+		}
+		function giveMeNetworkInformation(event) {
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectColumns").close();
+			console.log(networkNodes);
+		}
 
 	</script>
 
