@@ -2022,52 +2022,55 @@
 			return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
-
-		function readInformationRowFilter(elem, nexus,parent) {
-			if (typeof elem === "object") {
-				for (var i = 0; i < elem.elems.length; i++)
-					readInformationRowFilter(elem.elems[i], elem.nexus,elem);
-
-
-				
-
-
-			}
-			else { //On es construirà la url
-				if (typeof elem[0] === "object") {
-					urlAPI += "(1)";
-				} else { //arrai final, que conté els filtres 
-					var data="";
+		var stopReadInformationRowFilter = false;
+		function readInformationRowFilter(elem, nexus, parent) {
+			if (stopReadInformationRowFilter == false) {
+				if (typeof elem === "object") {
+					for (var i = 0; i < elem.elems.length; i++) {
+						readInformationRowFilter(elem.elems[i], elem.nexus, elem);
+					}
+					if (urlAPICounter.length != infoFilter.length & urlAPICounter.length != 0) {
+						urlAPI += nexus //elem.nexus
+					}
+				}
+				else { //On es construirà la url
+					console.log(elem)
+					//arrai final, que conté els filtres 
+					var data = "";
 					for (var i = 0; i < infoFilter.length; i++) {
-						//mirar el parent.length
-						
-						//mirar el indexOf i posar next al final si no es lultim
+						console.log(elem)
 						if (infoFilter[i][0] == elem) {
-							var parentLenght=parent.elems.length;
-							var indexOf= parent.elems.indexOf(elem);
-							console.log(parent.elems)
+							var parentLenght = parent.elems.length;
+							var indexOf = parent.elems.indexOf(elem);
+							// console.log(parent.elems)
 							console.log("parentLenght: "+parentLenght);
-							console.log("ondexOf: "+indexOf)
-							if (indexOf==0){
-								data+="(";
+							// console.log("ondexOf: "+indexOf)
+							if (indexOf == 0) {
+								data += "(";
 							}
+							console.log(infoFilter[i][1]);
+							console.log(infoFilter[i][2]);
+							console.log(infoFilter[i][3]);
 							
-
-							data += "("+infoFilter[i][1]+infoFilter[i][2]+infoFilter[i][3]+")";		
-							if ((indexOf+1)!=parentLenght){
-								data+=nexus
+							data += "(" + infoFilter[i][1] + infoFilter[i][2] + infoFilter[i][3] + ")";
+							if ((indexOf + 1) != parentLenght) {
+								data += nexus
 							}
-							if ((indexOf+1)==parentLenght){
-								data+=")"
+							if ((indexOf + 1) == parentLenght) {
+								data += ")"
 							}
-							urlAPI +=  data 
+							urlAPI += data
+							urlAPICounter.push(infoFilter[i][0]);
 
 						}
 					}
 
-
 				}
-
+				if (urlAPICounter.length == infoFilter.length) {
+					urlAPI.slice(0,"(");
+					urlAPI.slice(urlAPI.length+1,")");
+					stopReadInformationRowFilter=true;
+				}
 			}
 
 		}
@@ -2090,9 +2093,12 @@
 				//actualitzar el infoFilter
 				takeSelectInformation(currentNode.id);
 				//
-				readInformationRowFilter(elemFilter, "no","no");
+				urlAPI = "";//reiniciar URL
+				stopReadInformationRowFilter=false;
+				readInformationRowFilter(elemFilter, "no", "no");
 				console.log(urlAPI);
-				console.log(elemFilter)
+				console.log(infoFilter)
+
 				// if (rowsNumber > 1) {
 				// 	tableResults = readTableFilterRow(currentNode.id, 0) //row=0? (ON ES RECULL LA INFO)
 				// 	console.log(tableResults);
@@ -3902,43 +3908,10 @@
 			nexus: null,
 			boxName: "1_0"
 		}
+		var urlAPICounter = [];
 		var urlAPI = "";
 
-		// 	elems: [
-		// 		{ //nivell2
-		// 			elems: [//Nivell1
-		// 				{
-		// 					elems: [0, 1], //nivell 0
-		// 					nexus: "or",
-		// 					boxName: "0_0",
-		// 				},
-		// 				{
-		// 					elems: [2],
-		// 					nexus: null,
-		// 					boxName: "0_1"
-		// 				},
-		// 				{
-		// 					elems: [5],
-		// 					nexus: null,
-		// 					boxName: "0_2"
-		// 				}
-		// 			],
-		// 			nexus: "and",
-		// 			boxName: "1_0"
-		// 		},
-		// 		{
-		// 			elems: [
-		// 				{
-		// 					elems: [3, 4],
-		// 					nexus: "or",
-		// 					boxName: "0_2"
-		// 				}
-		// 			]
-		// 		}
-		// 	],
-		// 	nexus: "or",
-		// 	boxName: "2_0"
-		// }
+
 		var counter = [];
 		function GetFilterTable(elem, dataAttributes, nodeId, first) //COnstrucio taula //El segon, serà cridat per el ShowFilter
 		{
