@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="hello.all.min.js"></script>
 	<script type="text/javascript" src="authenix.js"></script>
 	<script type="text/javascript" src="mmn_postmessage.js"></script>
+	<script type="text/javascript" src="data_tables.js"></script>
 
 	<link rel="stylesheet" href="tapis.css">
 	<link rel="stylesheet" href="vis.min.css">
@@ -176,6 +177,30 @@
 		</form>
 	</dialog>
 
+	<dialog id="DialogJoinTables">
+		<form>
+			<fieldset>
+				<legend>Row matching fields</legend>
+				<span id="DialogJoinTablesRowMatching"></span>
+				</label>
+			</fieldset>
+			<fieldset>
+				<legend>Merged records that do not match</legend>
+				<label><input type="radio" id="DialogJoinTablesNotMatchRemove"
+						name="JoinTablesNotMatch" />Discard</label>
+				<label><input type="radio" id="DialogJoinTablesNotMatchLeftTable" name="JoinTablesNotMatch"
+						checked />Add records of 1st table</label>
+				<label><input type="radio" id="DialogJoinTablesNotMatchBothTables" name="JoinTablesNotMatch" />Add
+					records from both tables</label>
+			</fieldset>
+			<div class="center">
+				<button value="default" onClick="GetJoinTables(event)">OK</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
+
 	<dialog id="DialogContextMenu">
 		<form>
 			<p>
@@ -184,7 +209,6 @@
 				<span id="ButtonsContextMenuObjects"></span><br>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button>
 				<button onclick='renameCircularImage(event, "DialogContextMenu")'>Rename</button><br>
-				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
 			</p>
 			<div class="center">
 				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
@@ -224,6 +248,38 @@
 						value=";"></input></label> <label><input type="radio" name="DialogImportCSVDelimiter"
 						id="DialogImportCSVDelimiterTab"></input> Tab</label>
 			</label>
+			<select id="DialogImportCSVEncoding">
+				<option value="windows-1252">Windows 1252 (Western Latin)</option>
+				<!-- This is not suported by browsers. If we need it in the future we should use de work "binary", read the text and convert it ourselves. option value="ibm850">OEM 850 (MS-DOS Latin-1)</option-->
+				<option value="">UTF-8</option>
+				<option value="iso8859-2">ISO-8859-2 (Latin 2)</option>
+				<option value="iso-8859-3">ISO-8859-3 (Latin 3)</option>
+				<option value="iso-8859-4">ISO-8859-4 (Latin 4)</option>
+				<option value="iso-8859-5">ISO-8859-5 (Cyrillic)</option>
+				<option value="iso-8859-6">ISO-8859-6, ecma-114 (Arabic)</option>
+				<option value="iso-8859-7"> ISO-8859-7 (greek)</option>
+				<option value="iso-8859-8">"ISO-8859-8 (hebrew)</option>
+				<option value="" iso-8859-8-i">ISO-8859-8-I (logical)</option>
+				<option value="iso-8859-10">ISO-8859-10 (Latin 6)</option>
+				<option value="iso-8859-11">Windows-874, DOS-874</option>
+				<option value="iso-8859-13">ISO-8859-13</option>
+				<option value="iso-8859-14">ISO-8859-14</option>
+				<option value="iso-8859-15">ISO-8859-15 (Latin 9)</option>
+				<option value="iso-8859-16">ISO-8859-16</option>
+				<option value="windows-1250">Windows-1250</option>
+				<option value="windows-1251">Windows-1251</option>
+				<option value="windows-1253">Windows-1253</option>
+				<option value="iso-8859-9">ISO 8859-9, windows-1254, Latin 5)</option>
+				<option value="windows-1255">Windows-1255</option>
+				<option value="windows-1256">Windows-1256</option>
+				<option value="windows-1257">Windows-1257</option>
+				<option value="windows-1258">Windows-1258</option>
+				<option value="cp866">IBM866</option>
+				<option value="koi8">KOI8-R</option>
+				<option value="koi8-ru">KOI8-U</option>
+				<option value="macintosh">Macintosh</option>
+				<option value="x-mac-cyrillic">X-MAC-Cyrillic</option>
+			</select>
 			<br>
 			<label><input type="checkbox" id="DialogImportCSVHeader"></input>First line contains names of the
 				fields</label>
@@ -529,6 +585,7 @@
 			UploadObservations: { description: "Upload in STA", leafNode: true },
 			//UploadTimeAverages: {description: "Upload time averages", leafNode: true},
 			SelectColumnsTable: { description: "Select Columns" },
+			JoinTables: { description: "Join Tables" },
 			/*SelectRowsTable: {description: "Select Rows"},*/
 			SeparateColumns: { description: "Separate Columns" },
 			ScatterPlot: { description: "Scatter Plot", leafNode: true },
@@ -1067,18 +1124,17 @@
 						header: document.getElementById("DialogImportCSVHeader").checked,
 						skipEmptyLines: true
 					});
-					//if (document.getElementById("DialogImportCSVHeader").checked)
 					currentNode.STAdata = result.data;
 					networkNodes.update(currentNode);
 				}
 				catch (e) {
-					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
+					showInfoMessage("CSV parse error: " + e + " The file content is:\n" + reader.result);
 					currentNode.STAdata = null;
 					networkNodes.update(currentNode);
 					return;
 				}
 			};
-			reader.readAsText(input.files[0]);
+			reader.readAsText(input.files[0], document.getElementById("DialogImportCSVEncoding").value);
 		}
 
 		function SaveLocalDataFile(data, fileName, extension, mediatype)   //Saves a memory data structure to a local file
@@ -1291,6 +1347,88 @@
 			var dataAttributes = parentNodes[1].STAdataAttributes ? parentNodes[1].STAdataAttributes : getDataAttributes(data);
 			PopulateSelectSaveLayerDialog("DialogScatterPlotVariable", dataAttributes, "name");
 			PopulateSelectSaveLayerDialog("DialogScatterPlotUoM", dataAttributes, "unitOfMeasurement/symbol");
+		}
+
+		function UpdateJoinTablesRowMatchingNode(node) {
+			node.STAJoinTables.RowMatching = [];
+			for (var i = 0; true; i++) {
+				if (!document.getElementById("DialogJoinTablesRowMatching_" + i + "_left") ||
+					!document.getElementById("DialogJoinTablesRowMatching_" + i + "_right"))
+					break;
+				node.STAJoinTables.RowMatching[i] = {
+					left: document.getElementById("DialogJoinTablesRowMatching_" + i + "_left").value,
+					right: document.getElementById("DialogJoinTablesRowMatching_" + i + "_right").value
+				};
+			}
+		}
+
+		function RemoveJoinTablesRowMatchingIds(nodeLeftId, nodeRightId, nodeCurrentId, iRowMatching) {
+			var node = networkNodes.get(nodeCurrentId);
+			UpdateJoinTablesRowMatchingNode(node);
+
+			if (!node.STAJoinTables || !node.STAJoinTables.RowMatching || node.STAJoinTables.RowMatching.length < 2)
+				return;
+			node.STAJoinTables.RowMatching.splice(iRowMatching, 1);
+			networkNodes.update(node);
+			AddJoinTablesRowMatching(networkNodes.get(nodeLeftId), networkNodes.get(nodeRightId), node, false);
+		}
+
+		function AddJoinTablesRowMatchingIds(nodeLeftId, nodeRightId, nodeCurrentId) {
+			var node = networkNodes.get(nodeCurrentId);
+			UpdateJoinTablesRowMatchingNode(node);
+			AddJoinTablesRowMatching(networkNodes.get(nodeLeftId), networkNodes.get(nodeRightId), node, true);
+		}
+
+
+		function AddJoinTablesRowMatching(nodeLeft, nodeRight, node, add) {
+			var dataLeft = nodeLeft.STAdata;
+			var dataLeftAttributes = dataLeft.STAdataAttributes ? dataLeft.STAdataAttributes : getDataAttributes(dataLeft);
+			var dataLeftAttributesArray = Object.keys(dataLeftAttributes);
+			var dataRight = nodeRight.STAdata;
+			var dataRightAttributes = nodeRight.STAdataAttributes ? nodeRight.STAdataAttributes : getDataAttributes(dataRight);
+			var dataRightAttributesArray = Object.keys(dataRightAttributes);
+			var updated = false;
+			if (!node.STAJoinTables)
+				node.STAJoinTables = {};
+			if (!node.STAJoinTables.RowMatching) {
+				node.STAJoinTables.RowMatching = [{
+					left: [dataLeftAttributesArray[0]],
+					right: [dataRightAttributesArray[0]]
+				}];
+				updated = true;
+			}
+			if (add) {
+				node.STAJoinTables.RowMatching.push({
+					left: [dataLeftAttributesArray[0]],
+					right: [dataRightAttributesArray[0]]
+				});
+				updated = true;
+			}
+			if (updated)
+				networkNodes.update(node);
+
+			var s = "";
+			for (var i = 0; i < node.STAJoinTables.RowMatching.length; i++) {
+				s += GetSelectSaveLayerDialog("DialogJoinTablesRowMatching_" + i + "_left", dataLeftAttributes, node.STAJoinTables.RowMatching[i].left) +
+					" matches " +
+					GetSelectSaveLayerDialog("DialogJoinTablesRowMatching_" + i + "_right", dataRightAttributes, node.STAJoinTables.RowMatching[i].right) +
+					" <button onclick='RemoveJoinTablesRowMatchingIds(\"" + nodeLeft.id + "\", \"" + nodeRight.id + "\", \"" + node.id + "\", " + i + ");'" + (i == 0 && node.STAJoinTables.RowMatching.length == 1 ? " disabled='disabled'" : "") + ">Remove</button><br>";
+			}
+			s += "<button onclick='AddJoinTablesRowMatchingIds(\"" + nodeLeft.id + "\", \"" + nodeRight.id + "\", \"" + node.id + "\");'>Add</button>";
+			document.getElementById("DialogJoinTablesRowMatching").innerHTML = s;
+		}
+
+		function ShowJoinTablesDialog(parentNodes, node) {
+			var dataLeft = parentNodes[0].STAdata;
+			if (!dataLeft || !dataLeft.length) {
+				document.getElementById("DialogJoinTablesRowMatching").innerHTML = "No data to show.";
+				return;
+			}
+			if (parentNodes.length < 2) {
+				document.getElementById("DialogJoinTablesRowMatching").innerHTML = "Two tables are required.";
+				return;
+			}
+			AddJoinTablesRowMatching(parentNodes[0], parentNodes[1], node, false);
 		}
 
 		function AdaptValueAxisY(value) {
@@ -1877,9 +2015,7 @@
 		function GetSelectRows(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectRows").close();
-console.log("parent: "+parent.id);
 
-console.log("current: "+currentNode.id);
 			var previousSTAURL = currentNode.STAURL;
 			var parentNode = GetFirstParentNode(currentNode);
 			if (parentNode) {
@@ -1907,16 +2043,35 @@ console.log("current: "+currentNode.id);
 			}
 			else {
 				alert("TBD");
-				
 			}
 			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
 			showInfoMessage("Selecting STA rows...");
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
-
 		}
 
+		function GetJoinTables(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogJoinTables").close();
+			UpdateJoinTablesRowMatchingNode(currentNode);
+			if (document.getElementById("DialogJoinTablesNotMatchRemove").checked)
+				currentNode.STAJoinTables.NotMatch = "Remove";
+			else if (document.getElementById("DialogJoinTablesNotMatchLeftTable").checked)
+				currentNode.STAJoinTables.NotMatch = "LeftTable";
+			else //if (document.getElementById("DialogJoinTablesNotMatchBothTables").checked)
+				currentNode.STAJoinTables.NotMatch = "BothTables";
+			var parentNodes = GetParentNodes(currentNode);
+			if (!parentNodes && parentNodes.length < 2) {
+				return;
+			}
+			currentNode.STAdataAttributes = {};
+			currentNode.STAdata = JoinTablesData(parentNodes[0].STAdata, parentNodes[1].STAdata,
+				parentNodes[0].STAdataAttributes ? parentNodes[0].STAdataAttributes : getDataAttributes(parentNodes[0].STAdata),
+				parentNodes[1].STAdataAttributes ? parentNodes[1].STAdataAttributes : getDataAttributes(parentNodes[1].STAdata),
+				currentNode.STAdataAttributes, currentNode.STAJoinTables);
+			networkNodes.update(currentNode);
+		}
 
 		function IdOfSTAEntity(node) {
 			for (var i = 0; i < STAEntitiesArray.length; i++) {
@@ -2002,27 +2157,6 @@ console.log("current: "+currentNode.id);
 			if (t == "anyURI")
 				return "string";
 			return t;
-		}
-
-		function getJSONType(a) {
-			if (typeof a === "string")
-				return "string";
-			if (typeof a === "boolean")
-				return "boolean";
-			if (Array.isArray(a))
-				return "array";
-			if (a === null)
-				return "null";
-			if (typeof a === "object")
-				return "object";
-			if (typeof a === "undefined")
-				return "undefined";
-			if (Number.isInteger(a))
-				return "integer";
-			if (parseFloat(a))
-				return "number"
-			else
-				return "string";
 		}
 
 		function getDataAttributes(data) {
@@ -2552,10 +2686,14 @@ console.log("current: "+currentNode.id);
 		}*/
 
 		function PopulateSelectSaveLayerDialog(id, dataAttributes, selectedOption) {
+			document.getElementById(id).innerHTML = GetSelectSaveLayerDialog(id + "Select", dataAttributes, selectedOption);
+		}
+
+		function GetSelectSaveLayerDialog(id, dataAttributes, selectedOption) {
 			var thereIsSelectionOption = false;
 			var dataAttributesArray = Object.keys(dataAttributes);
 
-			var s = "<select id=\"" + id + "Select" + "\">";
+			var s = "<select id=\"" + id + "\">";
 			for (var a = 0; a < dataAttributesArray.length; a++) {
 				if (dataAttributesArray[a] == selectedOption) {
 					thereIsSelectionOption = true;
@@ -2566,7 +2704,7 @@ console.log("current: "+currentNode.id);
 			for (var a = 0; a < dataAttributesArray.length; a++)
 				s += "<option value=\"" + dataAttributesArray[a] + "\"" + (dataAttributesArray[a] == selectedOption ? "selected=\"selected\"" : "") + ">" + dataAttributesArray[a] + "</option>";
 			s += "</select>";
-			document.getElementById(id).innerHTML = s;
+			return s;
 		}
 
 		function ShowSaveLayerDialogSelects(nodeId, descripUoM) {
@@ -3005,10 +3143,16 @@ console.log("current: "+currentNode.id);
 				//LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
-			if (nodeFrom.STAdata && nodeTo.image == "SelectColumnsTable.png") {
+			if (nodeTo.image == "SelectColumnsTable.png") {
 				nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
 				if (nodeFrom.STAdataAttributes)
 					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
+				networkNodes.update(nodeTo);
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				return true;
+			}
+			if (nodeTo.image == "JoinTables.png") {
 				networkNodes.update(nodeTo);
 				if (calUnir)
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
@@ -3152,6 +3296,13 @@ console.log("current: "+currentNode.id);
 					if (parentNode) {
 						ShowTableSelectColumnsDialog(parentNode, currentNode);
 						document.getElementById("DialogSelectColumns").showModal();
+					}
+				}
+				else if (currentNode.image == "JoinTables.png") {
+					var parentNodes = GetParentNodes(currentNode);
+					if (parentNodes && parentNodes.length > 1) {
+						ShowJoinTablesDialog(parentNodes, currentNode);
+						document.getElementById("DialogJoinTables").showModal();
 					}
 				}
 				else if (currentNode.image == "SelectRowsSTA.png") {
@@ -3421,12 +3572,6 @@ console.log("current: "+currentNode.id);
 					});
 				}
 			}
-		}
-		function giveMeNetworkInformation(event) {
-			if (event)
-				event.preventDefault(); // We don't want to submit this form
-			document.getElementById("DialogSelectColumns").close();
-			console.log(networkNodes);
 		}
 	</script>
 

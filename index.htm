@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="hello.all.min.js"></script>
 	<script type="text/javascript" src="authenix.js"></script>
 	<script type="text/javascript" src="mmn_postmessage.js"></script>
+	<script type="text/javascript" src="data_tables.js"></script>
 
 	<link rel="stylesheet" href="tapis.css">
 	<link rel="stylesheet" href="vis.min.css">
@@ -181,6 +182,30 @@
 		</form>
 	</dialog>
 
+	<dialog id="DialogJoinTables">
+		<form>
+			<fieldset>
+				<legend>Row matching fields</legend>
+				<span id="DialogJoinTablesRowMatching"></span>
+				</label>
+			</fieldset>
+			<fieldset>
+				<legend>Merged records that do not match</legend>
+				<label><input type="radio" id="DialogJoinTablesNotMatchRemove"
+						name="JoinTablesNotMatch" />Discard</label>
+				<label><input type="radio" id="DialogJoinTablesNotMatchLeftTable" name="JoinTablesNotMatch"
+						checked />Add records of 1st table</label>
+				<label><input type="radio" id="DialogJoinTablesNotMatchBothTables" name="JoinTablesNotMatch" />Add
+					records from both tables</label>
+			</fieldset>
+			<div class="center">
+				<button value="default" onClick="GetJoinTables(event)">OK</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
+
 	<dialog id="DialogContextMenu">
 		<form>
 			<p>
@@ -229,6 +254,38 @@
 						value=";"></input></label> <label><input type="radio" name="DialogImportCSVDelimiter"
 						id="DialogImportCSVDelimiterTab"></input> Tab</label>
 			</label>
+			<select id="DialogImportCSVEncoding">
+				<option value="windows-1252">Windows 1252 (Western Latin)</option>
+				<!-- This is not suported by browsers. If we need it in the future we should use de work "binary", read the text and convert it ourselves. option value="ibm850">OEM 850 (MS-DOS Latin-1)</option-->
+				<option value="">UTF-8</option>
+				<option value="iso8859-2">ISO-8859-2 (Latin 2)</option>
+				<option value="iso-8859-3">ISO-8859-3 (Latin 3)</option>
+				<option value="iso-8859-4">ISO-8859-4 (Latin 4)</option>
+				<option value="iso-8859-5">ISO-8859-5 (Cyrillic)</option>
+				<option value="iso-8859-6">ISO-8859-6, ecma-114 (Arabic)</option>
+				<option value="iso-8859-7"> ISO-8859-7 (greek)</option>
+				<option value="iso-8859-8">"ISO-8859-8 (hebrew)</option>
+				<option value="" iso-8859-8-i">ISO-8859-8-I (logical)</option>
+				<option value="iso-8859-10">ISO-8859-10 (Latin 6)</option>
+				<option value="iso-8859-11">Windows-874, DOS-874</option>
+				<option value="iso-8859-13">ISO-8859-13</option>
+				<option value="iso-8859-14">ISO-8859-14</option>
+				<option value="iso-8859-15">ISO-8859-15 (Latin 9)</option>
+				<option value="iso-8859-16">ISO-8859-16</option>
+				<option value="windows-1250">Windows-1250</option>
+				<option value="windows-1251">Windows-1251</option>
+				<option value="windows-1253">Windows-1253</option>
+				<option value="iso-8859-9">ISO 8859-9, windows-1254, Latin 5)</option>
+				<option value="windows-1255">Windows-1255</option>
+				<option value="windows-1256">Windows-1256</option>
+				<option value="windows-1257">Windows-1257</option>
+				<option value="windows-1258">Windows-1258</option>
+				<option value="cp866">IBM866</option>
+				<option value="koi8">KOI8-R</option>
+				<option value="koi8-ru">KOI8-U</option>
+				<option value="macintosh">Macintosh</option>
+				<option value="x-mac-cyrillic">X-MAC-Cyrillic</option>
+			</select>
 			<br>
 			<label><input type="checkbox" id="DialogImportCSVHeader"></input>First line contains names of the
 				fields</label>
@@ -534,6 +591,7 @@
 			UploadObservations: { description: "Upload in STA", leafNode: true },
 			//UploadTimeAverages: {description: "Upload time averages", leafNode: true},
 			SelectColumnsTable: { description: "Select Columns" },
+			JoinTables: { description: "Join Tables" },
 			SelectRowsTable: { description: "Select Rows" },
 			SeparateColumns: { description: "Separate Columns" },
 			ScatterPlot: { description: "Scatter Plot", leafNode: true },
@@ -1072,18 +1130,17 @@
 						header: document.getElementById("DialogImportCSVHeader").checked,
 						skipEmptyLines: true
 					});
-					//if (document.getElementById("DialogImportCSVHeader").checked)
 					currentNode.STAdata = result.data;
 					networkNodes.update(currentNode);
 				}
 				catch (e) {
-					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
+					showInfoMessage("CSV parse error: " + e + " The file content is:\n" + reader.result);
 					currentNode.STAdata = null;
 					networkNodes.update(currentNode);
 					return;
 				}
 			};
-			reader.readAsText(input.files[0]);
+			reader.readAsText(input.files[0], document.getElementById("DialogImportCSVEncoding").value);
 		}
 
 		function SaveLocalDataFile(data, fileName, extension, mediatype)   //Saves a memory data structure to a local file
@@ -1296,6 +1353,88 @@
 			var dataAttributes = parentNodes[1].STAdataAttributes ? parentNodes[1].STAdataAttributes : getDataAttributes(data);
 			PopulateSelectSaveLayerDialog("DialogScatterPlotVariable", dataAttributes, "name");
 			PopulateSelectSaveLayerDialog("DialogScatterPlotUoM", dataAttributes, "unitOfMeasurement/symbol");
+		}
+
+		function UpdateJoinTablesRowMatchingNode(node) {
+			node.STAJoinTables.RowMatching = [];
+			for (var i = 0; true; i++) {
+				if (!document.getElementById("DialogJoinTablesRowMatching_" + i + "_left") ||
+					!document.getElementById("DialogJoinTablesRowMatching_" + i + "_right"))
+					break;
+				node.STAJoinTables.RowMatching[i] = {
+					left: document.getElementById("DialogJoinTablesRowMatching_" + i + "_left").value,
+					right: document.getElementById("DialogJoinTablesRowMatching_" + i + "_right").value
+				};
+			}
+		}
+
+		function RemoveJoinTablesRowMatchingIds(nodeLeftId, nodeRightId, nodeCurrentId, iRowMatching) {
+			var node = networkNodes.get(nodeCurrentId);
+			UpdateJoinTablesRowMatchingNode(node);
+
+			if (!node.STAJoinTables || !node.STAJoinTables.RowMatching || node.STAJoinTables.RowMatching.length < 2)
+				return;
+			node.STAJoinTables.RowMatching.splice(iRowMatching, 1);
+			networkNodes.update(node);
+			AddJoinTablesRowMatching(networkNodes.get(nodeLeftId), networkNodes.get(nodeRightId), node, false);
+		}
+
+		function AddJoinTablesRowMatchingIds(nodeLeftId, nodeRightId, nodeCurrentId) {
+			var node = networkNodes.get(nodeCurrentId);
+			UpdateJoinTablesRowMatchingNode(node);
+			AddJoinTablesRowMatching(networkNodes.get(nodeLeftId), networkNodes.get(nodeRightId), node, true);
+		}
+
+
+		function AddJoinTablesRowMatching(nodeLeft, nodeRight, node, add) {
+			var dataLeft = nodeLeft.STAdata;
+			var dataLeftAttributes = dataLeft.STAdataAttributes ? dataLeft.STAdataAttributes : getDataAttributes(dataLeft);
+			var dataLeftAttributesArray = Object.keys(dataLeftAttributes);
+			var dataRight = nodeRight.STAdata;
+			var dataRightAttributes = nodeRight.STAdataAttributes ? nodeRight.STAdataAttributes : getDataAttributes(dataRight);
+			var dataRightAttributesArray = Object.keys(dataRightAttributes);
+			var updated = false;
+			if (!node.STAJoinTables)
+				node.STAJoinTables = {};
+			if (!node.STAJoinTables.RowMatching) {
+				node.STAJoinTables.RowMatching = [{
+					left: [dataLeftAttributesArray[0]],
+					right: [dataRightAttributesArray[0]]
+				}];
+				updated = true;
+			}
+			if (add) {
+				node.STAJoinTables.RowMatching.push({
+					left: [dataLeftAttributesArray[0]],
+					right: [dataRightAttributesArray[0]]
+				});
+				updated = true;
+			}
+			if (updated)
+				networkNodes.update(node);
+
+			var s = "";
+			for (var i = 0; i < node.STAJoinTables.RowMatching.length; i++) {
+				s += GetSelectSaveLayerDialog("DialogJoinTablesRowMatching_" + i + "_left", dataLeftAttributes, node.STAJoinTables.RowMatching[i].left) +
+					" matches " +
+					GetSelectSaveLayerDialog("DialogJoinTablesRowMatching_" + i + "_right", dataRightAttributes, node.STAJoinTables.RowMatching[i].right) +
+					" <button onclick='RemoveJoinTablesRowMatchingIds(\"" + nodeLeft.id + "\", \"" + nodeRight.id + "\", \"" + node.id + "\", " + i + ");'" + (i == 0 && node.STAJoinTables.RowMatching.length == 1 ? " disabled='disabled'" : "") + ">Remove</button><br>";
+			}
+			s += "<button onclick='AddJoinTablesRowMatchingIds(\"" + nodeLeft.id + "\", \"" + nodeRight.id + "\", \"" + node.id + "\");'>Add</button>";
+			document.getElementById("DialogJoinTablesRowMatching").innerHTML = s;
+		}
+
+		function ShowJoinTablesDialog(parentNodes, node) {
+			var dataLeft = parentNodes[0].STAdata;
+			if (!dataLeft || !dataLeft.length) {
+				document.getElementById("DialogJoinTablesRowMatching").innerHTML = "No data to show.";
+				return;
+			}
+			if (parentNodes.length < 2) {
+				document.getElementById("DialogJoinTablesRowMatching").innerHTML = "Two tables are required.";
+				return;
+			}
+			AddJoinTablesRowMatching(parentNodes[0], parentNodes[1], node, false);
 		}
 
 		function AdaptValueAxisY(value) {
@@ -1883,193 +2022,344 @@
 			return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
-		function GetSelectRows(event) { //Al apretar el ok
-			event.preventDefault(); // We don't want to submit this form
-			//var previousSTAURL = currentNode.STAURL; JOAN
-			//var nodeids = network.getConnectedNodes(currentNode.id, "from"); JOAN
-			var nodeids = currentNode.id;
 
-			//el STARUL que agafarem sempre és el del node previ perque borri el $filter... si hi ha hagut una crida prèvia
-			var previousId = network.getConnectedNodes(nodeids, "from");
-			console.log(previousId);
-			var previouSTAURL = networkNodes.get(previousId[0]);
+		function readInformationRowFilter(elem, nexus,parent) {
+			if (typeof elem === "object") {
+				for (var i = 0; i < elem.elems.length; i++)
+					readInformationRowFilter(elem.elems[i], elem.nexus,elem);
 
 
-			if (nodeids && nodeids.length && networkNodes.get(nodeids)) {
-				var node = networkNodes.get(nodeids);
-				if (node.STAURL)
-					currentNode.STAURL = previouSTAURL.STAURL;
-				if (node.STAdata) {
-					currentNode.STAdata = deapCopy(node.STAdata);
+				
+
+
+			}
+			else { //On es construirà la url
+				if (typeof elem[0] === "object") {
+					urlAPI += "(1)";
+				} else { //arrai final, que conté els filtres 
+					var data="";
+					for (var i = 0; i < infoFilter.length; i++) {
+						//mirar el parent.length
+						
+						//mirar el indexOf i posar next al final si no es lultim
+						if (infoFilter[i][0] == elem) {
+							var parentLenght=parent.elems.length;
+							var indexOf= parent.elems.indexOf(elem);
+							console.log(parent.elems)
+							console.log("parentLenght: "+parentLenght);
+							console.log("ondexOf: "+indexOf)
+							if (indexOf==0){
+								data+="(";
+							}
+							
+
+							data += "("+infoFilter[i][1]+infoFilter[i][2]+infoFilter[i][3]+")";		
+							if ((indexOf+1)!=parentLenght){
+								data+=nexus
+							}
+							if ((indexOf+1)==parentLenght){
+								data+=")"
+							}
+							urlAPI +=  data 
+
+						}
+					}
+
+
 				}
 
-				///// if (node.STAdataAttributes)  //Està al GetSelecteColums i no se si ho necesito
-				///// 	currentNode.STAdataAttributes = deapCopy(node.STAdataAttributes);
+			}
+
+		}
+
+		function GetSelectRows(event) { //Al apretar el ok (el nodeids ja no existeix. Ara seria currentNode.id)
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectRows").close();
+			var previousSTAURL = currentNode.STAURL;
+			var parentNode = GetFirstParentNode(currentNode);
+			if (parentNode) {
+				if (parentNode.STAURL)
+					currentNode.STAURL = parentNode.STAURL;
+				if (parentNode.STAdata)
+					currentNode.STAdata = parentNode.STAdata;
 			}
 			else
 				return;
 
-			if (document.getElementById("DialogSelectRowsTableRadio").checked == false) {
-				var table = document.getElementById("tableResult");
-				var tableResults; //on es guarden els valors de la taula
-				var rowsNumber = table.rows.length;
-
-				if (rowsNumber > 1) {
-					tableResults = readTableFilterRow(nodeids, 0) //row=0?
-					console.log(tableResults);
-				} else { //cap selecció
-					alert("There is nothing selected! The filter will not be applied.");
-				}
+			if (document.getElementById("DialogSelectRowsTableRadio").checked == false) { //COMPARAR AMB EL DEL JOAN
+				//actualitzar el infoFilter
+				takeSelectInformation(currentNode.id);
+				//
+				readInformationRowFilter(elemFilter, "no","no");
+				console.log(urlAPI);
+				console.log(elemFilter)
+				// if (rowsNumber > 1) {
+				// 	tableResults = readTableFilterRow(currentNode.id, 0) //row=0? (ON ES RECULL LA INFO)
+				// 	console.log(tableResults);
+				// } else { //cap selecció
+				// 	alert("There is nothing selected! The filter will not be applied.");
+				// }
 
 			}
 
 
 			// ///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
 
-			if (currentNode.image == "SelectRowsSTA.png") {
-				currentNode.STASelectedRows = tableResults;
-				if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
-					var elems = document.getElementsByName("SelectRowRadio");
-					for (var i = 0; i < elems.length; i++) {
-						if (elems[i].checked)
-							break;
-					}
-					if (i < elems.length) {
-						const s = elems[i].id.substring("SelectRow_".length);
-						const n = Number(s);
-						if (Number.isInteger(n))
-							currentNode.STAURL += "(" + n + ")";
-						else
-							currentNode.STAURL += "('" + s + "')";
-						currentNode.STAURLIdSelected = s;
-					}
-				}
-				else { //El filter està seleccionat URL
-					var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
+			// if (currentNode.image == "SelectRowsSTA.png") {
+			// 	currentNode.STASelectedRows = tableResults;
+			// 	if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
+			// 		var elems = document.getElementsByName("SelectRowRadio");
+			// 		for (var i = 0; i < elems.length; i++) {
+			// 			if (elems[i].checked)
+			// 				break;
+			// 		}
+			// 		if (i < elems.length) {
+			// 			const s = elems[i].id.substring("SelectRow_".length);
+			// 			const n = Number(s);
+			// 			if (Number.isInteger(n))
+			// 				currentNode.STAURL += "(" + n + ")";
+			// 			else
+			// 				currentNode.STAURL += "('" + s + "')";
+			// 			currentNode.STAURLIdSelected = s;
+			// 		}
+			// 	}
+			// 	else { //El filter està seleccionat URL
+			// 		var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
 
-					// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
-					var condition, andOrNot, URL;
-					URL = currentNode.STAURL;
-					for (var i = 0; i < tableResults.length; i += 5) {
-						andOrNot = i;
-						condition = i + 2;// el primer "filtre" es segons la  condició seleccionada
-						if (andOrNot == 0) {
-							URL += "?$filter="
-						} else {
-							//URL += tableResults[i];
-							if (tableResults[andOrNot] == "and" || tableResults[andOrNot] == "or") {
-								URL += " " + tableResults[andOrNot];
-							} else { //not
-								URL += " and (" + tableResults[andOrNot];
-							}
-						}
-						if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
-							URL += tableResults[i + 1]
-							var typeOfValue = tableResults[i + 4];
-							var apostropheOrSpace;
-							(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
-							switch (tableResults[condition]) {
-								case ' = ':
-									URL += " eq" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' &ne; ':
-									URL += " ne " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' &ge; ':
-									URL += " ge " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' > ':
-									URL += " gt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' &le; ':
-									URL += " le" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								case ' < ':
-									URL += " lt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-									break;
-								default:
-									console.log("error en la condició")
+			// 		// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
+			// 		var condition, andOrNot, URL;
+			// 		URL = currentNode.STAURL;
+			// 		for (var i = 0; i < tableResults.length; i += 5) {
+			// 			andOrNot = i;
+			// 			condition = i + 2;// el primer "filtre" es segons la  condició seleccionada
+			// 			if (andOrNot == 0) {
+			// 				URL += "?$filter="
+			// 			} else {
+			// 				//URL += tableResults[i];
+			// 				if (tableResults[andOrNot] == "and" || tableResults[andOrNot] == "or") {
+			// 					URL += " " + tableResults[andOrNot];
+			// 				} else { //not
+			// 					URL += " and (" + tableResults[andOrNot];
+			// 				}
+			// 			}
+			// 			if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
+			// 				URL += tableResults[i + 1]
+			// 				var typeOfValue = tableResults[i + 4];
+			// 				var apostropheOrSpace;
+			// 				(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
+			// 				switch (tableResults[condition]) {
+			// 					case ' = ':
+			// 						URL += " eq" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+			// 						break;
+			// 					case ' &ne; ':
+			// 						URL += " ne " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+			// 						break;
+			// 					case ' &ge; ':
+			// 						URL += " ge " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+			// 						break;
+			// 					case ' > ':
+			// 						URL += " gt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+			// 						break;
+			// 					case ' &le; ':
+			// 						URL += " le" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+			// 						break;
+			// 					case ' < ':
+			// 						URL += " lt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
+			// 						break;
+			// 					default:
+			// 						console.log("error en la condició")
 
-							}
-						} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
-							URL += tableResults[i + 1];
-							switch (tableResults[condition]) {
-								case ' [a,b] ':
-									URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
-									break;
-								case ' (a,b] ':
-									URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
-									break;
-								case ' [a,b) ':
-									URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
-									break;
-								case ' (a,b) ':
-									URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
-									break;
-								default:
-									console.log("error en la condició")
-							}
-						} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
+			// 				}
+			// 			} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
+			// 				URL += tableResults[i + 1];
+			// 				switch (tableResults[condition]) {
+			// 					case ' [a,b] ':
+			// 						URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
+			// 						break;
+			// 					case ' (a,b] ':
+			// 						URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
+			// 						break;
+			// 					case ' [a,b) ':
+			// 						URL += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
+			// 						break;
+			// 					case ' (a,b) ':
+			// 						URL += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
+			// 						break;
+			// 					default:
+			// 						console.log("error en la condició")
+			// 				}
+			// 			} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
 
-						} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
-							//URL+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
-						} else if (tableResults[condition] == 'min date time' || tableResults[condition] == 'max date time') {
+			// 			} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
+			// 				//URL+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
+			// 			} else if (tableResults[condition] == 'min date time' || tableResults[condition] == 'max date time') {
 
-						}
+			// 			}
 
-						if (tableResults[andOrNot] == "not") {
-							URL += ")";
-						}
+			// 			if (tableResults[andOrNot] == "not") {
+			// 				URL += ")";
+			// 			}
 
-						currentNode.STAURL = URL;
-						console.log(currentNode.STAURL);
-						console.log(URL);
-					}
-
-
-				}
-				currentNode.STAExpectedLength = node.STAExpectedLength;
-				networkNodes.update(currentNode); //important als dos
-				showInfoMessage("Selecting STA rows...");
-				LoadJSONNodeSTAData(currentNode); //crida a la API
-				UpdateChildenSTAURL(currentNode);//important als dos
+			// 			currentNode.STAURL = URL;
+			// 			console.log(currentNode.STAURL);
+			// 			console.log(URL);
+			//}
 
 
-				///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
+			// }
+			// currentNode.STAExpectedLength = node.STAExpectedLength;
+			// networkNodes.update(currentNode); //important als dos
+			// showInfoMessage("Selecting STA rows...");
+			// LoadJSONNodeSTAData(currentNode); //crida a la API
+			// UpdateChildenSTAURL(currentNode);//important als dos
+
+
+			///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
+			// }
+			// ///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+			// else if (currentNode.image == "SelectRowsTable.png") {
+			// 	//tableresults; //resultats de la taula del filter
+			// 	//currentNode.STAdata; //Tota la taula CSV
+			// 	var arraySTAdata = [];
+			// 	if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
+			// 		var elems = document.getElementsByName("SelectRowRadio");
+			// 		for (var i = 0; i < elems.length; i++) { //comprobar quin està seleccionat
+			// 			if (elems[i].checked) {
+			// 				arraySTAdata.push(previouSTAURL.STAdata[i]);
+			// 				currentNode.STAdata = arraySTAdata;
+			// 				console.log(previouSTAURL.STAdata[i]);
+			// 			}
+			// 		}
+
+
+			// 	} else { //seleccionat el filter
+			// 		currentNode.STASelectedRowsTable = tableResults;
+			// 		console.log(currentNode.id);
+			// 		var filteredValues = filterValuesFromRowCSV(previouSTAURL.STAdata, tableResults);
+			// 		currentNode.STAdata = filteredValues;
+			// 	}
+
+
+
+			// 	//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir.
+			// 	currentNode.STASelectedRowsTable = tableResults;
+			// 	networkNodes.update(currentNode);
+			// 	UpdateChildenSTAURL(currentNode);
+			// }
+
+			// ///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+			// document.getElementById("DialogSelectRows").close();
+		}
+		//Funcions de la taula
+		//var charactersInTable = [];
+		// function readTableFilterRow(nodeId, row) {
+		// 	var table = document.getElementById("tableResult");
+		// 	var tableResults = []; //on es guarden els valors de la taula
+		// 	var rowsNumber = table.rows.length;
+		// 	var property, propertyText, condition, conditionText, valor, valueText, valueText2, selectorProperty, selectorCondition, inputValue, typeOfValue;
+		// 	if (rowsNumber > 1) {
+		// 		for (var r = 1; r < rowsNumber; r++) {
+		// 			if (row != 0) {
+		// 				r = row
+		// 			}
+		// 			property = document.getElementById("th_" + nodeId + "_" + (r) + "_property");
+		// 			if (property.children.length > 0) {//per la saveRow
+		// 				selectorProperty = document.getElementById("selectorProperty_tableResult");
+		// 				propertyText = selectorProperty.options[selectorProperty.selectedIndex].value;
+		// 			} else {
+		// 				propertyText = property.innerHTML;
+		// 			}
+		// 			condition = document.getElementById("th_" + nodeId + "_" + (r) + "_condition");
+		// 			if (condition.children.length > 0) {
+		// 				selectorCondition = document.getElementById("selectorCondition_tableResult");
+		// 				conditionText = selectorCondition.options[selectorCondition.selectedIndex].value;
+		// 			} else {
+		// 				conditionText = condition.getAttribute("value");
+		// 			}
+		// 			valor = document.getElementById("th_" + nodeId + "_" + (r) + "_value");
+		// 			var arrayValors = [];
+		// 			var valueOfValor = valor.getAttribute("value");
+		// 			if (valor.children.length > 0) { //en el saveRow
+		// 				if (conditionText == " [a,b] " || conditionText == " (a,b] " || conditionText == " [a,b) " || conditionText == " (a,b) ") {
+		// 					var inputText1 = document.getElementById("textInputInterval1_tableResult");
+		// 					var inputText2 = document.getElementById("textInputInterval2_tableResult");
+		// 					// arrayValors.push(inputText1.value);
+		// 					// arrayValors.push(inputText2.value);
+		// 					valor.setAttribute("value", inputText1.value + "---" + inputText2.value);
+		// 					valueOfValor = valor.getAttribute("value");
+		// 				} else { //No interval
+		// 					inputValue = document.getElementById("textInput_tableResult");
+		// 					valueText = inputValue.value;
+		// 					if (valor.getAttribute("value") != null) {
+		// 						valor.setAttribute("value", null);
+		// 					}
+		// 				}
+		// 			}
+		// 			else { //Els que no són el saveRow
+		// 				//mirar si és un interval (Conté ---al value)
+		// 				valueOfValor = valor.getAttribute("value")
+		// 				if (valueOfValor != null) {
+		// 					if (valueOfValor.includes("---")) { //se que té un interval.
+		// 						//Agafar el abans i despres i posarlo en un array
+		// 						valueText = valueOfValor;
+		// 						console.log("inclou ---:    " + valueText);
+		// 					}
+		// 				} else {
+		// 					valueText = valor.innerHTML;
+		// 				}
+		// 			}
+		// 			if (r == 1) { //primera fila: Es borrarà al treure els ands i tal
+		// 				tableResults.push("nothing");
+		// 			}
+		// 			else {
+		// 				var selectAndOrNot = document.getElementById("select_" + nodeId + "_" + r);
+		// 				tableResults.push(selectAndOrNot.options[selectAndOrNot.selectedIndex].value);
+		// 			}
+		// 			tableResults.push(propertyText);
+		// 			tableResults.push(conditionText);
+		// 			var type;
+		// 			if (valueOfValor != null) { //interval
+		// 				if (valueOfValor.includes("---")) { //se que té un interval.
+		// 					arrayValors.push(valueOfValor.split("---")[0]);
+		// 					arrayValors.push(valueOfValor.split("---")[1]);
+		// 					tableResults.push(arrayValors);
+		// 					type = typeOfValueFromInput("interval", "_tableResult", arrayValors[0], arrayValors[1]);
+		// 					tableResults.push(type);
+		// 				}
+		// 			} else {//simple
+		// 				tableResults.push(valueText);
+		// 				type = typeOfValueFromInput("simple", "_tableResult", valueText, "no");
+		// 				tableResults.push(type);
+		// 			}
+		// 			var character = document.getElementById("th_" + nodeId + "_" + r + "_character");
+		// 			tableResults.push(parseInt(character.getAttribute("value")));
+		// 			if (row !== 0) {
+		// 				r = rowsNumber;
+		// 			}
+		// 		}
+		// 	}
+		// 	return tableResults;
+		// }
+		function GetJoinTables(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogJoinTables").close();
+			UpdateJoinTablesRowMatchingNode(currentNode);
+			if (document.getElementById("DialogJoinTablesNotMatchRemove").checked)
+				currentNode.STAJoinTables.NotMatch = "Remove";
+			else if (document.getElementById("DialogJoinTablesNotMatchLeftTable").checked)
+				currentNode.STAJoinTables.NotMatch = "LeftTable";
+			else //if (document.getElementById("DialogJoinTablesNotMatchBothTables").checked)
+				currentNode.STAJoinTables.NotMatch = "BothTables";
+			var parentNodes = GetParentNodes(currentNode);
+			if (!parentNodes && parentNodes.length < 2) {
+				return;
 			}
-			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
-			else if (currentNode.image == "SelectRowsTable.png") {
-				//tableresults; //resultats de la taula del filter
-				//currentNode.STAdata; //Tota la taula CSV
-				var arraySTAdata = [];
-				if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
-					var elems = document.getElementsByName("SelectRowRadio");
-					for (var i = 0; i < elems.length; i++) { //comprobar quin està seleccionat
-						if (elems[i].checked) {
-							arraySTAdata.push(previouSTAURL.STAdata[i]);
-							currentNode.STAdata = arraySTAdata;
-							console.log(previouSTAURL.STAdata[i]);
-						}
-					}
-
-
-				} else { //seleccionat el filter
-					currentNode.STASelectedRowsTable = tableResults;
-					console.log(currentNode.id);
-					var filteredValues = filterValuesFromRowCSV(previouSTAURL.STAdata, tableResults);
-					currentNode.STAdata = filteredValues;
-				}
-
-
-
-				//Guardar en el node xq recarregui la taula dle filtre al tornar-la a obrir.
-				currentNode.STASelectedRowsTable = tableResults;
-				networkNodes.update(currentNode);
-				UpdateChildenSTAURL(currentNode);
-			}
-
-			///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
-			document.getElementById("DialogSelectRows").close();
+			currentNode.STAdataAttributes = {};
+			currentNode.STAdata = JoinTablesData(parentNodes[0].STAdata, parentNodes[1].STAdata,
+				parentNodes[0].STAdataAttributes ? parentNodes[0].STAdataAttributes : getDataAttributes(parentNodes[0].STAdata),
+				parentNodes[1].STAdataAttributes ? parentNodes[1].STAdataAttributes : getDataAttributes(parentNodes[1].STAdata),
+				currentNode.STAdataAttributes, currentNode.STAJoinTables);
+			networkNodes.update(currentNode);
 		}
 
 		function IdOfSTAEntity(node) {
@@ -2093,15 +2383,23 @@
 			for (var i = 0; i < nodeIds.length; i++) {
 				var node = networkNodes.get(nodeIds[i])
 				if (node.STAURL && currentSTAURLroot && previousSTAURLroot) {
-					if (node.STAURL.substring(0, previousSTAURLroot.length) == previousSTAURLroot) {
-						node.STAURL = currentSTAURLroot + node.STAURL.substring(previousSTAURLroot.length);
+					var previousSTAURLrootWithoutQuery = getURLWithoutQueryParams(previousSTAURLroot);
+					if (node.STAURL.substring(0, previousSTAURLrootWithoutQuery.length) == previousSTAURLrootWithoutQuery) {
+						var previousQueryParams = getURLQueryParams(previousSTAURLroot)
+						var currentQueryParams = getURLQueryParams(currentSTAURLroot)
+						var queryParam = getURLQueryParams(node.STAURL);
+						if (!previousQueryParams && !currentQueryParams)
+							;
+						else if (!previousQueryParams)
+							queryParam = queryParam ? queryParam + '&' + currentQueryParams : currentQueryParams;
+						else
+							queryParam = queryParam.replace(previousQueryParams, currentQueryParams);
+
+						getURLQueryParams(node.STAURL).replace(previousQueryParams, getURLQueryParams(currentSTAURLroot))
+						node.STAURL = AddKVPToURL(getURLWithoutQueryParams(currentSTAURLroot) + getURLWithoutQueryParams(node.STAURL).substring(previousSTAURLrootWithoutQuery.length),
+							queryParam);
 						networkNodes.update(node);
 					}
-					/*if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node)!=-1 || TableOperations[node.image.substring(0, node.image.length-4)].callSTALoad) {
-						networkNodes.update(node);
-						showInfoMessage("Updating STA child node...");
-						LoadJSONNodeSTAData(node);
-}*/
 				}
 				UpdateChildenSTAURL(node, currentSTAURLroot, previousSTAURLroot);
 			}
@@ -2120,6 +2418,13 @@
 				else if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node) != -1 || TableOperations[removeExtension(node.image)].callSTALoad) {
 					showInfoMessage("Updating " + removeExtension(node.image) + " ...");
 					await LoadJSONNodeSTAData(node);
+				}
+				else if (node.image == "OneValue.png") {
+					if (node.STAtimeOut) {
+						clearTimeout(node.STAtimeOut);
+						node.STAtimeOut = null;
+					}
+					await RequestLastObservationAndRefreshOneValue(node, node.STAvariable, node.STAtimeVariable, node.STAredrawPeriod);
 				}
 			}
 		}
@@ -2143,26 +2448,26 @@
 			return t;
 		}
 
-		function getJSONType(a) {
-			if (typeof a === "string")
-				return "string";
-			if (typeof a === "boolean")
-				return "boolean";
-			if (Array.isArray(a))
-				return "array";
-			if (a === null)
-				return "null";
-			if (typeof a === "object")
-				return "object";
-			if (typeof a === "undefined")
-				return "undefined";
-			if (Number.isInteger(a))
-				return "integer";
-			if (parseFloat(a))
-				return "number"
-			else
-				return "string";
-		}
+		// function getJSONType(a) {
+		// 	if (typeof a === "string")
+		// 		return "string";
+		// 	if (typeof a === "boolean")
+		// 		return "boolean";
+		// 	if (Array.isArray(a))
+		// 		return "array";
+		// 	if (a === null)
+		// 		return "null";
+		// 	if (typeof a === "object")
+		// 		return "object";
+		// 	if (typeof a === "undefined")
+		// 		return "undefined";
+		// 	if (Number.isInteger(a))
+		// 		return "integer";
+		// 	if (parseFloat(a))
+		// 		return "number"
+		// 	else
+		// 		return "string";
+		// }
 
 		function getDataAttributes(data) {
 			var dataAttributes = {}, dataAttribute, type;
@@ -3597,6 +3902,7 @@
 			nexus: null,
 			boxName: "1_0"
 		}
+		var urlAPI = "";
 
 		// 	elems: [
 		// 		{ //nivell2
@@ -3747,20 +4053,20 @@
 
 		function actualizeSelectChoice(boxName) {
 			console.log(boxName);
-			var select =document.getElementById("selectAndOrNot_"+boxName);
-			var option=select.options[select.selectedIndex].value
+			var select = document.getElementById("selectAndOrNot_" + boxName);
+			var option = select.options[select.selectedIndex].value
 			searchGrouptoChangeSelectChoice(boxName, elemFilter, option);
 
 		}
 
-		function searchGrouptoChangeSelectChoice(boxName, elem,option) { 
-			
+		function searchGrouptoChangeSelectChoice(boxName, elem, option) {
+
 			if (typeof elem === "object") {
 				for (var i = 0; i < elem.elems.length; i++) {
-					searchGrouptoChangeSelectChoice(boxName, elem.elems[i],option);
+					searchGrouptoChangeSelectChoice(boxName, elem.elems[i], option);
 				}
 				if (elem.boxName == boxName) { //afegir a elems => elems[0,1...]
-					elem.nexus=option;
+					elem.nexus = option;
 				}
 			}
 		}
@@ -3866,6 +4172,7 @@
 
 		//up button
 		function MoveUpFilterCondition(iCon) {
+			event.preventDefault();
 			var previousElement = GivePreviousConditionFilterTable(elemFilter, iCon, "no");
 			console.log(previousElement)
 			if (previousElement != -1) {
@@ -4727,7 +5034,6 @@
 
 		function GetGeoJSONDates(data, selectedOptions) {
 			var dataSorted = deapCopy(data), datetimes = [];
-			// var dataSorted = JSON.parse(JSON.stringify(data)), datetimes = [];
 
 			//Sorted by date (older first).
 			dataSorted.sort(function (a, b) {
@@ -4751,10 +5057,14 @@
 	}*/
 
 		function PopulateSelectSaveLayerDialog(id, dataAttributes, selectedOption) {
+			document.getElementById(id).innerHTML = GetSelectSaveLayerDialog(id + "Select", dataAttributes, selectedOption);
+		}
+
+		function GetSelectSaveLayerDialog(id, dataAttributes, selectedOption) {
 			var thereIsSelectionOption = false;
 			var dataAttributesArray = Object.keys(dataAttributes);
 
-			var s = "<select id=\"" + id + "Select" + "\">";
+			var s = "<select id=\"" + id + "\">";
 			for (var a = 0; a < dataAttributesArray.length; a++) {
 				if (dataAttributesArray[a] == selectedOption) {
 					thereIsSelectionOption = true;
@@ -4765,7 +5075,7 @@
 			for (var a = 0; a < dataAttributesArray.length; a++)
 				s += "<option value=\"" + dataAttributesArray[a] + "\"" + (dataAttributesArray[a] == selectedOption ? "selected=\"selected\"" : "") + ">" + dataAttributesArray[a] + "</option>";
 			s += "</select>";
-			document.getElementById(id).innerHTML = s;
+			return s;
 		}
 
 		function ShowSaveLayerDialogSelects(nodeId, descripUoM) {
@@ -5074,7 +5384,7 @@
 			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
 		}
 
-		function ShowTableFilterRowsDialog(nodeId, paramsNodeId) {
+		function ShowTableFilterRowsDialog(nodeId, paramsNodeId) { //mirar si el params es necessari o el nodeId està bé
 			var data = networkNodes.get(nodeId).STAdata;
 			var dataAttributes = getDataAttributes(data);  //no borrar
 
@@ -5093,11 +5403,11 @@
 			ShowFilterTable(dataAttributes, paramsNodeId);
 		}
 
-		function ChangeTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId) {
+		function ChangeTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId) { //mirar si cal el params
 			if (document.getElementById("DialogSelectRowsTableRadio").checked)
 				ShowTableSelectRowsDialog(parentNodeId, nodeId);
 			else
-				ShowTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId);
+				ShowTableFilterRowsDialog(parentNodeId, nodeId, paramsNodeId); //mirar si cal el params
 		}
 
 		function SeparatePropertyIfNeeded(record, property, baseName) {
@@ -5211,6 +5521,12 @@
 				nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
 				if (nodeFrom.STAdataAttributes)
 					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
+				networkNodes.update(nodeTo);
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				return true;
+			}
+			if (nodeTo.image == "JoinTables.png") {
 				networkNodes.update(nodeTo);
 				if (calUnir)
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
@@ -5356,6 +5672,13 @@
 						document.getElementById("DialogSelectColumns").showModal();
 					}
 				}
+				else if (currentNode.image == "JoinTables.png") {
+					var parentNodes = GetParentNodes(currentNode);
+					if (parentNodes && parentNodes.length > 1) {
+						ShowJoinTablesDialog(parentNodes, currentNode);
+						document.getElementById("DialogJoinTables").showModal();
+					}
+				}
 				else if (currentNode.image == "SelectRowsSTA.png" || currentNode.image == "SelectRowsTable.png") { //afegir el SelectRowsTable.png?
 					//Determining the parent node.
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
@@ -5363,6 +5686,7 @@
 						if (networkNodes.get(nodeids[0]) && (networkNodes.get(nodeids[0]).STAURL || networkNodes.get(nodeids[0]).STAdata)) {
 							document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/> Select an element:</label>";
 							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\", \"" + params["nodes"][0] + "\")'/>  Filter:</label>";
+							// document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/>  Filter:</label>"; //EL joan té aquesta en comptes d el'anterior
 							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
 						}
 						document.getElementById("DialogSelectRows").showModal();
