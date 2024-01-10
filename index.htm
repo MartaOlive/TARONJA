@@ -2030,12 +2030,13 @@
 						readInformationRowFilter(elem.elems[i], elem.nexus, elem);
 					}
 					if (urlAPICounter.length != infoFilter.length & urlAPICounter.length != 0 & nexus != "no" & parent != "no") {
+
 						urlAPI += nexus //elem.nexus
 					}
 				}
 				else { //On es construirà la url
 					console.log(elem)
-					//arrai final, que conté els filtres 
+					//array final, que conté els filtres 
 					var data = "";
 					for (var i = 0; i < infoFilter.length; i++) {
 						console.log(elem)
@@ -2048,19 +2049,6 @@
 							if (indexOf == 0) {
 								data += "(";
 							}
-							console.log(infoFilter[i][1]);
-							console.log(infoFilter[i][2]);
-							console.log(infoFilter[i][3]);
-
-							//data += "(" + infoFilter[i][1] +
-
-							//if()
-
-							//infoFilter[i][2] +
-
-
-							//infoFilter[i][3] + ")";
-
 
 							if (infoFilter[i][2] == ' = ' || infoFilter[i][2] == ' &ne; ' || infoFilter[i][2] == ' &ge; ' || infoFilter[i][2] == ' > ' || infoFilter[i][2] == ' &le; ' || infoFilter[i][2] == ' < ') { //passarho a com STA+
 								data += "(" + infoFilter[i][1];
@@ -2182,11 +2170,32 @@
 				//actualitzar el infoFilter
 				takeSelectInformation(currentNode.id);
 				console.log(currentNode.STAURL);
-				urlAPI = currentNode.STAURL + "?$filter=";//reiniciar URL
+				var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
+				urlAPICounter = [];
+				urlAPI = previousNode[0].STAURL + "?$filter=";//reiniciar URL
 				stopReadInformationRowFilter = false;
 				readInformationRowFilter(elemFilter, "no", "no");
-				//console.log(infoFilter)
+				console.log(urlAPI);
 				currentNode.STAURL = urlAPI;
+				//Selectors Information
+				currentNode.ELEMENTSFILTER = elemFilter;
+				currentNode.INFOFILTER=infoFilter;
+
+				 //keep in this node
+				elemFilter = { //reestater for next
+					elems: [
+						{ 
+
+							elems: [0],
+							nexus: null,
+							boxName: "0_0"
+						}
+
+					],
+					nexus: null,
+					boxName: "1_0"
+				}
+				infoFilter=[];
 			}
 			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
@@ -3567,7 +3576,7 @@
 				data = actualNode.STAdata;
 
 			} else {
-				previousNode=networkNodes.get(network.getConnectedNodes(nodeId, "from"));
+				previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
 				data = previousNode[0].STAdata; //STAdata: Totes les dades que venen del node anterior(Api o ja filtrades en algun punt)
 			}
 
@@ -5488,8 +5497,13 @@
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
 			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
-
-			//createSelectorRowFilters(dataAttributes, nodeId, paramsNodeId); /////////////////////////////////////////////////////////
+			
+			//Take elemFilter information from Node
+			if (currentNode.ELEMENTSFILTER){
+				elemFilter=currentNode.ELEMENTSFILTER;
+				infoFilter=currentNode.INFOFILTER;
+			}
+			
 			ShowFilterTable(dataAttributes, paramsNodeId);
 		}
 
