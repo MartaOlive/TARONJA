@@ -2172,19 +2172,27 @@
 				console.log(currentNode.STAURL);
 				var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
 				urlAPICounter = [];
-				urlAPI = previousNode[0].STAURL + "?$filter=";//reiniciar URL
+				var previousURL = previousNode[0].STAURL
+				if (previousURL.includes("$select=")||previousURL.includes("$orderby")) {
+					urlAPI = previousURL+ "&$filter=";
+				}else{
+					urlAPI = previousURL+ "?$filter=";
+				}
+				
+
+				//+ "?$filter=";//reiniciar URL
 				stopReadInformationRowFilter = false;
 				readInformationRowFilter(elemFilter, "no", "no");
 				console.log(urlAPI);
 				currentNode.STAURL = urlAPI;
 				//Selectors Information
-				currentNode.ELEMENTSFILTER = elemFilter;
-				currentNode.INFOFILTER=infoFilter;
+				currentNode.STAelementFilter = elemFilter;
+				currentNode.STAinfoFilter = infoFilter;
 
-				 //keep in this node
+				//keep in this node
 				elemFilter = { //reestater for next
 					elems: [
-						{ 
+						{
 
 							elems: [0],
 							nexus: null,
@@ -2195,7 +2203,7 @@
 					nexus: null,
 					boxName: "1_0"
 				}
-				infoFilter=[];
+				infoFilter = [];
 			}
 			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
@@ -4655,13 +4663,6 @@
 
 
 
-		function GetSelectorsForRowFilter(nodeId) {
-			var divSelectorStructure;
-			divSelectorStructure = `<div id=selectorRowsContainer>
-
-				<div id='divSelectorRowsFilter'></div></div>`;
-			return divSelectorStructure;
-		}
 
 		function GetHTMLTable(data, dataAttributesInput, rowNumbers, selectedEntityId) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
@@ -5496,14 +5497,14 @@
 			document.getElementById("DialogSelectRowsTable").innerHTML = "";
 
 			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
-			document.getElementById("DialogSelectRowsFilter").innerHTML = GetSelectorsForRowFilter(nodeId); //funció al marcar el radiobutton del Filter
-			
+			document.getElementById("DialogSelectRowsFilter").innerHTML = `<div id=selectorRowsContainer><div id='divSelectorRowsFilter'></div></div>`; //funció al marcar el radiobutton del Filter
+
 			//Take elemFilter information from Node
-			if (currentNode.ELEMENTSFILTER){
-				elemFilter=currentNode.ELEMENTSFILTER;
-				infoFilter=currentNode.INFOFILTER;
+			if (currentNode.STAelementFilter) {
+				elemFilter = currentNode.STAelementFilter;
+				infoFilter = currentNode.STAinfoFilter;
 			}
-			
+
 			ShowFilterTable(dataAttributes, paramsNodeId);
 		}
 
