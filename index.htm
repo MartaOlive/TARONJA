@@ -2031,7 +2031,7 @@
 					}
 					if (urlAPICounter.length != infoFilter.length & urlAPICounter.length != 0 & nexus != "no" & parent != "no") {
 
-						urlAPI += nexus //elem.nexus
+						urlAPI += nexus 
 					}
 				}
 				else { //On es construirà la url
@@ -2079,28 +2079,29 @@
 
 								}
 							}
-							//else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
-							// 				data += tableResults[i + 1];
-							// 				switch (tableResults[condition]) {
-							// 					case ' [a,b] ':
-							// 						data += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
-							// 						break;
-							// 					case ' (a,b] ':
-							// 						data += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " le " + tableResults[i + 3][1];
-							// 						break;
-							// 					case ' [a,b) ':
-							// 						data += " ge " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
-							// 						break;
-							// 					case ' (a,b) ':
-							// 						data += " gt " + tableResults[i + 3][0] + " and " + tableResults[i + 1] + " lt " + tableResults[i + 3][1];
-							// 						break;
-							// 					default:
-							// 						console.log("error en la condició")
-							// 				}
-							// 			} else if (tableResults[condition] == 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
+							else if (infoFilter[i][2]== ' [a,b] ' || infoFilter[i][2]== ' (a,b] ' || infoFilter[i][2]== ' [a,b) ' || infoFilter[i][2]== ' (a,b) ') {
+								data += "(" + infoFilter[i][1];
+							 				switch (infoFilter[i][2]) {
+							 					case ' [a,b] ':
+							 						data += " ge " +infoFilter[i][3] + " and " + infoFilter[i][1] + " le " + infoFilter[i][4]+")";
+							 						break;
+							 					case ' (a,b] ':
+							 						data += " gt " +infoFilter[i][3] + " and " + infoFilter[i][1] + " le " + infoFilter[i][4]+")";
+							 						break;
+							 					case ' [a,b) ':
+							 						data += " ge " +infoFilter[i][3] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][4]+")";
+							 						break;
+							 					case ' (a,b) ':
+							 						data += " gt " +infoFilter[i][3] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][4]+")";
+							 						break;
+							 					default:
+							 						console.log("error en la condició")
+							 				}
+							 		} 
+							// else if (infoFilter[i][2]== 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
 
-							// 			} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
-							// 				//data+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
+							 //			} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
+							 				//data+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
 							// 			} else if (tableResults[condition] == 'min date time' || tableResults[condition] == 'max date time') {
 
 							// 			}
@@ -2179,8 +2180,6 @@
 					urlAPI = previousURL+ "?$filter=";
 				}
 				
-
-				//+ "?$filter=";//reiniciar URL
 				stopReadInformationRowFilter = false;
 				readInformationRowFilter(elemFilter, "no", "no");
 				console.log(urlAPI);
@@ -2211,98 +2210,13 @@
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
 		}
-		// if (document.getElementById("DialogSelectRowsTableRadio").checked == false) { //COMPARAR AMB EL DEL JOAN
-		// 	//actualitzar el infoFilter
-		// 	takeSelectInformation(currentNode.id);
-		// 	//S'haueia de posat el X?$filter= 
-
-		// 	urlAPI = currentNode.STAURL+"?$filter=";//reiniciar URL
-		// 	stopReadInformationRowFilter=false;
-		// 	readInformationRowFilter(elemFilter, "no", "no");
-		// 	console.log(urlAPI);
-		// 	console.log(infoFilter)
-		// 	currentNode.STAURL=urlAPI;
-		// 	networkNodes.update(currentNode);
-		// 	UpdateChildenSTAURL(currentNode);
-
-
-		// if (rowsNumber > 1) {
-		// 	tableResults = readTableFilterRow(currentNode.id, 0) //row=0? (ON ES RECULL LA INFO)
-		// 	console.log(tableResults);
-		// } else { //cap selecció
-		// 	alert("There is nothing selected! The filter will not be applied.");
-		// }
+	
 
 		//}
 
 
 		// ///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
 
-		// if (currentNode.image == "SelectRowsSTA.png") {
-		// 	currentNode.STASelectedRows = tableResults;
-		// 	if (document.getElementById("DialogSelectRowsTableRadio").checked) { //An element URL
-		// 		var elems = document.getElementsByName("SelectRowRadio");
-		// 		for (var i = 0; i < elems.length; i++) {
-		// 			if (elems[i].checked)
-		// 				break;
-		// 		}
-		// 		if (i < elems.length) {
-		// 			const s = elems[i].id.substring("SelectRow_".length);
-		// 			const n = Number(s);
-		// 			if (Number.isInteger(n))
-		// 				currentNode.STAURL += "(" + n + ")";
-		// 			else
-		// 				currentNode.STAURL += "('" + s + "')";
-		// 			currentNode.STAURLIdSelected = s;
-		// 		}
-		// 	}
-		// 	else { //El filter està seleccionat URL
-		// 		var divSelectorRowsFilter = document.getElementById("divSelectorRowsFilter");
-
-		// 		// Es posa la info al STAURL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PER FER LA CRIDA
-		// 		var condition, andOrNot, URL;
-		// 		URL = currentNode.STAURL;
-		// 		for (var i = 0; i < tableResults.length; i += 5) {
-		// 			andOrNot = i;
-		// 			condition = i + 2;// el primer "filtre" es segons la  condició seleccionada
-		// 			if (andOrNot == 0) {
-		// 				URL += "?$filter="
-		// 			} else {
-		// 				//URL += tableResults[i];
-		// 				if (tableResults[andOrNot] == "and" || tableResults[andOrNot] == "or") {
-		// 					URL += " " + tableResults[andOrNot];
-		// 				} else { //not
-		// 					URL += " and (" + tableResults[andOrNot];
-		// 				}
-		// 			}
-		// 			if (tableResults[condition] == ' = ' || tableResults[condition] == ' &ne; ' || tableResults[condition] == ' &ge; ' || tableResults[condition] == ' > ' || tableResults[condition] == ' &le; ' || tableResults[condition] == ' < ') { //passarho a com STA+
-		// 				URL += tableResults[i + 1]
-		// 				var typeOfValue = tableResults[i + 4];
-		// 				var apostropheOrSpace;
-		// 				(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
-		// 				switch (tableResults[condition]) {
-		// 					case ' = ':
-		// 						URL += " eq" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-		// 						break;
-		// 					case ' &ne; ':
-		// 						URL += " ne " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-		// 						break;
-		// 					case ' &ge; ':
-		// 						URL += " ge " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-		// 						break;
-		// 					case ' > ':
-		// 						URL += " gt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-		// 						break;
-		// 					case ' &le; ':
-		// 						URL += " le" + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-		// 						break;
-		// 					case ' < ':
-		// 						URL += " lt " + apostropheOrSpace + tableResults[i + 3] + apostropheOrSpace;
-		// 						break;
-		// 					default:
-		// 						console.log("error en la condició")
-
-		// 				}
 		// 			} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
 		// 				URL += tableResults[i + 1];
 		// 				switch (tableResults[condition]) {
