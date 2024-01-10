@@ -4120,11 +4120,11 @@
 		}
 
 
-		async function ShowFilterTable(dataAttributes, nodeId) //posar la taula on sigui //El que inicia la taula
+		function ShowFilterTable(dataAttributes, nodeId) //posar la taula on sigui //El que inicia la taula
 		{
 			//console.log(infoFilter);
 			counter = [];
-			document.getElementById("divSelectorRowsFilter").innerHTML = await GetFilterTable(elemFilter, dataAttributes, nodeId, true);
+			document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(elemFilter, dataAttributes, nodeId, true);
 			addingSelectors(dataAttributes, nodeId);
 
 
