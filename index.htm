@@ -1841,7 +1841,7 @@
 
 		const selectConditionContent = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date', 'time', 'min date time', 'max date time'];
 		const selectConditionContentText = [' = ', ' &ne; ', 'contains', 'no contains', 'starts with', 'ends with'];
-		const selectConditionContentNumber = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains']
+		const selectConditionContentNumber = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ','contains', 'no contains', 'starts with', 'ends with']
 
 
 		function GetSelectColumns(event) {
@@ -2031,7 +2031,7 @@
 					}
 					if (urlAPICounter.length != infoFilter.length & urlAPICounter.length != 0 & nexus != "no" & parent != "no") {
 
-						urlAPI += nexus 
+						urlAPI += nexus
 					}
 				}
 				else { //On es construirà la url
@@ -2052,7 +2052,8 @@
 
 							if (infoFilter[i][2] == ' = ' || infoFilter[i][2] == ' &ne; ' || infoFilter[i][2] == ' &ge; ' || infoFilter[i][2] == ' > ' || infoFilter[i][2] == ' &le; ' || infoFilter[i][2] == ' < ') { //passarho a com STA+
 								data += "(" + infoFilter[i][1];
-								var typeOfValue = infoFilter[i][1];
+
+								var typeOfValue = infoFilter[i][4];
 								var apostropheOrSpace;
 								(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
 								switch (infoFilter[i][2]) {
@@ -2079,30 +2080,46 @@
 
 								}
 							}
-							else if (infoFilter[i][2]== ' [a,b] ' || infoFilter[i][2]== ' (a,b] ' || infoFilter[i][2]== ' [a,b) ' || infoFilter[i][2]== ' (a,b) ') {
+							else if (infoFilter[i][2] == ' [a,b] ' || infoFilter[i][2] == ' (a,b] ' || infoFilter[i][2] == ' [a,b) ' || infoFilter[i][2] == ' (a,b) ') {
 								data += "(" + infoFilter[i][1];
-							 				switch (infoFilter[i][2]) {
-							 					case ' [a,b] ':
-							 						data += " ge " +infoFilter[i][3] + " and " + infoFilter[i][1] + " le " + infoFilter[i][4]+")";
-							 						break;
-							 					case ' (a,b] ':
-							 						data += " gt " +infoFilter[i][3] + " and " + infoFilter[i][1] + " le " + infoFilter[i][4]+")";
-							 						break;
-							 					case ' [a,b) ':
-							 						data += " ge " +infoFilter[i][3] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][4]+")";
-							 						break;
-							 					case ' (a,b) ':
-							 						data += " gt " +infoFilter[i][3] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][4]+")";
-							 						break;
-							 					default:
-							 						console.log("error en la condició")
-							 				}
-							 		} 
-							// else if (infoFilter[i][2]== 'contains' || tableResults[condition] == 'no contains' || tableResults[condition] == 'starts with' || tableResults[condition] == 'ends with') {
-
-							 //			} else if (tableResults[condition] == 'year' || tableResults[condition] == 'month' || tableResults[condition] == 'day' || tableResults[condition] == 'hour' || tableResults[condition] == 'minute' || tableResults[condition] == 'date' || tableResults[condition] == 'time') {
-							 				//data+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
-							// 			} else if (tableResults[condition] == 'min date time' || tableResults[condition] == 'max date time') {
+								switch (infoFilter[i][2]) {
+									case ' [a,b] ':
+										data += " ge " + infoFilter[i][3] + " and " + infoFilter[i][1] + " le " + infoFilter[i][4] + ")";
+										break;
+									case ' (a,b] ':
+										data += " gt " + infoFilter[i][3] + " and " + infoFilter[i][1] + " le " + infoFilter[i][4] + ")";
+										break;
+									case ' [a,b) ':
+										data += " ge " + infoFilter[i][3] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][4] + ")";
+										break;
+									case ' (a,b) ':
+										data += " gt " + infoFilter[i][3] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][4] + ")";
+										break;
+									default:
+										console.log("error en la condició")
+								}
+							}
+							 else if (infoFilter[i][2]== 'contains' || infoFilter[i][2] == 'no contains' || infoFilter[i][2] == 'starts with' || infoFilter[i][2] == 'ends with') {
+								switch (infoFilter[i][2]) {
+									case 'contains':
+										data += "substringof('"+infoFilter[i][3]+"',"+infoFilter[i][1] +")";
+										break;
+									case 'no contains':
+									data += "not substringof('"+infoFilter[i][3]+"',"+infoFilter[i][1] +")";
+										break;
+									case 'starts with':
+										data += "startswith("+infoFilter[i][1]+",'"+infoFilter[i][3]+"')";
+										break;
+									case 'ends with':
+									data += "endswith("+infoFilter[i][1]+",'"+infoFilter[i][3]+"')";
+										break;
+									default:
+										console.log("error en la condició")
+								}
+							} 
+							//else if (infoFilter[i][2] == 'year' || infoFilter[i][2] == 'month' || infoFilter[i][2] == 'day' || infoFilter[i][2] == 'hour' || infoFilter[i][2] == 'minute' || infoFilter[i][2] == 'date' || infoFilter[i][2] == 'time') {
+							//data+=condition+"("+tableResultss[i+1]+") eq "+tableResultss[i+3]
+							// 			} else if (infoFilter[i][2] == 'min date time' || infoFilter[i][2] == 'max date time') {
 
 							// 			}
 
@@ -2174,12 +2191,12 @@
 				var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
 				urlAPICounter = [];
 				var previousURL = previousNode[0].STAURL
-				if (previousURL.includes("$select=")||previousURL.includes("$orderby")) {
-					urlAPI = previousURL+ "&$filter=";
-				}else{
-					urlAPI = previousURL+ "?$filter=";
+				if (previousURL.includes("$select=") || previousURL.includes("$orderby")) {
+					urlAPI = previousURL + "&$filter=";
+				} else {
+					urlAPI = previousURL + "?$filter=";
 				}
-				
+
 				stopReadInformationRowFilter = false;
 				readInformationRowFilter(elemFilter, "no", "no");
 				console.log(urlAPI);
@@ -2210,14 +2227,14 @@
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
 		}
-	
+
 
 		//}
 
 
 		// ///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
 
-		// 			} else if (tableResults[condition] == ' [a,b] ' || tableResults[condition] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
+		// 			} else if (infoFilter[i][2] == ' [a,b] ' || infoFilter[i][2] == ' (a,b] ' || tableResults[condition] == ' [a,b) ' || tableResults[condition] == ' (a,b) ') {
 		// 				URL += tableResults[i + 1];
 		// 				switch (tableResults[condition]) {
 		// 					case ' [a,b] ':
