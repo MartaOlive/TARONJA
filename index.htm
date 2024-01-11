@@ -4272,9 +4272,7 @@
 				var newBoxName = elem.boxName;
 				var firstNumberBoxNameInside = parseInt(elem.boxName.charAt(0)) - 1; //primer número:grup interior
 				//buscar, fer split , ordenar i lultim, mes un i afegir al boxNames
-				//console.log(boxNames)
 				var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside); //filtrar ls que exsteixen ja del grup que es crearà
-				//console.log(boxNamesFiltered);//!!!!!!!!!!!!!!!!!!!!!!!!!!
 				var nextBoxNumber;
 				if (boxNamesFiltered.length != 0) {
 					nextBoxNumber = parseInt(boxNamesFiltered[boxNamesFiltered.length - 1].charAt(2)) + 1; //agafes l'ultim i li sumes un per fer el seguent
@@ -4312,7 +4310,19 @@
 			conditionsFilter.push({ //add to conditionsFilter
 				property: "<div id='optionsRow_" + nextNumber + "'></div>",
 				number: nextNumber
-			})
+			});
+			if (newBoxName) {
+				var levelBox = newBoxName.charAt(0);
+				var boxNameToPass = newBoxName;
+				console.log("levelbox:  " + levelBox)
+				for (var i = levelBox; i > 0; i--) {
+					console.log(levelBox)
+					addNewCondition(boxNameToPass, currentNode.id);
+					boxNameToPass = boxNames[boxNames.length - 1]; //ha de ser l'últim que es crea (el que s'acaba de crear)
+
+				}
+			}
+
 			//agafar els valors dels selectors i actualitzar una variable externa 
 			takeSelectInformation(nodeId);
 			//console.log(elemFilter)
@@ -4454,7 +4464,7 @@
 		}
 
 		function actualizeBoxNames(elem, arrayBoxNumbers) {
-			
+
 			if (typeof elem === "object") {
 				//console.log("object")
 				arrayBoxNumbers.push(elem.boxName)
@@ -4492,11 +4502,19 @@
 			newInsert.elems.push(copy);
 			boxNames.push(newBoxName);
 			elemFilter = newInsert;
-			addNewCondition(newBoxName, currentNode.id);
+			// var levelBox=newBoxName.charAt(0);
+			var boxNameToPass = newBoxName;
+			// console.log("levelbox:  "+levelBox)
+			// for (var i=levelBox;i>0;i--){
+			// 	console.log(levelBox)
+			addNewCondition(boxNameToPass, currentNode.id);
+			//boxNameToPass=boxNames[boxNames.length-1]; //ha de ser l'últim que es crea (el que s'acaba de crear)
+
+			//}
+
 			//agafar els valors dels selectors i actualitzar una variable externa 
 
 			takeSelectInformation(nodeId);
-
 
 			drawTableAgain(nodeId)
 
