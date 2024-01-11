@@ -3975,7 +3975,6 @@
 		{
 			//quan el element q et vingui es el elemFilter, afegeix un boto per afegir un nivell mes
 
-
 			if (elem.boxName) {
 				var s = '<table class="tableFilter"><tr class="trBoxName"><td id="boxName_' + elem.boxName + '">' + elem.boxName;
 			} else {
@@ -4409,6 +4408,7 @@
 		function deleteGroup(numberOfElement, nodeId) {
 			event.preventDefault();
 			searchGroupToDelete(numberOfElement, elemFilter, nodeId, "no");
+			console.log(elemFilter)
 			//agafar els valors dels selectors i actualitzar una variable externa 
 			takeSelectInformation(nodeId);
 			//tornar a pintar els selects
@@ -4423,33 +4423,38 @@
 					element = searchGroupToDelete(numberOfElement, elem.elems[i], nodeId, elem);
 				}
 				if (elem.boxName == numberOfElement) { //afegir a elems => elems[0,1...]
-					DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem);
+					var parent = DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem);
+
 				}
 			}
 			else {
-				//s += GetFilterCondition(elem, dataAttributes, nodeId, paramsNodeId);
+
 			}
 		}
 		function DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem) {
 			var newArray = [];
-			//console.log(fatherElem)
-			for (var i = 0; i < fatherElem.elems.length; i++) {
-				if (fatherElem.elems[i].boxName != elem.boxName) {
-					newArray.push(fatherElem.elems[i])
+			if (fatherElem != "no") {
+				for (var i = 0; i < fatherElem.elems.length; i++) {
+					if (fatherElem.elems[i].boxName != elem.boxName) {
+						newArray.push(fatherElem.elems[i])
+					}
 				}
+				fatherElem.elems = newArray;
+				//borrar del boxNames (Si hi ha grups a dins tmb s'han de borrar)
+				var arrayBoxNumbers = [];
+				if (newArray.length == 1) { //si és l'ultim que elimini el nexe i el pare
+					fatherElem.nexus = null;
+					var copyFather = Object.assign(fatherElem.elems);
+					console.log(copyFather)
+					elemFilter = copyFather[0];
+				}
+				boxNames = actualizeBoxNames(elemFilter, arrayBoxNumbers);
+				console.log(boxNames)
 			}
-			if (newArray.length == 1) { //si és l'ultim que elimini el nexe
-				fatherElem.nexus = null;
-			}
-			fatherElem.elems = newArray;
-			//console.log(elemFilter)
-			//borrar del boxNames (Si hi ha grups a dins tmb s'han de borrar)
-			var arrayBoxNumbers = [];
-			boxNames = actualizeBoxNames(elemFilter, arrayBoxNumbers);
 		}
+
 		function actualizeBoxNames(elem, arrayBoxNumbers) {
-			//console.log(elem)
-			//console.log(arrayBoxNumbers)
+			
 			if (typeof elem === "object") {
 				//console.log("object")
 				arrayBoxNumbers.push(elem.boxName)
@@ -4459,8 +4464,6 @@
 				}
 
 			}
-
-			//console.log(arrayBoxNumbers)
 			return arrayBoxNumbers;
 		}
 
@@ -4489,7 +4492,7 @@
 			newInsert.elems.push(copy);
 			boxNames.push(newBoxName);
 			elemFilter = newInsert;
-			addNewCondition(newBoxName,currentNode.id);
+			addNewCondition(newBoxName, currentNode.id);
 			//agafar els valors dels selectors i actualitzar una variable externa 
 
 			takeSelectInformation(nodeId);
