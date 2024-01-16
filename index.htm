@@ -2125,21 +2125,21 @@
 									case 'month':
 										data += "month(resultTime) eq " + infoFilter[i][3];
 										break;
-										case 'day':
+									case 'day':
 										data += "day(resultTime) eq " + infoFilter[i][3];
 										break;
-										case 'hour':
+									case 'hour':
 										data += "hour(resultTime) eq " + infoFilter[i][3];
 										break;
-										case 'minute':
+									case 'minute':
 										data += "minute(resultTime) eq " + infoFilter[i][3];
 										break;
-										// case 'date':
-										// data +=//date(resultTime) ne date(validTime)
-										// break;
-										// case 'time':
-										// data += //time(resultTime) le validTime
-										// break;
+									// case 'date':
+									// data +=//date(resultTime) ne date(validTime)
+									// break;
+									// case 'time':
+									// data += //time(resultTime) le validTime
+									// break;
 
 									default:
 										console.log("error en la condició")
@@ -3502,16 +3502,16 @@
 			}
 
 			var place_Id = "optionsRow_" + number;
-			createSelect(1, place_Id, nodeId, dataAttributes, "initial", selectorInfo, number);
-			createSelect(2, place_Id, nodeId, dataAttributes, "initial", selectorInfo, number);
+			createSelect(1, place_Id, nodeId, dataAttributes, selectorInfo, number);
+			createSelect(2, place_Id, nodeId, dataAttributes, selectorInfo, number);
 
 			// var label2 = document.createElement("label");
 			// label2.setAttribute("id", "label2");
 			// label2.innerHTML = "a Value";
 			// optionsRow.appendChild(label2);
 
-			createSelect(3, place_Id, nodeId, dataAttributes, "initial", selectorInfo, number);
-			createSelect(4, place_Id, nodeId, dataAttributes, "initial", selectorInfo, number);
+			createSelect(3, place_Id, nodeId, dataAttributes, selectorInfo, number);
+			createSelect(4, place_Id, nodeId, dataAttributes, selectorInfo, number);
 			//!!!!!!!!!!!!!!!!!!!!!!
 			var divIsAnObject = document.createElement("div"); //es veurà quan la property seleccionada sigui un objecte
 			divIsAnObject.setAttribute("id", "divIsAnObject");
@@ -3519,9 +3519,9 @@
 			divFilterBox.appendChild(divIsAnObject);
 
 		}
-		function createSelect(number, place_Id, nodeId, dataAttributes, button, selectorInfo, count) {
 
-			
+		function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, count) {
+
 			var placeId = document.getElementById(place_Id);
 			var select = document.createElement("select");
 			var data, previousNode;
@@ -3539,26 +3539,41 @@
 				data = previousNode[0].STAdata; //STAdata: Totes les dades que venen del node anterior(Api o ja filtrades en algun punt)
 			}
 
-			if (button != "initial") { //es l'unic q va ara? (pero aixo no serveix de res)
-				var table = document.getElementById("tableResult");
-				var rowsNumbers = table.rows.length;
-			}
 
 
 			var dataAttributesKeys = Object.keys(dataAttributes); //Crear un array amb les keys de l'objecte
 			var dataAttributesFiltered = dataAttributesKeys.filter((element) =>
 				!element.includes("@iot.")
 			); //treiem el @iot..
-
+			if (number == 1) {
+				select.setAttribute("id", "selectorSTAEntity_" + count);
+				select.setAttribute("onChange", "fillPropertySelector('" + nodeId + "','" + count + "')");
+				var staEntities = Object.keys(STAEntities);
+				for (var i = 0; i < staEntities.length; i++) {
+					var option = document.createElement("option");
+					option.setAttribute("value", staEntities[i]);
+					option.innerHTML = staEntities[i];
+					if (selectorInfo.length != 0) {
+						// if (staEntities[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+						// 	option.setAttribute("selected", true);
+						// }
+					}
+					select.appendChild(option);
+				}
+				placeId.appendChild(select);
+			}
 			if (number == 2) {
 				select.setAttribute("id", "selectorProperty_" + count);
 				select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + count + "')");
-				for (let i = 0; i < dataAttributesFiltered.length; i++) {// per omplir el de property/property
+				var select1 = document.getElementById("selectorSTAEntity_" + count);
+				var select1Value = select1.options[select1.selectedIndex].value;
+
+				for (let i = 0; i < STAEntities[select1Value]["properties"].length; i++) {// per omplir el de property/property
 					var option = document.createElement("option");
-					option.setAttribute("value", dataAttributesFiltered[i]);
-					option.innerHTML = dataAttributesFiltered[i];
+					option.setAttribute("value", STAEntities[select1Value]["properties"][i]);
+					option.innerHTML = STAEntities[select1Value]["properties"][i];
 					if (selectorInfo.length != 0) {
-						if (dataAttributesFiltered[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+						if (STAEntities[select1Value]["properties"][i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
 							option.setAttribute("selected", true);
 						}
 					}
@@ -3622,7 +3637,6 @@
 
 				for (let index = 0; index < data.length; index++) {
 					valor = data[index][dataAttributesFiltered[0]];
-
 					if (!arrayValors.find(element => element == valor)) {
 						var option = document.createElement("option");
 						option.setAttribute("value", valor);
@@ -3759,6 +3773,52 @@
 					writeButton2.setAttribute("class", "hidden");
 				}
 			}
+		}
+		function searchParentLabel(nodeId) {
+			var entity = "0";
+			var parentNodeId = network.getConnectedNodes(nodeId, "from");
+			var parentNode = networkNodes.get(parentNodeId);
+			// var parentNodeId=parentNode.id;
+			var STAEntitiesKeys = Object.keys(STAEntities);
+
+			for (var i = 0; i < STAEntitiesKeys.length; i++) {
+				if (parentNode[0].label == STAEntitiesKeys[i]) {
+					entity = STAEntitiesKeys[i];
+					return entity;
+					break;
+				}
+			}
+			if (entity == "0") {
+				if (parentNodeId) {
+					searchParentLabel(parentNodeId) //Ojo amb el buble infinit
+				}
+			}
+
+		}
+		function fillPropertySelector(nodeId, number) {
+			var select1 = document.getElementById("selectorSTAEntity_" + number);
+			var select2 = document.getElementById("selectorProperty_" + number);
+			select2.innerHTML = "";
+			var select1Value = select1.options[select1.selectedIndex].value;
+
+			for (let i = 0; i < STAEntities[select1Value]["properties"].length; i++) {// per omplir el de property/property
+				var option = document.createElement("option");
+				option.setAttribute("value", STAEntities[select1Value]["properties"][i]);
+				option.innerHTML = STAEntities[select1Value]["properties"][i];
+				select2.appendChild(option);
+			}
+			//mirar qui es el pare per amagar el botó de mostrar el select
+			var displaySelectButton = document.getElementById("displaySelect_" + number);
+			var parentLabel = searchParentLabel(currentNode.id);
+			if (parentLabel != select1Value) {
+				displaySelectButton.setAttribute("class", "hidden")
+			} else {
+				if (displaySelectButton.classList.contains("hidden")) {
+				 displaySelectButton.classList.remove("hidden");
+				}
+			}
+			console.log(parentLabel);
+
 		}
 		function fillValueSelector(nodeId, number) { //Quan canvia el selector primer, es reomple el segon
 			var data = networkNodes.get(nodeId).STAdata;
