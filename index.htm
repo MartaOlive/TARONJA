@@ -3375,34 +3375,51 @@
 			var textInput = document.getElementById("textInput_" + number);
 			var displaySelect = document.getElementById("displaySelect_" + number);
 
+
 			var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
 			var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
 			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
-			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 
+			var displaySelect = document.getElementById("displaySelect_" + number);
+			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
+			var parentLabel = searchParentLabel(currentNode.id);
+			var select1 = document.getElementById("selectorSTAEntity_" + number);
+			var select1Value = select1.options[select1.selectedIndex].value;
 
 
 			if (selectedValue == " [a,b] " || selectedValue == " (a,b] " || selectedValue == " [a,b) " || selectedValue == " (a,b) ") {
-
 				if (divFilterContainer2.classList.contains("hidden") == true) { //No Es mostra
 					if (textInputInterval1.classList.contains("hidden") == true) { //NO Es mostra (es mostra el senzill)
 						if (divFilterContainer.classList.contains("hidden") == true) { //s'estan mostrant el text i el display del senzill
 							//hidden al textoss i al diplay
 							textInput.classList.add("hidden");
-							displaySelect.classList.add("hidden");
 							if (textInput.classList.contains("inblock")) {
 								textInput.classList.remove("inblock");
+							}
+							if (!displaySelect.classList.contains("hidden")) {
+								displaySelect.classList.add("hidden");
+
+							}
+							if (displaySelect.classList.contains("inblock")) {
 								displaySelect.classList.remove("inblock");
 							}
+
 
 							//mostrar el textInput i el display
 							textInputInterval1.classList.remove("hidden");
 							textInputInterval1.classList.add("inblock");
 							textInputInterval2.classList.remove("hidden");
 							textInputInterval2.classList.add("inblock");
-							displaySelectInterval.classList.remove("hidden");
-							displaySelectInterval.classList.add("inblock");
+							if (!displaySelect.classList.contains("hidden")) {
+								displaySelect.classList.add("hidden");
+							}
 
+							if (parentLabel == select1Value) {
+								if (displaySelectInterval.classList.contains("hidden")) {
+									displaySelectInterval.classList.remove("hidden");
+									displaySelectInterval.classList.add("inblock");
+								}
+							}
 
 						} else { //Es mostra el divContainer
 							//hidden al divFilterCOntainer
@@ -3415,9 +3432,13 @@
 							textInputInterval1.classList.add("inblock");
 							textInputInterval2.classList.remove("hidden");
 							textInputInterval2.classList.add("inblock");
-							displaySelectInterval.classList.remove("hidden");
-							displaySelectInterval.classList.add("inblock");
+							if (parentLabel == select1Value) {
+								if (!displaySelectInterval.classList.contains("hidden")) {
+									displaySelectInterval.classList.remove("hidden");
+									displaySelectInterval.classList.add("inblock");
+								}
 
+							}
 						}
 					} //Es mostra el text del senzill
 					//Res
@@ -3426,9 +3447,8 @@
 
 
 
-			} else {
-				console.log("NO Interval");
-
+			}
+			else { //senzill
 				//venint d'ell
 				if (divFilterContainer.classList.contains("hidden") == true) { //No Es mostra
 					if (textInput.classList.contains("hidden") == true) { //NO Es mostra (es mostra l'interval)
@@ -3436,21 +3456,28 @@
 							//hidden als dos textoss i al diplay
 							textInputInterval1.classList.add("hidden");
 							textInputInterval2.classList.add("hidden");
-							displaySelectInterval.classList.add("hidden");
+
 							if (textInputInterval1.classList.contains("inblock")) {
 								textInputInterval1.classList.remove("inblock");
 								textInputInterval2.classList.remove("inblock");
-								displaySelectInterval.classList.remove("inblock");
+								if (displaySelectInterval.classList.contains("inblock")) {
+									displaySelectInterval.classList.remove("inblock");
+								}
+								// if (!displaySelect.classList.contains("hidden")) {
+									displaySelectInterval.classList.add("hidden");
+								//}
+
 							}
 
 							//mostrar el textInput i el display
 							textInput.classList.remove("hidden");
 							textInput.classList.add("inblock");
-							displaySelect.classList.remove("hidden");
-							displaySelect.classList.add("inblock");
-
-
-						} else { //Es mostra el divContainer2
+							if (parentLabel == select1Value) {
+								displaySelect.classList.remove("hidden");
+								displaySelect.classList.add("inblock");
+							}
+						}
+						else { //Es mostra el divContainer2
 							//hidden al divFilterCOntainer2
 							if (divFilterContainer2.classList.contains("inblock")) {
 								divFilterContainer2.classList.remove("inblock");
@@ -3467,6 +3494,8 @@
 				} //Si es mostra el FilterCOntains, no tocar
 
 			}
+
+
 
 		}
 		//Montar selectors
@@ -3678,17 +3707,17 @@
 				cancelButton.setAttribute("id", "cancelButton_" + count);
 				cancelButton.innerHTML = "Cancel";
 
-				var writeButton = document.createElement("button");
-				writeButton.setAttribute("id", "displaySelect_" + count);
-				writeButton.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','simple')");
-				placeId.appendChild(writeButton);
+				var displaySelect = document.createElement("button");
+				displaySelect.setAttribute("id", "displaySelect_" + count);
+				displaySelect.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','simple')");
+				placeId.appendChild(displaySelect);
 				divFilterContainer.appendChild(okButton);
 				divFilterContainer.appendChild(cancelButton);
 
 				var buttonImage2 = document.createElement("img"); //Imatge decorativa del botó
 				buttonImage2.setAttribute("src", "botoDesplegable.png");
 				buttonImage2.setAttribute("class", "buttonImage");
-				writeButton.appendChild(buttonImage2);
+				displaySelect.appendChild(buttonImage2);
 
 				//Selects dels intervals
 				var divFilterContainer2 = document.createElement("div");
@@ -3738,30 +3767,37 @@
 				cancelButtonInterval.setAttribute("id", "cancelButtonInterval_" + count);
 				cancelButtonInterval.innerHTML = "Cancel";
 
-				var writeButton2 = document.createElement("button");
-				writeButton2.setAttribute("id", "displaySelectInterval_" + count);
-				writeButton2.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','interval')");
+				var displaySelectInterval = document.createElement("button");
+				displaySelectInterval.setAttribute("id", "displaySelectInterval_" + count);
+				displaySelectInterval.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','interval')");
 				var buttonImage3 = document.createElement("img"); //Imatge decorativa del botó
 				buttonImage3.setAttribute("src", "botoDesplegable.png");
 				buttonImage3.setAttribute("class", "buttonImage");
-				writeButton2.appendChild(buttonImage3);
+				displaySelectInterval.appendChild(buttonImage3);
 
-				placeId.appendChild(writeButton2);
+				placeId.appendChild(displaySelectInterval);
 				divFilterContainer2.appendChild(okButtonInterval);
 				divFilterContainer2.appendChild(cancelButtonInterval);
+
+				var parentLabel = searchParentLabel(currentNode.id);
+				if (STAEntities[0] != parentLabel) {
+					displaySelectInterval.setAttribute("class", "hidden");
+					displaySelect.setAttribute("class", "hidden");
+				}
+
 
 				if (selectorInfo.length != 0) {
 					if (selectorInfo[0].length == 5) {//simple
 						divFilterContainer2.setAttribute("class", "hidden");
 						textInputInterval1.setAttribute("class", "hidden");
 						textInputInterval2.setAttribute("class", "hidden");
-						writeButton2.setAttribute("class", "hidden");
+						//displaySelectInterval.setAttribute("class", "hidden");
 						textInput.value = selectorInfo[0][3];
 					} else if (selectorInfo[0].length == 6) { //interval
 						textInput.setAttribute("class", "hidden");
 						divFilterContainer.setAttribute("class", "hidden");
 						divFilterContainer2.setAttribute("class", "hidden");
-						writeButton.setAttribute("class", "hidden");
+						//displaySelect.setAttribute("class", "hidden");
 						textInputInterval1.value = selectorInfo[0][3];
 						textInputInterval2.value = selectorInfo[0][4];
 
@@ -3770,52 +3806,102 @@
 					divFilterContainer2.setAttribute("class", "hidden");
 					textInputInterval1.setAttribute("class", "hidden");
 					textInputInterval2.setAttribute("class", "hidden");
-					writeButton2.setAttribute("class", "hidden");
+					//displaySelectInterval.setAttribute("class", "hidden");
 				}
 			}
 		}
+
+		var stopSearchparentLabel = false;
+
 		function searchParentLabel(nodeId) {
 			var entity = "0";
 			var parentNodeId = network.getConnectedNodes(nodeId, "from");
 			var parentNode = networkNodes.get(parentNodeId);
-			// var parentNodeId=parentNode.id;
 			var STAEntitiesKeys = Object.keys(STAEntities);
 
 			for (var i = 0; i < STAEntitiesKeys.length; i++) {
 				if (parentNode[0].label == STAEntitiesKeys[i]) {
-					entity = STAEntitiesKeys[i];
-					return entity;
-					break;
+					entity = STAEntitiesKeys[i];//parentNode[0].label;
 				}
 			}
-			if (entity == "0") {
-				if (parentNodeId) {
-					searchParentLabel(parentNodeId) //Ojo amb el buble infinit
-				}
-			}
+
+			return entity;
+			// if (entity == "0") { Per tirar enrere en els pares
+			// 	console.log("entity0")
+			// 	if (parentNode[0].label!="STAplus") {
+			// 		searchParentLabel(parentNodeId) //Ojo amb el buble infinit
+
+			// 	}else{
+			// 		entity ="STAplus";
+			// 		return entity;
+
+
+			// 	}
+			// }else{
+			// 	return entity;
+			// }
+
 
 		}
 		function fillPropertySelector(nodeId, number) {
-			var select1 = document.getElementById("selectorSTAEntity_" + number);
-			var select2 = document.getElementById("selectorProperty_" + number);
-			select2.innerHTML = "";
-			var select1Value = select1.options[select1.selectedIndex].value;
+			var selectEntity = document.getElementById("selectorSTAEntity_" + number);
+			var selectProperty = document.getElementById("selectorProperty_" + number);
+			var selectCondition = document.getElementById("selectorCondition_" + number);
+			var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
 
-			for (let i = 0; i < STAEntities[select1Value]["properties"].length; i++) {// per omplir el de property/property
+
+			selectProperty.innerHTML = "";
+			var selectEntityValue = selectEntity.options[selectEntity.selectedIndex].value;
+
+			for (let i = 0; i < STAEntities[selectEntityValue]["properties"].length; i++) {// per omplir el de property/property
 				var option = document.createElement("option");
-				option.setAttribute("value", STAEntities[select1Value]["properties"][i]);
-				option.innerHTML = STAEntities[select1Value]["properties"][i];
-				select2.appendChild(option);
+				option.setAttribute("value", STAEntities[selectEntityValue]["properties"][i]);
+				option.innerHTML = STAEntities[selectEntityValue]["properties"][i];
+				selectProperty.appendChild(option);
 			}
 			//mirar qui es el pare per amagar el botó de mostrar el select
-			var displaySelectButton = document.getElementById("displaySelect_" + number);
+			var displaySelect = document.getElementById("displaySelect_" + number);
+			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
+
 			var parentLabel = searchParentLabel(currentNode.id);
-			if (parentLabel != select1Value) {
-				displaySelectButton.setAttribute("class", "hidden")
-			} else {
-				if (displaySelectButton.classList.contains("hidden")) {
-				 displaySelectButton.classList.remove("hidden");
+
+			if (parentLabel == selectEntityValue) { //mostrar
+				if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
+					if (displaySelectInterval.classList.contains("hidden")) {
+						displaySelectInterval.classList.remove("hidden");
+						displaySelectInterval.classList.add("inblock");
+
+					}
+				} else {
+					if (displaySelect.classList.contains("hidden")) {
+						displaySelect.classList.remove("hidden");
+						displaySelect.classList.add("inblock");
+					}
 				}
+			} else {
+				if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
+					if (!displaySelectInterval.classList.contains("hidden")) {
+						displaySelectInterval.classList.remove("inblock");
+						displaySelectInterval.classList.add("hidden");
+					}
+				} else {
+					if (!displaySelect.classList.contains("hidden")) {
+						displaySelect.classList.remove("inblock");
+						displaySelect.classList.add("hidden");
+					}
+				}
+				// } else {
+				// 	if (selectedValue == " [a,b] " || selectedValue == " (a,b] " || selectedValue == " [a,b) " || selectedValue == " (a,b) ") {
+				// 		if (displaySelectInterval.classList.contains("hidden")) {
+				// 			displaySelectInterval.classList.remove("hidden");
+				// 		}
+				// 	} else {
+				// 		if (displaySelect.classList.contains("hidden")) {
+				// 			displaySelect.classList.remove("hidden");
+				// 		}
+				// 	}
+
+
 			}
 			console.log(parentLabel);
 
