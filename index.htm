@@ -3464,7 +3464,7 @@
 									displaySelectInterval.classList.remove("inblock");
 								}
 								// if (!displaySelect.classList.contains("hidden")) {
-									displaySelectInterval.classList.add("hidden");
+								displaySelectInterval.classList.add("hidden");
 								//}
 
 							}
@@ -3583,9 +3583,9 @@
 					option.setAttribute("value", staEntities[i]);
 					option.innerHTML = staEntities[i];
 					if (selectorInfo.length != 0) {
-						// if (staEntities[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
-						// 	option.setAttribute("selected", true);
-						// }
+						if (staEntities[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+							option.setAttribute("selected", true);
+						}
 					}
 					select.appendChild(option);
 				}
@@ -3602,7 +3602,7 @@
 					option.setAttribute("value", STAEntities[select1Value]["properties"][i]);
 					option.innerHTML = STAEntities[select1Value]["properties"][i];
 					if (selectorInfo.length != 0) {
-						if (STAEntities[select1Value]["properties"][i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+						if (STAEntities[select1Value]["properties"][i] == selectorInfo[0][2]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
 							option.setAttribute("selected", true);
 						}
 					}
@@ -3620,7 +3620,7 @@
 				var selectConditionContent2;
 
 				if (selectorInfo.length != 0) {
-					var typeOfValues = typeOfValueFromInput("simple", count, selectorInfo[0][3]);
+					var typeOfValues = typeOfValueFromInput("simple", count, selectorInfo[0][4]);
 					if (typeOfValues == "number") {
 						selectConditionContent2 = selectConditionContentNumber;
 					} else if (typeOfValues == "text") { //text
@@ -3641,7 +3641,7 @@
 					opcioCondicio.innerHTML = selectConditionContent2[i];
 					if (selectorInfo.length != 0) {//POTSER ES POT APROFITAAARRRRRRRRRRRRRRRRRRRRRRRRRRR
 						// 	console.log("i: " + i + ", editRow[2]: " + editRowContent[2]);
-						if (selectConditionContent2[i] == selectorInfo[0][2]) { //no acaba d'anar (xq ja no es i)
+						if (selectConditionContent2[i] == selectorInfo[0][3]) { //no acaba d'anar (xq ja no es i)
 							opcioCondicio.setAttribute("selected", true);
 						}
 					}
@@ -3787,19 +3787,19 @@
 
 
 				if (selectorInfo.length != 0) {
-					if (selectorInfo[0].length == 5) {//simple
+					if (selectorInfo[0].length == 6) {//simple
 						divFilterContainer2.setAttribute("class", "hidden");
 						textInputInterval1.setAttribute("class", "hidden");
 						textInputInterval2.setAttribute("class", "hidden");
 						//displaySelectInterval.setAttribute("class", "hidden");
-						textInput.value = selectorInfo[0][3];
-					} else if (selectorInfo[0].length == 6) { //interval
+						textInput.value = selectorInfo[0][4];
+					} else if (selectorInfo[0].length == 7) { //interval
 						textInput.setAttribute("class", "hidden");
 						divFilterContainer.setAttribute("class", "hidden");
 						divFilterContainer2.setAttribute("class", "hidden");
 						//displaySelect.setAttribute("class", "hidden");
-						textInputInterval1.value = selectorInfo[0][3];
-						textInputInterval2.value = selectorInfo[0][4];
+						textInputInterval1.value = selectorInfo[0][4];
+						textInputInterval2.value = selectorInfo[0][5];
 
 					}
 				} else { //ultim o primer
@@ -4491,8 +4491,8 @@
 
 		function takeSelectInformation(nodeId) {
 			var optionsRow;
-			var selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
-			var selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
+			var selectorSTAEntity, selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
+			var selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
 			var arrayInfo;
 			infoFilter = [];
 			for (var i = 0; i < counter.length; i++) {
@@ -4500,12 +4500,14 @@
 				optionsRow = document.getElementById("optionsRow_" + counter[i]);
 				arrayInfo = [];
 				if (optionsRow != null) {
+					selectorSTAEntity = document.getElementById("selectorSTAEntity_" + counter[i]);
+					selectorSTAEntityValue = selectorSTAEntity.options[selectorSTAEntity.selectedIndex].value;
 					selectorProperty = document.getElementById("selectorProperty_" + counter[i]);
 					selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
 					selectorCondition = document.getElementById("selectorCondition_" + counter[i]);
 					selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
 					arrayInfo.push(counter[i]); //com que estan desordenats, és necessari per posar cada info al seu lloc al pintar el select
-					arrayInfo.push(selectorPropertyValue, selectorConditionValue);
+					arrayInfo.push(selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue);
 					var wichTextInput;
 					//console.log(selectorConditionValue)
 					if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
@@ -4525,8 +4527,6 @@
 						//console.log("Simple: " + textInputValue)
 					}
 				}
-
-
 				arrayInfo.push(typeOfValue)
 				infoFilter.push(arrayInfo);
 				//console.log("infoFilter")
