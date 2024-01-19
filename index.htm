@@ -2022,6 +2022,7 @@
 			return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
+
 		var stopReadInformationRowFilter = false;
 		function readInformationRowFilter(elem, nexus, parent) {
 			if (stopReadInformationRowFilter == false) {
@@ -2189,9 +2190,7 @@
 					currentNode.STAURL = parentNode.STAURL;
 				if (parentNode.STAdata) {
 					currentNode.STAdata = parentNode.STAdata;
-
 				}
-
 			}
 			else
 				return;
@@ -2215,8 +2214,13 @@
 				takeSelectInformation(currentNode.id);
 				console.log(currentNode.STAURL);
 				var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
+				var previousNodeLabel=previousNode[0].label;
 				urlAPICounter = [];
-				var previousURL = previousNode[0].STAURL
+				var previousURL = previousNode[0].STAURL;
+				var index=(previousURL.length-previousNodeLabel.length);
+				var newURL= previousURL.slice(0,index);
+				console.log(newURL);
+
 				if (previousURL.includes("$select=") || previousURL.includes("$orderby")) {
 					urlAPI = previousURL + "&$filter=";
 				} else {
@@ -2224,7 +2228,7 @@
 				}
 
 				stopReadInformationRowFilter = false;
-				readInformationRowFilter(elemFilter, "no", "no");
+				readInformationRowFilter(elemFilter, "no", "no"); //And apply filter
 				console.log(urlAPI);
 				currentNode.STAURL = urlAPI;
 				//Selectors Information
@@ -2299,7 +2303,7 @@
 
 		///////////////////////////////////////////////////////////////////////////////////URL///////////////////////////////////////////////////////////////////
 		// }
-		// ///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+		// ///NO BORRAR/////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
 		// else if (currentNode.image == "SelectRowsTable.png") {
 		// 	//tableresults; //resultats de la taula del filter
 		// 	//currentNode.STAdata; //Tota la taula CSV
@@ -2330,7 +2334,9 @@
 		// 	UpdateChildenSTAURL(currentNode);
 		// }
 
-		// ///////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
 		// document.getElementById("DialogSelectRows").close();
 		//}
 		//Funcions de la taula
