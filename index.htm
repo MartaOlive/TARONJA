@@ -2214,12 +2214,42 @@
 				takeSelectInformation(currentNode.id);
 				console.log(currentNode.STAURL);
 				var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
-				var previousNodeLabel=previousNode[0].label;
+				//var previousNodeLabel = previousNode[0].label;
 				urlAPICounter = [];
 				var previousURL = previousNode[0].STAURL;
-				var index=(previousURL.length-previousNodeLabel.length);
-				var newURL= previousURL.slice(0,index);
-				console.log(newURL);
+				var STAEntitiesKeys = Object.keys(STAEntities);
+				var final = "";
+				for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha després de l'última barra (buscant si es una entity)
+					if (previousURL[i] == "/") {
+						console.log("/")
+						break;
+					}
+					else {
+						final = previousURL[i] + final;
+					}
+
+				}
+				console.log(final);
+				var entity = false;
+				for (var i = 0; i < STAEntitiesKeys.length; i++) {
+					if (STAEntitiesKeys[i] == final) {
+						entity = true;
+						break;
+					}
+				}
+				var newURL;
+				if (entity == true) {
+					var index = (previousURL.length - final.length);
+					newURL = previousURL.slice(0,index);
+
+				} else {
+					newURL = previousURL+"/";
+				}
+
+				// }!!!! comprobar si  ala url hi ha alguna de les entities al final
+				// var index = (previousURL.length - previousNodeLabel.length);
+				// var newURL = previousURL.slice(0, index);
+				 console.log(newURL);
 
 				if (previousURL.includes("$select=") || previousURL.includes("$orderby")) {
 					urlAPI = previousURL + "&$filter=";
@@ -2336,7 +2366,7 @@
 
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////CSV///////////////////////////////////////////////////////////////////
 		// document.getElementById("DialogSelectRows").close();
 		//}
 		//Funcions de la taula
