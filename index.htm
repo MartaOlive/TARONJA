@@ -165,6 +165,7 @@
 	</dialog>
 
 	<dialog id="DialogSelectRows">
+		<div id="divTitleSelectRows"></div>
 		<form>
 			<span id="DialogSelectRowsTableInputSpan">
 			</span>
@@ -2219,33 +2220,6 @@
 
 				//put URL ready to add things
 				var previousURL = previousNode[0].STAURL;
-				// var STAEntitiesKeys = Object.keys(STAEntities);
-				// var final = "";
-				// for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha després de l'última barra (buscant si es una entity)
-				// 	if (previousURL[i] == "/") {
-				// 		console.log("/")
-				// 		break;
-				// 	}
-				// 	else {
-				// 		final = previousURL[i] + final;
-				// 	}
-				// }
-
-				// var entity = false;
-				// for (var i = 0; i < STAEntitiesKeys.length; i++) {
-				// 	if (STAEntitiesKeys[i] == final) {
-				// 		entity = STAEntitiesKeys[i];
-				// 		break; 
-				// 	}
-				// }
-				// var newURL;
-				// if (entity == true) {
-				// 	var index = (previousURL.length - final.length);
-				// 	newURL = previousURL.slice(0, index);
-
-				// } else {
-				// 	newURL = previousURL + "/"; //la "/" per deixar-la que acabi en "/" igual que quan es treu l'entity
-				// }
 
 				if (previousURL.includes("$select=") || previousURL.includes("$orderby")) {
 					urlAPI = previousURL + "&$filter=";
@@ -4295,7 +4269,8 @@
 
 		function ShowFilterTable(dataAttributes, nodeId) //posar la taula on sigui //El que inicia la taula
 		{
-			//console.log(infoFilter);
+
+
 			counter = [];
 			document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(elemFilter, dataAttributes, nodeId, true);
 			addingSelectors(dataAttributes, nodeId);
@@ -5657,8 +5632,43 @@
 			document.getElementById("SelectSortByNumberOfRecords").value = node.STAExpectedLength;
 		}
 
+		function addTitleInRowFilterDIalog() {
+
+			var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
+			var previousURL = previousNode[0].STAURL;
+			var STAEntitiesKeys = Object.keys(STAEntities);
+			var final = "";
+			for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha després de l'última barra (buscant si es una entity)
+				if (previousURL[i] == "/") {
+					console.log("/")
+					break;
+				}
+				else {
+					final = previousURL[i] + final;
+				}
+			}
+
+			var entity = false;
+			for (var i = 0; i < STAEntitiesKeys.length; i++) {
+				if (STAEntitiesKeys[i] == final) {
+					entity = STAEntitiesKeys[i];
+					break;
+				}
+			}
+			if (entity==false){
+				entity="STAPlus"
+			}
+
+			//posar-ho al titol
+			var divTitleSelectRows = document.getElementById("divTitleSelectRows");
+			divTitleSelectRows.innerHTML = entity,
+			divTitleSelectRows.setAttribute("value", entity);
+
+		}
+
 		function ShowTableSelectRowsDialog(parentNodeId, nodeId) {
 			var data = networkNodes.get(parentNodeId).STAdata;
+			addTitleInRowFilterDIalog(); //no borrar!!!!!!!
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";

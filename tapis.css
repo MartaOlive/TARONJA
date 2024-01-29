@@ -86,15 +86,7 @@ body {
     /* left:20; */
 }
 
-/* .borderTable {
-    border: black 1px solid;
-}
 
-th.borderTable {
-    min-width: 100px;
-    padding-left: 10px;
-    padding-right: 10px;
-} */
 
 #divSelectorRowsFilter {
     margin-top: 20px;
@@ -121,36 +113,18 @@ th.borderTable {
 
 
 
-/*
-.characterDeleteButton {
-    background-image: url("trash_18x18.png");
-    height: 18px;
-    width: 18px;
-    display: inline-block;
-
-
-}
-
-.characterUpButton {
-    background-image: url("fletxaAmunt_18x11.png");
-    height: 18px;
-    width: 11px;
-    display: inline-block;
-    margin-right: 5px;
-
-
-}
-
-.characterDownButton {
-    background-image: url("fletxaAbaix_18x11.png");
-    height: 18px;
-    width: 11px;
-    margin-right: 5px;
-    display: inline-block;
-}
-*/
 
 /* Row Filter */
+
+#divTitleSelectRows{
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 35px;
+    font-weight: bold;
+    width: 100%;
+
+}
+
 #fullFilterDiv {
     height: 200px;
     border: black 1px solid;
