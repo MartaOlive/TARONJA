@@ -564,7 +564,7 @@
 
 		const STAEntities = {
 			ObservedProperties: { singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"] },
-			Observations: { singular: "Observation", entities: ["Datastream", "MultiDatastream", "FeatureOfInterest", "ObservationGroups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"] },
+			Observations: { singular: "Observation", entities: ["Datastreams", "MultiDatastreams", "FeatureOfInterest", "ObservationGroups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"] },
 			FeaturesOfInterest: { singular: "FeatureOfInterest", entities: ["Observations"], properties: ["name", "description", "encodingType", "feature", "properties"] },
 			Sensors: { singular: "Sensor", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "description", "encodingType", "metadata", "properties"] },
 			Things: { singular: "Thing", entities: ["Datastreams", "MultiDatastreams", "Party", "Locations", "HistoricalLocations"], properties: ["name", "description", "properties"] },
@@ -2214,48 +2214,45 @@
 				takeSelectInformation(currentNode.id);
 				console.log(currentNode.STAURL);
 				var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
-				//var previousNodeLabel = previousNode[0].label;
-				urlAPICounter = [];
+
+				urlAPICounter = []; //necessito reiniciar-ho
+
+				//put URL ready to add things
 				var previousURL = previousNode[0].STAURL;
-				var STAEntitiesKeys = Object.keys(STAEntities);
-				var final = "";
-				for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha després de l'última barra (buscant si es una entity)
-					if (previousURL[i] == "/") {
-						console.log("/")
-						break;
-					}
-					else {
-						final = previousURL[i] + final;
-					}
+				// var STAEntitiesKeys = Object.keys(STAEntities);
+				// var final = "";
+				// for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha després de l'última barra (buscant si es una entity)
+				// 	if (previousURL[i] == "/") {
+				// 		console.log("/")
+				// 		break;
+				// 	}
+				// 	else {
+				// 		final = previousURL[i] + final;
+				// 	}
+				// }
 
-				}
-				console.log(final);
-				var entity = false;
-				for (var i = 0; i < STAEntitiesKeys.length; i++) {
-					if (STAEntitiesKeys[i] == final) {
-						entity = true;
-						break;
-					}
-				}
-				var newURL;
-				if (entity == true) {
-					var index = (previousURL.length - final.length);
-					newURL = previousURL.slice(0,index);
+				// var entity = false;
+				// for (var i = 0; i < STAEntitiesKeys.length; i++) {
+				// 	if (STAEntitiesKeys[i] == final) {
+				// 		entity = STAEntitiesKeys[i];
+				// 		break; 
+				// 	}
+				// }
+				// var newURL;
+				// if (entity == true) {
+				// 	var index = (previousURL.length - final.length);
+				// 	newURL = previousURL.slice(0, index);
 
-				} else {
-					newURL = previousURL+"/";
-				}
-
-				// }!!!! comprobar si  ala url hi ha alguna de les entities al final
-				// var index = (previousURL.length - previousNodeLabel.length);
-				// var newURL = previousURL.slice(0, index);
-				 console.log(newURL);
+				// } else {
+				// 	newURL = previousURL + "/"; //la "/" per deixar-la que acabi en "/" igual que quan es treu l'entity
+				// }
 
 				if (previousURL.includes("$select=") || previousURL.includes("$orderby")) {
 					urlAPI = previousURL + "&$filter=";
 				} else {
 					urlAPI = previousURL + "?$filter=";
 				}
+				//
 
 				stopReadInformationRowFilter = false;
 				readInformationRowFilter(elemFilter, "no", "no"); //And apply filter
@@ -3613,19 +3610,62 @@
 			if (number == 1) {
 				select.setAttribute("id", "selectorSTAEntity_" + count);
 				select.setAttribute("onChange", "fillPropertySelector('" + nodeId + "','" + count + "')");
+
 				var staEntities = Object.keys(STAEntities);
-				for (var i = 0; i < staEntities.length; i++) {
+
+				//quina Entity es: !!!!! Nomes servirà si és STA
+				if (currentNode.image == "SelectRowsSTA.png") {
+
+				}
+				var previousURL = previousNode[0].STAURL;
+				var STAEntitiesKeys = Object.keys(STAEntities);
+				var final = "";
+				for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha després de l'última barra (buscant si es una entity)
+					if (previousURL[i] == "/") {
+						console.log("/")
+						break;
+					}
+					else {
+						final = previousURL[i] + final;
+					}
+				}
+
+				var entity = false;
+				for (var i = 0; i < STAEntitiesKeys.length; i++) {
+					if (STAEntitiesKeys[i] == final) {
+						entity = STAEntitiesKeys[i];
+						break;
+					}
+				}
+
+				var entitiesSTA = STAEntitiesKeys;
+				if (entity != false) {
+					entitiesSTA = STAEntities[final]["entities"];
+					//carrega la pròpia primer:
 					var option = document.createElement("option");
-					option.setAttribute("value", staEntities[i]);
-					option.innerHTML = staEntities[i];
+					option.setAttribute("value", entity);
+					option.innerHTML = entity;
 					if (selectorInfo.length != 0) {
-						if (staEntities[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
-							option.setAttribute("selected", true);
+						if (entity == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
 						}
 					}
 					select.appendChild(option);
 				}
+
+				for (var i = 0; i < entitiesSTA.length; i++) {
+					var option = document.createElement("option");
+					option.setAttribute("value", entitiesSTA[i]);
+					option.innerHTML = entitiesSTA[i];
+					if (selectorInfo.length != 0) {
+						if (entitiesSTA[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+						}
+					}
+					select.appendChild(option);
+				}
+
+
 				placeId.appendChild(select);
+
 			}
 			if (number == 2) {
 				select.setAttribute("id", "selectorProperty_" + count);
@@ -3818,7 +3858,8 @@
 				var parentLabel = searchParentLabel(currentNode.id);
 				if (STAEntities[0] != parentLabel) {
 					displaySelectInterval.setAttribute("class", "hidden");
-					displaySelect.setAttribute("class", "hidden");
+					//displaySelect.setAttribute("class", "hidden"); // Sempre es carregarà el propi primer
+
 				}
 
 
