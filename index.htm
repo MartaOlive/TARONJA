@@ -2025,11 +2025,11 @@
 		}
 
 		var stopReadInformationRowFilter = false;
-		function readInformationRowFilter(elem, nexus, parent) {
+		function readInformationRowFilter(elem, entity, nexus, parent) {
 			if (stopReadInformationRowFilter == false) {
 				if (typeof elem === "object") {
 					for (var i = 0; i < elem.elems.length; i++) {
-						readInformationRowFilter(elem.elems[i], elem.nexus, elem);
+						readInformationRowFilter(elem.elems[i], entity, elem.nexus, elem);
 					}
 					if (urlAPICounter.length != infoFilter.length & urlAPICounter.length != 0 & nexus != "no" & parent != "no") {
 
@@ -2042,7 +2042,7 @@
 					var data = "";
 					for (var i = 0; i < infoFilter.length; i++) {
 						console.log(elem)
-						if (infoFilter[i][0] == elem) {
+						if (infoFilter[i][0] == elem) { //Per buscar l'arrai que conté la info que volem
 							var parentLenght = parent.elems.length;
 							var indexOf = parent.elems.indexOf(elem);
 							// console.log(parent.elems)
@@ -2052,89 +2052,93 @@
 								data += "(";
 							}
 
-							if (infoFilter[i][2] == ' = ' || infoFilter[i][2] == ' &ne; ' || infoFilter[i][2] == ' &ge; ' || infoFilter[i][2] == ' > ' || infoFilter[i][2] == ' &le; ' || infoFilter[i][2] == ' < ') { //passarho a com STA+
-								data += "(" + infoFilter[i][1];
+							if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') { //passarho a com STA+
+								data += "(";
+								if (entity != infoFilter[i][1]) {
+									data += infoFilter[i][1] + "/";
+								}
+								data += infoFilter[i][2];
 
-								var typeOfValue = infoFilter[i][4];
+								var typeOfValue = infoFilter[i][5];
 								var apostropheOrSpace;
 								(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
-								switch (infoFilter[i][2]) {
+								switch (infoFilter[i][3]) {
 									case ' = ':
-										data += " eq" + apostropheOrSpace + infoFilter[i][3] + apostropheOrSpace + ")";
+										data += " eq" + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 										break;
 									case ' &ne; ':
-										data += " ne " + apostropheOrSpace + infoFilter[i][3] + apostropheOrSpace + ")";
+										data += " ne " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 										break;
 									case ' &ge; ':
-										data += " ge " + apostropheOrSpace + infoFilter[i][3] + apostropheOrSpace + ")";
+										data += " ge " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 										break;
 									case ' > ':
-										data += " gt " + apostropheOrSpace + infoFilter[i][3] + apostropheOrSpace + ")";
+										data += " gt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 										break;
 									case ' &le; ':
-										data += " le" + apostropheOrSpace + infoFilter[i][3] + apostropheOrSpace + ")";
+										data += " le" + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 										break;
 									case ' < ':
-										data += " lt " + apostropheOrSpace + infoFilter[i][3] + apostropheOrSpace + ")";
+										data += " lt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 										break;
 									default:
 										console.log("error en la condició")
 
 								}
 							}
-							else if (infoFilter[i][2] == ' [a,b] ' || infoFilter[i][2] == ' (a,b] ' || infoFilter[i][2] == ' [a,b) ' || infoFilter[i][2] == ' (a,b) ') {
+							else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
 								data += "(" + infoFilter[i][1];
-								switch (infoFilter[i][2]) {
+								switch (infoFilter[i][3]) {
 									case ' [a,b] ':
-										data += " ge " + infoFilter[i][3] + " and " + infoFilter[i][1] + " le " + infoFilter[i][4] + ")";
+										data += " ge " + infoFilter[i][4] + " and " + infoFilter[i][1] + " le " + infoFilter[i][5] + ")";
 										break;
 									case ' (a,b] ':
-										data += " gt " + infoFilter[i][3] + " and " + infoFilter[i][1] + " le " + infoFilter[i][4] + ")";
+										data += " gt " + infoFilter[i][4] + " and " + infoFilter[i][1] + " le " + infoFilter[i][5] + ")";
 										break;
 									case ' [a,b) ':
-										data += " ge " + infoFilter[i][3] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][4] + ")";
+										data += " ge " + infoFilter[i][4] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][5] + ")";
 										break;
 									case ' (a,b) ':
-										data += " gt " + infoFilter[i][3] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][4] + ")";
+										data += " gt " + infoFilter[i][4] + " and " + infoFilter[i][1] + " lt " + infoFilter[i][5] + ")";
 										break;
 									default:
 										console.log("error en la condició")
 								}
 							}
-							else if (infoFilter[i][2] == 'contains' || infoFilter[i][2] == 'no contains' || infoFilter[i][2] == 'starts with' || infoFilter[i][2] == 'ends with') {
-								switch (infoFilter[i][2]) {
+							else if (infoFilter[i][3] == 'contains' || infoFilter[i][3] == 'no contains' || infoFilter[i][3] == 'starts with' || infoFilter[i][3] == 'ends with') {
+								switch (infoFilter[i][3]) {
 									case 'contains':
-										data += "substringof('" + infoFilter[i][3] + "'," + infoFilter[i][1] + ")";
+										data += "substringof('" + infoFilter[i][4] + "'," + infoFilter[i][2] + ")";
 										break;
 									case 'no contains':
-										data += "not substringof('" + infoFilter[i][3] + "'," + infoFilter[i][1] + ")";
+										data += "not substringof('" + infoFilter[i][4] + "'," + infoFilter[i][2] + ")";
 										break;
 									case 'starts with':
-										data += "startswith(" + infoFilter[i][1] + ",'" + infoFilter[i][3] + "')";
+										data += "startswith(" + infoFilter[i][2] + ",'" + infoFilter[i][4] + "')";
 										break;
 									case 'ends with':
-										data += "endswith(" + infoFilter[i][1] + ",'" + infoFilter[i][3] + "')";
+										data += "endswith(" + infoFilter[i][2] + ",'" + infoFilter[i][4] + "')";
 										break;
 									default:
 										console.log("error en la condició")
 								}
 							}
-							else if (infoFilter[i][2] == 'year' || infoFilter[i][2] == 'month' || infoFilter[i][2] == 'day' || infoFilter[i][2] == 'hour' || infoFilter[i][2] == 'minute' || infoFilter[i][2] == 'date' || infoFilter[i][2] == 'time') {
-								switch (infoFilter[i][2]) {
+							else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date' || infoFilter[i][3] == 'time') {
+								switch (infoFilter[i][3]) {
 									case 'year':
-										data += "year(resultTime) eq " + infoFilter[i][3];
+										data += "year(resultTime) eq " + infoFilter[i][4];
 										break;
 									case 'month':
-										data += "month(resultTime) eq " + infoFilter[i][3];
+										data += "month(resultTime) eq " + infoFilter[i][4];
 										break;
 									case 'day':
-										data += "day(resultTime) eq " + infoFilter[i][3];
+										data += "day(resultTime) eq " + infoFilter[i][4];
 										break;
 									case 'hour':
-										data += "hour(resultTime) eq " + infoFilter[i][3];
+										data += "hour(resultTime) eq " + infoFilter[i][4];
 										break;
 									case 'minute':
-										data += "minute(resultTime) eq " + infoFilter[i][3];
+										data += "minute(resultTime) eq " + infoFilter[i][4];
 										break;
 									// case 'date':
 									// data +=//date(resultTime) ne date(validTime)
@@ -2147,7 +2151,7 @@
 										console.log("error en la condició")
 								}
 							}
-							// else if (infoFilter[i][2] == 'min date time' || infoFilter[i][2] == 'max date time') {
+							// else if (infoFilter[i][3] == 'min date time' || infoFilter[i][2] == 'max date time') {
 
 							// 			}
 
@@ -2229,7 +2233,16 @@
 				//
 
 				stopReadInformationRowFilter = false;
-				readInformationRowFilter(elemFilter, "no", "no"); //And apply filter
+				var entity = currentNode.STALastEntity;
+				// var divTitleSelectRows = document.getElementById("divTitleSelectRows");
+				var entity;
+				if (currentNode.STALastEntity){
+					entity=currentNode.STALastEntity
+				}else{
+					entity="STAPlus"
+				}
+				
+				readInformationRowFilter(elemFilter, entity, "no", "no"); //And apply filter
 				console.log(urlAPI);
 				currentNode.STAURL = urlAPI;
 				//Selectors Information
@@ -3588,9 +3601,14 @@
 				var staEntities = Object.keys(STAEntities);
 
 				//quina Entity es: !!!!! Nomes servirà si és STA
-				var divTitleSelectRows = document.getElementById("divTitleSelectRows");
 				var entity;
-				entity=divTitleSelectRows.getAttribute("value");
+				if (currentNode.STALastEntity){
+					entity=currentNode.STALastEntity
+				}else{
+					entity="STAPlus"
+				}
+				// var divTitleSelectRows = document.getElementById("divTitleSelectRows");
+				// entity = divTitleSelectRows.getAttribute("value");
 				var STAEntitiesKeys = Object.keys(STAEntities);
 				var entitiesSTA = STAEntitiesKeys;
 				if (entity != "STAPlus") {
@@ -3811,13 +3829,18 @@
 				divFilterContainer2.appendChild(okButtonInterval);
 				divFilterContainer2.appendChild(cancelButtonInterval);
 
-				var divTitleSelectRows = document.getElementById("divTitleSelectRows");
-				var entityy=divTitleSelectRows.getAttribute("value");
+				//var divTitleSelectRows = document.getElementById("divTitleSelectRows");
+				var entityy;
+				if (currentNode.STALastEntity){
+					entityy=currentNode.STALastEntity
+				}else{
+					entityy="STAPlus"
+				} 
 				var selectEntity = document.getElementById("selectorSTAEntity_" + count);
 				var selectEntityValue = selectEntity.options[selectEntity.selectedIndex].value;
 				if (selectEntityValue != entityy) {
 					//displaySelectInterval.setAttribute("class", "hidden");
-					displaySelect.setAttribute("class", "hidden"); 
+					displaySelect.setAttribute("class", "hidden");
 
 				}
 
@@ -3827,10 +3850,10 @@
 						divFilterContainer2.setAttribute("class", "hidden");
 						textInputInterval1.setAttribute("class", "hidden");
 						textInputInterval2.setAttribute("class", "hidden");
-						
+
 						displaySelectInterval.setAttribute("class", "hidden");
-						
-						
+
+
 						textInput.value = selectorInfo[0][4];
 					} else if (selectorInfo[0].length == 7) { //interval
 						textInput.setAttribute("class", "hidden");
@@ -5644,14 +5667,20 @@
 					break;
 				}
 			}
-			if (entity==false){
-				entity="STAPlus"
+			if (entity == false) {
+				entity = "STAPlus"
 			}
 
 			//posar-ho al titol
 			var divTitleSelectRows = document.getElementById("divTitleSelectRows");
-			divTitleSelectRows.innerHTML = entity,
-			divTitleSelectRows.setAttribute("value", entity);
+			var entity;
+			if(currentNode.STALastEntity){
+				entity=currentNode.STALastEntity
+			}else{
+				entity="STAPlus"
+			}
+			divTitleSelectRows.innerHTML = entity;
+			//divTitleSelectRows.setAttribute("value", entity);
 
 		}
 
@@ -5768,6 +5797,9 @@
 					false means pending.*/
 		function StartCircularImage(nodeTo, nodeFrom, calUnir) {
 			var errorText = reasonNodeDoesNotFitWithPrevious(nodeTo, nodeFrom);
+			if (nodeFrom.STALastEntity) { //I will need it to know "where I am" in Row filter (To apply the filter)
+				nodeTo.STALastEntity = nodeFrom.STALastEntity;
+			}
 			if (errorText) {
 				alert("Node incompatible. " + errorText + ". It has not been added.");
 				return null;
@@ -5775,8 +5807,11 @@
 			if (nodeFrom.STAURL && IdOfSTAEntity(nodeTo) != -1) {
 				if (nodeFrom.image == "ogc.png")
 					nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAEntity(nodeTo)];
-				else
+				else {
 					nodeTo.STAURL = nodeFrom.STAURL + "/" + getConnectionSTAEntity(nodeFrom, nodeTo).entity;
+
+				}
+
 				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
 
 				networkNodes.update(nodeTo);
@@ -5784,7 +5819,9 @@
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				showInfoMessage("Requesting " + STAEntitiesArray[IdOfSTAEntity(nodeTo)] + " to STA...");
 				LoadJSONNodeSTAData(nodeTo);
+				nodeTo.STALastEntity = STAEntitiesArray[IdOfSTAEntity(nodeTo)]; //I will need it to Row Filter
 				return true;
+
 			}
 			if (nodeFrom.STAURL && IdOfSTASpecialQueries(nodeTo) != -1) {
 				nodeTo.STAURL = nodeFrom.STAURL + "/" + STASpecialQueries[STASpecialQueriesArray[IdOfSTASpecialQueries(nodeTo)]].query;
@@ -5832,6 +5869,9 @@
 				return true;
 			}
 
+			// if (nodeFrom.STAEntities) {
+			// 	nodeTo.STALastEntity = nodeFrom.STAEntities;
+			// }
 			return false;
 		}
 
