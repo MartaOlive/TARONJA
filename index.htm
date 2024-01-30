@@ -3713,9 +3713,10 @@
 
 				var valor;
 				var arrayValors = [];
-
+				var select2 = document.getElementById("selectorProperty_" + count);
+				var select2PropertyValue = select2.options[select2.selectedIndex].value;
 				for (let index = 0; index < data.length; index++) {
-					valor = data[index][dataAttributesFiltered[0]];
+					valor = data[index][select2PropertyValue];
 					if (!arrayValors.find(element => element == valor)) {
 						var option = document.createElement("option");
 						option.setAttribute("value", valor);
