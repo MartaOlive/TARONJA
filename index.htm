@@ -3591,31 +3591,7 @@
 				var divTitleSelectRows = document.getElementById("divTitleSelectRows");
 				var entity;
 				entity=divTitleSelectRows.getAttribute("value");
-
-				// if (currentNode.image == "SelectRowsSTA.png") {
-
-				// }
-				// var previousURL = previousNode[0].STAURL;
 				var STAEntitiesKeys = Object.keys(STAEntities);
-				// var final = "";
-				// for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha després de l'última barra (buscant si es una entity)
-				// 	if (previousURL[i] == "/") {
-				// 		console.log("/")
-				// 		break;
-				// 	}
-				// 	else {
-				// 		final = previousURL[i] + final;
-				// 	}
-				// }
-
-				// var entity = false;
-				// for (var i = 0; i < STAEntitiesKeys.length; i++) {
-				// 	if (STAEntitiesKeys[i] == final) {
-				// 		entity = STAEntitiesKeys[i];
-				// 		break;
-				// 	}
-				// }
-
 				var entitiesSTA = STAEntitiesKeys;
 				if (entity != "STAPlus") {
 					entitiesSTA = STAEntities[entity]["entities"];
@@ -3625,6 +3601,7 @@
 					option.innerHTML = entity;
 					if (selectorInfo.length != 0) {
 						if (entity == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+							option.setAttribute("selected", true);
 						}
 					}
 					select.appendChild(option);
@@ -3636,6 +3613,7 @@
 					option.innerHTML = entitiesSTA[i];
 					if (selectorInfo.length != 0) {
 						if (entitiesSTA[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+							option.setAttribute("selected", true);
 						}
 					}
 					select.appendChild(option);
@@ -5637,7 +5615,6 @@
 		}
 
 		function addTitleInRowFilterDIalog() {
-
 			var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
 			var previousURL = previousNode[0].STAURL;
 			var STAEntitiesKeys = Object.keys(STAEntities);
