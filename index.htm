@@ -2054,8 +2054,16 @@
 
 							if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') { //passarho a com STA+
 								data += "(";
+								var valueEntity;
 								if (entity != infoFilter[i][1]) {
-									data += infoFilter[i][1] + "/";
+									if (infoFilter[i][1] == "Objects") {
+										valueEntity = "Object"
+									} else if (infoFilter[i][1] == "Subjects") {
+										valueEntity = "Subject"
+									} else {
+										valueEntity = STAEntities[infoFilter[i][1]]["singular"]; //necessito posar el singular
+									}
+									data += valueEntity + "/";
 								}
 								data += infoFilter[i][2];
 
@@ -2236,12 +2244,12 @@
 				var entity = currentNode.STALastEntity;
 				// var divTitleSelectRows = document.getElementById("divTitleSelectRows");
 				var entity;
-				if (currentNode.STALastEntity){
-					entity=currentNode.STALastEntity
-				}else{
-					entity="STAPlus"
+				if (currentNode.STALastEntity) {
+					entity = currentNode.STALastEntity
+				} else {
+					entity = "STAPlus"
 				}
-				
+
 				readInformationRowFilter(elemFilter, entity, "no", "no"); //And apply filter
 				console.log(urlAPI);
 				currentNode.STAURL = urlAPI;
@@ -3602,10 +3610,10 @@
 
 				//quina Entity es: !!!!! Nomes servirà si és STA
 				var entity;
-				if (currentNode.STALastEntity){
-					entity=currentNode.STALastEntity
-				}else{
-					entity="STAPlus"
+				if (currentNode.STALastEntity) {
+					entity = currentNode.STALastEntity
+				} else {
+					entity = "STAPlus"
 				}
 				// var divTitleSelectRows = document.getElementById("divTitleSelectRows");
 				// entity = divTitleSelectRows.getAttribute("value");
@@ -3626,6 +3634,7 @@
 				}
 
 				for (var i = 0; i < entitiesSTA.length; i++) {
+		
 					var option = document.createElement("option");
 					option.setAttribute("value", entitiesSTA[i]);
 					option.innerHTML = entitiesSTA[i];
@@ -3636,8 +3645,6 @@
 					}
 					select.appendChild(option);
 				}
-
-
 				placeId.appendChild(select);
 
 			}
@@ -3832,11 +3839,11 @@
 
 				//var divTitleSelectRows = document.getElementById("divTitleSelectRows");
 				var entityy;
-				if (currentNode.STALastEntity){
-					entityy=currentNode.STALastEntity
-				}else{
-					entityy="STAPlus"
-				} 
+				if (currentNode.STALastEntity) {
+					entityy = currentNode.STALastEntity
+				} else {
+					entityy = "STAPlus"
+				}
 				var selectEntity = document.getElementById("selectorSTAEntity_" + count);
 				var selectEntityValue = selectEntity.options[selectEntity.selectedIndex].value;
 				if (selectEntityValue != entityy) {
@@ -5675,10 +5682,10 @@
 			//posar-ho al titol
 			var divTitleSelectRows = document.getElementById("divTitleSelectRows");
 			var entity;
-			if(currentNode.STALastEntity){
-				entity=currentNode.STALastEntity
-			}else{
-				entity="STAPlus"
+			if (currentNode.STALastEntity) {
+				entity = currentNode.STALastEntity
+			} else {
+				entity = "STAPlus"
 			}
 			divTitleSelectRows.innerHTML = entity;
 			//divTitleSelectRows.setAttribute("value", entity);
