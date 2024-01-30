@@ -3811,10 +3811,13 @@
 				divFilterContainer2.appendChild(okButtonInterval);
 				divFilterContainer2.appendChild(cancelButtonInterval);
 
-				var parentLabel = searchParentLabel(currentNode.id);
-				if (STAEntities[0] != parentLabel) {
-					displaySelectInterval.setAttribute("class", "hidden");
-					//displaySelect.setAttribute("class", "hidden"); // Sempre es carregarà el propi primer
+				var divTitleSelectRows = document.getElementById("divTitleSelectRows");
+				var entityy=divTitleSelectRows.getAttribute("value");
+				var selectEntity = document.getElementById("selectorSTAEntity_" + count);
+				var selectEntityValue = selectEntity.options[selectEntity.selectedIndex].value;
+				if (selectEntityValue != entityy) {
+					//displaySelectInterval.setAttribute("class", "hidden");
+					displaySelect.setAttribute("class", "hidden"); 
 
 				}
 
@@ -3824,13 +3827,18 @@
 						divFilterContainer2.setAttribute("class", "hidden");
 						textInputInterval1.setAttribute("class", "hidden");
 						textInputInterval2.setAttribute("class", "hidden");
-						//displaySelectInterval.setAttribute("class", "hidden");
+						
+						displaySelectInterval.setAttribute("class", "hidden");
+						
+						
 						textInput.value = selectorInfo[0][4];
 					} else if (selectorInfo[0].length == 7) { //interval
 						textInput.setAttribute("class", "hidden");
 						divFilterContainer.setAttribute("class", "hidden");
 						divFilterContainer2.setAttribute("class", "hidden");
-						//displaySelect.setAttribute("class", "hidden");
+						if (selectEntityValue != entityy) {
+							displaySelectInterval.setAttribute("class", "hidden");
+						}
 						textInputInterval1.value = selectorInfo[0][4];
 						textInputInterval2.value = selectorInfo[0][5];
 
@@ -3839,7 +3847,7 @@
 					divFilterContainer2.setAttribute("class", "hidden");
 					textInputInterval1.setAttribute("class", "hidden");
 					textInputInterval2.setAttribute("class", "hidden");
-					//displaySelectInterval.setAttribute("class", "hidden");
+					displaySelectInterval.setAttribute("class", "hidden");
 				}
 			}
 		}
