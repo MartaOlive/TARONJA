@@ -3634,7 +3634,7 @@
 				}
 
 				for (var i = 0; i < entitiesSTA.length; i++) {
-		
+
 					var option = document.createElement("option");
 					option.setAttribute("value", entitiesSTA[i]);
 					option.innerHTML = entitiesSTA[i];
@@ -3646,8 +3646,8 @@
 					select.appendChild(option);
 				}
 				placeId.appendChild(select);
-
 			}
+
 			if (number == 2) {
 				select.setAttribute("id", "selectorProperty_" + count);
 				select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + count + "')");
@@ -3962,22 +3962,38 @@
 						displaySelect.classList.add("hidden");
 					}
 				}
-				// } else {
-				// 	if (selectedValue == " [a,b] " || selectedValue == " (a,b] " || selectedValue == " [a,b) " || selectedValue == " (a,b) ") {
-				// 		if (displaySelectInterval.classList.contains("hidden")) {
-				// 			displaySelectInterval.classList.remove("hidden");
-				// 		}
-				// 	} else {
-				// 		if (displaySelect.classList.contains("hidden")) {
-				// 			displaySelect.classList.remove("hidden");
-				// 		}
-				// 	}
-
-
 			}
-			console.log(parentLabel);
+			//console.log(parentLabel);
+			var divFilterContainer = document.getElementById("divFilterContainer_" + number);
+			var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
+			
 
+			var textInput = document.getElementById("textInput_" + number);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
+
+			
+
+			if (divFilterContainer.classList.contains("inblock")==true || divFilterContainer2.classList.contains("inblock")==true) {
+				if (divFilterContainer.classList.contains("inblock")==true) { //senzill
+					divFilterContainer.classList.remove("inblock");
+					divFilterContainer.classList.add("hidden");
+					textInput.classList.add("inblock");
+					textInput.classList.remove("hidden");
+					textInput.innerHTML="";
+				} else { //interval
+					divFilterContainer2.classList.remove("inblock");
+					divFilterContainer2.classList.add("hidden");
+					textInputInterval1.classList.add("inblock");
+					textInputInterval1.classList.remove("hidden");
+					textInputInterval1.innerHTML="";
+					textInputInterval2.classList.add("inblock");
+					textInputInterval2.classList.remove("hidden");
+					textInputInterval2.innerHTML="";
+				}
+			}
 		}
+
 		function fillValueSelector(nodeId, number) { //Quan canvia el selector primer, es reomple el segon
 			var data = networkNodes.get(nodeId).STAdata;
 			var select;
