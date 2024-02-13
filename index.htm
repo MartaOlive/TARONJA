@@ -1840,9 +1840,9 @@
 			}
 		}
 
-		const selectConditionContent = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date', 'time', 'min date time', 'max date time'];
+		const selectConditionContent = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date'];
 		const selectConditionContentText = [' = ', ' &ne; ', 'contains', 'no contains', 'starts with', 'ends with'];
-		const selectConditionContentNumber = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date', 'time']
+		const selectConditionContentNumber = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date']
 
 
 		function GetSelectColumns(event) {
@@ -2131,14 +2131,14 @@
 										console.log("error en la condició")
 								}
 							}
-							else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date' || infoFilter[i][3] == 'time') {
+							else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date' ) {
 								var newValue = "";
 								for (var a = 0; a < infoFilter[i][4].length; a++) {//erase 0 if starts with 0. 
 									if (infoFilter[i][4].charAt(a) != 0) {
 										newValue += infoFilter[i][4].charAt(a)
 									}
 								}
-								infoFilter[i][4]= newValue;
+								infoFilter[i][4] = newValue;
 
 								switch (infoFilter[i][3]) {
 									case 'year':
@@ -2156,25 +2156,15 @@
 									case 'minute':
 										data += "minute(resultTime) eq " + infoFilter[i][4];
 										break;
-									// case 'date':
-									// data +=//date(resultTime) ne date(validTime)
-									// break;
-									// case 'time':
-									// data += //time(resultTime) le validTime
-									// break;
+									case 'date':
+										data += "date(resultTime) eq date('" + infoFilter[i][4] + "')";
+										break;
 
 									default:
 										console.log("error en la condició")
 								}
 							}
-							// else if (infoFilter[i][3] == 'min date time' || infoFilter[i][2] == 'max date time') {
-
-							// 			}
-
-							// 			if (tableResults[andOrNot] == "not") {
-							// 				data += ")";
-							// 			}
-
+							
 
 
 							if ((indexOf + 1) != parentLenght) {
@@ -3240,7 +3230,6 @@
 				var textIputInterval2 = document.getElementById("textInputInterval2_" + number);
 			}
 			if (wichTextInput == "simple") {
-
 				if (value1.includes("-") == true) {//inputText1
 					var value1Array = value1.split("-");
 					if (value1.includes("/")) {
@@ -3254,7 +3243,8 @@
 						if (value1Array.length == 3) {
 							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
 								typeOfValues = "date";
-
+							} else if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2].length == 2 & typeof parseInt(value1Array[0]) == "number" & typeof parseInt(value1Array[1]) == "number" & typeof parseInt(value1Array[2]) == "number") { //only date without Time
+								typeOfValues = "date";
 							}
 						}
 					}
@@ -3304,6 +3294,8 @@
 							if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
 								inputText1 = "date";
 
+							} else if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2].length == 2 & typeof parseInt(value1Array[0]) == "number" & typeof parseInt(value1Array[1]) == "number" & typeof parseInt(value1Array[2]) == "number") { //only date without Time
+								typeOfValues = "date";
 							}
 						}
 					}
@@ -3324,6 +3316,8 @@
 							if (value2Array[0].length == 4 & value2Array[1].length == 2 & value2Array[2][2] == "T" & value2.endsWith("Z")) {
 								inputText2 = "date";
 
+							} else if (value2Array[0].length == 4 & value2Array[1].length == 2 & value2Array[2].length == 2 & typeof parseInt(value2Array[0]) == "number" & typeof parseInt(value2Array[1]) == "number" & typeof parseInt(value2Array[2]) == "number") { //only date without Time
+								typeOfValues = "date";
 							}
 						}
 					}
