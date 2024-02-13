@@ -2131,7 +2131,7 @@
 										console.log("error en la condició")
 								}
 							}
-							else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date' ) {
+							else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date') {
 								var newValue = "";
 								for (var a = 0; a < infoFilter[i][4].length; a++) {//erase 0 if starts with 0. 
 									if (infoFilter[i][4].charAt(a) != 0) {
@@ -2164,7 +2164,7 @@
 										console.log("error en la condició")
 								}
 							}
-							
+
 
 
 							if ((indexOf + 1) != parentLenght) {
@@ -3757,8 +3757,14 @@
 				var arrayValors = [];
 				var select2 = document.getElementById("selectorProperty_" + count);
 				var select2PropertyValue = select2.options[select2.selectedIndex].value;
+				var valueUndefined = true;
 				for (let index = 0; index < data.length; index++) {
 					valor = data[index][select2PropertyValue];
+					if (valueUndefined == true & valor != undefined) { //All values are undefined? Don't show select
+						valueUndefined = false;
+
+					}
+
 					if (!arrayValors.find(element => element == valor)) {
 						var option = document.createElement("option");
 						option.setAttribute("value", valor);
@@ -3766,8 +3772,14 @@
 						select.appendChild(option);
 						arrayValors.push(valor);
 					} else {
-						console.log("en el else");
+						//console.log("en el else");
 					}
+				}
+
+				if (valueUndefined == false) {
+					console.log("not undefined")
+				} else {
+					console.log(" undefined")
 				}
 
 				divFilterContainer.appendChild(select);
@@ -3782,8 +3794,6 @@
 					// If the user presses the "Enter" key on the keyboard
 					if (event.key === "Enter") {
 						event.preventDefault();
-
-
 					}
 				});
 
@@ -3895,9 +3905,11 @@
 						textInputInterval2.setAttribute("class", "hidden");
 
 						displaySelectInterval.setAttribute("class", "hidden");
-
-
+						if (valueUndefined == true) { //if it's empty don't show it
+							divFilterContainer.setAttribute("class", "hidden");
+						}
 						textInput.value = selectorInfo[0][4];
+
 					} else if (selectorInfo[0].length == 7) { //interval
 						textInput.setAttribute("class", "hidden");
 						divFilterContainer.setAttribute("class", "hidden");
@@ -3914,9 +3926,14 @@
 					textInputInterval1.setAttribute("class", "hidden");
 					textInputInterval2.setAttribute("class", "hidden");
 					displaySelectInterval.setAttribute("class", "hidden");
+					if (valueUndefined == true) { //if it's empty don't show it
+						divFilterContainer.setAttribute("class", "hidden");
+					}
+
 				}
 			}
 		}
+
 
 		var stopSearchparentLabel = false;
 
@@ -4037,6 +4054,10 @@
 			select = document.getElementById("selectorProperty_" + number);
 			var selectedProperty = select.options[select.selectedIndex].value;
 			var selectorValue, selectorValueInterval, selectorValueInterval2;
+			var displaySelect = document.getElementById("displaySelect_" + number);
+			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
+			var selectCondition = document.getElementById("selectorCondition_" + number);
+			var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
 
 
 			selectorValue = document.getElementById("selectorValue_" + number);
@@ -4060,12 +4081,16 @@
 			}
 
 			console.log(arrayValors);
-
+			var valueUndefined = true;
 			for (var i = 0; i < arrayValors.length; i++) { //omplir selector simple (son 3 perque son el simple i els intervals)
 				var opcio = document.createElement("option");
 				var opcio2 = document.createElement("option");
 				var opcio3 = document.createElement("option");
 				valor = arrayValors[i];
+
+				if (valueUndefined == true & valor != undefined) { //All values are undefined? Don't show select
+					valueUndefined = false;
+				}
 				opcio.setAttribute("value", valor);
 				opcio2.setAttribute("value", valor);
 				opcio3.setAttribute("value", valor);
@@ -4076,6 +4101,28 @@
 				selectorValueInterval.appendChild(opcio2);
 				selectorValueInterval2.appendChild(opcio3);
 			}
+			if (valueUndefined == true) { //hidde
+				if (!displaySelect.classList.contains("hidden")) {
+					displaySelect.classList.add("hidden");
+					displaySelect.classList.remove("inline");
+				} else if (!displaySelectInterval.classList.contains("hidden")) {
+					displaySelectInterval.classList.add("hidden");
+					displaySelectInterval.classList.remove("inline");
+				}
+			} else { //show
+				if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
+					if (displaySelectInterval.classList.contains("hidden")) {
+						displaySelectInterval.classList.remove("hidden");
+						displaySelectInterval.classList.add("inline");
+					}
+				} else { //simple
+					if (displaySelect.classList.contains("hidden")) {
+						displaySelect.classList.remove("hidden");
+						displaySelect.classList.add("inline");
+					}
+				}
+			}
+
 			var divIsAnObject = document.getElementById("divIsAnObject");
 			if (isAnObject === "yes") { //no està acabat (falta interval i alguna cosa més)
 				selectorValue.setAttribute("class", "objectInSelect");
@@ -4086,6 +4133,8 @@
 				divIsAnObject.classList.add("hidden");
 
 			}
+
+			
 		}
 		function closeModalSelect(number, button, selector) { //Botó càncel i ok dels selectors
 			event.preventDefault();
