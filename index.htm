@@ -4056,9 +4056,13 @@
 			var selectorValue, selectorValueInterval, selectorValueInterval2;
 			var displaySelect = document.getElementById("displaySelect_" + number);
 			var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
+			var selectorSTAEntity = document.getElementById("selectorSTAEntity_" + number);
+			var selectorSTAEntityValue = selectorSTAEntity.options[selectorSTAEntity.selectedIndex].value;
 			var selectCondition = document.getElementById("selectorCondition_" + number);
 			var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
 
+			var STALastEntity=currentNode.STALastEntity;
+			
 
 			selectorValue = document.getElementById("selectorValue_" + number);
 			selectorValue.innerHTML = "";
@@ -4101,24 +4105,25 @@
 				selectorValueInterval.appendChild(opcio2);
 				selectorValueInterval2.appendChild(opcio3);
 			}
+
 			if (valueUndefined == true) { //hidde
 				if (!displaySelect.classList.contains("hidden")) {
 					displaySelect.classList.add("hidden");
-					displaySelect.classList.remove("inline");
+					displaySelect.classList.remove("inblock");
 				} else if (!displaySelectInterval.classList.contains("hidden")) {
 					displaySelectInterval.classList.add("hidden");
-					displaySelectInterval.classList.remove("inline");
+					displaySelectInterval.classList.remove("inblock");
 				}
 			} else { //show
-				if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
+				if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ")&(selectorSTAEntityValue==STALastEntity)) {
 					if (displaySelectInterval.classList.contains("hidden")) {
 						displaySelectInterval.classList.remove("hidden");
-						displaySelectInterval.classList.add("inline");
+						displaySelectInterval.classList.add("inblock");
 					}
-				} else { //simple
+				} else if ((selectedValueCondition != " [a,b] " || selectedValueCondition != " (a,b] " || selectedValueCondition != " [a,b) " || selectedValueCondition != " (a,b) ")&(selectorSTAEntityValue==STALastEntity)){ //simple
 					if (displaySelect.classList.contains("hidden")) {
 						displaySelect.classList.remove("hidden");
-						displaySelect.classList.add("inline");
+						displaySelect.classList.add("inblock");
 					}
 				}
 			}
