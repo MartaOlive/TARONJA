@@ -2267,7 +2267,7 @@
 				boxNames = ["0_0"];
 				conditionsFilter = [ //valors de la taula
 					{
-						property: "<div id='optionsRow_0'></div>",
+						property: "<div id='optionsRow_0' class='optionsRow'></div>",
 						number: "0"
 					}
 				];
@@ -4297,7 +4297,7 @@
 		////////////////////////////////////NOVA TAULAAAAAAAAAAAAAAAAAAAAA////////////////////
 		var conditionsFilter = [ //valors de la taula
 			{
-				property: "<div id='optionsRow_0'></div>",
+				property: "<div id='optionsRow_0' class='optionsRow'></div>",
 				number: "0"
 			}
 		];
@@ -4318,17 +4318,17 @@
 			//quan el element q et vingui es el elemFilter, afegeix un boto per afegir un nivell mes
 
 			if (elem.boxName) {
-				var s = '<table class="tableFilter"><tr class="trBoxName"><td id="boxName_' + elem.boxName + '">';
+				var s = '<table class="tableFilter"><tr class="trBoxName"><td class="tdBoxName" id="boxName_' + elem.boxName + '">';
 			} else {
-				var s = '<table><tr><td>';
+				var s = '<table><tr class="trLineBoxName"><td>';
 			}
 
 			if (first) {
-				s += `<button onclick="biggestLevelButton('${elem.boxName}','${nodeId}')">Add a bigger priority nexus</button>`;
+				s += `<div class="topButtonsFilterRow"><button onclick="biggestLevelButton('${elem.boxName}','${nodeId}')">Add a bigger priority nexus</button>`;
 			}
 			if (elem.boxName) {
 				//if (elem.boxName.charAt(0) == "0") {
-				s += `<button onclick="addNewCondition('${elem.boxName}','${nodeId}')">Add new condition</button><button onclick="deleteGroup('${elem.boxName}','${nodeId}')">Delete group</button>`;
+				s += `<button onclick="addNewCondition('${elem.boxName}','${nodeId}')">Add new condition</button><button onclick="deleteGroup('${elem.boxName}','${nodeId}')" class="deleteGroupFilterRow">Delete group</button></div>`;
 				//}
 			}
 			if (typeof elem === "object") {
@@ -4338,7 +4338,7 @@
 
 				if (elem.nexus) {
 
-					s += `</td><td valign="middle" class="tdSelectAndOrNot"><select name="selectAndOrNot" onchange= "actualizeSelectChoice('${elem.boxName}')" id="selectAndOrNot_${elem.boxName}">`;
+					s += `</td><td valign="middle" class="tdSelectAndOrNot" id='tdSelectAndOrNot_${elem.boxName}'><div class="topPartSelectAndOrNot" ></div><div class="bottomPartSelectAndOrNot" id= "bottomPartSelectAndOrNot_${elem.boxName}"><select class="selectAndOrNot" name="selectAndOrNot"  onchange= "actualizeSelectChoice('${elem.boxName}')" id="selectAndOrNot_${elem.boxName}">`;
 
 					if (elem.nexus == "and") {
 						s += '<option value="and" selected>And</option>';
@@ -4359,7 +4359,7 @@
 						s += '<option value="not">Not</option>';
 					}
 
-					s += '</select>';
+					s += '</select></div>';
 					//  if (elem.elems.length < 2 && elem.nexus)
 					//  	alert("Wrong encoding, an array of one condition cannot have a nexus. Autocorrected.");
 					//  else if (elem.nexus) {
@@ -4394,7 +4394,7 @@
 
 		function GetFilterCondition(elem, dataAttributes, nodeId) {
 			counter.push(elem);
-			return conditionsFilter[elem].property + '<button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="fletxaAbaix_18x11.png"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="fletxaAmunt_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button>';
+			return conditionsFilter[elem].property + '<div class="buttonsInFilterRow"><button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="fletxaAbaix_18x11.png"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="fletxaAmunt_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button></div>';
 
 		}
 
@@ -4597,7 +4597,7 @@
 					searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
 				}
 				if (elem.boxName == boxNamee) { //afegir a elems => elems[0,1...]
-					addNewElement(elem, paramsNodeId);
+					addNewElement(elem, paramsNodeId, boxNamee);
 				}
 			}
 			else {
@@ -4607,7 +4607,7 @@
 			//console.log(elemFilter)
 		}
 
-		function addNewElement(elem, nodeId) {
+		function addNewElement(elem, nodeId, boxName) {
 			var elements = elem.elems;
 			var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
 			var nextNumber = parseInt(lastNumber) + 1; //per els que estan dins del 0_...
@@ -4650,8 +4650,9 @@
 			if (elements.length == 2) { //change nexus if pass from one to two
 				elem.nexus = "and"
 			}
+
 			conditionsFilter.push({ //add to conditionsFilter
-				property: "<div id='optionsRow_" + nextNumber + "'></div>",
+				property: "<div id='optionsRow_" + nextNumber + "' class='optionsRow'></div>",
 				number: nextNumber
 			});
 			if (newBoxName) {
@@ -4670,7 +4671,18 @@
 			takeSelectInformation(nodeId);
 			//console.log(elemFilter)
 			//tornar a pintar els selects
-			drawTableAgain(nodeId)
+			drawTableAgain(nodeId);
+
+			//correct size to select(AndOrNot) div
+
+			for (var i = 0; i < boxNames.length; i++) {
+				var tdSelectAndOrNot = document.getElementById("tdSelectAndOrNot_" + boxNames[i]);
+				var tdSelectAndOrNotHeight = tdSelectAndOrNot.clientHeight;
+				var bottomPartSelectAndOrNot = document.getElementById("bottomPartSelectAndOrNot_" + boxNames[i]);
+				bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 35) + "px";
+
+			}
+
 		}
 
 		function takeSelectInformation(nodeId) {
@@ -4861,7 +4873,17 @@
 
 			takeSelectInformation(nodeId);
 
-			drawTableAgain(nodeId)
+			drawTableAgain(nodeId);
+
+			//correct size to select(AndOrNot) div
+
+			for (var i = 0; i < boxNames.length; i++) {
+				var tdSelectAndOrNot = document.getElementById("tdSelectAndOrNot_" + boxNames[i]);
+				var tdSelectAndOrNotHeight = tdSelectAndOrNot.clientHeight;
+				var bottomPartSelectAndOrNot = document.getElementById("bottomPartSelectAndOrNot_" + boxNames[i]);
+				bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 35) + "px";
+
+			}
 
 		}
 
