@@ -3657,6 +3657,7 @@
 				if (entity != "STAPlus") {
 					entitiesSTA = STAEntities[entity]["entities"];
 					//carrega la pròpia primer:
+
 					var option = document.createElement("option");
 					option.setAttribute("value", entity);
 					option.innerHTML = entity;
@@ -3666,19 +3667,22 @@
 						}
 					}
 					select.appendChild(option);
+
+
 				}
 
 				for (var i = 0; i < entitiesSTA.length; i++) {
-
-					var option = document.createElement("option");
-					option.setAttribute("value", entitiesSTA[i]);
-					option.innerHTML = entitiesSTA[i];
-					if (selectorInfo.length != 0) {
-						if (entitiesSTA[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
-							option.setAttribute("selected", true);
+					if (entitiesSTA[i] != "Objects" & entitiesSTA[i] != "Subjects") {
+						var option = document.createElement("option");
+						option.setAttribute("value", entitiesSTA[i]);
+						option.innerHTML = entitiesSTA[i];
+						if (selectorInfo.length != 0) {
+							if (entitiesSTA[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+								option.setAttribute("selected", true);
+							}
 						}
+						select.appendChild(option);
 					}
-					select.appendChild(option);
 				}
 				placeId.appendChild(select);
 			}
@@ -4061,8 +4065,8 @@
 			var selectCondition = document.getElementById("selectorCondition_" + number);
 			var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
 
-			var STALastEntity=currentNode.STALastEntity;
-			
+			var STALastEntity = currentNode.STALastEntity;
+
 
 			selectorValue = document.getElementById("selectorValue_" + number);
 			selectorValue.innerHTML = "";
@@ -4115,12 +4119,12 @@
 					displaySelectInterval.classList.remove("inblock");
 				}
 			} else { //show
-				if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ")&(selectorSTAEntityValue==STALastEntity)) {
+				if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") & (selectorSTAEntityValue == STALastEntity)) {
 					if (displaySelectInterval.classList.contains("hidden")) {
 						displaySelectInterval.classList.remove("hidden");
 						displaySelectInterval.classList.add("inblock");
 					}
-				} else if ((selectedValueCondition != " [a,b] " || selectedValueCondition != " (a,b] " || selectedValueCondition != " [a,b) " || selectedValueCondition != " (a,b) ")&(selectorSTAEntityValue==STALastEntity)){ //simple
+				} else if ((selectedValueCondition != " [a,b] " || selectedValueCondition != " (a,b] " || selectedValueCondition != " [a,b) " || selectedValueCondition != " (a,b) ") & (selectorSTAEntityValue == STALastEntity)) { //simple
 					if (displaySelect.classList.contains("hidden")) {
 						displaySelect.classList.remove("hidden");
 						displaySelect.classList.add("inblock");
@@ -4139,7 +4143,7 @@
 
 			}
 
-			
+
 		}
 		function closeModalSelect(number, button, selector) { //Botó càncel i ok dels selectors
 			event.preventDefault();
