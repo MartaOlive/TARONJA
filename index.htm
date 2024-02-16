@@ -3647,7 +3647,7 @@
 				var STAEntitiesKeys = Object.keys(STAEntities);
 				var entitiesSTA = STAEntitiesKeys;
 				if (entity != "STAPlus") {
-					entitiesSTA = STAEntities[entity]["entities"];
+					entitiesSTA = STAEntities[entity]["entitiesInPlural"];
 					//First put Itself (Entity)
 					var option = document.createElement("option");
 					option.setAttribute("value", entity);
