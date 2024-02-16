@@ -2191,7 +2191,7 @@
 
         }
 
-        function GetSelectRows(event) { //When you click ok
+        function GetSelectRows(event) { //When you click ok (nodeId Doesn't exist, now is currentNode.id)
             event.preventDefault(); // We don't want to submit this form
             document.getElementById("DialogSelectRows").close();
             var previousSTAURL = currentNode.STAURL;
@@ -2226,7 +2226,7 @@
                 console.log(currentNode.STAURL);
                 var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
 
-                urlAPICounter = []; // restarting
+                urlAPICounter = []; // I need to restart it 
 
                 //put URL ready to add things
                 var previousURL = previousNode[0].STAURL;
@@ -2835,7 +2835,7 @@
                 var entitiesSTA = STAEntitiesKeys;
                 if (entity != "STAPlus") {
                     entitiesSTA = STAEntities[entity]["entities"];
-                    //First put Itself
+                    //First put Itself (Entity)
                     var option = document.createElement("option");
                     option.setAttribute("value", entity);
                     option.innerHTML = entity;
@@ -2996,7 +2996,7 @@
                 divFilterContainer2.setAttribute("id", "divFilterContainer2_" + count);
                 placeId.appendChild(divFilterContainer2);
 
-                var selectorValueInterval1 = select.cloneNode(true); //filled like the other
+                var selectorValueInterval1 = select.cloneNode(true); //filled like the other automatically
                 selectorValueInterval1.setAttribute("id", "selectorValueInterval1_" + count);
                 var selectorValueInterval2 = select.cloneNode(true);
                 selectorValueInterval2.setAttribute("id", "selectorValueInterval2_" + count);
