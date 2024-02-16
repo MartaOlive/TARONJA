@@ -563,20 +563,20 @@
 		//var STAurl="https://citiobs.demo.secure-dimensions.de/staplus/v1.1";
 		//var MMNpath="../osm";
 		const STAEntities = {
-			ObservedProperties: { singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], entitiesInPlural: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"] },
-			Observations: { singular: "Observation", entities: ["Datastream", "MultiDatastream", "FeatureOfInterest", "ObservationGroups", "Subjects", "Objects"], entitiesInPlural: ["Datastreams", "MultiDatastreams", "FeaturesOfInterest", "ObservationGroups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"] },
-			FeaturesOfInterest: { singular: "FeatureOfInterest", entities: ["Observations"], entitiesInPlural: ["Observations"], properties: ["name", "description", "encodingType", "feature", "properties"] },
-			Sensors: { singular: "Sensor", entities: ["Datastreams", "MultiDatastreams"], entitiesInPlural: ["Datastreams", "MultiDatastreams"], properties: ["name", "description", "encodingType", "metadata", "properties"] },
-			Things: { singular: "Thing", entities: ["Datastreams", "MultiDatastreams", "Party", "Locations", "HistoricalLocations"], entitiesInPlural: ["Datastreams", "MultiDatastreams", "Parties", "Locations", "HistoricalLocations"], properties: ["name", "description", "properties"] },
-			Locations: { singular: "Location", entities: ["Things", "HistoricalLocations"], entitiesInPlural: ["Things", "HistoricalLocations"], properties: ["name", "description", "encodingType", "location", "properties"] },
-			HistoricalLocations: { singular: "HistoricalLocation", entities: ["Things", "Location"], entitiesInPlural: ["Things", "Locations"], properties: ["time"] },
-			Datastreams: { singular: "Datastream", entities: ["Party", "Sensor", "ObservedProperty", "Campaigns", "License", "Observations", "Thing"], entitiesInPlural: ["Parties", "Sensors", "ObservedProperties", "Campaigns", "Licenses", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurement", "observationType", "observedArea", "phenomenonTime", "resultTime", "properties"] },
-			MultiDatastreams: { singular: "MultiDatastream", entities: ["Party", "Sensor", "ObservedProperties", "Campaigns", "License", "Observations", "Thing"], entitiesInPlural: ["Parties", "Sensors", "ObservedProperties", "Campaigns", "Licenses", "Observations", "Things"], properties: ["name", "description", "unitOfMeasurements", "observationType", "observedArea", "phenomenonTime", "resultTime", "multiObservationDataTypes", "properties"] },
-			Parties: { singular: "Party", entities: ["Datastreams", "MultiDatastreams", "Campaigns", "ObservationGroups", "Things"], entitiesInPlural: ["Datastreams", "MultiDatastreams", "Campaigns", "ObservationGroups", "Things"], properties: ["description", "authId", "role", "displayName"] },
-			Campaigns: { singular: "Campaign", entities: ["Datastreams", "MultiDatastreams", "Party", "License"], entitiesInPlural: ["Datastreams", "MultiDatastreams", "Parties", "Licenses"], properties: ["name", "description", "classification", "termsOfUse", "privacyPolicy", "creationTime", "startTime", "endTime", "url", "properties"] },
-			Licenses: { singular: "License", entitiesInPlural: ["Datastreams", "MultiDatastreams", "Campaigns", "ObservationGroups"], properties: ["name", "description", "definition", "logo", "attributionText"] },
-			ObservationGroups: { singular: "ObservationGroup", entities: ["Party", "Campaigns", "License", "Observations", "Relations"], entitiesInPlural: ["Parties", "Campaigns", "Licenses", "Observations", "Relations"], properties: ["name", "description", "purpose", "creationTime", "endTime", "termsOfUsed", "privacyPolicy", "properties", "dataQuality"] },
-			Relations: { singular: "Relation", entities: ["Object", "Subject", "ObservationGroups"], entitiesInPlural: ["Object", "Subject", "ObservationGroups"], properties: ["role", "description", "externalObject", "properties"] }
+			ObservedProperties: { singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"] },
+			Observations: { singular: "Observation", entities: ["Datastream", "MultiDatastream", "FeatureOfInterest", "ObservationGroups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"] },
+			FeaturesOfInterest: { singular: "FeatureOfInterest", entities: ["Observations"], properties: ["name", "description", "encodingType", "feature", "properties"] },
+			Sensors: { singular: "Sensor", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "description", "encodingType", "metadata", "properties"] },
+			Things: { singular: "Thing", entities: ["Datastreams", "MultiDatastreams", "Party", "Locations", "HistoricalLocations"], properties: ["name", "description", "properties"] },
+			Locations: { singular: "Location", entities: ["Things", "HistoricalLocations"], properties: ["name", "description", "encodingType", "location", "properties"] },
+			HistoricalLocations: { singular: "HistoricalLocation", entities: ["Things", "Location"], properties: ["time"] },
+			Datastreams: { singular: "Datastream", entities: ["Party", "Sensor", "ObservedProperty", "Campaigns", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurement", "observationType", "observedArea", "phenomenonTime", "resultTime", "properties"] },
+			MultiDatastreams: { singular: "MultiDatastream", entities: ["Party", "Sensor", "ObservedProperties", "Campaigns", "License", "Observations", "Thing"], properties: ["name", "description", "unitOfMeasurements", "observationType", "observedArea", "phenomenonTime", "resultTime", "multiObservationDataTypes", "properties"] },
+			Parties: { singular: "Party", entities: ["Datastreams", "MultiDatastreams", "Campaigns", "ObservationGroups", "Things"], properties: ["description", "authId", "role", "displayName"] },
+			Campaigns: { singular: "Campaign", entities: ["Datastreams", "MultiDatastreams", "Party", "License"], properties: ["name", "description", "classification", "termsOfUse", "privacyPolicy", "creationTime", "startTime", "endTime", "url", "properties"] },
+			Licenses: { singular: "License", entities: ["Datastreams", "MultiDatastreams", "Campaigns", "ObservationGroups"], properties: ["name", "description", "definition", "logo", "attributionText"] },
+			ObservationGroups: { singular: "ObservationGroup", entities: ["Party", "Campaigns", "License", "Observations", "Relations"], properties: ["name", "description", "purpose", "creationTime", "endTime", "termsOfUsed", "privacyPolicy", "properties", "dataQuality"] },
+			Relations: { singular: "Relation", entities: ["Object", "Subject", "ObservationGroups"], properties: ["role", "description", "externalObject", "properties"] }
 		};
 
 		const STAEntitiesArray = Object.keys(STAEntities);
@@ -3604,7 +3604,9 @@
 			divFilterBox.appendChild(divIsAnObject);
 
 		}
+		function giveEntityPlural(entityName) {
 
+		}
 		function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, count) {
 
 			var placeId = document.getElementById(place_Id);
@@ -3646,8 +3648,9 @@
 
 				var STAEntitiesKeys = Object.keys(STAEntities);
 				var entitiesSTA = STAEntitiesKeys;
+
 				if (entity != "STAPlus") {
-					entitiesSTA = STAEntities[entity]["entitiesInPlural"];
+					entitiesSTA = STAEntities[entity]["entities"];
 					//First put Itself (Entity)
 					var option = document.createElement("option");
 					option.setAttribute("value", entity);
@@ -3659,13 +3662,46 @@
 					}
 					select.appendChild(option);
 				}
+
+				var newEntityList = [];
 				for (var i = 0; i < entitiesSTA.length; i++) {
-					if (entitiesSTA[i] != "Objects" & entitiesSTA[i] != "Subjects") {
+
+					var indexArray = STAEntitiesKeys.find(element=>element==entitiesSTA[i]); //Value -1, doesn't exist -> Singular
+
+					if (indexArray == undefined) { //singular
+						if (entitiesSTA[i] == "ObservedProperty" || entitiesSTA[i] == "FeatureOfInterest" || entitiesSTA[i] == "Party") {
+							switch (entitiesSTA[i]) {
+								case "ObservedProperty":
+									newEntityList.push("ObservedProperties");
+									break;
+								case "FeatureOfInterest":
+									newEntityList.push("FeaturesOfInterest");
+									break;
+								case "Party":
+									newEntityList.push("Parties");
+									break;
+								default:
+									console.log("problem")
+									break;
+							}
+
+						} else {
+							newEntityList.push(entitiesSTA[i] + "s");
+						}
+
+					} else { //plural
+						newEntityList.push(entitiesSTA[i]);
+					}
+				}
+
+
+				for (var i = 0; i < newEntityList.length; i++) {
+					if (newEntityList[i] != "Objectss" & newEntityList[i] != "Subjectss") {
 						var option = document.createElement("option");
-						option.setAttribute("value", entitiesSTA[i]);
-						option.innerHTML = entitiesSTA[i];
+						option.setAttribute("value", newEntityList[i]);
+						option.innerHTML = newEntityList[i];
 						if (selectorInfo.length != 0) {
-							if (entitiesSTA[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
+							if (newEntityList[i] == selectorInfo[0][1]) { //potser es pot aprofitar per ara!!!!!!!!!!!!!!!!!!!!!!!
 								option.setAttribute("selected", true);
 							}
 						}
