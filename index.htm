@@ -2033,7 +2033,7 @@
 					}
 					if (urlAPICounter.length != infoFilter.length & urlAPICounter.length != 0 & nexus != "no" & parent != "no") {
 
-						urlAPI += nexus
+						urlAPI += " "+nexus+" ";
 					}
 				}
 				else { //On es construirà la url
@@ -2072,7 +2072,7 @@
 								(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
 								switch (infoFilter[i][3]) {
 									case ' = ':
-										data += " eq" + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+										data += " eq " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 										break;
 									case ' &ne; ':
 										data += " ne " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
@@ -2084,7 +2084,7 @@
 										data += " gt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 										break;
 									case ' &le; ':
-										data += " le" + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+										data += " le " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 										break;
 									case ' < ':
 										data += " lt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
@@ -4466,7 +4466,8 @@
 				if (elem == iCon & stopp == false) {
 					changeElements(fatherElement, nextElement, iCon);
 					takeSelectInformation(currentNode.id);
-					drawTableAgain(currentNode.id)
+					drawTableAgain(currentNode.id);
+					resizeBottomPartSelectAndOrNot();
 					stopp = true;
 
 				}
@@ -4674,7 +4675,11 @@
 			drawTableAgain(nodeId);
 
 			//correct size to select(AndOrNot) div
+			resizeBottomPartSelectAndOrNot();
 
+
+		}
+		function resizeBottomPartSelectAndOrNot() {
 			for (var i = 0; i < boxNames.length; i++) {
 				var tdSelectAndOrNot = document.getElementById("tdSelectAndOrNot_" + boxNames[i]);
 				var tdSelectAndOrNotHeight = tdSelectAndOrNot.clientHeight;
@@ -4682,9 +4687,7 @@
 				bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 35) + "px";
 
 			}
-
 		}
-
 		function takeSelectInformation(nodeId) {
 			var optionsRow;
 			var selectorSTAEntity, selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
@@ -4767,6 +4770,8 @@
 			takeSelectInformation(nodeId);
 			//tornar a pintar els selects
 			drawTableAgain(nodeId);
+
+			resizeBottomPartSelectAndOrNot();
 
 		}
 		//delete group
@@ -4877,13 +4882,7 @@
 
 			//correct size to select(AndOrNot) div
 
-			for (var i = 0; i < boxNames.length; i++) {
-				var tdSelectAndOrNot = document.getElementById("tdSelectAndOrNot_" + boxNames[i]);
-				var tdSelectAndOrNotHeight = tdSelectAndOrNot.clientHeight;
-				var bottomPartSelectAndOrNot = document.getElementById("bottomPartSelectAndOrNot_" + boxNames[i]);
-				bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 35) + "px";
-
-			}
+			resizeBottomPartSelectAndOrNot();
 
 		}
 
