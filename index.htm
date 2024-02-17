@@ -2144,18 +2144,24 @@
 								}
 							}
 							else if (infoFilter[i][3] == 'contains' || infoFilter[i][3] == 'no contains' || infoFilter[i][3] == 'starts with' || infoFilter[i][3] == 'ends with') {
+								if (entity != valueOfEntity) {
+									valueEntityToURL= valueEntityToURL + "/" +infoFilter[i][2];
+								} else {
+									valueEntityToURL =infoFilter[i][2] ;
+								}
+								
 								switch (infoFilter[i][3]) {
 									case 'contains':
-										data += "substringof('" + infoFilter[i][4] + "'," + infoFilter[i][2] + ")";
+										data += "substringof('" + infoFilter[i][4] + "'," + valueEntityToURL + ")";
 										break;
 									case 'no contains':
-										data += "not substringof('" + infoFilter[i][4] + "'," + infoFilter[i][2] + ")";
+										data += "not substringof('" + infoFilter[i][4] + "'," + valueEntityToURL + ")";
 										break;
 									case 'starts with':
-										data += "startswith(" + infoFilter[i][2] + ",'" + infoFilter[i][4] + "')";
+										data += "startswith(" + valueEntityToURL + ",'" + infoFilter[i][4] + "')";
 										break;
 									case 'ends with':
-										data += "endswith(" + infoFilter[i][2] + ",'" + infoFilter[i][4] + "')";
+										data += "endswith(" + valueEntityToURL + ",'" + infoFilter[i][4] + "')";
 										break;
 									default:
 										console.log("error en la condició")
