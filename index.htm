@@ -2050,18 +2050,42 @@
 								data += "(";
 							}
 
+							//For " = ", ' &ne; ' ... and [a,b], (a,b)... I need the entity in singular or plural  (infoFilter[i][1])
+
+							var valueOfEntity = infoFilter[i][1]; //Always plural
+							var entitiesArray = STAEntities[valueOfEntity].entities; //Plural or singular
+							var valueEntityToURL;
+							var indexArray = entitiesArray.find(element => element == valueOfEntity); //Value undefined, doesn't exist -> Singular
+
+							if (indexArray == undefined) { //singular
+								if (valueOfEntity == "ObservedProperties" || valueOfEntity == "FeaturesOfInterest" || valueOfEntity == "Parties") {  //need more than - "s"
+									switch (valueOfEntity) {
+										case "ObservedProperties":
+											valueEntityToURL= "ObservedProperty";
+											break;
+										case "FeaturesOfInterest":
+											valueEntityToURL= "FeatureOfInterest";
+											break;
+										case "Parties":
+											valueEntityToURL= "Party";
+											break;
+										default:
+											console.log("problem")
+											break;
+									}
+
+								} else {
+									valueEntityToURL=valueOfEntity.substring(0, valueOfEntity.length - 1); //entity - "s"
+								}
+
+							}
+
+							///Apply filter depending on Select Condition
 							if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') { //passarho a com STA+
 								data += "(";
-								var valueEntity;
-								if (entity != infoFilter[i][1]) {
-									if (infoFilter[i][1] == "Objects") {
-										valueEntity = "Object"
-									} else if (infoFilter[i][1] == "Subjects") {
-										valueEntity = "Subject"
-									} else {
-										valueEntity = STAEntities[infoFilter[i][1]]["singular"]; //I need to put the singular
-									}
-									data += valueEntity + "/";
+								
+								if (entity != valueOfEntity) { //If it's not the entity of the node and it is a connected box need "node entity name "
+									data += valueEntityToURL + "/";
 								}
 								data += infoFilter[i][2];
 
@@ -2094,26 +2118,26 @@
 							}
 							else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
 
-								var entityToUrl = ""
-								if (entity != infoFilter[i][1]) {
-									entityToUrl = infoFilter[i][1] + "/" + infoFilter[i][2];
+								data += "("
+								if (entity != valueOfEntity) {
+									valueEntityToURL= valueEntityToURL + "/" +infoFilter[i][2];
 								} else {
-									entityToUrl = infoFilter[i][2];
+									valueEntityToURL =infoFilter[i][2] ;
 								}
-								data += "(" + entityToUrl;
+								
 
 								switch (infoFilter[i][3]) {
 									case ' [a,b] ':
-										data += " ge " + infoFilter[i][4] + " and " + entityToUrl + " le " + infoFilter[i][5] + ")";
+										data += " ge " + infoFilter[i][4] + " and " + valueEntityToURL + " le " + infoFilter[i][5] + ")";
 										break;
 									case ' (a,b] ':
-										data += " gt " + infoFilter[i][4] + " and " + entityToUrl + " le " + infoFilter[i][5] + ")";
+										data += " gt " + infoFilter[i][4] + " and " + valueEntityToURL + " le " + infoFilter[i][5] + ")";
 										break;
 									case ' [a,b) ':
-										data += " ge " + infoFilter[i][4] + " and " + entityToUrl + " lt " + infoFilter[i][5] + ")";
+										data += " ge " + infoFilter[i][4] + " and " + valueEntityToURL + " lt " + infoFilter[i][5] + ")";
 										break;
 									case ' (a,b) ':
-										data += " gt " + infoFilter[i][4] + " and " + entityToUrl + " lt " + infoFilter[i][5] + ")";
+										data += " gt " + infoFilter[i][4] + " and " + valueEntityToURL + " lt " + infoFilter[i][5] + ")";
 										break;
 									default:
 										console.log("error en la condició")
@@ -3666,10 +3690,10 @@
 				var newEntityList = [];
 				for (var i = 0; i < entitiesSTA.length; i++) {
 
-					var indexArray = STAEntitiesKeys.find(element=>element==entitiesSTA[i]); //Value -1, doesn't exist -> Singular
+					var indexArray = STAEntitiesKeys.find(element => element == entitiesSTA[i]); //Value -1, doesn't exist -> Singular
 
 					if (indexArray == undefined) { //singular
-						if (entitiesSTA[i] == "ObservedProperty" || entitiesSTA[i] == "FeatureOfInterest" || entitiesSTA[i] == "Party") {
+						if (entitiesSTA[i] == "ObservedProperty" || entitiesSTA[i] == "FeatureOfInterest" || entitiesSTA[i] == "Party") {  //need more than + "s"
 							switch (entitiesSTA[i]) {
 								case "ObservedProperty":
 									newEntityList.push("ObservedProperties");
@@ -3686,7 +3710,7 @@
 							}
 
 						} else {
-							newEntityList.push(entitiesSTA[i] + "s");
+							newEntityList.push(entitiesSTA[i] + "s"); //entity + "s"
 						}
 
 					} else { //plural
