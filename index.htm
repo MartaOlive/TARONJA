@@ -103,7 +103,7 @@
 			</p>
 			<div class="center">
 				<button value="default" id="DialogSTAURLOk" onClick="GetSTAURLEvent(event)">OK</button>
-				<button value="cancel" formmethod="dialog">Cancel</button>
+				<button value="cancel" formmethod="dialog">Close</button>
 			</div>
 		</form>
 	</dialog>
@@ -3121,7 +3121,7 @@
 				divFilterContainer.appendChild(cancelButton);
 
 				var buttonImage2 = document.createElement("img"); //Button image
-				buttonImage2.setAttribute("src", "botoDesplegable.png");
+				buttonImage2.setAttribute("src", "arrowSelectButton.png");
 				buttonImage2.setAttribute("class", "buttonImage");
 				displaySelect.appendChild(buttonImage2);
 
@@ -3177,7 +3177,7 @@
 				displaySelectInterval.setAttribute("id", "displaySelectInterval_" + count);
 				displaySelectInterval.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','interval')");
 				var buttonImage3 = document.createElement("img"); //button image
-				buttonImage3.setAttribute("src", "botoDesplegable.png");
+				buttonImage3.setAttribute("src", "arrowSelectButton.png");
 				buttonImage3.setAttribute("class", "buttonImage");
 				displaySelectInterval.appendChild(buttonImage3);
 
@@ -3625,22 +3625,22 @@
 					s += `</td><td valign="middle" class="tdSelectAndOrNot" id='tdSelectAndOrNot_${elem.boxName}'><div class="topPartSelectAndOrNot" ></div><div class="bottomPartSelectAndOrNot" id= "bottomPartSelectAndOrNot_${elem.boxName}"><select class="selectAndOrNot" name="selectAndOrNot"  onchange= "actualizeSelectChoice('${elem.boxName}')" id="selectAndOrNot_${elem.boxName}">`;
 
 					if (elem.nexus == "and") {
-						s += '<option value="and" selected>And</option>';
+						s += '<option value=" and " selected>And</option>';
 
 					} else {
-						s += '<option value="and">And</option>';
+						s += '<option value=" and ">And</option>';
 					}
 					if (elem.nexus == "or") {
-						s += '<option value="or" selected>Or</option>';
+						s += '<option value=" or " selected>Or</option>';
 
 					} else {
-						s += '<option value="or">Or</option>';
+						s += '<option value=" or ">Or</option>';
 					}
 					if (elem.nexus == "not") {
-						s += '<option value="not" selected>Not</option>';
+						s += '<option value=" not " selected>Not</option>';
 
 					} else {
-						s += '<option value="not">Not</option>';
+						s += '<option value=" not ">Not</option>';
 					}
 
 					s += '</select></div>';
@@ -3672,7 +3672,7 @@
 
 		function GetFilterCondition(elem, dataAttributes, nodeId) {
 			counter.push(elem);
-			return conditionsFilter[elem].property + '<div class="buttonsInFilterRow"><button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="fletxaAbaix_18x11.png"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="fletxaAmunt_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button></div>';
+			return conditionsFilter[elem].property + '<div class="buttonsInFilterRow"><button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="arrowDown_18x11.png"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="arrowUp_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button></div>';
 
 		}
 
