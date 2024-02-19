@@ -2126,7 +2126,7 @@
 
 								var typeOfValue = infoFilter[i][5];
 								var apostropheOrSpace;
-								(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = " ";
+								(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = "";
 								switch (infoFilter[i][3]) {
 									case ' = ':
 										data += " eq " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
@@ -3624,19 +3624,19 @@
 
 					s += `</td><td valign="middle" class="tdSelectAndOrNot" id='tdSelectAndOrNot_${elem.boxName}'><div class="topPartSelectAndOrNot" ></div><div class="bottomPartSelectAndOrNot" id= "bottomPartSelectAndOrNot_${elem.boxName}"><select class="selectAndOrNot" name="selectAndOrNot"  onchange= "actualizeSelectChoice('${elem.boxName}')" id="selectAndOrNot_${elem.boxName}">`;
 
-					if (elem.nexus == "and") {
+					if (elem.nexus == " and ") {
 						s += '<option value=" and " selected>And</option>';
 
 					} else {
 						s += '<option value=" and ">And</option>';
 					}
-					if (elem.nexus == "or") {
+					if (elem.nexus == " or ") {
 						s += '<option value=" or " selected>Or</option>';
 
 					} else {
 						s += '<option value=" or ">Or</option>';
 					}
-					if (elem.nexus == "not") {
+					if (elem.nexus == " not ") {
 						s += '<option value=" not " selected>Not</option>';
 
 					} else {
