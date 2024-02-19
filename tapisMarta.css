@@ -86,15 +86,7 @@ body {
     /* left:20; */
 }
 
-.borderTable {
-    border: black 1px solid;
-}
 
-th.borderTable {
-    min-width: 100px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
 
 #divSelectorRowsFilter {
     margin-top: 20px;
@@ -110,41 +102,30 @@ th.borderTable {
     float: left;
     border: black 1px solid;
 }
-.td_0{
-    background-color: blue;
-    margin:10px;
-}
 
-/*
-.characterDeleteButton {
-    background-image: url("trash_18x18.png");
-    height: 18px;
-    width: 18px;
-    display: inline-block;
+/* .tdSelectAndOrNot {
+    border-left: 2px solid #34383aef;
+} */
 
+.tableFilter {
+    margin-top: 10px;
 
 }
 
-.characterUpButton {
-    background-image: url("fletxaAmunt_18x11.png");
-    height: 18px;
-    width: 11px;
-    display: inline-block;
-    margin-right: 5px;
 
 
-}
-
-.characterDownButton {
-    background-image: url("fletxaAbaix_18x11.png");
-    height: 18px;
-    width: 11px;
-    margin-right: 5px;
-    display: inline-block;
-}
-*/
 
 /* Row Filter */
+
+#divTitleSelectRows {
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 35px;
+    font-weight: bold;
+    width: 100%;
+
+}
+
 #fullFilterDiv {
     height: 200px;
     border: black 1px solid;
@@ -218,13 +199,68 @@ th.borderTable {
 
 .buttonAddFilterGroup {
     margin-left: 30px;
-
     display: block;
 }
+
+/* .deleteGroupFilterRow {
+    position: absolute;
+    right:5px;
+} */
+
+.tdBoxName {
+    position: relative;
+
+}
+
+.buttonsInFilterRow {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.optionsRow {
+    display: inline-block;
+}
+
+ .trLineBoxName td { /*Line with selects and buttons */
+    height: 35px;
+    border: 2px solid #34383aef;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.trBoxName  {
+    border-radius: 20px;
+    border: 1px solid #34383aef;
+    padding: 15px;
+}
+
+.topButtonsFilterRow {
+    height: 30px;
+}
+
+.tdSelectAndOrNot {
+    height: 30px;
+}
+
+.topPartSelectAndOrNot {
+    height: 30px;
+
+}
+
+.bottomPartSelectAndOrNot {
+    height: auto;
+    border-left: 2px solid #34383aef;
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+}
+
+/* .selectAndOrNot{
+
+} */
 
 /*..........*/
 
 .inblock {
     display: inline-block;
 }
-
