@@ -2654,6 +2654,15 @@
 			buttonDown.setAttribute("disabled", true);
 			buttonUp.setAttribute("disabled", true);
 
+			//save value from input in case of cancel button is pressed
+			if (selector == "simple") {
+				textInput.setAttribute("data-oldvalue", textInput.value);
+			} else {
+				textInputInterval1.setAttribute("data-oldvalue", textInputInterval1.value);
+				textInputInterval2.setAttribute("data-oldvalue", textInputInterval2.value);
+
+			}
+
 			//Wich text is open?
 			if (selector == "simple") {
 				textInput.classList.remove("inblock");
@@ -2673,6 +2682,8 @@
 				divFilterContainer2.classList.remove("hidden");
 				divFilterContainer2.classList.add("inblock");
 			}
+
+
 		}
 		function showIntervalSelector(nodeId, number) {
 			event.preventDefault();
@@ -2878,6 +2889,41 @@
 			return arrayValuesArranged;
 		}
 
+		function changeSelectValueRowFilter(nodeId, number) {
+			isAnObject(nodeId, number);
+			var textInput = document.getElementById("textInput_" + number);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
+
+			var selectorValue= document.getElementById("selectorValue_" + number);
+			var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
+			var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
+			
+			var selectorCondition = document.getElementById("selectorCondition_" + number);
+			var selectedConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
+
+			//put select value in input
+			if (selectedConditionValue == " [a,b] " || selectedConditionValue == " (a,b] " || selectedConditionValue == " [a,b) " || selectedConditionValue == " (a,b) ") { //interval
+				var valueOfSelectValueInterval1 = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
+				var valueOfSelectValueInterval2 = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
+
+				textInputInterval1.innerHTML = valueOfSelectValueInterval1;
+				textInputInterval2.innerHTML = valueOfSelectValueInterval2;
+
+				textInputInterval1.setAttribute("value",valueOfSelectValueInterval1);
+				textInputInterval2.setAttribute("value",valueOfSelectValueInterval2);
+
+			} else {
+				var valueOfSelectorValue = selectorValue.options[selectorValue.selectedIndex].value;
+				textInput.innerHTML = valueOfSelectorValue;
+				textInput.setAttribute("value",valueOfSelectorValue);
+			}
+			
+
+		}
+
+
+
 		function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, count) {
 
 			var placeId = document.getElementById(place_Id);
@@ -3049,7 +3095,7 @@
 				placeId.appendChild(divFilterContainer);
 
 				select.setAttribute("id", "selectorValue_" + count);
-				select.setAttribute("onChange", "isAnObject('" + nodeId + "','" + count + "')");
+				select.setAttribute("onChange", "changeSelectValueRowFilter('" + nodeId + "','" + count + "')");
 
 				var valor;
 				var arrayValors = [];
@@ -3349,8 +3395,8 @@
 			var textInput = document.getElementById("textInput_" + number);
 			var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
 			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
-			
-			
+
+
 			var STALastEntity = currentNode.STALastEntity;
 
 
@@ -3409,18 +3455,18 @@
 				} else if (!divFilterContainer.classList.contains("hidden")) { //if select is open 
 					divFilterContainer.classList.add("hidden");
 					divFilterContainer.classList.remove("inblock");
-					textInput.classList.remove("hidden");	
-					textInput.classList.add("inblock");	
+					textInput.classList.remove("hidden");
+					textInput.classList.add("inblock");
 					//show input
-				}else if (!divFilterContainer2.classList.contains("hidden")) {
+				} else if (!divFilterContainer2.classList.contains("hidden")) {
 					divFilterContainer2.classList.add("hidden");
 					divFilterContainer2.classList.remove("inblock");
-					textInputInterval1.classList.remove("hidden");	
+					textInputInterval1.classList.remove("hidden");
 					textInputInterval1.classList.add("inblock");
-					textInputInterval2.classList.remove("hidden");	
+					textInputInterval2.classList.remove("hidden");
 					textInputInterval2.classList.add("inblock");
 				}
-				
+
 			} else { //show
 				if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") & (selectorSTAEntityValue == STALastEntity)) {
 					if (displaySelectInterval.classList.contains("hidden")) {
@@ -3500,6 +3546,14 @@
 					textInputInterval2.value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
 					adjustWidth("interval", number);
 
+				}
+
+			} else { //press "cancel"
+				if (selector == "simple") {
+					textInput.innerHTML = textInput.getAttribute("data-oldvalue");
+				} else {
+					textInputInterval1.innerHTML = textInputInterval1.getAttribute("data-oldvalue");
+					textInputInterval2.innerHTML = textInputInterval2.getAttribute("data-oldvalue");
 				}
 
 			}
