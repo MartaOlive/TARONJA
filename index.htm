@@ -2851,33 +2851,33 @@
 			var arrayText = [];
 
 			for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
-
-				var isNumber = true;
-				for (var a = 0; a < arrayValues[i].length; a++) {
-					if (isNumber == true) {
-						if (isNaN(arrayValues[i][a])) {//is not a number 
-							isNumber = false;
+				if (arrayValues[i] != undefined) {
+					var isNumber = true;
+					for (var a = 0; a < arrayValues[i].length; a++) {
+						if (isNumber == true) {
+							if (isNaN(arrayValues[i][a])) {//is not a number 
+								isNumber = false;
+							}
 						}
-
 					}
+					if (isNumber == true) {
+						arrayNumbers.push(arrayValues[i]);
+					} else {
+						arrayText.push(arrayValues[i]);
+					}
+
 				}
-				if (isNumber == true) {
-					arrayNumbers.push(arrayValues[i]);
-				} else {
-					arrayText.push(arrayValues[i]);
-				}
+
+				var arrayNumbersArranged = arrayNumbers.sort((a, b) => a - b);
+				var arrayTextsArranged = arrayText.sort();
+
+				var arrayValuesArranged = arrayNumbersArranged.concat(arrayTextsArranged); //join arrays
+
+
 			}
-
-			var arrayNumbersArranged = arrayNumbers.sort((a, b) => a - b);
-			var arrayTextsArranged = arrayText.sort();
-
-			var arrayValuesArranged = arrayNumbersArranged.concat(arrayTextsArranged); //join arrays
-
-			console.log(arrayValuesArranged);
-
 			return arrayValuesArranged;
-
 		}
+
 		function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, count) {
 
 			var placeId = document.getElementById(place_Id);
@@ -3344,7 +3344,13 @@
 			var selectorSTAEntityValue = selectorSTAEntity.options[selectorSTAEntity.selectedIndex].value;
 			var selectCondition = document.getElementById("selectorCondition_" + number);
 			var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
-
+			var divFilterContainer = document.getElementById("divFilterContainer_" + number);
+			var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
+			var textInput = document.getElementById("textInput_" + number);
+			var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
+			var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
+			
+			
 			var STALastEntity = currentNode.STALastEntity;
 
 
@@ -3372,6 +3378,7 @@
 
 
 			var valueUndefined = true;
+
 			for (var i = 0; i < arrayValuesArranged.length; i++) { //fill selector (there are 3: Simple + 2 Intervals)
 				var opcio = document.createElement("option");
 				var opcio2 = document.createElement("option");
@@ -3392,14 +3399,28 @@
 				selectorValueInterval2.appendChild(opcio3);
 			}
 
-			if (valueUndefined == true) { //hidde
-				if (!displaySelect.classList.contains("hidden")) {
+			if (valueUndefined == true) { //hidde display and selector (divFilterContainer) if it is open
+				if (!displaySelect.classList.contains("hidden")) { //don't show button to display select
 					displaySelect.classList.add("hidden");
 					displaySelect.classList.remove("inblock");
 				} else if (!displaySelectInterval.classList.contains("hidden")) {
 					displaySelectInterval.classList.add("hidden");
 					displaySelectInterval.classList.remove("inblock");
+				} else if (!divFilterContainer.classList.contains("hidden")) { //if select is open 
+					divFilterContainer.classList.add("hidden");
+					divFilterContainer.classList.remove("inblock");
+					textInput.classList.remove("hidden");	
+					textInput.classList.add("inblock");	
+					//show input
+				}else if (!divFilterContainer2.classList.contains("hidden")) {
+					divFilterContainer2.classList.add("hidden");
+					divFilterContainer2.classList.remove("inblock");
+					textInputInterval1.classList.remove("hidden");	
+					textInputInterval1.classList.add("inblock");
+					textInputInterval2.classList.remove("hidden");	
+					textInputInterval2.classList.add("inblock");
 				}
+				
 			} else { //show
 				if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") & (selectorSTAEntityValue == STALastEntity)) {
 					if (displaySelectInterval.classList.contains("hidden")) {
