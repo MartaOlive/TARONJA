@@ -142,13 +142,13 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 					}
 					else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
 
-						data += "("
+
 						if (entity != valueOfEntity) {
 							valueEntityToURL = valueEntityToURL + "/" + infoFilter[i][2];
 						} else {
 							valueEntityToURL = infoFilter[i][2];
 						}
-
+						data += "( " + valueEntityToURL;
 
 						switch (infoFilter[i][3]) {
 							case ' [a,b] ':
@@ -264,9 +264,9 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 		}
 	} else {
 		if (textIputInterval1 == null) {
-			textIputInterval1="";
-		}else if (textIputInterval2 == null){
-			textIputInterval2="";
+			textIputInterval1 = "";
+		} else if (textIputInterval2 == null) {
+			textIputInterval2 = "";
 		}
 	}
 
@@ -440,14 +440,14 @@ function changeWriteToSelect(nodeId, number, selector) {  //To take the text in 
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 	var textInput = document.getElementById("textInput_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
-	var selectorValue=document.getElementById("selectorValue_"+number);
+	var selectorValue = document.getElementById("selectorValue_" + number);
 
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
 	var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
 	var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-	var selectorValueInterval1=document.getElementById("selectorValueInterval1_"+number);
-	var selectorValueInterval2=document.getElementById("selectorValueInterval2_"+number);
+	var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
+	var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
 
 
 	//disconnect arrow buttons
@@ -1733,20 +1733,24 @@ function LookForPreviousConditionFilterTable(elem, iCon, parent) {
 
 //add conditions
 
-function addNewCondition(boxName, paramsNodeId) {
+function addNewCondition(boxName, paramsNodeId, fromBiggest) {
 	event.preventDefault();
+	if (fromBiggest == undefined) {
+		fromBiggest = false;
+	}
+
 	var elem = elemFilter;
-	searchFilterBoxName(boxName, elem, paramsNodeId);
+	searchFilterBoxName(boxName, elem, paramsNodeId, fromBiggest);
 
 }
-function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //the elem has  boxName ...
+function searchFilterBoxName(boxNamee, elem, paramsNodeId, fromBiggest) { //the elem has  boxName ...
 	var element;
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
-			searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
+			searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId, fromBiggest);
 		}
 		if (elem.boxName == boxNamee) {  //Add elems => elems[0,1...]
-			addNewElement(elem, paramsNodeId, boxNamee);
+			addNewElement(elem, paramsNodeId, boxNamee, fromBiggest);
 		}
 	}
 	else {
@@ -1754,7 +1758,7 @@ function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //the elem has  box
 	}
 }
 
-function addNewElement(elem, nodeId, boxName) {
+function addNewElement(elem, nodeId, boxName, fromBiggest) {
 	var elements = elem.elems;
 	var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
 	var nextNumber = parseInt(lastNumber) + 1; //for those who are within the 0_...
@@ -1812,15 +1816,17 @@ function addNewElement(elem, nodeId, boxName) {
 
 		}
 	}
+	if (fromBiggest == false) {
+		//take selector values and update an external variable
+		takeSelectInformation(nodeId);
 
-	//take selector values and update an external variable
-	takeSelectInformation(nodeId);
+		//repaint selects
+		drawTableAgain(nodeId)
 
-	//repaint selects
-	drawTableAgain(nodeId)
+		//correct size to select(AndOrNot) div
+		resizeBottomPartSelectAndOrNot();
+	}
 
-	//correct size to select(AndOrNot) div
-	resizeBottomPartSelectAndOrNot();
 
 
 }
@@ -1838,8 +1844,8 @@ function resizeBottomPartSelectAndOrNot() {
 }
 function takeSelectInformation(nodeId) {
 	var optionsRow;
-	var selectorSTAEntity, selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
-	var selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value, selectorValue, selectorValueInterval1, selectorValueInterval2;
+	var selectorSTAEntity, selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
+	var selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
 	var arrayInfo;
 	infoFilter = []; //general var that keeps the information from selects/inputs
 	for (var i = 0; i < counter.length; i++) {
@@ -1862,27 +1868,28 @@ function takeSelectInformation(nodeId) {
 				textInputInterval2 = document.getElementById("textInputInterval2_" + counter[i]);
 				selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + counter[i]);
 				selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + counter[i]);
+				divFilterContainer2 = document.getElementById("divFilterContainer2_" + counter[i]);
 
-				if (selectorValueInterval1.style.display = "inline-block") { //Select open
+				if (divFilterContainer2.style.display == "inline-block") { //Select open
 					textInputInterval1Value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
 					textInputInterval2Value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
 				} else {
-					textInputInterval1Value = textInputInterval1.getAttribute("value");
-					textInputInterval2Value = textInputInterval2.getAttribute("value");
+					textInputInterval1Value = textInputInterval1.value;
+					textInputInterval2Value = textInputInterval2.value;
 				}
-				textInputInterval1Value = textInputInterval1.getAttribute("value");
-				textInputInterval2Value = textInputInterval2.getAttribute("value");
+
 				arrayInfo.push(textInputInterval1Value);
 				arrayInfo.push(textInputInterval2Value);
 				var typeOfValue = typeOfValueFromInput("interval", counter[i], textInputInterval1Value, textInputInterval2Value)
 
 			} else {
 				textInput = document.getElementById("textInput_" + counter[i]);
+				divFilterContainer = document.getElementById("divFilterContainer_" + counter[i]);
 				selectorValue = document.getElementById("selectorValue_" + counter[i]);
-				if (selectorValue.style.display == "inline-block") { //Select open
+				if (divFilterContainer.style.display == "inline-block") { //Select open
 					textInputValue = selectorValue.options[selectorValue.selectedIndex].value;
 				} else {
-					textInputValue = textInput.getAttribute("value");
+					textInputValue = textInput.value;
 				}
 
 				console.log(textInputValue);
@@ -2028,11 +2035,10 @@ function biggestLevelButton(boxName, nodeId) {
 
 	var boxNameToPass = newBoxName;
 
-	addNewCondition(boxNameToPass, currentNode.id);
+	addNewCondition(boxNameToPass, currentNode.id, true); //fromBiggest=true -> To avoid TakeSelect ...etc in addNewElement function
 
 
 	//take the values ​​of the selectors and update an external variable
-
 
 	takeSelectInformation(nodeId);
 
