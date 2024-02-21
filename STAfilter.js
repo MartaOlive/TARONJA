@@ -257,6 +257,20 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 		var textIputInterval1 = document.getElementById("textInputInterval1_" + number);
 		var textIputInterval2 = document.getElementById("textInputInterval2_" + number);
 	}
+	//avoid error because input is empty so values are null
+	if (wichTextInput == "simple") {
+		if (value1 == null) {
+			value1 = "";
+		}
+	} else {
+		if (textIputInterval1 == null) {
+			textIputInterval1="";
+		}else if (textIputInterval2 == null){
+			textIputInterval2="";
+		}
+	}
+
+
 	if (wichTextInput == "simple") {
 
 		if (value1.includes("-") == true) {//inputText1
@@ -426,11 +440,15 @@ function changeWriteToSelect(nodeId, number, selector) {  //To take the text in 
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 	var textInput = document.getElementById("textInput_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
+	var selectorValue=document.getElementById("selectorValue_"+number);
 
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
 	var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
 	var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
+	var selectorValueInterval1=document.getElementById("selectorValueInterval1_"+number);
+	var selectorValueInterval2=document.getElementById("selectorValueInterval2_"+number);
+
 
 	//disconnect arrow buttons
 	var buttonUp = document.getElementById("buttonUp_" + number);
@@ -452,12 +470,17 @@ function changeWriteToSelect(nodeId, number, selector) {  //To take the text in 
 		textInput.style.display = "none";
 		displaySelect.style.display = "none";
 		divFilterContainer.style.display = "inline-block";
+		selectorValue.style.display = "inline-block";
+
 
 	} else { //interval
 		textInputInterval1.style.display = "none";
 		textInputInterval2.style.display = "none";
 		displaySelectInterval.style.display = "none";
 		divFilterContainer2.style.display = "inline-block";
+		selectorValueInterval1.style.display = "inline-block";
+		selectorValueInterval2.style.display = "inline-block";
+
 	}
 }
 function showIntervalSelector(nodeId, number) {
@@ -684,21 +707,21 @@ function changeSelectValueRowFilter(nodeId, number) {
 	var selectedConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
 
 	//put select value in input
-	if (selectedConditionValue == " [a,b] " || selectedConditionValue == " (a,b] " || selectedConditionValue == " [a,b) " || selectedConditionValue == " (a,b) ") { //interval
-		var valueOfSelectValueInterval1 = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
-		var valueOfSelectValueInterval2 = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
+	// if (selectedConditionValue == " [a,b] " || selectedConditionValue == " (a,b] " || selectedConditionValue == " [a,b) " || selectedConditionValue == " (a,b) ") { //interval
+	// 	var valueOfSelectValueInterval1 = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
+	// 	var valueOfSelectValueInterval2 = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
 
-		textInputInterval1.innerHTML = valueOfSelectValueInterval1;
-		textInputInterval2.innerHTML = valueOfSelectValueInterval2;
+	// 	textInputInterval1.innerHTML = valueOfSelectValueInterval1;
+	// 	textInputInterval2.innerHTML = valueOfSelectValueInterval2;
 
-		textInputInterval1.setAttribute("value", valueOfSelectValueInterval1);
-		textInputInterval2.setAttribute("value", valueOfSelectValueInterval2);
+	// 	textInputInterval1.setAttribute("value", valueOfSelectValueInterval1);
+	// 	textInputInterval2.setAttribute("value", valueOfSelectValueInterval2);
 
-	} else {
-		var valueOfSelectorValue = selectorValue.options[selectorValue.selectedIndex].value;
-		textInput.innerHTML = valueOfSelectorValue;
-		textInput.setAttribute("value", valueOfSelectorValue);
-	}
+	// } else {
+	// 	var valueOfSelectorValue = selectorValue.options[selectorValue.selectedIndex].value;
+	// 	textInput.innerHTML = valueOfSelectorValue;
+	// 	//textInput.setAttribute("value", valueOfSelectorValue);
+	// }
 
 
 }
@@ -1790,7 +1813,7 @@ function addNewElement(elem, nodeId, boxName) {
 		}
 	}
 
-	//take selector values ââand update an external variable
+	//take selector values and update an external variable
 	takeSelectInformation(nodeId);
 
 	//repaint selects
@@ -1804,16 +1827,19 @@ function addNewElement(elem, nodeId, boxName) {
 function resizeBottomPartSelectAndOrNot() {
 	for (var i = 0; i < boxNames.length; i++) {
 		var tdSelectAndOrNot = document.getElementById("tdSelectAndOrNot_" + boxNames[i]);
-		var tdSelectAndOrNotHeight = tdSelectAndOrNot.clientHeight;
-		var bottomPartSelectAndOrNot = document.getElementById("bottomPartSelectAndOrNot_" + boxNames[i]);
-		bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 35) + "px";
+		if (tdSelectAndOrNot != null) {
+			var tdSelectAndOrNotHeight = tdSelectAndOrNot.clientHeight;
+			var bottomPartSelectAndOrNot = document.getElementById("bottomPartSelectAndOrNot_" + boxNames[i]);
+			bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 35) + "px";
+		}
+
 
 	}
 }
 function takeSelectInformation(nodeId) {
 	var optionsRow;
 	var selectorSTAEntity, selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2;
-	var selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
+	var selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value, selectorValue, selectorValueInterval1, selectorValueInterval2;
 	var arrayInfo;
 	infoFilter = []; //general var that keeps the information from selects/inputs
 	for (var i = 0; i < counter.length; i++) {
@@ -1834,6 +1860,16 @@ function takeSelectInformation(nodeId) {
 			if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
 				textInputInterval1 = document.getElementById("textInputInterval1_" + counter[i]);
 				textInputInterval2 = document.getElementById("textInputInterval2_" + counter[i]);
+				selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + counter[i]);
+				selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + counter[i]);
+
+				if (selectorValueInterval1.style.display = "inline-block") { //Select open
+					textInputInterval1Value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
+					textInputInterval2Value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
+				} else {
+					textInputInterval1Value = textInputInterval1.getAttribute("value");
+					textInputInterval2Value = textInputInterval2.getAttribute("value");
+				}
 				textInputInterval1Value = textInputInterval1.getAttribute("value");
 				textInputInterval2Value = textInputInterval2.getAttribute("value");
 				arrayInfo.push(textInputInterval1Value);
@@ -1842,7 +1878,13 @@ function takeSelectInformation(nodeId) {
 
 			} else {
 				textInput = document.getElementById("textInput_" + counter[i]);
-				textInputValue = textInput.getAttribute("value");
+				selectorValue = document.getElementById("selectorValue_" + counter[i]);
+				if (selectorValue.style.display == "inline-block") { //Select open
+					textInputValue = selectorValue.options[selectorValue.selectedIndex].value;
+				} else {
+					textInputValue = textInput.getAttribute("value");
+				}
+
 				console.log(textInputValue);
 				arrayInfo.push(textInputValue);
 				var typeOfValue = typeOfValueFromInput("simple", counter[i], textInputValue)
