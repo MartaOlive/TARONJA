@@ -1,4 +1,93 @@
 {
 	"STAurl": "https://citiobs.demo.secure-dimensions.de/staplus/v1.1",
+	"suggestedSTAurls": [
+		{
+			"group": "Releated to CREAF projects",
+			"STAs": [
+			{
+				"desc": "CitiObs STAplus demo server",
+				"url": "https://citiobs.demo.secure-dimensions.de/staplus/v1.1"
+			},
+			{
+				"desc": "CitiObs STAplus test server",
+				"url": "https://citiobs.demo.secure-dimensions.de/staplustest/v1.1"
+			},
+			{
+				"desc": "AD4GD STAplus server",
+				"url": "https://frost.iotlab.com/sensorthings/v1.1"
+			},
+			{
+				"desc": "OGC sprint STAplus demo server",
+				"url": "https://ogc.demo.secure-dimensions.de/staplus/v1.1"
+			},
+			{
+				"desc": "Air Quality in the Nederlands (Samenmeten RIVM) (v1.0)",
+				"url": "https://api-samenmeten.rivm.nl/v1.0"
+			}
+			]
+		},
+		{
+			"group": "Other Services",
+			"STAs": [
+			{
+				"desc": "IoT data in Hamburg",
+				"url": "https://iot.hamburg.de/v1.1"
+			},
+			{
+				"desc": "Air Quality in Europe by Fraunhofer IOSB",
+				"url": "https://airquality-frost.k8s.ilt-dmz.iosb.fraunhofer.de/v1.1"
+			},
+			{
+				"desc": "Demography in Europe by Fraunhofer IOSB",
+				"url": "https://demography.k8s.ilt-dmz.iosb.fraunhofer.de/v1.1"
+			},
+			{
+				"desc": "British Geological Survey Sensor Data Service",
+				"url": "https://sensors.bgs.ac.uk/FROST-Server/v1.1"
+			},
+			{
+				"desc": "Surface water quality in France (BRGM) (v1.0)",
+				"url": "https://sensorthings-wq.brgm-rec.fr/FROST-Server/v1.0"
+			},
+			{
+				"desc": "Surface water quantity in France (BRGM)",
+				"url": "https://sta4hydrometry.brgm-rec.fr/FROST-Server/v1.1/"
+			},
+			{
+				"desc": "Ground water quantity in France (BRGM)",
+				"url": "https://sensorthings.brgm-rec.fr/SensorThingsGroundWater/v1.1/"
+			},
+			{
+				"desc": "New Mexico Bureau of Geology and Mineral Resources groundwater quality and quantity",
+				"url": "https://st2.newmexicowaterdata.org/FROST-Server/v1.1"
+			},
+			{
+				"desc": "New Mexico Environment Department drinking water quality",
+				"url": "https://nmenv.newmexicowaterdata.org/FROST-Server/v1.1"
+			},
+			{
+				"desc": "USGS water-data web-based API",
+				"url": "https://labs.waterdata.usgs.gov/sta/v1.1/"
+			}
+			]
+		},
+		{
+			"group": "Testing Examples",
+			"STAs": [
+			{
+				"desc": "Toronto bikes snapshot (v1.0)",
+				"url": "https://toronto-bike-snapshot.sensorup.com/v1.0"
+			},
+			{
+				"desc": "SensorUp test service (v1.0)",
+				"url": "http://scratchpad.sensorup.com/OGCSensorThings/v1.0"
+			},
+			{
+				"desc": "Fraunhofer IOSB demo service",
+				"url": "https://ogc-demo.k8s.ilt-dmz.iosb.fraunhofer.de/v1.1/"
+			}
+			]
+		}
+	],
 	"MMNpath": "../osm"
 }

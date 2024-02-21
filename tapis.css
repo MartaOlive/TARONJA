@@ -103,14 +103,6 @@
 }
 
 
-.tableFilter {
-    margin-top: 10px;
-
-}
-
-
-
-
 /* Row Filter */
 
 #divTitleSelectRows {
@@ -245,9 +237,4 @@
     display: flex;
     align-items: center;
     padding-left: 5px;
-}
-
-
-.inblock {
-    display: inline-block;
 }
