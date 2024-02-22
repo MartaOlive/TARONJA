@@ -150,7 +150,7 @@
 	<dialog id="DialogSelectNRecords">
 		<form>
 			<label>Number records to request:
-				<input type="text" id="SelectExpandsNumberOfRecords" size="6" maxlength="6" value="100"></input>
+				<input type="text" id="SelectNumberOfRecords" size="6" maxlength="6" value="100"></input>
 			</label>
 			<div class="center">
 				<button value="default" onClick="GetSelectNRecords(event)">OK</button>
@@ -180,20 +180,27 @@
 		</form>
 	</dialog>
 
-	<dialog id="DialogSelectRows">
-		<div id="divTitleSelectRows"></div>
+	<dialog id="DialogSelectRow">
+		<div id="divTitleSelectRow" class="center" style="font-size: large;"></div>
 		<form>
-			<span id="DialogSelectRowsTableInputSpan">
-			</span>
+			Select an element:
 			<span id="DialogSelectRowsTable">
 			</span>
-			<br>
-			<span id="DialogSelectRowsFilterInputSpan">
-			</span>
+			<div class="center">
+				<button value="default" onClick="GetSelectRow(event)">OK</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
+	<dialog id="DialogFilterRows">
+		<div id="divTitleSelectRows" class="center" style="font-size: large;"></div>
+		<form>
+			Filter:
 			<span id="DialogSelectRowsFilter">
 			</span>
 			<div class="center">
-				<button value="default" onClick="GetSelectRows(event)">OK</button>
+				<button value="default" onClick="GetFilterRows(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -582,7 +589,8 @@
 					Table: {description: "View Table", leafNode: true}, 
 					SelectColumnsSTA: {description: "Select Columns", callSTALoad: true},
 					ExpandColumnsSTA: {description: "Expand Columns", callSTALoad: true},
-					SelectRowsSTA: {description: "Select Rows", callSTALoad: true},
+					SelectRowSTA: {description: "Select Row", callSTALoad: true},
+					FilterRowsSTA: {description: "Filter Rows", callSTALoad: true},
 					SortBySTA: {description: "Sort by", callSTALoad: true},
 					ViewQuerySTA: {description: "View Query", leafNode: true},
 					UploadObservations: {description: "Upload in STA", leafNode: true},
@@ -2013,11 +2021,13 @@
 		function GetSelectNRecords(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectNRecords").close();
+
+			var previousSTAURL= currentNode.STAURL;
 			
-			if (!isNaN(parseInt(document.getElementById("SelectExpandsNumberOfRecords").value)))
-				currentNode.STAExpectedLength = parseInt(document.getElementById("SelectExpandsNumberOfRecords").value);
+			if (!isNaN(parseInt(document.getElementById("SelectNumberOfRecords").value)))
+				currentNode.STAExpectedLength = parseInt(document.getElementById("SelectNumberOfRecords").value);
 			networkNodes.update(currentNode);
-			showInfoMessage("Loading STA columns...");
+			showInfoMessage("Loading STA count...");
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
 		}
@@ -2071,9 +2081,9 @@
 				!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 		}
 
-		function GetSelectRows(event) {
+		function GetSelectRow(event) {
 			event.preventDefault(); // We don't want to submit this form
-			document.getElementById("DialogSelectRows").close();
+			document.getElementById("DialogSelectRow").close();
 
 			var previousSTAURL=currentNode.STAURL;
 			var parentNode=GetFirstParentNode(currentNode);
@@ -2086,74 +2096,90 @@
 			else
 				return;
 
-			if (document.getElementById("DialogSelectRowsTableRadio").checked) {
-				var elems = document.getElementsByName("SelectRowRadio");
-				for (var i = 0; i < elems.length; i++) {
-					if (elems[i].checked)
-						break;
-				}
-				if (i < elems.length) {
-					const s = elems[i].id.substring("SelectRow_".length);
-					const n = Number(s);
-
-					currentNode.STAURL = AddKVPToURL(getURLWithoutQueryParams(currentNode.STAURL) + (Number.isInteger(n) ? "(" + n + ")" : "('" + s + "')"), getURLQueryParams(currentNode.STAURL));
-					currentNode.STAURLIdSelected=s;
-				}
+			var elems = document.getElementsByName("SelectRowRadio");
+			for (var i = 0; i < elems.length; i++) {
+				if (elems[i].checked)
+					break;
 			}
-			else {
+			if (i < elems.length) {
+				const s = elems[i].id.substring("SelectRow_".length);
+				const n = Number(s);
 
-				//updateinfoFilter
-				takeSelectInformation(currentNode.id);
-				console.log(currentNode.STAURL);
-				var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
-
-				urlAPICounter = []; // I need to restart it 
-
-				//put URL ready to add things
-				var previousURL = previousNode[0].STAURL;
-
-				if (previousURL.includes("$select=") || previousURL.includes("$orderby")) {
-					urlAPI = previousURL + "&$filter=";
-				} else {
-					urlAPI = previousURL + "?$filter=";
-				}
-
-				stopReadInformationRowFilter = false;
-				var entity = currentNode.STALastEntity;
-				var entity;
-				if (currentNode.STALastEntity) {
-					entity = currentNode.STALastEntity
-				} else {
-					entity = "STAPlus"
-				}
-
-				readInformationRowFilter(elemFilter, entity, "no", "no"); //And apply filter
-				console.log(urlAPI);
-				currentNode.STAURL = urlAPI;
-				//Selectors Information
-				currentNode.STAelementFilter = elemFilter;
-				currentNode.STAinfoFilter = infoFilter;
-				currentNode.STAboxName = boxNames;
-				currentNode.STAConditionsFilter = conditionsFilter;
-
-				//keep in this node
-				elemFilter = { //restart for next node
-					elems: [0],
-					nexus: null,
-					boxName: "0_0"
-				}
-				infoFilter = [];
-				boxNames = ["0_0"];
-				conditionsFilter = [ //valors de la taula
-					{
-						property: "<div id='optionsRow_0' class='optionsRow'></div>",
-						number: "0"
-					}
-				];
+				currentNode.STAURL = AddKVPToURL(getURLWithoutQueryParams(currentNode.STAURL) + (Number.isInteger(n) ? "(" + n + ")" : "('" + s + "')"), getURLQueryParams(currentNode.STAURL));
+				currentNode.STAURLIdSelected=s;
 			}
 			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
-			showInfoMessage("Selecting STA rows...");
+			showInfoMessage("Selecting STA row...");
+			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
+			LoadJSONNodeSTAData(currentNode);
+		}
+
+		function GetFilterRows(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogFilterRows").close();
+
+			var previousSTAURL=currentNode.STAURL;
+			var parentNode=GetFirstParentNode(currentNode);
+			if (parentNode) {
+				if (parentNode.STAURL)
+					currentNode.STAURL = parentNode.STAURL;
+				if (parentNode.STAdata)
+					currentNode.STAdata = parentNode.STAdata;
+			}
+			else
+				return;
+
+			//updateinfoFilter
+			takeSelectInformation(currentNode.id);
+			console.log(currentNode.STAURL);
+			var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
+
+			urlAPICounter = []; // I need to restart it 
+			//put URL ready to add things
+			var previousURL = previousNode[0].STAURL;
+
+			if (previousURL.includes("$select=") || previousURL.includes("$orderby")) {
+				urlAPI = previousURL + "&$filter=";
+			} else {
+				urlAPI = previousURL + "?$filter=";
+			}
+
+			stopReadInformationRowFilter = false;
+			var entity;
+			if (getSTAURLLastEntity(currentNode.STAURL)) {
+				entity = getSTAURLLastEntity(currentNode.STAURL);
+			} else {
+				entity = "STAPlus"
+			}
+
+			readInformationRowFilter(elemFilter, entity, "no", "no"); //And apply filter
+			console.log(urlAPI);
+			currentNode.STAURL = urlAPI;
+			//Selectors Information
+			currentNode.STAelementFilter = elemFilter;
+			currentNode.STAinfoFilter = infoFilter;
+			currentNode.STAboxName = boxNames;
+			currentNode.STAConditionsFilter = conditionsFilter;
+
+			//keep in this node
+			elemFilter = { //restart for next node
+				elems: [0],
+				nexus: null,
+				boxName: "0_0"
+			}
+			infoFilter = [];
+			boxNames = ["0_0"];
+			conditionsFilter = [ //valors de la taula
+				{
+					property: "<div id='optionsRow_0' class='optionsRow'></div>",
+					number: "0"
+				}
+			];
+
+			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
+			networkNodes.update(currentNode);
+			showInfoMessage("Filtering STA rows...");
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
 		}
@@ -2332,8 +2358,8 @@
 			}
 
 			document.getElementById("DialogOKHTML").innerHTML = GetHTMLTable(data, networkNodes.get(nodeId).STAdataAttributes ? networkNodes.get(nodeId).STAdataAttributes : getDataAttributes(data),
-				"SelectRow_",
 				document.getElementById("ShowTableRowNumberDialogOK").checked ? true : false,
+				"SelectRow_", null,
 				null, "", isAttributeAnyURI);
 		}
 
@@ -3041,35 +3067,29 @@
 			document.getElementById("SelectSortByNumberOfRecords").value=node.STAExpectedLength;
 		}
 
-		function ShowTableSelectRowsDialog(parentNodeId, nodeId) {
+		function ShowTableSelectRowDialog(parentNodeId, nodeId) {
 			var data = networkNodes.get(parentNodeId).STAdata;
-			addTitleInRowFilterDIalog();
+
+			addTitleInRowFilterDialog("divTitleSelectRow");
 
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
 				return;
 			}
-
-			document.getElementById("DialogSelectRowsTableRadio").checked = true;
 			document.getElementById("DialogSelectRowsTable").innerHTML = GetHTMLTable(data, networkNodes.get(parentNodeId).STAdataAttributes ? networkNodes.get(parentNodeId).STAdataAttributes : getDataAttributes(data), false, "SelectRow_", networkNodes.get(nodeId).STAURLIdSelected ? networkNodes.get(nodeId).STAURLIdSelected : 0, null, "", isAttributeAnyURI);
-
-			document.getElementById("DialogSelectRowsFilterRadio").checked = false;
-			document.getElementById("DialogSelectRowsFilter").innerHTML = "";
 		}
 
 		function ShowTableFilterRowsDialog(nodeId) {
 			var data = networkNodes.get(nodeId).STAdata;
 			var dataAttributes = getDataAttributes(data);
 
+			addTitleInRowFilterDialog("divTitleSelectRows");
+
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
 				return;
 			}
 
-			document.getElementById("DialogSelectRowsTableRadio").checked = false;
-			document.getElementById("DialogSelectRowsTable").innerHTML = "";
-
-			document.getElementById("DialogSelectRowsFilterRadio").checked = true;
 			document.getElementById("DialogSelectRowsFilter").innerHTML = "<div id='selectorRowsContainer'><div id='divSelectorRowsFilter'></div></div>"; 
 			//Take elemFilter information from Node
 			if (currentNode.STAelementFilter) {
@@ -3080,13 +3100,6 @@
 			}
 
 			ShowFilterTable(dataAttributes, currentNode.id);
-		}
-
-		function ChangeTableFilterRowsDialog(parentNodeId, nodeId) {
-			if (document.getElementById("DialogSelectRowsTableRadio").checked)
-				ShowTableSelectRowsDialog(parentNodeId, nodeId);
-			else
-				ShowTableFilterRowsDialog(parentNodeId, nodeId);
 		}
 
 		function SeparatePropertyIfNeeded(record, property, baseName)
@@ -3163,9 +3176,9 @@
 		function StartCircularImage(nodeTo, nodeFrom, calUnir)
 		{
 			var errorText=reasonNodeDoesNotFitWithPrevious(nodeTo, nodeFrom);
-			if (nodeFrom.STALastEntity) { //I will need it to know "where I am" in Row filter (To apply the filter)
+			/*if (nodeFrom.STALastEntity) { //I will need it to know "where I am" in Row filter (To apply the filter)
 				nodeTo.STALastEntity = nodeFrom.STALastEntity;
-			}
+			}*/
 			if (errorText)
 			{
 				alert("Incompatible node. " + errorText + ". It has not been added.");
@@ -3183,7 +3196,7 @@
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				showInfoMessage("Requesting " + STAEntitiesArray[IdOfSTAEntity(nodeTo)] + " to STA...");
 				LoadJSONNodeSTAData(nodeTo);
-				nodeTo.STALastEntity = STAEntitiesArray[IdOfSTAEntity(nodeTo)]; //I will need it to Row Filter
+				//nodeTo.STALastEntity = STAEntitiesArray[IdOfSTAEntity(nodeTo)]; //I will need it to Row Filter
 				return true;
 			}
 			if (nodeFrom.STAURL && IdOfSTASpecialQueries(nodeTo) != -1) {
@@ -3196,7 +3209,7 @@
 				LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
-			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumnsSTA.png" || nodeTo.image == "ExpandColumnsSTA.png" || nodeTo.image == "SelectRowsSTA.png" || nodeTo.image == "SortBySTA.png")) {
+			if (nodeFrom.STAURL && (nodeTo.image == "SelectColumnsSTA.png" || nodeTo.image == "ExpandColumnsSTA.png" || nodeTo.image == "SelectRowSTA.png" || nodeTo.image == "FilterRowsSTA.png" || nodeTo.image == "SortBySTA.png")) {
 				nodeTo.STAURL = nodeFrom.STAURL;
 				nodeTo.STAExpectedLength = nodeFrom.STAExpectedLength;
 				if (nodeFrom.STAdata)
@@ -3380,15 +3393,22 @@
 						document.getElementById("DialogJoinTables").showModal();
 					}
 				}
-				else if (currentNode.image == "SelectRowsSTA.png") {
+				else if (currentNode.image == "SelectRowSTA.png") {
 					var nodeids = network.getConnectedNodes(currentNode.id, "from");
 					if (nodeids && nodeids.length) {
 						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
-							document.getElementById("DialogSelectRowsTableInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsTableRadio' checked='checked' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/> Select an element:</label>";
-							document.getElementById("DialogSelectRowsFilterInputSpan").innerHTML = "<label><input type='radio' name='DialogSelectRowsRadio' id='DialogSelectRowsFilterRadio' onClick='ChangeTableFilterRowsDialog(\"" + nodeids[0] + "\",\"" + currentNode.id + "\")'/>  Filter:</label>";
-							ShowTableSelectRowsDialog(nodeids[0], currentNode.id);
+							ShowTableSelectRowDialog(nodeids[0], currentNode.id);
 						}
-						document.getElementById("DialogSelectRows").showModal();
+						document.getElementById("DialogSelectRow").showModal();
+					}
+				}
+				else if (currentNode.image == "FilterRowsSTA.png") {
+					var nodeids = network.getConnectedNodes(currentNode.id, "from");
+					if (nodeids && nodeids.length) {
+						if (networkNodes.get(nodeids[0]) && networkNodes.get(nodeids[0]).STAURL) {
+							ShowTableFilterRowsDialog(nodeids[0]);
+						}
+						document.getElementById("DialogFilterRows").showModal();
 					}
 				}
 				else if (currentNode.image == "SortBySTA.png") {

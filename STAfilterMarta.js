@@ -27,7 +27,7 @@
 	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
-    
+     
 	The TAPIS can be updated from https://github.com/joanma747/tapis.
 
 	Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
@@ -338,7 +338,7 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
 						inputText1 = "date";
 
-					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) /*typeof parseInt(value1Array[0]) == "number"*/ && typeof parseInt(value1Array[1]) == "number" && typeof parseInt(value1Array[2]) == "number") { //only date without Time
+					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && typeof parseInt(value1Array[0]) == "number" && typeof parseInt(value1Array[1]) == "number" && typeof parseInt(value1Array[2]) == "number") { //only date without Time
 						typeOfValues = "date";
 					}
 				}
@@ -511,25 +511,56 @@ function showIntervalSelector(nodeId, number) {
 					//hidden to texts and display
 					textInput.style.display = "none"
 					displaySelect.style.display = "none";
+					// //hidden to texts and display
+					// textInput.classList.add("hidden");
+					// if (textInput.classList.contains("inblock")) {
+					// 	textInput.classList.remove("inblock");
+					// }
+					// if (!displaySelect.classList.contains("hidden")) {
+					// 	displaySelect.classList.add("hidden");
+
+					// }
+					// if (displaySelect.classList.contains("inblock")) {
+					// 	displaySelect.classList.remove("inblock");
+					// }
 
 					//Show textinput and display
 					textInputInterval1.style.display = "inline-block";
 					textInputInterval2.style.display = "inline-block";
 					displaySelect.style.display = "none";
+					// if (!displaySelect.classList.contains("hidden")) {
+					// 	displaySelect.classList.add("hidden");
+					// }
 
 					if (parentLabel == select1Value) {
 						displaySelectInterval.style.display = "inline-block";
 					}
+					// if (parentLabel == select1Value) {
+					// 	if (displaySelectInterval.classList.contains("hidden")) {
+					// 		displaySelectInterval.classList.remove("hidden");
+					// 		displaySelectInterval.classList.add("inblock");
+					// 	}
+					// }
 
 				} else { // divContainer is shown
 					//hidden to divFilterContainer
 					divFilterContainer.style.display = "none";
+					// if (divFilterContainer.classList.contains("inblock")) {
+					// 	divFilterContainer.classList.remove("inblock");
+					// }
 					//show textInput and display from Interval
 					textInputInterval1.style.display = "inline-block";
 					textInputInterval2.style.display = "inline-block";
 					if (parentLabel == select1Value)
 						displaySelectInterval.style.display = "inline-block";
 				}
+				// if (parentLabel == select1Value) {
+				// 	if (!displaySelectInterval.classList.contains("hidden")) {
+				// 		displaySelectInterval.classList.remove("hidden");
+				// 		displaySelectInterval.classList.add("inblock");
+				// 	}
+
+				// }
 			} //Simple text  is shown 
 			//Nothing
 		} //If FilterCOntains is shown, don't touch
@@ -546,10 +577,24 @@ function showIntervalSelector(nodeId, number) {
 					textInputInterval1.style.display = "none";
 					textInputInterval2.style.display = "none";
 					displaySelectInterval.style.display = "none";
+					// //hidden to texts and diplay
+					// textInputInterval1.classList.add("hidden");
+					// textInputInterval2.classList.add("hidden");
+
+					// if (textInputInterval1.classList.contains("inblock")) {
+					// 	textInputInterval1.classList.remove("inblock");
+					// 	textInputInterval2.classList.remove("inblock");
+					// 	if (displaySelectInterval.classList.contains("inblock")) {
+					// 		displaySelectInterval.classList.remove("inblock");
+					// 	}
+					// 	// if (!displaySelect.classList.contains("hidden")) {
+					// 	displaySelectInterval.classList.add("hidden");
+					// 	//}
+
+					// }
 
 					//show textInput and display
-					textInput.style.display = "inline-block";
-					//textInput.classList.add("inblock");
+					textInput.classList.add("inblock"); ///!!!!!
 					if (parentLabel == select1Value) {
 						displaySelect.style.display = "inline-block";
 					}
@@ -557,6 +602,10 @@ function showIntervalSelector(nodeId, number) {
 				else { //divContainer2 is shown
 					//hidden to divFilterContainer2
 					divFilterContainer2.style.display = "none";
+					// if (divFilterContainer2.classList.contains("inblock")) {
+					// 	divFilterContainer2.classList.remove("inblock");
+					// }
+					// divFilterContainer2.classList.add("hidden");
 					//show textInput and display
 					textInput.style.display = "inline-block";
 					displaySelect.style.display = "inline-block";;
@@ -682,15 +731,17 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 
 		//Which Entity is: !!!!! Only works with STA (No csv)
 		var entity;
-		if (getSTAURLLastEntity(currentNode.STAURL)) {
-			entity = getSTAURLLastEntity(currentNode.STAURL);
+		if (currentNode.STALastEntity) {
+			entity = currentNode.STALastEntity
 		} else {
 			entity = "STAPlus"
 		}
 
-		var entitiesSTA;
+		var STAEntitiesKeys = Object.keys(STAEntities);
+		var entitiesSTA = STAEntitiesKeys;
+
 		if (entity != "STAPlus") {
-			entitiesSTA = STAEntities[entity].entities;
+			entitiesSTA = STAEntities[entity]["entities"];
 			//First put Itself (Entity)
 			var option = document.createElement("option");
 			option.setAttribute("value", entity);
@@ -702,13 +753,11 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 			}
 			select.appendChild(option);
 		}
-		else
-			entitiesSTA = [];
 
 		var newEntityList = [];
 		for (var i = 0; i < entitiesSTA.length; i++) {
 
-			var indexArray = STAEntitiesArray.find(element => element == entitiesSTA[i]); //Value -1, doesn't exist -> Singular
+			var indexArray = STAEntitiesKeys.find(element => element == entitiesSTA[i]); //Value -1, doesn't exist -> Singular
 
 			if (indexArray == undefined) { //singular
 				if (entitiesSTA[i] == "ObservedProperty" || entitiesSTA[i] == "FeatureOfInterest" || entitiesSTA[i] == "Party") {  //need more than + "s"
@@ -833,6 +882,10 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 				valueUndefined = false;
 			}
 			if (!arrayValors.find(element => element == valor)) { //create array with not arranged values
+				//  var option = document.createElement("option");
+				//  option.setAttribute("value", valor);
+				//  option.innerHTML = valor;
+				//  select.appendChild(option);
 				arrayValors.push(valor);
 			}
 		}
@@ -882,15 +935,12 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 		displaySelect.setAttribute("id", "displaySelect_" + count);
 		displaySelect.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','simple')");
 		placeId.appendChild(displaySelect);
-
-		//placeId.innerHTML+='<button id="displaySelect_' + count + '" onclick="changeWriteToSelect(\'' + nodeId + '\',\'' + count + '\',\'simple\')"';
-
-
 		divFilterContainer.appendChild(okButton);
 		divFilterContainer.appendChild(cancelButton);
 
 		var buttonImage2 = document.createElement("img"); //Button image
 		buttonImage2.setAttribute("src", "arrowSelectButton.png");
+		buttonImage2.setAttribute("class", "buttonImage");
 		displaySelect.appendChild(buttonImage2);
 
 		//Interval select
@@ -946,6 +996,7 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 		displaySelectInterval.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','interval')");
 		var buttonImage3 = document.createElement("img"); //button image
 		buttonImage3.setAttribute("src", "arrowSelectButton.png");
+		buttonImage3.setAttribute("class", "buttonImage");
 		displaySelectInterval.appendChild(buttonImage3);
 
 		placeId.appendChild(displaySelectInterval);
@@ -953,10 +1004,10 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 		divFilterContainer2.appendChild(cancelButtonInterval);
 
 		var entityy;
-		if (getSTAURLLastEntity(currentNode.STAURL)) {
-			entityy = getSTAURLLastEntity(currentNode.STAURL);
+		if (currentNode.STALastEntity) {
+			entityy = currentNode.STALastEntity
 		} else {
-			entityy = "STAPlus";
+			entityy = "STAPlus"
 		}
 		var selectEntity = document.getElementById("selectorSTAEntity_" + count);
 		var selectEntityValue = selectEntity.options[selectEntity.selectedIndex].value;
@@ -1010,10 +1061,11 @@ function searchParentLabel(nodeId) {
 	var entity = "0";
 	var parentNodeId = network.getConnectedNodes(nodeId, "from");
 	var parentNode = networkNodes.get(parentNodeId);
+	var STAEntitiesKeys = Object.keys(STAEntities);
 
-	for (var i = 0; i < STAEntitiesArray.length; i++) {
-		if (parentNode[0].label == STAEntitiesArray[i]) {
-			entity = STAEntitiesArray[i];//parentNode[0].label;
+	for (var i = 0; i < STAEntitiesKeys.length; i++) {
+		if (parentNode[0].label == STAEntitiesKeys[i]) {
+			entity = STAEntitiesKeys[i];//parentNode[0].label;
 		}
 	}
 
@@ -1046,14 +1098,31 @@ function fillPropertySelector(nodeId, number) {
 	if (parentLabel == selectEntityValue) { //show
 		if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
 			displaySelectInterval.style.display = "inline-block";
+			// if (displaySelectInterval.classList.contains("hidden")) {
+			// 	displaySelectInterval.classList.remove("hidden");
+			// 	displaySelectInterval.classList.add("inblock");
+
+			// }
 		} else {
 			displaySelect.style.display = "inline-block";
+			// if (displaySelect.classList.contains("hidden")) {
+			// 	displaySelect.classList.remove("hidden");
+			// 	displaySelect.classList.add("inblock");
+			// }
 		}
 	} else {
 		if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
 			displaySelectInterval.style.display = "none";
+			// if (!displaySelectInterval.classList.contains("hidden")) {
+			// 	displaySelectInterval.classList.remove("inblock");
+			// 	displaySelectInterval.classList.add("hidden");
+			// }
 		} else {
 			displaySelect.style.display = "none";
+			// if (!displaySelect.classList.contains("hidden")) {
+			// 	displaySelect.classList.remove("inblock");
+			// 	displaySelect.classList.add("hidden");
+			// }
 		}
 	}
 
@@ -1102,7 +1171,8 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
 	var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
 	var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
 
-	var STALastEntity = getSTAURLLastEntity(currentNode.STAURL);
+
+	var STALastEntity = currentNode.STALastEntity;
 
 
 	selectorValue = document.getElementById("selectorValue_" + number);
@@ -1149,27 +1219,42 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
 	}
 
 	if (valueUndefined == true) { //hidde
-		
-		if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") && (selectorSTAEntityValue == STALastEntity)) {
-			divFilterContainer2.style.display = "none";
-			displaySelectInterval.style.display = "none";
-			textInputInterval1.style.display = "inline-block";
-			textInputInterval2.style.display = "inline-block";
-		}
-		else {
-			divFilterContainer.style.display = "none"; //hidde select if it's open
-			displaySelect.style.display = "none"; //hidde button to display select
-			textInput.style.display = "inline-block"; //Show text input
-		}
-
-
-
+		displaySelect.style.display = "none";
+		displaySelectInterval.style.display = "none";
+		// if (!displaySelect.classList.contains("hidden")) { //don't show button to display select
+		// 	displaySelect.classList.add("hidden");
+		// 	displaySelect.classList.remove("inblock");
+		// } else if (!displaySelectInterval.classList.contains("hidden")) {
+		// 	displaySelectInterval.classList.add("hidden");
+		// 	displaySelectInterval.classList.remove("inblock");
+		// } else if (!divFilterContainer.classList.contains("hidden")) { //if select is open 
+		// 	divFilterContainer.classList.add("hidden");
+		// 	divFilterContainer.classList.remove("inblock");
+		// 	textInput.classList.remove("hidden");
+		// 	textInput.classList.add("inblock");
+		// 	//show input
+		// } else if (!divFilterContainer2.classList.contains("hidden")) {
+		// 	divFilterContainer2.classList.add("hidden");
+		// 	divFilterContainer2.classList.remove("inblock");
+		// 	textInputInterval1.classList.remove("hidden");
+		// 	textInputInterval1.classList.add("inblock");
+		// 	textInputInterval2.classList.remove("hidden");
+		// 	textInputInterval2.classList.add("inblock");
+		// }
 
 	} else { //show
 		if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") && (selectorSTAEntityValue == STALastEntity)) {
 			displaySelectInterval.style.display = "inline-block";
+			// if (displaySelectInterval.classList.contains("hidden")) {
+			// 	displaySelectInterval.classList.remove("hidden");
+			// 	displaySelectInterval.classList.add("inblock");
+			// }
 		} else if ((selectedValueCondition != " [a,b] " || selectedValueCondition != " (a,b] " || selectedValueCondition != " [a,b) " || selectedValueCondition != " (a,b) ") && (selectorSTAEntityValue == STALastEntity)) { //simple
 			displaySelect.style.display = "inline-block";
+			// if (displaySelect.classList.contains("hidden")) {
+			// 	displaySelect.classList.remove("hidden");
+			// 	displaySelect.classList.add("inblock");
+			// }
 		}
 	}
 
@@ -1232,7 +1317,7 @@ function closeModalSelect(number, button, selector) { //Ok and Cancel Buttons
 
 		}
 
-	} else { //press "cancel"  ->>It is necesary???
+	} else { //press "cancel"
 		if (selector == "simple") {
 			textInput.innerHTML = textInput.getAttribute("data-oldvalue");
 		} else {
@@ -1365,11 +1450,11 @@ function GetFilterTable(elem, dataAttributes, nodeId, first) //Built table //The
 	}
 
 	if (first) {
-		s += `<div class="topButtonsFilterRow"><button onclick="biggestLevelButton('${elem.boxName}','${nodeId}')">New group below</button>`;
+		s += `<div class="topButtonsFilterRow"><button onclick="biggestLevelButton('${elem.boxName}','${nodeId}')">Add a bigger priority nexus</button>`;
 	}
 	if (elem.boxName) {
 
-		s += '<button onclick="addNewCondition(\'' + elem.boxName + '\',\'' + nodeId + '\')">New condition below</button><button onclick="deleteGroup(\'' + elem.boxName + '\',\'' + nodeId + '\')" class="deleteGroupFilterRow"><img src="trash.png" alt="Remove" title="Remove" valign="middle"> Delete group</button></div>';
+		s += `<button onclick="addNewCondition('${elem.boxName}','${nodeId}')">Add new condition</button><button onclick="deleteGroup('${elem.boxName}','${nodeId}')" class="deleteGroupFilterRow">Delete group</button></div>`;
 
 	}
 	if (typeof elem === "object") {
@@ -1429,7 +1514,7 @@ function addingSelectors(dataAttributes, nodeId,) {
 
 function GetFilterCondition(elem, dataAttributes, nodeId) {
 	counter.push(elem);
-	return conditionsFilter[elem].property + '<div class="buttonsInFilterRow"><button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="arrowDown.png" alt="Move down" title="Move down"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="arrowUp.png" alt="Move up" title="Move up"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash.png" alt="Remove" title="Remove"></button></div>';
+	return conditionsFilter[elem].property + '<div class="buttonsInFilterRow"><button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="arrowDown_18x11.png"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="arrowUp_18x11.png"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash_18x18.png"></button></div>';
 
 }
 
@@ -1937,11 +2022,12 @@ function biggestLevelButton(boxName, nodeId) {
 
 }
 
-function addTitleInRowFilterDialog(divName) {
-	/*var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
+function addTitleInRowFilterDIalog() {
+	var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
 	var previousURL = previousNode[0].STAURL;
+	var STAEntitiesKeys = Object.keys(STAEntities);
 	var final = "";
-	for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha desprÃ©s de l'Ãºltima barra (buscant si es una entity)
+	for (var i = previousURL.length - 1; i > 0; i--) { //what's after the last bar (looking to see if it's an entity)
 		if (previousURL[i] == "/") {
 			console.log("/")
 			break;
@@ -1949,26 +2035,26 @@ function addTitleInRowFilterDialog(divName) {
 		else {
 			final = previousURL[i] + final;
 		}
-	}*/
+	}
 
-	/*var entity = false;
-	for (var i = 0; i < STAEntitiesArray.length; i++) {
-		if (STAEntitiesArray[i] == final) {
-			entity = STAEntitiesArray[i];
+	var entity = false;
+	for (var i = 0; i < STAEntitiesKeys.length; i++) {
+		if (STAEntitiesKeys[i] == final) {
+			entity = STAEntitiesKeys[i];
 			break;
 		}
 	}
 	if (entity == false) {
 		entity = "STAPlus"
-	}*/
+	}
 
 	//posar-ho al titol
-	var divTitleSelectRows = document.getElementById(divName);
+	var divTitleSelectRows = document.getElementById("divTitleSelectRows");
 	var entity;
-	if (getSTAURLLastEntity(currentNode.STAURL)) {
-		entity = getSTAURLLastEntity(currentNode.STAURL);
+	if (currentNode.STALastEntity) {
+		entity = currentNode.STALastEntity
 	} else {
-		entity = "STAPlus";
+		entity = "STAPlus"
 	}
 	divTitleSelectRows.innerHTML = entity;
 

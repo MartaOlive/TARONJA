@@ -54,7 +54,7 @@
 				cdns.push("$select=");
 				for (var i=0; i<selectedArray.length; i++) {
 					cdns.push(selectedArray[i]);
-					if (i+1<selectedArray.length.length)
+					if (i+1<selectedArray.length)
 						cdns.push(",");
 				}
 			}
@@ -80,7 +80,7 @@
 			document.getElementById("DialogSelectExpands").close();
 			
 			var previousSTAURL = currentNode.STAURL;
-			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
+			//var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
 			/*if (!currentNode.STASelectedExpands)
 				currentNode.STASelectedExpands={STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: deapCopy(dataAttributes), selected: []};
 			else
@@ -273,6 +273,8 @@
 			var cdns=[];
 			if (expandCheckboxes)
 			{
+				if (parentNode.STAURL)
+					node.STAURL = parentNode.STAURL;
 				if (parentNode.STAdata)
 					node.STAdata = deapCopy(parentNode.STAdata);
 				if (parentNode.STAdataAttributes)
