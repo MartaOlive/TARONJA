@@ -1365,11 +1365,11 @@ function GetFilterTable(elem, dataAttributes, nodeId, first) //Built table //The
 	}
 
 	if (first) {
-		s += `<div class="topButtonsFilterRow"><button onclick="biggestLevelButton('${elem.boxName}','${nodeId}')">New group below</button>`;
+		s += `<div class="topButtonsFilterRow"><button onclick="biggestLevelButton('${elem.boxName}','${nodeId}')">Add a higher group</button>`;
 	}
 	if (elem.boxName) {
 
-		s += '<button onclick="addNewCondition(\'' + elem.boxName + '\',\'' + nodeId + '\')">New condition below</button><button onclick="deleteGroup(\'' + elem.boxName + '\',\'' + nodeId + '\')" class="deleteGroupFilterRow"><img src="trash.png" alt="Remove" title="Remove" valign="middle"> Delete group</button></div>';
+		s += '<button onclick="addNewCondition(\'' + elem.boxName + '\',\'' + nodeId + '\')">Add a new condition below</button></div>';
 
 	}
 	if (typeof elem === "object") {
