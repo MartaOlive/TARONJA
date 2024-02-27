@@ -678,20 +678,27 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 		select.setAttribute("id", "selectorSTAEntity_" + count);
 		select.setAttribute("onChange", "fillPropertySelector('" + nodeId + "','" + count + "')");
 
-		var staEntities = Object.keys(STAEntities);
+		var staEntitiesKeys = Object.keys(STAEntities);
 
 		//Which Entity is: !!!!! Only works with STA (No csv)
 		var entity;
+		var isEntity = false;
 		if (getSTAURLLastEntity(currentNode.STAURL)) {
 			entity = getSTAURLLastEntity(currentNode.STAURL);
+			for (var i = 0; i < staEntitiesKeys.length; i++) {
+				if (staEntitiesKeys[i] == entity) {
+					isEntity = true;
+					break;
+				}
+			}
+
 		} else {
-			entity = "STAPlus"
+			entity = "STAPlus";
 		}
 
 		var entitiesSTA;
-		if (entity != "STAPlus") {
+		if (isEntity == true) {	//First put Itself (Entity)
 			entitiesSTA = STAEntities[entity].entities;
-			//First put Itself (Entity)
 			var option = document.createElement("option");
 			option.setAttribute("value", entity);
 			option.innerHTML = entity;
@@ -702,8 +709,8 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 			}
 			select.appendChild(option);
 		}
-		else
-			entitiesSTA = [];
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 		var newEntityList = [];
 		for (var i = 0; i < entitiesSTA.length; i++) {
@@ -735,8 +742,6 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 				newEntityList.push(entitiesSTA[i]);
 			}
 		}
-
-
 		for (var i = 0; i < newEntityList.length; i++) {
 			if (newEntityList[i] != "Objectss" && newEntityList[i] != "Subjectss") {
 				var option = document.createElement("option");
@@ -750,6 +755,17 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 				select.appendChild(option);
 			}
 		}
+
+
+
+
+
+
+
+
+
+
+
 		placeId.appendChild(select);
 	}
 
@@ -757,6 +773,7 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 		select.setAttribute("id", "selectorProperty_" + count);
 		select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + count + "')");
 		var select1 = document.getElementById("selectorSTAEntity_" + count);
+		console.log(count)
 		var select1Value = select1.options[select1.selectedIndex].value;
 
 		for (let i = 0; i < STAEntities[select1Value]["properties"].length; i++) {//To fill property
@@ -1149,7 +1166,7 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
 	}
 
 	if (valueUndefined == true) { //hidde
-		
+
 		if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") && (selectorSTAEntityValue == STALastEntity)) {
 			divFilterContainer2.style.display = "none";
 			displaySelectInterval.style.display = "none";
@@ -1359,7 +1376,7 @@ function GetFilterTable(elem, dataAttributes, nodeId, first) //Built table //The
 	//when the element that comes to you is the elemFilter, add a button to add one more level
 
 	if (elem.boxName) {
-		var s = '<table style="margin-top: 10px;"><tr class="trBoxName"><td style="position: relative;" id="boxName_' + elem.boxName + '">'; //class="tableFilter
+		var s = '<table style="margin-top: 10px;"><tr class="trBoxName"><td style="position: relative;border: 2px solid #34383aef; " id="boxName_' + elem.boxName + '">'; //class="tableFilter
 	} else {
 		var s = '<table><tr class="trLineBoxName"><td>';
 	}
@@ -1380,7 +1397,6 @@ function GetFilterTable(elem, dataAttributes, nodeId, first) //Built table //The
 		if (elem.nexus) {
 
 			s += `</td><td valign="middle" class="tdSelectAndOrNot" id='tdSelectAndOrNot_${elem.boxName}'><div class="topPartSelectAndOrNot" ></div><div class="bottomPartSelectAndOrNot" id= "bottomPartSelectAndOrNot_${elem.boxName}"><select class="selectAndOrNot" name="selectAndOrNot"  onchange= "actualizeSelectChoice('${elem.boxName}')" id="selectAndOrNot_${elem.boxName}">`;
-
 			if (elem.nexus == " and ") {
 				s += '<option value=" and " selected>And</option>';
 
@@ -1718,12 +1734,13 @@ function addNewElement(elem, nodeId, boxName, fromBiggest) {
 
 }
 function resizeBottomPartSelectAndOrNot() {
+
 	for (var i = 0; i < boxNames.length; i++) {
 		var tdSelectAndOrNot = document.getElementById("tdSelectAndOrNot_" + boxNames[i]);
 		if (tdSelectAndOrNot != null) {
 			var tdSelectAndOrNotHeight = tdSelectAndOrNot.clientHeight;
 			var bottomPartSelectAndOrNot = document.getElementById("bottomPartSelectAndOrNot_" + boxNames[i]);
-			bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 35) + "px";
+			bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 30) + "px";
 		}
 
 
@@ -1938,39 +1955,32 @@ function biggestLevelButton(boxName, nodeId) {
 }
 
 function addTitleInRowFilterDialog(divName) {
-	/*var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
-	var previousURL = previousNode[0].STAURL;
-	var final = "";
-	for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha desprÃ©s de l'Ãºltima barra (buscant si es una entity)
-		if (previousURL[i] == "/") {
-			console.log("/")
-			break;
-		}
-		else {
-			final = previousURL[i] + final;
-		}
-	}*/
-
-	/*var entity = false;
-	for (var i = 0; i < STAEntitiesArray.length; i++) {
-		if (STAEntitiesArray[i] == final) {
-			entity = STAEntitiesArray[i];
-			break;
-		}
-	}
-	if (entity == false) {
-		entity = "STAPlus"
-	}*/
-
 	//posar-ho al titol
 	var divTitleSelectRows = document.getElementById(divName);
+	var staEntitiesKeys = Object.keys(STAEntities);
 	var entity;
+	var isEntity = false;
+	divTitleSelectRows.innerHTML = ""; //Erase old title saved
 	if (getSTAURLLastEntity(currentNode.STAURL)) {
 		entity = getSTAURLLastEntity(currentNode.STAURL);
+		for (var i = 0; i < staEntitiesKeys.length; i++) {
+			if (staEntitiesKeys[i] == entity) {
+				isEntity = true;
+				break;
+			}
+		}
+
 	} else {
 		entity = "STAPlus";
 	}
-	divTitleSelectRows.innerHTML = entity;
+
+	if (isEntity == false) {
+		divTitleSelectRows.innerHTML += `<img src='ogc.png' style='height:30px'> </img> "STAPlus"` + entity;
+	} else {
+		divTitleSelectRows.innerHTML += `<img src='${entity}.png' style='height:30px'> </img>` + entity;
+	}
+
+
+
 
 }
-
