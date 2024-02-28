@@ -287,7 +287,7 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 				if (value1Array.length == 3) {
 					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
 						typeOfValues = "date";
-					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && typeof parseInt(value1Array[0]) == "number" && typeof parseInt(value1Array[1]) == "number" && typeof parseInt(value1Array[2]) == "number") { //only date without Time
+					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
 						typeOfValues = "date";
 					}
 				}
@@ -338,7 +338,7 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
 						inputText1 = "date";
 
-					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) /*typeof parseInt(value1Array[0]) == "number"*/ && typeof parseInt(value1Array[1]) == "number" && typeof parseInt(value1Array[2]) == "number") { //only date without Time
+					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
 						typeOfValues = "date";
 					}
 				}
@@ -360,7 +360,7 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
 						inputText2 = "date";
 
-					} else if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2].length == 2 && typeof parseInt(value2Array[0]) == "number" && typeof parseInt(value2Array[1]) == "number" && typeof parseInt(value2Array[2]) == "number") { //only date without Time
+					} else if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2].length == 2 && !isNaN(parseInt(value2Array[0])) && !isNaN(parseInt(value2Array[1])) && !isNaN(parseInt(value2Array[2]))) { //only date without Time
 						typeOfValues = "date";
 					}
 				}
@@ -693,12 +693,12 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 			}
 
 		} else {
-			entity = "STAPlus";
+			entity = "STAPlus"; //Look how to erase this
 		}
 
 		var entitiesSTA;
 		if (isEntity == true) {	//First put Itself (Entity)
-			entitiesSTA = STAEntities[entity].entities;
+			entitiesSTA = STAEntities[entity].entities; //If it is not plural it doen't work, but if it is only one value you can't add Filter Rows, so it shouldn't happen.
 			var option = document.createElement("option");
 			option.setAttribute("value", entity);
 			option.innerHTML = entity;
@@ -709,7 +709,7 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 			}
 			select.appendChild(option);
 		}
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
 
 
 		var newEntityList = [];
