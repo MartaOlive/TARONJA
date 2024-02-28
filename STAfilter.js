@@ -82,7 +82,7 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 					var valueEntityToURL;
 					var indexArray = entitiesArray.find(element => element == valueOfEntity); //Value undefined, doesn't exist -> Singular
 
-					if (indexArray == undefined) { //singular
+					if (typeof indexArray !== "undefined") { //singular
 						if (valueOfEntity == "ObservedProperties" || valueOfEntity == "FeaturesOfInterest" || valueOfEntity == "Parties") {  //need more than - "s"
 							switch (valueOfEntity) {
 								case "ObservedProperties":
@@ -617,7 +617,7 @@ function sortValuesForSelect(arrayValues) {
 	var arrayText = [];
 
 	for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
-		if (arrayValues[i] != undefined) {
+		if (typeof arrayValues[i] !== "undefined") {
 			var isNumber = true;
 			for (var a = 0; a < arrayValues[i].length; a++) {
 				if (isNumber == true) {
@@ -717,7 +717,7 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 
 			var indexArray = STAEntitiesArray.find(element => element == entitiesSTA[i]); //Value -1, doesn't exist -> Singular
 
-			if (indexArray == undefined) { //singular
+			if (typeof indexArray === "undefined") { //singular
 				if (entitiesSTA[i] == "ObservedProperty" || entitiesSTA[i] == "FeatureOfInterest" || entitiesSTA[i] == "Party") {  //need more than + "s"
 					switch (entitiesSTA[i]) {
 						case "ObservedProperty":
@@ -846,7 +846,7 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 		var valueUndefined = true;
 		for (let index = 0; index < data.length; index++) {
 			valor = data[index][select2PropertyValue];
-			if (valueUndefined == true && valor != undefined) { //All values are undefined? Don't show select
+			if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
 				valueUndefined = false;
 			}
 			if (!arrayValors.find(element => element == valor)) { //create array with not arranged values
@@ -1151,7 +1151,7 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
 		var opcio3 = document.createElement("option");
 		valor = arrayValuesArranged[i];
 
-		if (valueUndefined == true && valor != undefined) { //All values are undefined? Don't show select
+		if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
 			valueUndefined = false;
 		}
 		opcio.setAttribute("value", valor);
@@ -1638,7 +1638,7 @@ function LookForPreviousConditionFilterTable(elem, iCon, parent) {
 
 function addNewCondition(boxName, paramsNodeId, fromBiggest) {
 	event.preventDefault();
-	if (fromBiggest == undefined) {
+	if (typeof fromBiggest === "undefined") {
 		fromBiggest = false;
 	}
 
