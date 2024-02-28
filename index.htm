@@ -109,7 +109,8 @@
 				</label>
 			</p>
 			<div class="center">
-				<button value="default" id="DialogSTAURLOk" onClick="GetSTAURLEvent(event)">OK</button>
+				<button value="default" id="DialogSTAURLOk" onClick="GetSTAURLEvent(event)"
+					formmethod="dialog">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -355,6 +356,19 @@
 		</form>
 	</dialog>
 
+	<dialog id="DialogMeaningTable">
+		<form>
+			<span id="DialogMeaningTableTitle"></span>
+			<br>
+			<span id="DialogMeaningFields"></span>
+			<div class="center">
+				<button value="default" onClick="GetMeaningTable(event)">Ok</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
+
 	<dialog id="DialogSaveLayer">
 		<form>
 			<span id="DialogSaveLayerTitle"></span>
@@ -376,42 +390,7 @@
 			<label>Date and time:
 				<span id="DialogSaveLayerTime"></span>
 			</label>
-			<fieldset>
-				<legend>Observed properties:</legend>
-				<label>Name:
-					<span id="DialogSaveLayerVariable"></span>
-				</label>
-				<br>
-				<span id="DialogSaveLayerVariableDescriptionUoM">
-					<label>Description:
-						<span id="DialogSaveLayerVariableDescription"></span>
-					</label>
-					<br>
-					<label>Definition:
-						<span id="DialogSaveLayerVariableDefinition"></span>
-					</label>
-					<br>
-					<fieldset>
-						<legend>Units of measurement:</legend>
-						<label>Name:
-							<span id="DialogSaveLayerVariableUoM"></span>
-						</label>
-						<br>
-						<label>Symbol:
-							<span id="DialogSaveLayerVariableUoMSymbol"></span>
-						</label>
-						<br>
-						<label>Definition:
-							<span id="DialogSaveLayerVariableUoMDefinition"></span>
-						</label>
-					</fieldset>
-					<br>
-				</span>
-				<br>
-				<label>Value:
-					<span id="DialogSaveLayerValue"></span>
-				</label>
-			</fieldset>
+			<span id="DialogSaveLayerVariableDefUoM"></span>
 			<br>
 			<div class="center">
 				<span id="DialogSaveLayerSave"></span>
@@ -619,6 +598,7 @@
 		const TableOperations = {
 			ImportCSV: { description: "Import CSV file" },
 			Table: { description: "View Table", leafNode: true },
+			Meaning: { description: "Fields meaning" },
 			SelectColumnsSTA: { description: "Select Columns", callSTALoad: true },
 			ExpandColumnsSTA: { description: "Expand Columns", callSTALoad: true },
 			SelectRowSTA: { description: "Select Row", callSTALoad: true },
@@ -746,10 +726,10 @@
 				}
 				if (node.image == "FilterRowsSTA.png" && isPlural == false) {
 					return "Your result is already one value, you can not filter it more"
-				}else{
+				} else {
 					return null;
 				}
-				
+
 			}
 
 			var getCon = getConnectionSTAEntity(parentNode, node)
@@ -1172,12 +1152,13 @@
 
 			var reader = new FileReader();
 			reader.onload = function () {
-				//Transform the JSON text in something in memory
+				//Transform the JSON text into a STAdataAttributes structure in memory
 				try {
 					var data_csvw = JSON.parse(reader.result);
 					//document.getElementById("DialogImportCSVdataAttributes").value=JSON.stringify(getDataAttributesCSVW(data_csvw));
 					currentNode.STAdataAttributes = getDataAttributesCSVW(data_csvw);
 					networkNodes.update(currentNode);
+					UpdateChildenTable(currentNode);
 					var csvReadParams = getCSVReadParams(data_csvw);
 					if (csvReadParams.delimiter)
 						document.getElementById("DialogImportCSVDelimiter").value = csvReadParams.delimiter;
@@ -1208,6 +1189,7 @@
 					});
 					currentNode.STAdata = result.data;
 					networkNodes.update(currentNode);
+					UpdateChildenTable(currentNode);
 				}
 				catch (e) {
 					showInfoMessage("CSV parse error: " + e + " The file content is:\n" + reader.result);
@@ -1408,11 +1390,11 @@
 
 			/*selectedOptions.variable=document.getElementById("DialogSaveLayerVariableSelect").value;
 			if (descripUoM){
-				selectedOptions.variableDescription=document.getElementById("DialogSaveLayerVariableDescriptionSelect").value;
-				selectedOptions.variableDefinition=document.getElementById("DialogSaveLayerVariableDefinitionSelect").value;
-				selectedOptions.variableUoM=document.getElementById("DialogSaveLayerVariableUoMSelect").value;
-				selectedOptions.variableUoMSymbol=document.getElementById("DialogSaveLayerVariableUoMSymbolSelect").value;
-				selectedOptions.variableUoMDefinition=document.getElementById("DialogSaveLayerVariableUoMDefinitionSelect").value;
+				selectedOptions.variableDescription=document.getElementById("DialogMeaningVariableDescriptionSelect").value;
+				selectedOptions.variableDefinition=document.getElementById("DialogMeaningVariableDefinitionSelect").value;
+				selectedOptions.variableUoM=document.getElementById("DialogMeaningVariableUoMSelect").value;
+				selectedOptions.variableUoMSymbol=document.getElementById("DialogMeaningVariableUoMSymbolSelect").value;
+				selectedOptions.variableUoMDefinition=document.getElementById("DialogMeaningVariableUoMDefinitionSelect").value;
 			}
 			selectedOptions.value=document.getElementById("DialogSaveLayerValueSelect").value;*/
 			return selectedOptions;
@@ -1548,7 +1530,7 @@
 			if (nodes && nodes.length) {
 				var node = nodes[0];
 				var data, dataAttributes, record;
-				if (node.STAURL) {
+				if (node.STAdata) {
 					var items = [], minx, maxx, miny, maxy;
 					data = node.STAdata;
 					dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
@@ -2236,12 +2218,6 @@
 				if (node.STAURL && currentSTAURLroot && previousSTAURLroot) {
 					var previousSTAURLrootWithoutQuery = getURLWithoutQueryParams(previousSTAURLroot);
 					if (node.STAURL.substring(0, previousSTAURLrootWithoutQuery.length) == previousSTAURLrootWithoutQuery) {
-						/*if (node.STAURL.charAt(previousSTAURLroot.length)=='?' || node.STAURL.charAt(previousSTAURLroot.length)=='&')
-							node.STAURL=AddKVPToURL(currentSTAURLroot, node.STAURL.substring(previousSTAURLroot.length+1));
-						else
-							node.STAURL=currentSTAURLroot + node.STAURL.substring(previousSTAURLroot.length);*/
-						//·$·$·
-						//var lastPart=node.STAURL.substring(previousSTAURLrootWithoutQuery.length);
 						var previousQueryParams = getURLQueryParams(previousSTAURLroot)
 						var currentQueryParams = getURLQueryParams(currentSTAURLroot)
 						var queryParam = getURLQueryParams(node.STAURL);
@@ -2257,13 +2233,23 @@
 							queryParam);
 						networkNodes.update(node);
 					}
-					/*if (IdOfSTAEntity(node) != -1 || IdOfSTASpecialQueries(node)!=-1 || TableOperations[node.image.substring(0, node.image.length-4)].callSTALoad) {
-						networkNodes.update(node);
-						showInfoMessage("Updating STA child node...");
-						LoadJSONNodeSTAData(node);
-					}*/
 				}
 				UpdateChildenSTAURL(node, currentSTAURLroot, previousSTAURLroot);
+			}
+		}
+
+		function UpdateChildenTable(parentNode) {
+			var nodeIds = network.getConnectedNodes(parentNode.id, 'to');
+			for (var i = 0; i < nodeIds.length; i++) {
+				var node = networkNodes.get(nodeIds[i])
+				if (parentNode.STAdata &&
+					(node.image == "SelectColumnsTable.png" || node.image == "Meaning.png")) {
+					node.STAdata = deapCopy(parentNode.STAdata);
+					if (parentNode.STAdataAttributes)
+						node.STAdataAttributes = deapCopy(parentNode.STAdataAttributes);
+					networkNodes.update(node);
+				}
+				UpdateChildenTable(node);
 			}
 		}
 
@@ -2799,6 +2785,65 @@
 			return s;
 		}
 
+		// params.nameInLegend
+		// params.showValue
+		// params.showType
+		function GetHTMLVariableDefUoM(suffix, params) {
+			var cdns = [];
+			cdns.push('<fieldset>');
+			if (params.nameInLegend)
+				cdns.push('	<legend><span id="DialogSaveLayerVariable' + suffix + '"></span>',
+					'	</legend>');
+			else
+				cdns.push('	<legend>Observed property:</legend>',
+					'	<label>Name:',
+					'		<span id="DialogSaveLayerVariable' + suffix + '"></span>',
+					'		</label>',
+					'	<br>');
+			if (params.showPredefOptions)
+				cdns.push('	<label>Predefined options:',
+					'		<span id="DialogSaveLayerVariableDropDown' + suffix + '"></span>',
+					'		</label>',
+					'	<br>');
+			if (params.showType)
+				cdns.push('	<label>Data type:',
+					'		<span id="DialogSaveLayerVariableType' + suffix + '"></span>',
+					'		</label>',
+					'	<br>');
+			cdns.push('	<span id="DialogMeaningVariableDescriptionUoM' + suffix + '">',
+				'		<label>Description:',
+				'			<span id="DialogMeaningVariableDescription' + suffix + '"></span>',
+				'		</label>',
+				'		<br>',
+				'		<label>Definition (URI):',
+				'			<span id="DialogMeaningVariableDefinition' + suffix + '"></span>',
+				'		</label>',
+				'		<br>',
+				'		<fieldset>',
+				'			<legend>Units of measurement:</legend>',
+				'			<label>Name:',
+				'				<span id="DialogMeaningVariableUoM' + suffix + '"></span>',
+				'			</label>',
+				'			<br>',
+				'			<label>Symbol:',
+				'				<span id="DialogMeaningVariableUoMSymbol' + suffix + '"></span>',
+				'			</label>',
+				'			<br>',
+				'			<label>Definition (URI):',
+				'				<span id="DialogMeaningVariableUoMDefinition' + suffix + '"></span>',
+				'			</label>',
+				'		</fieldset>',
+				'		<br>',
+				'	</span>');
+			if (params.showValue)
+				cdns.push('	<br>',
+					'	<label>Value:',
+					'		<span id="DialogSaveLayerValue' + suffix + '"></span>',
+					'	</label>');
+			cdns.push('</fieldset>');
+			return cdns.join("");
+		}
+
 		function ShowSaveLayerDialogSelects(nodeId, descripUoM) {
 			var parentNode = GetFirstParentNode(currentNode);
 			if (parentNode) {
@@ -2811,15 +2856,15 @@
 				PopulateSelectSaveLayerDialog("DialogSaveLayerTime", dataAttributes, "PhenomenonTime");
 				PopulateSelectSaveLayerDialog("DialogSaveLayerVariable", dataAttributes, "Datastream/ObservedProperty/name");
 				if (descripUoM) {
-					document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display = "inline-block";
-					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableDescription", dataAttributes, "Datastream/ObservedProperty/description");
-					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableDefinition", dataAttributes, "Datastream/ObservedProperty/definition");
-					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoM", dataAttributes, "Datastream/unitOfMeasurement/name");
-					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoMSymbol", dataAttributes, "Datastream/unitOfMeasurement/symbol");
-					PopulateSelectSaveLayerDialog("DialogSaveLayerVariableUoMDefinition", dataAttributes, "Datastream/unitOfMeasurement/definition");
+					document.getElementById("DialogMeaningVariableDescriptionUoM").style.display = "inline-block";
+					PopulateSelectSaveLayerDialog("DialogMeaningVariableDescription", dataAttributes, "Datastream/ObservedProperty/description");
+					PopulateSelectSaveLayerDialog("DialogMeaningVariableDefinition", dataAttributes, "Datastream/ObservedProperty/definition");
+					PopulateSelectSaveLayerDialog("DialogMeaningVariableUoM", dataAttributes, "Datastream/unitOfMeasurement/name");
+					PopulateSelectSaveLayerDialog("DialogMeaningVariableUoMSymbol", dataAttributes, "Datastream/unitOfMeasurement/symbol");
+					PopulateSelectSaveLayerDialog("DialogMeaningVariableUoMDefinition", dataAttributes, "Datastream/unitOfMeasurement/definition");
 				}
 				else
-					document.getElementById("DialogSaveLayerVariableDescriptionUoM").style.display = "none";
+					document.getElementById("DialogMeaningVariableDescriptionUoM").style.display = "none";
 
 				PopulateSelectSaveLayerDialog("DialogSaveLayerValue", dataAttributes, "result");
 			}
@@ -2833,17 +2878,18 @@
 			selectedOptions.time = document.getElementById("DialogSaveLayerTimeSelect").value;
 			selectedOptions.variable = document.getElementById("DialogSaveLayerVariableSelect").value;
 			if (descripUoM) {
-				selectedOptions.variableDescription = document.getElementById("DialogSaveLayerVariableDescriptionSelect").value;
-				selectedOptions.variableDefinition = document.getElementById("DialogSaveLayerVariableDefinitionSelect").value;
-				selectedOptions.variableUoM = document.getElementById("DialogSaveLayerVariableUoMSelect").value;
-				selectedOptions.variableUoMSymbol = document.getElementById("DialogSaveLayerVariableUoMSymbolSelect").value;
-				selectedOptions.variableUoMDefinition = document.getElementById("DialogSaveLayerVariableUoMDefinitionSelect").value;
+				selectedOptions.variableDescription = document.getElementById("DialogMeaningVariableDescriptionSelect").value;
+				selectedOptions.variableDefinition = document.getElementById("DialogMeaningVariableDefinitionSelect").value;
+				selectedOptions.variableUoM = document.getElementById("DialogMeaningVariableUoMSelect").value;
+				selectedOptions.variableUoMSymbol = document.getElementById("DialogMeaningVariableUoMSymbolSelect").value;
+				selectedOptions.variableUoMDefinition = document.getElementById("DialogMeaningVariableUoMDefinitionSelect").value;
 			}
 			selectedOptions.value = document.getElementById("DialogSaveLayerValueSelect").value;
 			return selectedOptions;
 		}
 
 		function ShowSaveLayerDialog(nodeId) {
+			document.getElementById("DialogSaveLayerVariableDefUoM").innerHTML = GetHTMLVariableDefUoM("", { nameInLegend: false, showValue: true })
 			ShowSaveLayerDialogSelects(nodeId, true);
 			document.getElementById("DialogSaveLayerTitle").innerHTML = "Save table as GeoJSON";
 			document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"SaveLayer(event)\">Save GeoJSON</button> " +
@@ -2852,9 +2898,75 @@
 		}
 
 		function ShowOpenMapDialog(nodeId) {
+			document.getElementById("DialogSaveLayerVariableDefUoM").innerHTML = GetHTMLVariableDefUoM("", { nameInLegend: false, showValue: true });
 			ShowSaveLayerDialogSelects(nodeId, true);
 			document.getElementById("DialogSaveLayerTitle").innerHTML = "Open in the Map Browser";
 			document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"OpenMap(event)\">Open</button>";
+		}
+
+		function PopulateDialogSaveLayerVariableFromDropDownSelect(i) {
+			var gi = JSON.parse(document.getElementById("DialogSaveLayerVariableDropDownSelect_" + i).value);
+			if (gi == -1)
+				return;
+			PopulateDialogSaveLayerVarUoM(i, config.suggestedVarUoMs[gi.g].varUoMs[gi.i]);
+		}
+
+		function PopulateDialogSaveLayerVarUoM(i, varUoM) {
+			document.getElementById("DialogMeaningVariableDescriptionInput_" + i).value = varUoM.description ? varUoM.description : "";
+			document.getElementById("DialogMeaningVariableDefinitionInput_" + i).value = varUoM.definition ? varUoM.definition : "";
+			document.getElementById("DialogMeaningVariableUoMInput_" + i).value = varUoM.UoM ? varUoM.UoM : "";
+			document.getElementById("DialogMeaningVariableUoMSymbolInput_" + i).value = varUoM.UoMSymbol ? varUoM.UoMSymbol : "";
+			document.getElementById("DialogMeaningVariableUoMDefinitionInput_" + i).value = varUoM.UoMDefinition ? varUoM.UoMDefinition : "";
+		}
+
+		function ShowMeaningTableDialog(node) {
+			var data = node.STAdata, cdns, vus;
+			var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
+			var dataAttributesArray = Object.keys(dataAttributes);
+
+			document.getElementById("DialogMeaningFields").innerHTML = "";
+			for (var i = 0; i < dataAttributesArray.length; i++) {
+				document.getElementById("DialogMeaningFields").innerHTML += GetHTMLVariableDefUoM("_" + i, { nameInLegend: true, showValue: false, showType: true, showPredefOptions: true });
+				document.getElementById("DialogSaveLayerVariable_" + i).innerHTML = "Field " + (i + 1) + ": " + dataAttributesArray[i];
+
+				cdns = [];
+				cdns.push('<select id="DialogSaveLayerVariableDropDownSelect_' + i + '" onChange="PopulateDialogSaveLayerVariableFromDropDownSelect(' + i + ')">',
+					"<option value='{\"g\":-1}'>--Select to populate below--</option>");
+				for (var g = 0; g < config.suggestedVarUoMs.length; g++) {
+					cdns.push('<optgroup label="', config.suggestedVarUoMs[g].group, '">');
+					vus = config.suggestedVarUoMs[g].varUoMs;
+					for (var j = 0; j < vus.length; j++)
+						cdns.push("<option value='{\"g\":", g, ",\"i\":", j, "}'>", vus[j].varUoMdesc, "</option>");
+				}
+				cdns.push('</select>');
+				document.getElementById("DialogSaveLayerVariableDropDown_" + i).innerHTML = cdns.join("");
+
+				document.getElementById("DialogSaveLayerVariableType_" + i).innerHTML = dataAttributes[dataAttributesArray[i]].type;
+				document.getElementById("DialogMeaningVariableDescription_" + i).innerHTML = '<input id="DialogMeaningVariableDescriptionInput_' + i + '" type="text" size="50" value="">';
+				document.getElementById("DialogMeaningVariableDefinition_" + i).innerHTML = '<input id="DialogMeaningVariableDefinitionInput_' + i + '" type="text" size="50" value="">';
+				document.getElementById("DialogMeaningVariableUoM_" + i).innerHTML = '<input id="DialogMeaningVariableUoMInput_' + i + '" type="text" size="30" value="">';
+				document.getElementById("DialogMeaningVariableUoMSymbol_" + i).innerHTML = '<input id="DialogMeaningVariableUoMSymbolInput_' + i + '" type="text" size="15" value="">';
+				document.getElementById("DialogMeaningVariableUoMDefinition_" + i).innerHTML = '<input id="DialogMeaningVariableUoMDefinitionInput_' + i + '" type="text" size="50" value="">';
+
+				PopulateDialogSaveLayerVarUoM(i, dataAttributes[dataAttributesArray[i]]);
+			}
+		}
+
+		function GetMeaningTable(event) {
+			event.preventDefault(); // We don't want to submit this form
+			var data = currentNode.STAdata;
+			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(data);
+			var dataAttributesArray = Object.keys(dataAttributes);
+			for (var i = 0; i < dataAttributesArray.length; i++) {
+				dataAttributes[dataAttributesArray[i]].description = document.getElementById("DialogMeaningVariableDescriptionInput_" + i).value;
+				dataAttributes[dataAttributesArray[i]].definition = document.getElementById("DialogMeaningVariableDefinitionInput_" + i).value;
+				dataAttributes[dataAttributesArray[i]].UoM = document.getElementById("DialogMeaningVariableUoMInput_" + i).value;
+				dataAttributes[dataAttributesArray[i]].UoMSymbol = document.getElementById("DialogMeaningVariableUoMSymbolInput_" + i).value;
+				dataAttributes[dataAttributesArray[i]].UoMDefinition = document.getElementById("DialogMeaningVariableUoMDefinitionInput_" + i).value;
+			}
+			currentNode.STAdataAttributes = dataAttributes;
+			networkNodes.update(currentNode);
+			document.getElementById("DialogMeaningTable").close();
 		}
 
 		function SaveTable(event) {
@@ -2872,7 +2984,7 @@
 		//https://w3c.github.io/csvw/metadata/#dialect-descriptions
 		function CreateCSVW(data, dataAttributesInput, delimiter) {
 			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributes(data);
-			var dataAttributesArray = Object.keys(dataAttributes);
+			var dataAttributesArray = Object.keys(dataAttributes), dataAttribute, c;
 
 			var csvw = {
 				tableSchema: {
@@ -2884,10 +2996,22 @@
 				}
 			};
 			for (var a = 0; a < dataAttributesArray.length; a++) {
+				dataAttribute = dataAttributes[dataAttributesArray[a]];
 				csvw.tableSchema.columns.push({
 					"name": dataAttributesArray[a],
-					"datatype": getCSVWTypeFromAttributeType(dataAttributes[dataAttributesArray[a]].type),
+					"datatype": getCSVWTypeFromAttributeType(dataAttribute.type),
 				});
+				c = csvw.tableSchema.columns[a];
+				if (dataAttribute.description)
+					c.titles = dataAttribute.description;
+				if (dataAttribute.definition)
+					c.propertyUrl = dataAttribute.definition;
+				if (dataAttribute.UoM)
+					c.unitMeasureTitles = dataAttribute.UoM;
+				if (dataAttribute.UoMSymbol)
+					c.unitMeasureSymbol = dataAttribute.UoMSymbol;
+				if (dataAttribute.UoMDefinition)
+					c.unitMeasureUrl = dataAttribute.UoMDefinition;
 			}
 			return csvw;
 		}
@@ -3199,7 +3323,7 @@
 				//LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
-			if (nodeTo.image == "SelectColumnsTable.png") {
+			if (nodeTo.image == "SelectColumnsTable.png" || nodeTo.image == "Meaning.png") {
 				nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
 				if (nodeFrom.STAdataAttributes)
 					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
@@ -3331,7 +3455,7 @@
 				else if (currentNode.image == "ScatterPlot.png") {
 					var parentNodes = GetParentNodes(currentNode);
 					if (parentNodes && parentNodes[0]) {
-						if (parentNodes[0].STAURL)
+						if (parentNodes[0].STAdata)
 							ShowScatterPlotDialog(parentNodes);
 						document.getElementById("DialogScatterPlot").showModal();
 					}
@@ -3347,6 +3471,10 @@
 				else if (currentNode.image == "OpenMap.png") {
 					ShowOpenMapDialog(currentNode.id);
 					document.getElementById("DialogSaveLayer").showModal();
+				}
+				else if (currentNode.image == "Meaning.png") {
+					ShowMeaningTableDialog(currentNode);
+					document.getElementById("DialogMeaningTable").showModal();
 				}
 				else if (currentNode.image == "SelectColumnsSTA.png" || currentNode.image == "SelectColumnsTable.png") {
 					var parentNode = GetFirstParentNode(currentNode);

@@ -194,7 +194,7 @@
 
  .trLineBoxName td { /*Line with selects and buttons */
     height: 35px;
-    /* border: 2px solid #34383aef; */
+    border: 2px solid #34383aef;
     padding-left: 5px;
     padding-right: 5px;
 }
@@ -209,18 +209,18 @@
     height: 30px;
 }
 
-/* .tdSelectAndOrNot {
+.tdSelectAndOrNot {
     height: 30px;
-} */
+}
 
- .topPartSelectAndOrNot {
+.topPartSelectAndOrNot {
     height: 30px;
 
-} 
+}
 
 .bottomPartSelectAndOrNot {
     height: auto;
-    /* border-left: 2px solid #34383aef; */
+    border-left: 2px solid #34383aef;
     display: flex;
     align-items: center;
     padding-left: 5px;

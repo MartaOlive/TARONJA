@@ -1,4 +1,5 @@
 {
+	"MMNpath": "../mmn",
 	"STAurl": "https://citiobs.demo.secure-dimensions.de/staplus/v1.1",
 	"suggestedSTAurls": [
 		{
@@ -89,5 +90,106 @@
 			]
 		}
 	],
-	"MMNpath": "../osm"
+	"suggestedVarUoMs": [
+		{
+			"group": "Air Quality",
+			"varUoMs": [
+			{
+				"varUoMdesc": "Air Temperature in Celsium",
+				"description": "Air Temperature",
+				"definition": "http://vocabs.lter-europe.net/EnvThes/22035",
+				"UoM": "Celsius",
+				"UoMSymbol": "C",
+				"UoMDefinition": "https://qudt.org/vocab/unit/DEG_C"
+			},
+			{
+				"varUoMdesc": "Relative Humidity in %",
+				"description": "Relative Humidity",
+				"definition": "http://vocabs.lter-europe.net/EnvThes/21579",
+				"UoM": "Percentage",
+				"UoMSymbol": "%",
+				"UoMDefinition": "https://qudt.org/vocab/unit/PERCENT"
+			},
+			{
+				"varUoMdesc": "Luminous Exposure (Ambient Light) in LUX",
+				"description": "Ambient Light",
+				"definition": "https://qudt.org/vocab/quantitykind/LuminousExposure",
+				"UoM": "Lumens per square meter",
+				"UoMSymbol": "LUX",
+				"UoMDefinition": "https://qudt.org/vocab/unit/LUX"
+			},
+			{
+				"varUoMdesc": "Barometric Pressure in kPa",
+				"description": "Barometric Pressure",
+				"definition": "https://vocabs.lter-europe.net/EnvThes/22060",
+				"UoM": "kiloPascals",
+				"UoMSymbol":"kPa",
+				"UoMDefinition": "https://qudt.org/vocab/unit/KiloPA"
+			},
+			{
+				"varUoMdesc": "Noise Level in dBA",
+				"description": "Noise Level",
+				"definition": "https://qudt.org/vocab/quantitykind/SoundExposureLevel",
+				"UoM": "A-weighted decibel",
+				"UoMSymbol": "dBA",
+				"UoMDefinition": "https://www.eea.europa.eu/help/glossary/eea-glossary/a-weighted-decibel"
+			},
+			{
+				"varUoMdesc": "PM 1 in ug/m3",
+				"description": "Particulate matter with particulate matter with an average aerodynamic diameter of up to 1 micrometers",
+				"definition": "https://dd.eionet.europa.eu/vocabularyconcept/aq/pollutant/6002",
+				"UoM": "Microgram per cubic meter",
+				"UoMSymbol": "ug/m3",
+				"UoMDefinition": "https://qudt.org/vocab/unit/MicroGM-PER-M3"
+			},
+			{
+				"varUoMdesc": "PM 2.5 in ug/m3",
+				"description": "Particulate matter with particulate matter with an average aerodynamic diameter of up to 2.5 micrometers",
+				"definition": "https://www.eea.europa.eu/help/glossary/eea-glossary/pm2.5",
+				"UoM": "Microgram per cubic meter",
+				"UoMSymbol": "ug/m3",
+				"UoMDefinition": "https://qudt.org/vocab/unit/MicroGM-PER-M3"
+			},
+			{
+				"varUoMdesc": "PM 10 in ug/m3",
+				"description": "Particulate matter with particulate matter with an average aerodynamic diameter of up to 10 micrometers",
+				"definition": "https://www.eea.europa.eu/help/glossary/eea-glossary/pm10",
+				"UoM": "Microgram per cubic meter",
+				"UoMSymbol": "ug/m3",
+				"UoMDefinition": "https://qudt.org/vocab/unit/MicroGM-PER-M3"
+			}
+			]
+		},
+		{
+			"group": "Water Quantity",
+			"varUoMs": [
+			{
+				"varUoMdesc": "Lake level in cm",
+				"description": "Lake level",
+				"definition": "https://hydro.geodab.eu/hydro-ontology/concept/15",
+				"UoM": "Centimiters",
+				"UoMSymbol": "cm",
+				"UoMDefinition": "https://qudt.org/vocab/unit/CentiM"
+			},
+			{
+				"varUoMdesc": "Turbidity in NTU",
+				"description": "Turbidity",
+				"definition": "https://hydro.geodab.eu/hydro-ontology/concept/105",
+				"UoM": "Nephelometric Turbidity Unit",
+				"UoMSymbol": "NTU",
+				"UoMDefinition": "http://onto.nerc.ac.uk/CAST/267"
+			}
+			]
+		},
+		{
+			"group": "Sensor Things API",
+			"varUoMs": [
+			{
+				"varUoMdesc": "Observation/phenomenonTime",
+				"description": "phenomenonTime",
+				"definition": "http://www.opengis.net/def/docs/15-078r6/Observation/phenomenonTime"
+			}
+			]
+		}
+	]
 }
