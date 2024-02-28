@@ -47,8 +47,8 @@
 
 const selectConditionContent = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date'];
 const selectConditionContentText = [' = ', ' &ne; ', 'contains', 'no contains', 'starts with', 'ends with'];
-const selectConditionContentNumber = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date']
 
+//Applying the filter
 var stopReadInformationRowFilter = false;
 function readInformationRowFilter(elem, entity, nexus, parent) {
 	if (stopReadInformationRowFilter == false) {
@@ -62,11 +62,9 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 			}
 		}
 		else { //Build url
-			console.log(elem)
-			//Last Array, wich contains the filters 
+			//Last Array, which contains the filters 
 			var data = "";
 			for (var i = 0; i < infoFilter.length; i++) {
-				console.log(elem)
 				if (infoFilter[i][0] == elem) { //To search the array that contains the info that we want
 					var parentLenght = parent.elems.length;
 					var indexOf = parent.elems.indexOf(elem);
@@ -74,8 +72,6 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 					if (indexOf == 0) {
 						data += "(";
 					}
-
-					//For " = ", ' &ne; ' ... and [a,b], (a,b)... I need the entity in singular or plural  (infoFilter[i][1])
 
 					var valueOfEntity = infoFilter[i][1]; //Always plural
 					var entitiesArray = STAEntities[valueOfEntity].entities; //Plural or singular
@@ -262,11 +258,11 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 		if (value1 == null) {
 			value1 = "";
 		}
-	} else {
-		if (textIputInterval1 == null) {
-			textIputInterval1 = "";
-		} else if (textIputInterval2 == null) {
-			textIputInterval2 = "";
+	} else { //això és value1 i 2?
+		if (value1 == null) {
+			value1 = "";
+		} else if (value2 == null) {
+			value2 = "";
 		}
 	}
 
@@ -801,7 +797,7 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 		if (selectorInfo.length != 0) {
 			var typeOfValues = typeOfValueFromInput("simple", count, selectorInfo[0][4]);
 			if (typeOfValues == "number") {
-				selectConditionContent2 = selectConditionContentNumber;
+				selectConditionContent2 = selectConditionContent;
 			} else if (typeOfValues == "text") { //text
 				selectConditionContent2 = selectConditionContentText;
 			} else { //data and empty
@@ -1282,7 +1278,7 @@ function changeSelectConditionValues(number, wichTextInput, value1, valueInput1,
 	}
 
 	var selectContent;
-	if (typeOfValues == "number") { selectContent = selectConditionContentNumber; }
+	if (typeOfValues == "number") { selectContent = selectConditionContent; }
 	else if (typeOfValues == "text") { selectContent = selectConditionContentText; } //text
 	else { selectContent = selectConditionContent; }//data and empty
 
