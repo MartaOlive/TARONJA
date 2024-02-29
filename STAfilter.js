@@ -50,6 +50,7 @@ const selectConditionContentText = [' = ', ' &ne; ', 'contains', 'no contains', 
 
 //Applying the filter
 var stopReadInformationRowFilter = false;
+
 function readInformationRowFilter(elem, entity, nexus, parent) {
 	if (stopReadInformationRowFilter == false) {
 		if (typeof elem === "object") {
@@ -246,13 +247,13 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 
 function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 	var typeOfValues;
-	if (wichTextInput == "simple") {
-		var textInput = document.getElementById("textInput_" + number);
-	}
-	else {
-		var textIputInterval1 = document.getElementById("textInputInterval1_" + number);
-		var textIputInterval2 = document.getElementById("textInputInterval2_" + number);
-	}
+	// if (wichTextInput == "simple") {
+	// 	// var textInput = document.getElementById("textInput_" + number);
+	// }
+	// else {
+	// 	var textIputInterval1 = document.getElementById("textInputInterval1_" + number);
+	// 	var textIputInterval2 = document.getElementById("textInputInterval2_" + number);
+	// }
 	//avoid error because input is empty so values are null
 	if (wichTextInput == "simple") {
 		if (value1 == null) {
@@ -1278,9 +1279,11 @@ function changeSelectConditionValues(number, wichTextInput, value1, valueInput1,
 	}
 
 	var selectContent;
+	selectCondition.innerHTML=""
 	if (typeOfValues == "number") { selectContent = selectConditionContent; }
 	else if (typeOfValues == "text") { selectContent = selectConditionContentText; } //text
 	else { selectContent = selectConditionContent; }//data and empty
+
 
 
 	for (var i = 0; i < selectContent.length; i++) { //Create options to select condition
