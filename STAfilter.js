@@ -52,6 +52,7 @@ const selectConditionContentText = [' = ', ' &ne; ', 'contains', 'no contains', 
 var stopReadInformationRowFilter = false;
 
 function readInformationRowFilter(elem, entity, nexus, parent) {
+	var infoFilter=currentNode.STAInfoFilter;
 	if (stopReadInformationRowFilter == false) {
 		if (typeof elem === "object") {
 			for (var i = 0; i < elem.elems.length; i++) {
@@ -569,7 +570,7 @@ function showIntervalSelector(nodeId, number) {
 
 }
 //Build selectors
-function createSelectorRowFilters(dataAttributes, nodeId, number) {
+function createSelectorRowFilters(/*dataAttributes,*/ nodeId, number) {
 	//update STAdata from node
 	currentNode.id = nodeId; //it is neccessary?
 	networkNodes.update(networkNodes.get(nodeId));
@@ -582,6 +583,7 @@ function createSelectorRowFilters(dataAttributes, nodeId, number) {
 	divFilterBox.appendChild(optionsRow);
 
 	var selectorInfo = [];
+	var infoFilter=currentNode.STAInfoFilter;
 	if (infoFilter.length != 0) {
 
 		for (var i = 0; i < infoFilter.length; i++) {
@@ -594,13 +596,13 @@ function createSelectorRowFilters(dataAttributes, nodeId, number) {
 	}
 
 	var place_Id = "optionsRow_" + number;
-	createSelect(1, place_Id, nodeId, dataAttributes, selectorInfo, number);
-	createSelect(2, place_Id, nodeId, dataAttributes, selectorInfo, number);
+	createSelect(1, place_Id, nodeId, selectorInfo, number);
+	createSelect(2, place_Id, nodeId, selectorInfo, number);
 
 
 
-	createSelect(3, place_Id, nodeId, dataAttributes, selectorInfo, number);
-	createSelect(4, place_Id, nodeId, dataAttributes, selectorInfo, number);
+	createSelect(3, place_Id, nodeId, selectorInfo, number);
+	createSelect(4, place_Id, nodeId, selectorInfo, number);
 
 	var divIsAnObject = document.createElement("div"); //It will be shown when property selected will be an object
 	divIsAnObject.setAttribute("id", "divIsAnObject");
@@ -646,11 +648,15 @@ function changeSelectValueRowFilter(nodeId, number) {
 
 }
 
-function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, count) {
+function createSelect(number, place_Id, nodeId, selectorInfo, count) {
+	var previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
+	var parentNode = networkNodes.get(previousNode[0].id);
+	var data = parentNode.STAdata; //previous node
+	var dataAttributes = getDataAttributes(data);
 
 	var placeId = document.getElementById(place_Id);
 	var select = document.createElement("select");
-	var data, previousNode;
+	var data;
 	var actualNode = networkNodes.get(nodeId);
 	if (actualNode.image == "SelectRowsTable.png") { //CSV . Update current Node STAdata with info from previous Node !!!!!! (it works?)
 		previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
@@ -706,7 +712,7 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
 			}
 			select.appendChild(option);
 		}
-		
+
 
 
 		var newEntityList = [];
@@ -1279,7 +1285,7 @@ function changeSelectConditionValues(number, wichTextInput, value1, valueInput1,
 	}
 
 	var selectContent;
-	selectCondition.innerHTML=""
+	selectCondition.innerHTML = ""
 	if (typeOfValues == "number") { selectContent = selectConditionContent; }
 	else if (typeOfValues == "text") { selectContent = selectConditionContentText; } //text
 	else { selectContent = selectConditionContent; }//data and empty
@@ -1352,14 +1358,14 @@ function adjustWidth(wichTextInput, number) { //and refill conditionSelect (inte
 
 
 ////////////////New Table////////////////////
-var conditionsFilter = [ //Table values
-	{
-		property: "<div id='optionsRow_0' style='display: inline-block;'></div>", //class='optionsRow'
-		number: "0"
-	}
-];
-var boxNames = ["0_0"];
-var infoFilter = [];
+// var conditionsFilter = [ //Table values
+// 	{
+// 		property: "<div id='optionsRow_0' style='display: inline-block;'></div>", //class='optionsRow'
+// 		number: "0"
+// 	}
+// ];
+// var boxNames = ["0_0"];
+//var infoFilter = [];
 var elemFilter = {
 	elems: [0],
 	nexus: null,
@@ -1370,7 +1376,7 @@ var urlAPI = "";
 
 
 var counter = [];
-function GetFilterTable(elem, dataAttributes, nodeId, first) //Built table //The second will be called by showFilter
+function GetFilterTable(elem, /*dataAttributes, */nodeId, first) //Built table //The second will be called by showFilter
 {
 	//when the element that comes to you is the elemFilter, add a button to add one more level
 
@@ -1390,7 +1396,7 @@ function GetFilterTable(elem, dataAttributes, nodeId, first) //Built table //The
 	}
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
-			s += GetFilterTable(elem.elems[i], dataAttributes, nodeId);
+			s += GetFilterTable(elem.elems[i], /*dataAttributes,*/ nodeId);
 		}
 
 		if (elem.nexus) {
@@ -1419,7 +1425,7 @@ function GetFilterTable(elem, dataAttributes, nodeId, first) //Built table //The
 		}
 	}
 	else {
-		s += GetFilterCondition(elem, dataAttributes, nodeId);
+		s += GetFilterCondition(elem, /*dataAttributes,*/ nodeId);
 
 	}
 
@@ -1432,30 +1438,31 @@ function GetFilterTable(elem, dataAttributes, nodeId, first) //Built table //The
 }
 
 
-function addingSelectors(dataAttributes, nodeId,) {
+function addingSelectors(/*dataAttributes, */nodeId,) {
 	for (var i = 0; i < counter.length; i++) {
 
-		createSelectorRowFilters(dataAttributes, nodeId, counter[i]);
+		createSelectorRowFilters(/*dataAttributes,*/ nodeId, counter[i]);
 	}
 
 
 
 }
 
-function GetFilterCondition(elem, dataAttributes, nodeId) {
+function GetFilterCondition(elem, /*dataAttributes,*/ nodeId) {
 	counter.push(elem);
+	var conditionsFilter = currentNode.STAConditionsFilter
 	return conditionsFilter[elem].property + '<div class="buttonsInFilterRow"><button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="arrowDown.png" alt="Move down" title="Move down"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="arrowUp.png" alt="Move up" title="Move up"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash.png" alt="Remove" title="Remove"></button></div>';
 
 }
 
 
-function ShowFilterTable(dataAttributes, nodeId) //posar la taula on sigui //El que inicia la taula
+function ShowFilterTable(/*dataAttributes, */nodeId) //posar la taula on sigui //El que inicia la taula
 {
 
 
 	counter = [];
-	document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(elemFilter, dataAttributes, nodeId, true);
-	addingSelectors(dataAttributes, nodeId);
+	document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(elemFilter, /*dataAttributes, */nodeId, true);
+	addingSelectors(/*dataAttributes,*/ nodeId);
 
 
 }
@@ -1662,12 +1669,14 @@ function searchFilterBoxName(boxNamee, elem, paramsNodeId, fromBiggest) { //the 
 
 function addNewElement(elem, nodeId, boxName, fromBiggest) {
 	var elements = elem.elems;
+	var conditionsFilter = currentNode.STAConditionsFilter;
 	var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
 	var nextNumber = parseInt(lastNumber) + 1; //for those who are within the 0_...
 	if (elem.boxName.charAt(0) != 0) {//groups other than 0 and must create a group and not an element
 		var newBoxName = elem.boxName;
 		var firstNumberBoxNameInside = parseInt(elem.boxName.charAt(0)) - 1; //First number: inside group
 		//search, split , arrange iand the lastone, plus one i add boxNames
+		var boxNames = currentNode.STABoxNames;
 		var boxNamesFiltered = boxNames.filter(element => element.charAt(0) == firstNumberBoxNameInside); //filter those that already exist in the group that will be created
 		var nextBoxNumber;
 		if (boxNamesFiltered.length != 0) {
@@ -1703,6 +1712,7 @@ function addNewElement(elem, nodeId, boxName, fromBiggest) {
 	if (elements.length == 2) { //change nexus if pass from one to two
 		elem.nexus = "and"
 	}
+	var conditionsFilter = currentNode.STAConditionsFilter;
 	conditionsFilter.push({ //add to conditionsFilter
 		property: "<div id='optionsRow_" + nextNumber + "' style='display: inline-block'></div>", //class='optionsRow
 		number: nextNumber
@@ -1733,6 +1743,7 @@ function addNewElement(elem, nodeId, boxName, fromBiggest) {
 
 }
 function resizeBottomPartSelectAndOrNot() {
+	var boxNames = currentNode.STABoxNames;
 
 	for (var i = 0; i < boxNames.length; i++) {
 		var tdSelectAndOrNot = document.getElementById("tdSelectAndOrNot_" + boxNames[i]);
@@ -1750,7 +1761,7 @@ function takeSelectInformation(nodeId) {
 	var selectorSTAEntity, selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
 	var selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
 	var arrayInfo;
-	infoFilter = []; //general var that keeps the information from selects/inputs
+	var infoFilter = []; //general var that keeps the information from selects/inputs
 	for (var i = 0; i < counter.length; i++) {
 		//console.log(counter[i]);
 		optionsRow = document.getElementById("optionsRow_" + counter[i]);
@@ -1805,6 +1816,8 @@ function takeSelectInformation(nodeId) {
 		infoFilter.push(arrayInfo);
 
 	}
+
+	currentNode.STAInfoFilter=infoFilter;
 }
 
 //delete element
@@ -1892,8 +1905,9 @@ function DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem) {
 			console.log(copyFather)
 			elemFilter = copyFather[0];
 		}
+		var boxNames = currentNode.STABoxNames;
 		boxNames = actualizeBoxNames(elemFilter, arrayBoxNumbers);
-		console.log(boxNames)
+
 	}
 }
 
@@ -1912,13 +1926,13 @@ function actualizeBoxNames(elem, arrayBoxNumbers) {
 
 //drawTable
 function drawTableAgain(paramsNodeId) {
-	var parentNodeid = network.getConnectedNodes(currentNode.id, "from");
-	var parentNode = networkNodes.get(parentNodeid);
-	var data = parentNode[0].STAdata; //previous node
-	var dataAttributes = getDataAttributes(data);
+	// var parentNodeid = network.getConnectedNodes(currentNode.id, "from");
+	// var parentNode = networkNodes.get(parentNodeid);
+	// var data = parentNode[0].STAdata; //previous node
+	// var dataAttributes = getDataAttributes(data);
 	document.getElementById("divSelectorRowsFilter").innerHTML = "";
 
-	ShowFilterTable(dataAttributes, paramsNodeId)
+	 ShowFilterTable(/*dataAttributes,*/ currentNode.id)
 
 }
 
@@ -1933,6 +1947,7 @@ function biggestLevelButton(boxName, nodeId) {
 	};
 	var copy = Object.assign(elemFilter);
 	newInsert.elems.push(copy);
+	var boxNames = currentNode.STABoxNames;
 	boxNames.push(newBoxName);
 	elemFilter = newInsert;
 
@@ -1979,6 +1994,38 @@ function addTitleInRowFilterDialog(divName) {
 		divTitleSelectRows.innerHTML += `<img src='${entity}.png' style='height:30px'> </img>` + entity;
 	}
 
+
+
+
+}
+function addNecessaryVariablesToNode(nodeId) {
+	var conditionsFilter = [ //Table values
+		{
+			property: "<div id='optionsRow_0' style='display: inline-block;'></div>", //class='optionsRow'
+			number: "0"
+		}
+	];
+	var boxNames = ["0_0"];
+	var infoFilter = [];
+	var elemFilter = {
+		elems: [0],
+		nexus: null,
+		boxName: "0_0"
+	}
+	var urlAPICounter = [];
+	var urlAPI = "";
+	var counter = [];
+	var actualNode = networkNodes.get(nodeId);
+
+	actualNode.STABoxNames = boxNames;
+	actualNode.STAConditionsFilter = conditionsFilter;
+	actualNode.STAInfoFilter = infoFilter;
+	actualNode.STAElemFilter = elemFilter;
+	actualNode.STAUrlAPICounter = urlAPICounter;
+	actualNode.STAurlAPI = urlAPI;
+	actualNode.STACounter = counter;
+
+	networkNodes.update(actualNode);
 
 
 

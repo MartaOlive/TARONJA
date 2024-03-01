@@ -251,6 +251,7 @@
 				<span id="ButtonsContextMenuObjects"></span><br>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button>
 				<button onclick='renameCircularImage(event, "DialogContextMenu")'>Rename</button><br>
+				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
 			</p>
 			<div class="center">
 				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
@@ -311,7 +312,7 @@
 				<option value="windows-1250">Windows-1250</option>
 				<option value="windows-1251">Windows-1251</option>
 				<option value="windows-1253">Windows-1253</option>
-				<option value="iso-8859-9">ISO 8859-9, windows-1254, Latin 5)</option>
+				<option value="iso-8859-9">ISO 8859-9, windows-1254, Latin 5</option>
 				<option value="windows-1255">Windows-1255</option>
 				<option value="windows-1256">Windows-1256</option>
 				<option value="windows-1257">Windows-1257</option>
@@ -2121,7 +2122,7 @@
 
 			//updateinfoFilter
 			takeSelectInformation(currentNode.id);
-			console.log(currentNode.STAURL);
+			//console.log(currentNode.STAURL);
 			var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
 
 			urlAPICounter = []; // I need to restart it 
@@ -2146,10 +2147,10 @@
 			console.log(urlAPI);
 			currentNode.STAURL = urlAPI;
 			//Selectors Information
-			currentNode.STAelementFilter = elemFilter;
-			currentNode.STAinfoFilter = infoFilter;
-			currentNode.STAboxName = boxNames;
-			currentNode.STAConditionsFilter = conditionsFilter;
+			// currentNode.STAElementFilter = elemFilter;
+			// currentNode.STAInfoFilter = infoFilter;
+			// currentNode.STABoxName = boxNames;
+			//currentNode.STAConditionsFilter = conditionsFilter;
 
 			//keep in this node
 			elemFilter = { //restart for next node
@@ -2157,14 +2158,14 @@
 				nexus: null,
 				boxName: "0_0"
 			}
-			infoFilter = [];
-			boxNames = ["0_0"];
-			conditionsFilter = [ //valors de la taula
-				{
-					property: "<div id='optionsRow_0' class='optionsRow'></div>",
-					number: "0"
-				}
-			];
+			//infoFilter = [];
+			//boxNames = ["0_0"];
+			// conditionsFilter = [ //valors de la taula
+			// 	{
+			// 		property: "<div id='optionsRow_0' class='optionsRow'></div>",
+			// 		number: "0"
+			// 	}
+			// ];
 
 			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
@@ -3209,7 +3210,7 @@
 				conditionsFilter = currentNode.STAConditionsFilter;
 			}
 
-			ShowFilterTable(dataAttributes, currentNode.id);
+			ShowFilterTable(/*dataAttributes,*/ currentNode.id);
 		}
 
 		function SeparatePropertyIfNeeded(record, property, baseName) {
@@ -3658,6 +3659,10 @@
 				startingNodeContextId = null;
 
 			network.selectNodes([newId]);
+
+			if (image == "FilterRowsSTA.png") { //Add 
+				addNecessaryVariablesToNode(newId);
+			}
 		}
 
 		function removeNode(nodeId) {
@@ -3773,6 +3778,15 @@
 				}
 			}
 		}
+
+
+		function giveMeNetworkInformation(event) {
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectColumns").close();
+			console.log(networkNodes);
+		}
+
 	</script>
 
 </body>
