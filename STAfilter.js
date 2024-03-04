@@ -760,15 +760,6 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 		}
 
 
-
-
-
-
-
-
-
-
-
 		placeId.appendChild(select);
 	}
 
@@ -776,7 +767,6 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 		select.setAttribute("id", "selectorProperty_" + count);
 		select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + count + "')");
 		var select1 = document.getElementById("selectorSTAEntity_" + count);
-		console.log(count)
 		var select1Value = select1.options[select1.selectedIndex].value;
 
 		for (let i = 0; i < STAEntities[select1Value]["properties"].length; i++) {//To fill property
@@ -1285,11 +1275,10 @@ function changeSelectConditionValues(number, wichTextInput, value1, valueInput1,
 	}
 
 	var selectContent;
-	selectCondition.innerHTML = ""
+	selectCondition.innerHTML = ""; //Erase to not acumulate it
 	if (typeOfValues == "number") { selectContent = selectConditionContent; }
 	else if (typeOfValues == "text") { selectContent = selectConditionContentText; } //text
 	else { selectContent = selectConditionContent; }//data and empty
-
 
 
 	for (var i = 0; i < selectContent.length; i++) { //Create options to select condition
@@ -1375,7 +1364,7 @@ var urlAPICounter = [];
 var urlAPI = "";
 
 
-var counter = [];
+//var counter = [];
 function GetFilterTable(elem, /*dataAttributes, */nodeId, first) //Built table //The second will be called by showFilter
 {
 	//when the element that comes to you is the elemFilter, add a button to add one more level
@@ -1402,6 +1391,7 @@ function GetFilterTable(elem, /*dataAttributes, */nodeId, first) //Built table /
 		if (elem.nexus) {
 
 			s += `</td><td valign="middle" class="tdSelectAndOrNot" id='tdSelectAndOrNot_${elem.boxName}'><div class="topPartSelectAndOrNot" ></div><div class="bottomPartSelectAndOrNot" id= "bottomPartSelectAndOrNot_${elem.boxName}"><select class="selectAndOrNot" name="selectAndOrNot"  onchange= "actualizeSelectChoice('${elem.boxName}')" id="selectAndOrNot_${elem.boxName}">`;
+			
 			if (elem.nexus == " and ") {
 				s += '<option value=" and " selected>And</option>';
 
@@ -1438,18 +1428,17 @@ function GetFilterTable(elem, /*dataAttributes, */nodeId, first) //Built table /
 }
 
 
-function addingSelectors(/*dataAttributes, */nodeId,) {
-	for (var i = 0; i < counter.length; i++) {
-
-		createSelectorRowFilters(/*dataAttributes,*/ nodeId, counter[i]);
-	}
-
+// function addingSelectors(/*dataAttributes, */nodeId,) {
+// 	for (var i = 0; i < counter.length; i++) { 
+// 		createSelectorRowFilters(/*dataAttributes,*/ nodeId, counter[i]);
+// 	}
 
 
-}
+
+// }
 
 function GetFilterCondition(elem, /*dataAttributes,*/ nodeId) {
-	counter.push(elem);
+	currentNode.STACounter.push(elem);
 	var conditionsFilter = currentNode.STAConditionsFilter
 	return conditionsFilter[elem].property + '<div class="buttonsInFilterRow"><button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="arrowDown.png" alt="Move down" title="Move down"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="arrowUp.png" alt="Move up" title="Move up"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash.png" alt="Remove" title="Remove"></button></div>';
 
@@ -1458,11 +1447,15 @@ function GetFilterCondition(elem, /*dataAttributes,*/ nodeId) {
 
 function ShowFilterTable(/*dataAttributes, */nodeId) //posar la taula on sigui //El que inicia la taula
 {
-
-
-	counter = [];
+	currentNode.STACounter=[];
+	var counter = currentNode.STACounter;
+	
 	document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(elemFilter, /*dataAttributes, */nodeId, true);
-	addingSelectors(/*dataAttributes,*/ nodeId);
+	
+	for (var i = 0; i < counter.length; i++) {//Adding Selectors
+		createSelectorRowFilters(/*dataAttributes,*/ nodeId, counter[i]);
+	}
+	//addingSelectors(/*dataAttributes,*/ nodeId);
 
 
 }
@@ -1604,7 +1597,7 @@ function LookForNextConditionFilterTable(elem, iCon) {
 //Up button
 function MoveUpFilterCondition(iCon) {
 	event.preventDefault();
-	var previousElement = GivePreviousConditionFilterTable(elemFilter, iCon, "no");
+	var previousElement = GivePreviousConditionFilterTable(elemFilter, iCon);
 	console.log(previousElement)
 	if (previousElement != -1) {
 		searchBoxName(elemFilter, iCon, "no", previousElement);
@@ -1652,6 +1645,7 @@ function addNewCondition(boxName, paramsNodeId, fromBiggest) {
 	searchFilterBoxName(boxName, elem, paramsNodeId, fromBiggest);
 
 }
+
 function searchFilterBoxName(boxNamee, elem, paramsNodeId, fromBiggest) { //the elem has  boxName ...
 	var element;
 	if (typeof elem === "object") {
@@ -1762,6 +1756,7 @@ function takeSelectInformation(nodeId) {
 	var selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
 	var arrayInfo;
 	var infoFilter = []; //general var that keeps the information from selects/inputs
+	var counter = currentNode.STACounter;
 	for (var i = 0; i < counter.length; i++) {
 		//console.log(counter[i]);
 		optionsRow = document.getElementById("optionsRow_" + counter[i]);
