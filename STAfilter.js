@@ -246,21 +246,14 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 
 }
 
-function typeOfValueFromInput(wichTextInput, number, value1, value2) {
+function typeOfValueFromInput(wichTextInput, value1, value2) {
 	var typeOfValues;
-	// if (wichTextInput == "simple") {
-	// 	// var textInput = document.getElementById("textInput_" + number);
-	// }
-	// else {
-	// 	var textIputInterval1 = document.getElementById("textInputInterval1_" + number);
-	// 	var textIputInterval2 = document.getElementById("textInputInterval2_" + number);
-	// }
-	//avoid error because input is empty so values are null
 	if (wichTextInput == "simple") {
 		if (value1 == null) {
 			value1 = "";
 		}
-	} else { //això és value1 i 2?
+	} else {
+
 		if (value1 == null) {
 			value1 = "";
 		} else if (value2 == null) {
@@ -433,7 +426,7 @@ function isAnObject(nodeId, number) {
 }
 
 //General structure
-function changeWriteToSelect(nodeId, number, selector) {  //To take the text in input
+function changeWriteToSelect(number, selector) {  //To take the text in input
 	event.preventDefault();
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 	var textInput = document.getElementById("textInput_" + number);
@@ -454,15 +447,6 @@ function changeWriteToSelect(nodeId, number, selector) {  //To take the text in 
 	buttonDown.setAttribute("disabled", true);
 	buttonUp.setAttribute("disabled", true);
 
-	//save value from input in case of cancel button is pressed
-	if (selector == "simple") {
-		textInput.setAttribute("data-oldvalue", textInput.value);
-	} else {
-		textInputInterval1.setAttribute("data-oldvalue", textInputInterval1.value);
-		textInputInterval2.setAttribute("data-oldvalue", textInputInterval2.value);
-
-	}
-
 	//Wich text is open?
 	if (selector == "simple") {
 		textInput.style.display = "none";
@@ -481,7 +465,7 @@ function changeWriteToSelect(nodeId, number, selector) {  //To take the text in 
 
 	}
 }
-function showIntervalSelector(nodeId, number) {
+function showIntervalSelector(number) {
 	event.preventDefault();
 	var selectorCondition = document.getElementById("selectorCondition_" + number);
 	var selectedValue = selectorCondition.options[selectorCondition.selectedIndex].value;
@@ -497,7 +481,7 @@ function showIntervalSelector(nodeId, number) {
 
 	var displaySelect = document.getElementById("displaySelect_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-	var parentLabel = searchParentLabel(currentNode.id);
+	var parentLabel = searchParentLabel();
 	var select1 = document.getElementById("selectorSTAEntity_" + number);
 	var select1Value = select1.options[select1.selectedIndex].value;
 
@@ -570,13 +554,8 @@ function showIntervalSelector(nodeId, number) {
 
 }
 //Build selectors
-function createSelectorRowFilters(/*dataAttributes,*/ nodeId, number) {
+function createSelectorRowFilters(number) {
 	//update STAdata from node
-	currentNode.id = nodeId; //it is neccessary?
-	networkNodes.update(networkNodes.get(nodeId));
-	var data = networkNodes.get(nodeId).STAdata;
-
-	var selectorStructureRow;
 	var divFilterBox = document.getElementById("optionsRow_" + number);
 	var optionsRow = document.createElement("div");
 	optionsRow.setAttribute("id", "optionsRow");
@@ -591,18 +570,11 @@ function createSelectorRowFilters(/*dataAttributes,*/ nodeId, number) {
 				selectorInfo.push(infoFilter[i]);
 			}
 		}
-
-		//}
 	}
-
-	var place_Id = "optionsRow_" + number;
-	createSelect(1, place_Id, nodeId, selectorInfo, number);
-	createSelect(2, place_Id, nodeId, selectorInfo, number);
-
-
-
-	createSelect(3, place_Id, nodeId, selectorInfo, number);
-	createSelect(4, place_Id, nodeId, selectorInfo, number);
+	createSelect(1, selectorInfo, number);
+	createSelect(2, selectorInfo, number);
+	createSelect(3, selectorInfo, number);
+	createSelect(4, selectorInfo, number);
 
 	var divIsAnObject = document.createElement("div"); //It will be shown when property selected will be an object
 	divIsAnObject.setAttribute("id", "divIsAnObject");
@@ -630,7 +602,6 @@ function sortValuesForSelect(arrayValues) {
 			} else {
 				arrayText.push(arrayValues[i]);
 			}
-
 		}
 
 		var arrayNumbersArranged = arrayNumbers.sort((a, b) => a - b);
@@ -645,41 +616,34 @@ function sortValuesForSelect(arrayValues) {
 
 function changeSelectValueRowFilter(nodeId, number) {
 	isAnObject(nodeId, number);
+	//...for more functions
 
 }
 
-function createSelect(number, place_Id, nodeId, selectorInfo, count) {
-	var previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
+function createSelect(number, selectorInfo, count) {
+
+	var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
 	var parentNode = networkNodes.get(previousNode[0].id);
 	var data = parentNode.STAdata; //previous node
 	var dataAttributes = getDataAttributes(data);
 
-	var placeId = document.getElementById(place_Id);
+	var placeId = document.getElementById("optionsRow_" + count);
 	var select = document.createElement("select");
-	var data;
-	var actualNode = networkNodes.get(nodeId);
-	if (actualNode.image == "SelectRowsTable.png") { //CSV . Update current Node STAdata with info from previous Node !!!!!! (it works?)
-		previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
+	var actualNode = networkNodes.get(currentNode.id);
 
+	if (actualNode.image == "SelectRowsTable.png") { //CSV . Update current Node STAdata with info from previous Node !!!!!! (it works?)
 		actualNode.STAdata = previousNode[0].STAdata;
 		networkNodes.update(actualNode);
-		data = actualNode.STAdata;
 
-	} else {
+	} else { //CSV (It has to be revised)
 		var parentNodeid = network.getConnectedNodes(currentNode.id, "from");
 		var parentNode = networkNodes.get(parentNodeid);
 		var data = parentNode[0].STAdata; //STAdata: All data comes from previous Node (Api or filtered previously)
 	}
 
-
-
-	var dataAttributesKeys = Object.keys(dataAttributes); //Array with Keys from Object
-	var dataAttributesFiltered = dataAttributesKeys.filter((element) =>
-		!element.includes("@iot.")
-	); //Take off @iot.
 	if (number == 1) {
 		select.setAttribute("id", "selectorSTAEntity_" + count);
-		select.setAttribute("onChange", "fillPropertySelector('" + nodeId + "','" + count + "')");
+		select.setAttribute("onChange", "fillPropertySelector('" + count + "')");
 
 		var staEntitiesKeys = Object.keys(STAEntities);
 
@@ -695,13 +659,12 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 				}
 			}
 
-		} else {
-			entity = "STAPlus"; //Look how to erase this
 		}
 
 		var entitiesSTA;
 		if (isEntity == true) {	//First put Itself (Entity)
-			entitiesSTA = STAEntities[entity].entities; //If it is not plural it doen't work, but if it is only one value you can't add Filter Rows, so it shouldn't happen.
+			entitiesSTA = STAEntities[entity].entities; //If it is not plural it doesn't work, but if it is only one value you can't add Filter Rows, so it shouldn't happen.
+			
 			var option = document.createElement("option");
 			option.setAttribute("value", entity);
 			option.innerHTML = entity;
@@ -712,13 +675,10 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 			}
 			select.appendChild(option);
 		}
-
-
-
 		var newEntityList = [];
-		for (var i = 0; i < entitiesSTA.length; i++) {
 
-			var indexArray = STAEntitiesArray.find(element => element == entitiesSTA[i]); //Value -1, doesn't exist -> Singular
+		for (var i = 0; i < entitiesSTA.length; i++) {
+			var indexArray = STAEntitiesArray.find(element => element == entitiesSTA[i]); //Value -1, it doesn't exist -> Singular
 
 			if (typeof indexArray === "undefined") { //singular
 				if (entitiesSTA[i] == "ObservedProperty" || entitiesSTA[i] == "FeatureOfInterest" || entitiesSTA[i] == "Party") {  //need more than + "s"
@@ -745,7 +705,7 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 				newEntityList.push(entitiesSTA[i]);
 			}
 		}
-		for (var i = 0; i < newEntityList.length; i++) {
+		for (var i = 0; i < newEntityList.length; i++) { //Fill selector with the connected entities
 			if (newEntityList[i] != "Objectss" && newEntityList[i] != "Subjectss") {
 				var option = document.createElement("option");
 				option.setAttribute("value", newEntityList[i]);
@@ -759,13 +719,12 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 			}
 		}
 
-
 		placeId.appendChild(select);
 	}
 
 	if (number == 2) {
 		select.setAttribute("id", "selectorProperty_" + count);
-		select.setAttribute("onChange", "fillValueSelector('" + nodeId + "','" + count + "')");
+		select.setAttribute("onChange", "fillValueSelector('" + count + "')");
 		var select1 = document.getElementById("selectorSTAEntity_" + count);
 		var select1Value = select1.options[select1.selectedIndex].value;
 
@@ -786,18 +745,14 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 
 	else if (number == 3) {
 		select.setAttribute("id", "selectorCondition_" + count);
-		var selectContent;
-
 
 		var selectConditionContent2;
 
 		if (selectorInfo.length != 0) {
-			var typeOfValues = typeOfValueFromInput("simple", count, selectorInfo[0][4]);
-			if (typeOfValues == "number") {
-				selectConditionContent2 = selectConditionContent;
-			} else if (typeOfValues == "text") { //text
+			var typeOfValues = typeOfValueFromInput("simple", selectorInfo[0][4]);
+			if (typeOfValues == "text") {
 				selectConditionContent2 = selectConditionContentText;
-			} else { //data and empty
+			} else { //data,empty,number
 				selectConditionContent2 = selectConditionContent;
 			}
 		} else {
@@ -809,10 +764,10 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 		for (var i = 0; i < selectConditionContent2.length; i++) { //create options in condition Select
 			var opcioCondicio = document.createElement("option");
 			opcioCondicio.setAttribute("value", selectConditionContent2[i]);
-			select.setAttribute("onChange", "showIntervalSelector('" + nodeId + "','" + count + "')"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!INTERVAL
+			select.setAttribute("onChange", "showIntervalSelector('" + count + "')");
 			opcioCondicio.innerHTML = selectConditionContent2[i];
 			if (selectorInfo.length != 0) {
-				if (selectConditionContent2[i] == selectorInfo[0][3]) { //it works well? 
+				if (selectConditionContent2[i] == selectorInfo[0][3]) {
 					opcioCondicio.setAttribute("selected", true);
 				}
 			}
@@ -830,13 +785,14 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 		placeId.appendChild(divFilterContainer);
 
 		select.setAttribute("id", "selectorValue_" + count);
-		select.setAttribute("onChange", "changeSelectValueRowFilter('" + nodeId + "','" + count + "')");
+		select.setAttribute("onChange", "changeSelectValueRowFilter('" + currentNode.id + "','" + count + "')");
 
 		var valor;
 		var arrayValors = [];
 		var select2 = document.getElementById("selectorProperty_" + count);
 		var select2PropertyValue = select2.options[select2.selectedIndex].value;
 		var valueUndefined = true;
+
 		for (let index = 0; index < data.length; index++) {
 			valor = data[index][select2PropertyValue];
 			if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
@@ -849,15 +805,12 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 
 		var arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
 
-
 		for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options
 			var option = document.createElement("option");
 			option.setAttribute("value", arrayValuesArranged[i]);
 			option.innerHTML = arrayValuesArranged[i];
 			select.appendChild(option);
 		}
-
-
 		divFilterContainer.appendChild(select);
 
 		var textInput = document.createElement("input");
@@ -871,8 +824,6 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 			if (event.key === "Enter") {
 				event.preventDefault();
 			}
-
-
 		});
 
 		placeId.appendChild(textInput);
@@ -890,7 +841,7 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 
 		var displaySelect = document.createElement("button");
 		displaySelect.setAttribute("id", "displaySelect_" + count);
-		displaySelect.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','simple')");
+		displaySelect.setAttribute("onclick", "changeWriteToSelect('" + count + "','simple')");
 		placeId.appendChild(displaySelect);
 		divFilterContainer.appendChild(okButton);
 		divFilterContainer.appendChild(cancelButton);
@@ -949,7 +900,7 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 
 		var displaySelectInterval = document.createElement("button");
 		displaySelectInterval.setAttribute("id", "displaySelectInterval_" + count);
-		displaySelectInterval.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','interval')");
+		displaySelectInterval.setAttribute("onclick", "changeWriteToSelect('" + count + "','interval')");
 		var buttonImage3 = document.createElement("img"); //button image
 		buttonImage3.setAttribute("src", "arrowSelectButton.png");
 		displaySelectInterval.appendChild(buttonImage3);
@@ -958,18 +909,16 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 		divFilterContainer2.appendChild(okButtonInterval);
 		divFilterContainer2.appendChild(cancelButtonInterval);
 
-		var entityy;
+		var entityUrl;
 		if (getSTAURLLastEntity(currentNode.STAURL)) {
-			entityy = getSTAURLLastEntity(currentNode.STAURL);
+			entityUrl = getSTAURLLastEntity(currentNode.STAURL);
 		} else {
-			entityy = "STAPlus";
+			entityUrl = "No entity";
 		}
 		var selectEntity = document.getElementById("selectorSTAEntity_" + count);
 		var selectEntityValue = selectEntity.options[selectEntity.selectedIndex].value;
-		if (selectEntityValue != entityy) {
-
+		if (selectEntityValue != entityUrl) {
 			displaySelect.style.display = "none";
-
 		}
 
 
@@ -989,12 +938,11 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 				textInput.style.display = "none";
 				divFilterContainer.style.display = "none";
 				divFilterContainer2.style.display = "none";
-				if (selectEntityValue != entityy) {
+				if (selectEntityValue != entityUrl) {
 					displaySelectInterval.style.display = "none";
 				}
 				textInputInterval1.value = selectorInfo[0][4];
 				textInputInterval2.value = selectorInfo[0][5];
-
 			}
 		} else { //Last or first
 			divFilterContainer2.style.display = "none";
@@ -1012,9 +960,9 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 
 var stopSearchparentLabel = false;
 
-function searchParentLabel(nodeId) {
+function searchParentLabel() {
 	var entity = "0";
-	var parentNodeId = network.getConnectedNodes(nodeId, "from");
+	var parentNodeId = network.getConnectedNodes(currentNode.id, "from");
 	var parentNode = networkNodes.get(parentNodeId);
 
 	for (var i = 0; i < STAEntitiesArray.length; i++) {
@@ -1024,17 +972,15 @@ function searchParentLabel(nodeId) {
 	}
 
 	return entity;
-
 }
 
-function fillPropertySelector(nodeId, number) {
+function fillPropertySelector(number) {
 	var selectEntity = document.getElementById("selectorSTAEntity_" + number);
 	var selectProperty = document.getElementById("selectorProperty_" + number);
 	var selectCondition = document.getElementById("selectorCondition_" + number);
 	var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
-
-
 	selectProperty.innerHTML = "";
+
 	var selectEntityValue = selectEntity.options[selectEntity.selectedIndex].value;
 
 	for (let i = 0; i < STAEntities[selectEntityValue]["properties"].length; i++) {// to fill property/property
@@ -1047,7 +993,7 @@ function fillPropertySelector(nodeId, number) {
 	var displaySelect = document.getElementById("displaySelect_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 
-	var parentLabel = searchParentLabel(currentNode.id);
+	var parentLabel = searchParentLabel();
 
 	if (parentLabel == selectEntityValue) { //show
 		if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
@@ -1065,7 +1011,6 @@ function fillPropertySelector(nodeId, number) {
 
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-
 
 	var textInput = document.getElementById("textInput_" + number);
 	var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
@@ -1088,12 +1033,12 @@ function fillPropertySelector(nodeId, number) {
 	}
 }
 
-function fillValueSelector(nodeId, number) { //Onchange first selector, fill second selector
+function fillValueSelector(number) { //Onchange first selector, fill second selector
 	var parentNodeid = network.getConnectedNodes(currentNode.id, "from");
 	var parentNode = networkNodes.get(parentNodeid);
 	var data = parentNode[0].STAdata;
-	var select;
-	select = document.getElementById("selectorProperty_" + number);
+
+	var select = document.getElementById("selectorProperty_" + number);
 	var selectedProperty = select.options[select.selectedIndex].value;
 	var selectorValue, selectorValueInterval, selectorValueInterval2;
 	var displaySelect = document.getElementById("displaySelect_" + number);
@@ -1188,9 +1133,8 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
 		divIsAnObject.style.display = "none";
 
 	}
-
-
 }
+
 function closeModalSelect(number, button, selector) { //Ok and Cancel Buttons
 	event.preventDefault();
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
@@ -1222,8 +1166,6 @@ function closeModalSelect(number, button, selector) { //Ok and Cancel Buttons
 		interval = true;
 	}
 
-
-	//Falta escriure l'opcio del select (???')')
 	if (button == "ok") {
 		if (interval == false) {
 			var selectorValue = document.getElementById("selectorValue_" + number);
@@ -1237,16 +1179,7 @@ function closeModalSelect(number, button, selector) { //Ok and Cancel Buttons
 			adjustWidth("interval", number);
 
 		}
-
-	} else { //press "cancel"  ->>It is necesary???
-		if (selector == "simple") {
-			textInput.innerHTML = textInput.getAttribute("data-oldvalue");
-		} else {
-			textInputInterval1.innerHTML = textInputInterval1.getAttribute("data-oldvalue");
-			textInputInterval2.innerHTML = textInputInterval2.getAttribute("data-oldvalue");
-		}
-
-	}
+	 }
 
 
 }
@@ -1255,10 +1188,10 @@ function changeSelectConditionValues(number, wichTextInput, value1, valueInput1,
 	var selectCondition = document.getElementById("selectorCondition_" + number);
 
 	if (wichTextInput == "simple") {
-		typeOfValues = typeOfValueFromInput(wichTextInput, number, value1);
+		typeOfValues = typeOfValueFromInput(wichTextInput, value1);
 
 	} else {
-		typeOfValues = typeOfValueFromInput(wichTextInput, number, valueInput1, valueInput2);
+		typeOfValues = typeOfValueFromInput(wichTextInput, valueInput1, valueInput2);
 	}
 	var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
 	if (wichTextInput == "simple") {
@@ -1333,10 +1266,10 @@ function adjustWidth(wichTextInput, number) { //and refill conditionSelect (inte
 
 	var typeOfValues;
 	if (wichTextInput == "interval") {
-		typeOfValues = typeOfValueFromInput(wichTextInput, number, valueInput1, valueInput2);
+		typeOfValues = typeOfValueFromInput(wichTextInput, valueInput1, valueInput2);
 
 	} else {
-		typeOfValues = typeOfValueFromInput(wichTextInput, number, value1);
+		typeOfValues = typeOfValueFromInput(wichTextInput, value1);
 
 	}
 }
@@ -1424,15 +1357,6 @@ function GetFilterTable(elem, /*dataAttributes, */nodeId, first) //Built table /
 }
 
 
-// function addingSelectors(/*dataAttributes, */nodeId,) {
-// 	for (var i = 0; i < counter.length; i++) { 
-// 		createSelectorRowFilters(/*dataAttributes,*/ nodeId, counter[i]);
-// 	}
-
-
-
-// }
-
 function GetFilterCondition(elem, /*dataAttributes,*/ nodeId) {
 	currentNode.STACounter.push(elem);
 	var conditionsFilter = currentNode.STAConditionsFilter
@@ -1450,7 +1374,7 @@ function ShowFilterTable(/*dataAttributes, */nodeId) //posar la taula on sigui /
 	document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(currentNode.STAElemFilter, /*dataAttributes, */nodeId, true); //I need to pass currentNode.elemFilter because it is a recursive function an need to start in this point
 
 	for (var i = 0; i < counter.length; i++) {//Adding Selectors
-		createSelectorRowFilters(/*dataAttributes,*/ nodeId, counter[i]);
+		createSelectorRowFilters(counter[i]);
 	}
 	//addingSelectors(/*dataAttributes,*/ nodeId);
 
@@ -1785,7 +1709,7 @@ function takeSelectInformation(nodeId) {
 
 				arrayInfo.push(textInputInterval1Value);
 				arrayInfo.push(textInputInterval2Value);
-				var typeOfValue = typeOfValueFromInput("interval", counter[i], textInputInterval1Value, textInputInterval2Value)
+				var typeOfValue = typeOfValueFromInput("interval", textInputInterval1Value, textInputInterval2Value)
 
 			} else {
 				textInput = document.getElementById("textInput_" + counter[i]);
@@ -1799,7 +1723,7 @@ function takeSelectInformation(nodeId) {
 
 				console.log(textInputValue);
 				arrayInfo.push(textInputValue);
-				var typeOfValue = typeOfValueFromInput("simple", counter[i], textInputValue)
+				var typeOfValue = typeOfValueFromInput("simple", textInputValue)
 
 			}
 		}
@@ -1976,7 +1900,7 @@ function addTitleInRowFilterDialog(divName) {
 		}
 
 	} else {
-		entity = "STAPlus";
+		entity = "No entity";
 	}
 
 	if (isEntity == false) {
