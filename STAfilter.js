@@ -52,7 +52,7 @@ const selectConditionContentText = [' = ', ' &ne; ', 'contains', 'no contains', 
 var stopReadInformationRowFilter = false;
 
 function readInformationRowFilter(elem, entity, nexus, parent) {
-	var infoFilter=currentNode.STAInfoFilter;
+	var infoFilter = currentNode.STAInfoFilter;
 	if (stopReadInformationRowFilter == false) {
 		if (typeof elem === "object") {
 			for (var i = 0; i < elem.elems.length; i++) {
@@ -583,7 +583,7 @@ function createSelectorRowFilters(/*dataAttributes,*/ nodeId, number) {
 	divFilterBox.appendChild(optionsRow);
 
 	var selectorInfo = [];
-	var infoFilter=currentNode.STAInfoFilter;
+	var infoFilter = currentNode.STAInfoFilter;
 	if (infoFilter.length != 0) {
 
 		for (var i = 0; i < infoFilter.length; i++) {
@@ -1131,7 +1131,7 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
 		}
 	}
 	var arrayValuesArranged = sortValuesForSelect(arrayValors);
-	
+
 	var valueUndefined = true;
 
 	for (var i = 0; i < arrayValuesArranged.length; i++) { //fill selector (there are 3: Simple + 2 Intervals)
@@ -1387,7 +1387,7 @@ function GetFilterTable(elem, /*dataAttributes, */nodeId, first) //Built table /
 		if (elem.nexus) {
 
 			s += `</td><td valign="middle" class="tdSelectAndOrNot" id='tdSelectAndOrNot_${elem.boxName}'><div class="topPartSelectAndOrNot" ></div><div class="bottomPartSelectAndOrNot" id= "bottomPartSelectAndOrNot_${elem.boxName}"><select class="selectAndOrNot" name="selectAndOrNot"  onchange= "actualizeSelectChoice('${elem.boxName}')" id="selectAndOrNot_${elem.boxName}">`;
-			
+
 			if (elem.nexus == " and ") {
 				s += '<option value=" and " selected>And</option>';
 
@@ -1443,16 +1443,16 @@ function GetFilterCondition(elem, /*dataAttributes,*/ nodeId) {
 
 function ShowFilterTable(/*dataAttributes, */nodeId) //posar la taula on sigui //El que inicia la taula
 {
-	currentNode.STACounter=[];
+	currentNode.STACounter = [];
 	var counter = currentNode.STACounter;
 	//var elemFilter=currentNode.STAElemFilter;
-	
+
 	document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(currentNode.STAElemFilter, /*dataAttributes, */nodeId, true); //I need to pass currentNode.elemFilter because it is a recursive function an need to start in this point
-	
+
 	for (var i = 0; i < counter.length; i++) {//Adding Selectors
 		createSelectorRowFilters(/*dataAttributes,*/ nodeId, counter[i]);
 	}
-//addingSelectors(/*dataAttributes,*/ nodeId);
+	//addingSelectors(/*dataAttributes,*/ nodeId);
 
 
 }
@@ -1808,7 +1808,7 @@ function takeSelectInformation(nodeId) {
 
 	}
 
-	currentNode.STAInfoFilter=infoFilter;
+	currentNode.STAInfoFilter = infoFilter;
 }
 
 //delete element
@@ -1922,7 +1922,7 @@ function drawTableAgain(paramsNodeId) {
 	// var dataAttributes = getDataAttributes(data);
 	document.getElementById("divSelectorRowsFilter").innerHTML = "";
 
-	 ShowFilterTable(/*dataAttributes,*/ currentNode.id)
+	ShowFilterTable(/*dataAttributes,*/ currentNode.id)
 
 }
 

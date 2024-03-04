@@ -135,27 +135,27 @@
 				"UoMDefinition": "https://www.eea.europa.eu/help/glossary/eea-glossary/a-weighted-decibel"
 			},
 			{
-				"varUoMdesc": "PM 1 in ug/m3",
+				"varUoMdesc": "PM 1 in ug/m³",
 				"description": "Particulate matter with particulate matter with an average aerodynamic diameter of up to 1 micrometers",
 				"definition": "https://dd.eionet.europa.eu/vocabularyconcept/aq/pollutant/6002",
 				"UoM": "Microgram per cubic meter",
-				"UoMSymbol": "ug/m3",
+				"UoMSymbol": "ug/m³",
 				"UoMDefinition": "https://qudt.org/vocab/unit/MicroGM-PER-M3"
 			},
 			{
-				"varUoMdesc": "PM 2.5 in ug/m3",
+				"varUoMdesc": "PM 2.5 in ug/m³",
 				"description": "Particulate matter with particulate matter with an average aerodynamic diameter of up to 2.5 micrometers",
 				"definition": "https://www.eea.europa.eu/help/glossary/eea-glossary/pm2.5",
 				"UoM": "Microgram per cubic meter",
-				"UoMSymbol": "ug/m3",
+				"UoMSymbol": "ug/m³",
 				"UoMDefinition": "https://qudt.org/vocab/unit/MicroGM-PER-M3"
 			},
 			{
-				"varUoMdesc": "PM 10 in ug/m3",
+				"varUoMdesc": "PM 10 in ug/m³",
 				"description": "Particulate matter with particulate matter with an average aerodynamic diameter of up to 10 micrometers",
 				"definition": "https://www.eea.europa.eu/help/glossary/eea-glossary/pm10",
 				"UoM": "Microgram per cubic meter",
-				"UoMSymbol": "ug/m3",
+				"UoMSymbol": "ug/m³",
 				"UoMDefinition": "https://qudt.org/vocab/unit/MicroGM-PER-M3"
 			}
 			]
@@ -170,6 +170,14 @@
 				"UoM": "Centimiters",
 				"UoMSymbol": "cm",
 				"UoMDefinition": "https://qudt.org/vocab/unit/CentiM"
+			},
+			{
+				"varUoMdesc": "Lake water volume in hm³",
+				"description": "Lake water volume",
+				"definition": "http://hydro.geodab.eu/hydro-ontology/concept/85",
+				"UoM": "Cubic hectometre",
+				"UoMSymbol": "hm³",
+				"UoMDefinition": "http://www.ontology-of-units-of-measure.org/resource/om-2/cubicHectometre"
 			},
 			{
 				"varUoMdesc": "Turbidity in NTU",

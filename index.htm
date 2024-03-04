@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="hello.all.min.js"></script>
 	<script type="text/javascript" src="authenix.js"></script>
 	<script type="text/javascript" src="mmn_postmessage.js"></script>
+	<script type="text/javascript" src="guf.js"></script>
 	<script type="text/javascript" src="data_tables.js"></script>
 	<script type="text/javascript" src="STAselectExpand.js"></script>
 	<script type="text/javascript" src="STAfilter.js"></script>
@@ -50,7 +51,9 @@
 				<button id="buttonOpenLogout" onclick='OpenLogout(event);' style="display: none" );'><img
 						src="login.png" height="20" valign="middle"> Logout</button>
 				<button onclick='OpenConfiguration(event);'><img src="config.png" height="20"
-						valign="middle">Configuration</button><br>
+						valign="middle">Configuration</button>
+				<button onclick='OpenHelp(event);'><img src="help.png" height="20" valign="middle">Help</button>
+				<br>
 				<span style="font-size: 10px;"><a href="TermsOfUse.htm">Terms of Use</a><br>
 					<a href="PrivacyStatement.htm">Privacy Statement</a><br>
 					<a href="AccessPolicy.htm">Access Policy</a><br>
@@ -119,8 +122,8 @@
 	<dialog id="DialogSTAViewQuery">
 		<form>
 			<p>
-				<label>STA landing page URL:
-					<input type="text" id="DialogSTAViewQueryInput" size="100"></input>
+				<label>STA query URL:
+					<a id="DialogSTAViewQueryLink" href="" target="_blank"></a>
 				</label>
 			</p>
 			<div class="center">
@@ -251,7 +254,7 @@
 				<span id="ButtonsContextMenuObjects"></span><br>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button>
 				<button onclick='renameCircularImage(event, "DialogContextMenu")'>Rename</button><br>
-				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
+<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br>
 			</p>
 			<div class="center">
 				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
@@ -327,15 +330,38 @@
 			<label><input type="checkbox" id="DialogImportCSVHeader"></input>First line contains names of the
 				fields</label>
 			<br>
-			<label>Choose a CSVW:
-				<input type="file" accept=".csvw,.json" onChange="ReadFileImportCSVW(event)"></input>
-			</label>
+			<fieldset>
+				<legend>Meaning source</legend>
+				<label><input type="radio" id="DialogImportMeaningCSVSourceFile" name="DialogImportMeaningCSVSource"
+						value="file" checked="checked" onClick="SelectImportMeaningCSVSource(event)">
+					Local CSVW file: <input type="file" id="DialogImportMeaningCSVSourceFileText" accept=".csvw,.json"
+						onChange="ReadFileImportCSVW(event)"></input></label><br>
+				<label><input type="radio" id="DialogImportMeaningCSVSourceURL" name="DialogImportMeaningCSVSource"
+						value="url" onClick="SelectImportMeaningCSVSource(event)">
+					CSVW URL: <input type="text" size="70" id="DialogImportMeaningCSVSourceURLText"
+						onChange="ReadURLImportCSVW(event)" disabled="disabled"></input> <button type="button"
+						id="DialogImportMeaningCSVSourceURLButton" onClick="ReadURLImportCSVW(event)"
+						disabled="disabled">Load</button></label><br>
+				<label><input type="radio" id="DialogImportMeaningCSVSourceAuto" name="DialogImportMeaningCSVSource"
+						value="auto" onClick="SelectImportMeaningCSVSource(event)">
+					Automatic retrieve of shared meaning</label><br>
+			</fieldset>
 			<br>
-			<label>Choose a CSV:
-				<input type="file" accept=".csv,*.txt" onChange="ReadFileImportCSV(event)"></input>
-			</label>
+			<fieldset>
+				<legend>CSV source</legend>
+				<label><input type="radio" id="DialogImportCSVSourceFile" name="DialogImportCSVSource" value="file"
+						checked="checked" onClick="SelectImportCSVSource(event)">
+					Local file: <input type="file" accept=".csv,*.txt" id="DialogImportCSVSourceFileText"
+						onChange="ReadFileImportCSV(event)"></input></label><br>
+				<label><input type="radio" id="DialogImportCSVSourceURL" name="DialogImportCSVSource" value="url"
+						onClick="SelectImportCSVSource(event)">
+					URL: <input type="text" size="70" id="DialogImportCSVSourceURLText"
+						onChange="ReadURLImportCSV(event)" disabled="disabled"></input> <button type="button"
+						id="DialogImportCSVSourceURLButton" onClick="ReadURLImportCSV(event)"
+						disabled="disabled">Load</button></label>
+			</fieldset>
 			<div class="center">
-				<button value="ok" formmethod="dialog">Done</button>
+				<button value="ok" formmethod="dialog" onClick="RetrieveMeaningTable(event)">Done</button>
 			</div>
 			<input type="hidden" id="DialogImportCSVdataAttributes" value=""></input>
 		</form>
@@ -363,7 +389,8 @@
 			<br>
 			<span id="DialogMeaningFields"></span>
 			<div class="center">
-				<button value="default" onClick="GetMeaningTable(event)">Ok</button>
+				<button value="default" onClick="SaveMeaningTable(event)">Ok</button>
+				<button value="share" onClick="ShareMeaningTable(event)">Share</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
@@ -703,9 +730,9 @@
 		//Return null if there is no reason (and there is a "fit").
 		function reasonNodeDoesNotFitWithPrevious(node, parentNode) {
 			if (parentNode.image == "ogc.png" && node.image != "FilterRowsSTA.png") {
-				//!!!!!! 
+				//!!!!!!
 				return null;
-			} else if (parentNode.image == "ogc.png" && node.image == "FilterRowsSTA.png") {
+} else if (parentNode.image == "ogc.png" && node.image == "FilterRowsSTA.png") {
 				console.log("nop");
 				return "You need to select first an Entity";
 			}
@@ -728,8 +755,8 @@
 				if (node.image == "FilterRowsSTA.png" && isPlural == false) {
 					return "Your result is already one value, you can not filter it more"
 				} else {
-					return null;
-				}
+				return null;
+}
 
 			}
 
@@ -803,7 +830,18 @@
 			return s.substring(ii + 1);
 		}
 
-		//from the MiraMon Map Browser DonaAdreca(s)
+
+		//From the MiraMon Map Browser TreuAdreca()
+		function getFileName(s) {
+			var i = s.lastIndexOf('/');
+			if (i == -1)
+				i = s.lastIndexOf('\\');
+			if (i == -1)
+				return s;
+			return s.substring(i + 1);
+		}
+
+		//From the MiraMon Map Browser DonaAdreca()
 		function getAddressPath(s) {
 			if (s.charAt(s.length - 1) == '/')
 				return s;
@@ -813,7 +851,7 @@
 			return s.substring(0, i);
 		}
 
-		//from the MiraMon Map Browser DonaAdrecaAbsoluta(url)
+		//from the MiraMon Map Browser DonaAdrecaAbsoluta()
 		function getAbsoluteURL(url) {
 			if (url.length > 8 && (url.substring(0, 7) == "http://" || url.substring(0, 8) == "https://"))
 				return url;
@@ -1014,7 +1052,9 @@
 		}
 
 		//https://web.dev/fetch-api-error-handling/
-		async function HTTPJSONData(url, headersToGet, method, obj) {
+		//Despite its name it can also be used for retrieving non-json files (data as text in value.text).
+		//To do GET it can be used with the first parameter only 
+		async function HTTPJSONData(url, headersToGet, method, objToSend) {
 			var response, jsonData, options = {};
 			try {
 				if (method)
@@ -1022,9 +1062,9 @@
 				options.headers = { 'Accept': 'application/json, */*;q=0.8' };
 
 				AddHeadersIfNeeded(options);
-				if (obj) {
+				if (objToSend) {
 					options.headers['Content-Type'] = 'application/json';
-					options.body = JSON.stringify(obj);
+					options.body = JSON.stringify(objToSend);
 				}
 				response = await fetch(url, options);
 			}
@@ -1148,6 +1188,70 @@
 			return savedFile;
 		}
 
+		function SelectImportCSVSource(event) {
+			if (document.getElementById("DialogImportCSVSourceFile").checked) {
+				document.getElementById("DialogImportCSVSourceFileText").disabled = false;
+				document.getElementById("DialogImportCSVSourceURLText").disabled = true;
+				document.getElementById("DialogImportCSVSourceURLButton").disabled = true;
+			} else /*if (document.getElementById("DialogImportCSVSourceURL").checked)*/ {
+				document.getElementById("DialogImportCSVSourceFileText").disabled = true;
+				document.getElementById("DialogImportCSVSourceURLText").disabled = false;
+				document.getElementById("DialogImportCSVSourceURLButton").disabled = false;
+			}
+		}
+
+		function SelectImportMeaningCSVSource(event) {
+			if (document.getElementById("DialogImportMeaningCSVSourceFile").checked) {
+				document.getElementById("DialogImportMeaningCSVSourceFileText").disabled = false;
+				document.getElementById("DialogImportMeaningCSVSourceURLText").disabled = true;
+				document.getElementById("DialogImportMeaningCSVSourceURLButton").disabled = true;
+			} else if (document.getElementById("DialogImportMeaningCSVSourceURL").checked) {
+				document.getElementById("DialogImportMeaningCSVSourceFileText").disabled = true;
+				document.getElementById("DialogImportMeaningCSVSourceURLText").disabled = false;
+				document.getElementById("DialogImportMeaningCSVSourceURLButton").disabled = false;
+			} else /*if (document.getElementById("DialogImportMeaningCSVSourceAuto").checked)*/ {
+				document.getElementById("DialogImportMeaningCSVSourceFileText").disabled = true;
+				document.getElementById("DialogImportMeaningCSVSourceURLText").disabled = true;
+				document.getElementById("DialogImportMeaningCSVSourceURLButton").disabled = true;
+			}
+		}
+
+		function RetrieveMeaningTableCallback(usage_descr, params_function) {
+			if (usage_descr.codeMediaType == "application/json" /*&& usage_descr.schema==urlSchemaMeaning The part after the # is not stored of recovered from the server.*/)
+				params_function.node.STAdataAttributes = JSON.parse(usage_descr.code);  //The saved format is tha TAPIS internal format
+			networkNodes.update(params_function.node);
+			showInfoMessage("Meaning retrieved from NiMMbus.");
+		}
+
+		function RetrieveMeaningTable(event) {
+			event.preventDefault(); // We don't want to submit this form
+			if (document.getElementById("DialogImportMeaningCSVSourceAuto").checked &&
+				document.getElementById("DialogImportCSVSourceURL").checked &&
+				document.getElementById("DialogImportCSVSourceURLText").value) {
+				var urlCSV = document.getElementById("DialogImportCSVSourceURLText").value
+				GUFLoadLastPreviousReproducibleUsageCode(getFileName(urlCSV),
+					getAddressPath(getAbsoluteURL(urlCSV)),
+					{
+						ru_platform: "https://github.com/joanma747/TAPIS",
+						ru_version: 0.9
+						//ru_schema: urlSchemaMeaning
+					}, "eng", null, RetrieveMeaningTableCallback, { node: currentNode });
+			}
+			document.getElementById("DialogImportCSV").close();
+		}
+
+		function TransformTextCSVWToDataAttributes(csvwText) {
+			var data_csvw = JSON.parse(csvwText);
+			currentNode.STAdataAttributes = getDataAttributesCSVW(data_csvw);
+			networkNodes.update(currentNode);
+			UpdateChildenTable(currentNode);
+			var csvReadParams = getCSVReadParams(data_csvw);
+			if (csvReadParams.delimiter)
+				document.getElementById("DialogImportCSVDelimiter").value = csvReadParams.delimiter;
+			if (csvReadParams.header)
+				document.getElementById("DialogImportCSVHeader").checked = csvReadParams.header;
+		}
+
 		function ReadFileImportCSVW(event) {
 			var input = event.target;
 
@@ -1155,20 +1259,11 @@
 			reader.onload = function () {
 				//Transform the JSON text into a STAdataAttributes structure in memory
 				try {
-					var data_csvw = JSON.parse(reader.result);
-					//document.getElementById("DialogImportCSVdataAttributes").value=JSON.stringify(getDataAttributesCSVW(data_csvw));
-					currentNode.STAdataAttributes = getDataAttributesCSVW(data_csvw);
-					networkNodes.update(currentNode);
-					UpdateChildenTable(currentNode);
-					var csvReadParams = getCSVReadParams(data_csvw);
-					if (csvReadParams.delimiter)
-						document.getElementById("DialogImportCSVDelimiter").value = csvReadParams.delimiter;
-					if (csvReadParams.header)
-						document.getElementById("DialogImportCSVHeader").checked = csvReadParams.header;
+					TransformTextCSVWToDataAttributes(reader.result);
 				}
 				catch (e) {
 					showInfoMessage("JSON message parse error: " + e + " The file content is:\n" + reader.result);
-					currentNode.STAdata = null;
+					currentNode.STAdataAttributes = null;
 					networkNodes.update(currentNode);
 					return;
 				}
@@ -1176,30 +1271,62 @@
 			reader.readAsText(input.files[0]);
 		}
 
+		function ReadURLImportCSVW() {
+			HTTPJSONData(document.getElementById("DialogImportMeaningCSVSourceURLText").value).then(
+				function (value) {
+					showInfoMessage('Download CSVW completed.');
+					TransformTextCSVToTable(value.text);
+				},
+				function (error) {
+					showInfoMessage('Error downloading CSVW. <br>name: ' + error.name + ' message: ' + error.message + ' at: ' + error.at + ' text: ' + error.text);
+					console.log(error);
+				}
+			);
+		}
+
+		function TransformTextCSVToTable(csvText, url) {
+			try {
+				var result = Papa.parse(csvText, {
+					delimiter: (document.getElementById("DialogImportCSVDelimiterText").checked ? document.getElementById("DialogImportCSVDelimiter").value : '\t'),
+					header: document.getElementById("DialogImportCSVHeader").checked,
+					skipEmptyLines: true
+				});
+				currentNode.STAdata = result.data;
+				if (url)
+					currentNode.STAfileUrl = url;
+				networkNodes.update(currentNode);
+				UpdateChildenTable(currentNode);
+			}
+			catch (e) {
+				showInfoMessage("CSV parse error: " + e + " The file content is:\n" + csvText);
+				currentNode.STAdata = null;
+				networkNodes.update(currentNode);
+				return;
+			}
+		}
+
 		function ReadFileImportCSV(event) {
 			var input = event.target;
 
 			var reader = new FileReader();
 			reader.onload = function () {
-				//Transform the JSON text in something in memory
-				try {
-					var result = Papa.parse(reader.result, {
-						delimiter: (document.getElementById("DialogImportCSVDelimiterText").checked ? document.getElementById("DialogImportCSVDelimiter").value : '\t'),
-						header: document.getElementById("DialogImportCSVHeader").checked,
-						skipEmptyLines: true
-					});
-					currentNode.STAdata = result.data;
-					networkNodes.update(currentNode);
-					UpdateChildenTable(currentNode);
-				}
-				catch (e) {
-					showInfoMessage("CSV parse error: " + e + " The file content is:\n" + reader.result);
-					currentNode.STAdata = null;
-					networkNodes.update(currentNode);
-					return;
-				}
+				TransformTextCSVToTable(reader.result, null);
 			};
 			reader.readAsText(input.files[0], document.getElementById("DialogImportCSVEncoding").value);
+		}
+
+
+		function ReadURLImportCSV() {
+			HTTPJSONData(document.getElementById("DialogImportCSVSourceURLText").value).then(
+				function (value) {
+					showInfoMessage('Download CSV completed.');
+					TransformTextCSVToTable(value.text, document.getElementById("DialogImportCSVSourceURLText").value);
+				},
+				function (error) {
+					showInfoMessage('Error downloading CSV. <br>name: ' + error.name + ' message: ' + error.message + ' at: ' + error.at + ' text: ' + error.text);
+					console.log(error);
+				}
+			);
 		}
 
 		function SaveLocalDataFile(data, fileName, extension, mediatype)   //Saves a memory data structure to a local file
@@ -1219,6 +1346,10 @@
 			});
 
 			return false;
+		}
+
+		function OpenHelp(event) {
+			window.open("help", "TapisHelp");
 		}
 
 		function OpenConfiguration(event) {
@@ -2122,7 +2253,7 @@
 
 			//updateinfoFilter
 			takeSelectInformation(currentNode.id);
-			//console.log(currentNode.STAURL);
+
 			var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
 
 			currentNode.STAUrlAPICounter = []; // I need to restart it 
@@ -2146,27 +2277,6 @@
 			readInformationRowFilter(currentNode.STAElemFilter, entity, "no", "no"); //And apply filter
 			console.log(currentNode.STAUrlAPI);
 			currentNode.STAURL = currentNode.STAUrlAPI;
-			//Selectors Information
-			// currentNode.STAElementFilter = elemFilter;
-			// currentNode.STAInfoFilter = infoFilter;
-			// currentNode.STABoxName = boxNames;
-			//currentNode.STAConditionsFilter = conditionsFilter;
-
-			//keep in this node
-			//	elemFilter = { //restart for next node
-
-			// elems: [0],
-			// 	nexus: null,
-			// 		boxName: "0_0"
-			//}
-			//infoFilter = [];
-			//boxNames = ["0_0"];
-			// conditionsFilter = [ //valors de la taula
-			// 	{
-			// 		property: "<div id='optionsRow_0' class='optionsRow'></div>",
-			// 		number: "0"
-			// 	}
-			// ];
 
 			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
@@ -2240,17 +2350,22 @@
 			}
 		}
 
+		function UpdateChildTableNode(node, parentNode) {
+			node.STAdata = deapCopy(parentNode.STAdata);
+			if (parentNode.STAdataAttributes)
+				node.STAdataAttributes = deapCopy(parentNode.STAdataAttributes);
+			if (parentNode.STAfileUrl)
+				node.STAfileUrl = deapCopy(parentNode.STAfileUrl);
+			networkNodes.update(node);
+		}
+
 		function UpdateChildenTable(parentNode) {
 			var nodeIds = network.getConnectedNodes(parentNode.id, 'to');
 			for (var i = 0; i < nodeIds.length; i++) {
-				var node = networkNodes.get(nodeIds[i])
+				var node = networkNodes.get(nodeIds[i]);
 				if (parentNode.STAdata &&
-					(node.image == "SelectColumnsTable.png" || node.image == "Meaning.png")) {
-					node.STAdata = deapCopy(parentNode.STAdata);
-					if (parentNode.STAdataAttributes)
-						node.STAdataAttributes = deapCopy(parentNode.STAdataAttributes);
-					networkNodes.update(node);
-				}
+					(node.image == "SelectColumnsTable.png" || node.image == "Meaning.png"))
+					UpdateChildTableNode(node, parentNode);
 				UpdateChildenTable(node);
 			}
 		}
@@ -2804,12 +2919,12 @@
 					'	<br>');
 			if (params.showPredefOptions)
 				cdns.push('	<label>Predefined options:',
-					'		<span id="DialogSaveLayerVariableDropDown' + suffix + '"></span>',
+					'		<span id="DialogMeaningVariableDropDown' + suffix + '"></span>',
 					'		</label>',
 					'	<br>');
 			if (params.showType)
 				cdns.push('	<label>Data type:',
-					'		<span id="DialogSaveLayerVariableType' + suffix + '"></span>',
+					'		<span id="DialogMeaningVariableType' + suffix + '"></span>',
 					'		</label>',
 					'	<br>');
 			cdns.push('	<span id="DialogMeaningVariableDescriptionUoM' + suffix + '">',
@@ -2846,10 +2961,10 @@
 			return cdns.join("");
 		}
 
-		function ShowSaveLayerDialogSelects(nodeId, descripUoM) {
-			var parentNode = GetFirstParentNode(currentNode);
+		function ShowSaveLayerDialogSelects(node, descripUoM) {
+			var parentNode = GetFirstParentNode(node);
 			if (parentNode) {
-				var data = networkNodes.get(nodeids[0]).STAdata;
+				var data = networkNodes.get(parentNode).STAdata;
 				var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
 				var s, elem;
 				PopulateSelectSaveLayerDialog("DialogSaveLayerPlace", dataAttributes, "FeatureOfInterest/description");
@@ -2890,24 +3005,24 @@
 			return selectedOptions;
 		}
 
-		function ShowSaveLayerDialog(nodeId) {
+		function ShowSaveLayerDialog(node) {
 			document.getElementById("DialogSaveLayerVariableDefUoM").innerHTML = GetHTMLVariableDefUoM("", { nameInLegend: false, showValue: true })
-			ShowSaveLayerDialogSelects(nodeId, true);
+			ShowSaveLayerDialogSelects(node, true);
 			document.getElementById("DialogSaveLayerTitle").innerHTML = "Save table as GeoJSON";
 			document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"SaveLayer(event)\">Save GeoJSON</button> " +
 				"<button onClick=\"SaveLayerSchema(event)\">Save JSON Schema</button> " +
 				"<button onClick=\"SaveLayerMetaschema(event)\">Save JSON Metaschema</button>";
 		}
 
-		function ShowOpenMapDialog(nodeId) {
+		function ShowOpenMapDialog(node) {
 			document.getElementById("DialogSaveLayerVariableDefUoM").innerHTML = GetHTMLVariableDefUoM("", { nameInLegend: false, showValue: true });
-			ShowSaveLayerDialogSelects(nodeId, true);
+			ShowSaveLayerDialogSelects(node, true);
 			document.getElementById("DialogSaveLayerTitle").innerHTML = "Open in the Map Browser";
 			document.getElementById("DialogSaveLayerSave").innerHTML = "<button value=\"default\" onClick=\"OpenMap(event)\">Open</button>";
 		}
 
 		function PopulateDialogSaveLayerVariableFromDropDownSelect(i) {
-			var gi = JSON.parse(document.getElementById("DialogSaveLayerVariableDropDownSelect_" + i).value);
+			var gi = JSON.parse(document.getElementById("DialogMeaningVariableDropDownSelect_" + i).value);
 			if (gi == -1)
 				return;
 			PopulateDialogSaveLayerVarUoM(i, config.suggestedVarUoMs[gi.g].varUoMs[gi.i]);
@@ -2932,7 +3047,7 @@
 				document.getElementById("DialogSaveLayerVariable_" + i).innerHTML = "Field " + (i + 1) + ": " + dataAttributesArray[i];
 
 				cdns = [];
-				cdns.push('<select id="DialogSaveLayerVariableDropDownSelect_' + i + '" onChange="PopulateDialogSaveLayerVariableFromDropDownSelect(' + i + ')">',
+				cdns.push('<select id="DialogMeaningVariableDropDownSelect_' + i + '" onChange="PopulateDialogSaveLayerVariableFromDropDownSelect(' + i + ')">',
 					"<option value='{\"g\":-1}'>--Select to populate below--</option>");
 				for (var g = 0; g < config.suggestedVarUoMs.length; g++) {
 					cdns.push('<optgroup label="', config.suggestedVarUoMs[g].group, '">');
@@ -2941,21 +3056,20 @@
 						cdns.push("<option value='{\"g\":", g, ",\"i\":", j, "}'>", vus[j].varUoMdesc, "</option>");
 				}
 				cdns.push('</select>');
-				document.getElementById("DialogSaveLayerVariableDropDown_" + i).innerHTML = cdns.join("");
+				document.getElementById("DialogMeaningVariableDropDown_" + i).innerHTML = cdns.join("");
 
-				document.getElementById("DialogSaveLayerVariableType_" + i).innerHTML = dataAttributes[dataAttributesArray[i]].type;
-				document.getElementById("DialogMeaningVariableDescription_" + i).innerHTML = '<input id="DialogMeaningVariableDescriptionInput_' + i + '" type="text" size="50" value="">';
+				document.getElementById("DialogMeaningVariableType_" + i).innerHTML = dataAttributes[dataAttributesArray[i]].type;
+				document.getElementById("DialogMeaningVariableDescription_" + i).innerHTML = '<input id="DialogMeaningVariableDescriptionInput_' + i + '" type="text" size="50" value="a">';
 				document.getElementById("DialogMeaningVariableDefinition_" + i).innerHTML = '<input id="DialogMeaningVariableDefinitionInput_' + i + '" type="text" size="50" value="">';
 				document.getElementById("DialogMeaningVariableUoM_" + i).innerHTML = '<input id="DialogMeaningVariableUoMInput_' + i + '" type="text" size="30" value="">';
 				document.getElementById("DialogMeaningVariableUoMSymbol_" + i).innerHTML = '<input id="DialogMeaningVariableUoMSymbolInput_' + i + '" type="text" size="15" value="">';
 				document.getElementById("DialogMeaningVariableUoMDefinition_" + i).innerHTML = '<input id="DialogMeaningVariableUoMDefinitionInput_' + i + '" type="text" size="50" value="">';
-
-				PopulateDialogSaveLayerVarUoM(i, dataAttributes[dataAttributesArray[i]]);
 			}
+			for (var i = 0; i < dataAttributesArray.length; i++)
+				PopulateDialogSaveLayerVarUoM(i, dataAttributes[dataAttributesArray[i]]);
 		}
 
-		function GetMeaningTable(event) {
-			event.preventDefault(); // We don't want to submit this form
+		function GetMeaningTable() {
 			var data = currentNode.STAdata;
 			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(data);
 			var dataAttributesArray = Object.keys(dataAttributes);
@@ -2966,9 +3080,32 @@
 				dataAttributes[dataAttributesArray[i]].UoMSymbol = document.getElementById("DialogMeaningVariableUoMSymbolInput_" + i).value;
 				dataAttributes[dataAttributesArray[i]].UoMDefinition = document.getElementById("DialogMeaningVariableUoMDefinitionInput_" + i).value;
 			}
-			currentNode.STAdataAttributes = dataAttributes;
+			return dataAttributes;
+		}
+
+		function SaveMeaningTable(event) {
+			event.preventDefault(); // We don't want to submit this form
+			currentNode.STAdataAttributes = GetMeaningTable();
 			networkNodes.update(currentNode);
 			document.getElementById("DialogMeaningTable").close();
+		}
+
+		const urlSchemaMeaning = "https://github.com/grumets/MiraMonMapBrowser/config_attributes_metaschema.json#/definitions/AttributeDescription";
+
+		function ShareMeaningTable(event) {
+			event.preventDefault(); // We don't want to submit this form
+			currentNode.STAdataAttributes = GetMeaningTable();
+			networkNodes.update(currentNode);
+			var fileName = getFileName(currentNode.STAfileUrl);
+			GUFCreateFeedbackWithReproducibleUsage([{ title: fileName, code: fileName, codespace: getAddressPath(getAbsoluteURL(currentNode.STAfileUrl)) }],
+				{
+					abstract: "Meaning of the fields in the " + fileName, specific_usage: "Share meaning of fields in tabular data",
+					ru_code: JSON.stringify(currentNode.STAdataAttributes), ru_code_media_type: "application/json",
+					ru_platform: "https://github.com/joanma747/TAPIS", ru_version: 0.9, ru_schema: urlSchemaMeaning
+				},
+				"eng", "" //access_token_type
+			);
+			showInfoMessage("Sharing Meaning. Redirected to NiMMbus (please authenticate and save).");
 		}
 
 		function SaveTable(event) {
@@ -3203,14 +3340,6 @@
 			}
 
 			document.getElementById("DialogSelectRowsFilter").innerHTML = "<div id='selectorRowsContainer'><div id='divSelectorRowsFilter'></div></div>";
-			//Take elemFilter information from Node
-			// if (currentNode.STAElementFilter) {
-			// 	elemFilter = currentNode.STAElementFilter;
-			// 	infoFilter = currentNode.STAInfoFilter;
-			// 	boxNames = currentNode.STABoxName;
-			// 	conditionsFilter = currentNode.STAConditionsFilter;
-			// }
-
 			ShowFilterTable(/*dataAttributes,*/ currentNode.id);
 		}
 
@@ -3326,10 +3455,7 @@
 				return true;
 			}
 			if (nodeTo.image == "SelectColumnsTable.png" || nodeTo.image == "Meaning.png") {
-				nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
-				if (nodeFrom.STAdataAttributes)
-					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
-				networkNodes.update(nodeTo);
+				UpdateChildTableNode(nodeTo, nodeFrom);
 				if (calUnir)
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				return true;
@@ -3417,10 +3543,12 @@
 					document.getElementById("DialogSTAURL").showModal();
 				}
 				else if (currentNode.image == "ViewQuerySTA.png") {
-					document.getElementById("DialogSTAViewQueryInput").value = "";
 					var parentNode = GetFirstParentNode(currentNode);
 					if (parentNode)
-						document.getElementById("DialogSTAViewQueryInput").value = parentNode.STAURL;
+						document.getElementById("DialogSTAViewQueryLink").innerHTML =
+							document.getElementById("DialogSTAViewQueryLink").href = parentNode.STAURL;
+					else
+						document.getElementById("DialogSTAViewQueryLink").innerHTML = "";
 					//document.getElementById("DialogSTAURLInput").readOnly = true;
 					//document.getElementById("DialogSTAURLOk").style.display = "none";
 					document.getElementById("DialogSTAViewQuery").showModal();
@@ -3467,11 +3595,11 @@
 					document.getElementById("DialogOneValue").showModal();
 				}
 				else if (currentNode.image == "SaveLayer.png") {
-					ShowSaveLayerDialog(currentNode.id);
+					ShowSaveLayerDialog(currentNode);
 					document.getElementById("DialogSaveLayer").showModal();
 				}
 				else if (currentNode.image == "OpenMap.png") {
-					ShowOpenMapDialog(currentNode.id);
+					ShowOpenMapDialog(currentNode);
 					document.getElementById("DialogSaveLayer").showModal();
 				}
 				else if (currentNode.image == "Meaning.png") {
@@ -3688,8 +3816,11 @@
 
 		function renameNode(nodeId) {
 			var node = networkNodes.get(nodeId);
-			node.label = prompt("Change node label to:", node.label);
-			networkNodes.update(node);
+			var name = prompt("Change node label to:", node.label);
+			if (name != null) {
+				node.label = name;
+				networkNodes.update(node);
+			}
 		}
 
 		function renameCircularImage(event, dialog) {
