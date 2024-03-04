@@ -1492,14 +1492,14 @@ function searchGrouptoChangeSelectChoice(boxName, elem, option) {
 }
 
 //Down button
-var stopp;
+var stopMoveDownFilterCondition;
 function MoveDownFilterCondition(currentNumber) {
 	event.preventDefault();
 	var nextElement = GiveNextConditionNextBoxFilterTable(currentNode.STAElemFilter, currentNumber);
 
 	if (nextElement != -1) {
 		searchBoxName(currentNode.STAElemFilter, currentNumber, "no", nextElement);
-		stopp = false;
+		stopMoveDownFilterCondition = false;
 	}
 }
 
@@ -1510,12 +1510,12 @@ function searchBoxName(elem, iCon, fatherElement, nextElement) {
 		}
 	}
 	else {
-		if (elem == iCon && stopp == false) {
+		if (elem == iCon && stopMoveDownFilterCondition == false) {
 			changeElements(fatherElement, nextElement, iCon);
 			takeSelectInformation(currentNode.id);
 			drawTableAgain(currentNode.id);
 			resizeBottomPartSelectAndOrNot();
-			stopp = true;
+			stopMoveDownFilterCondition = true;
 
 		}
 	}
@@ -1597,7 +1597,7 @@ function MoveUpFilterCondition(iCon) {
 	var previousElement = GivePreviousConditionFilterTable(currentNode.STAElemFilter, iCon);
 	if (previousElement != -1) {
 		searchBoxName(currentNode.STAElemFilter, iCon, "no", previousElement);
-		stopp = false;
+		stopMoveDownFilterCondition = false;
 	}
 }
 
