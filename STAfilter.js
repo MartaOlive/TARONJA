@@ -892,10 +892,6 @@ function createSelect(number, place_Id, nodeId, selectorInfo, count) {
 		displaySelect.setAttribute("id", "displaySelect_" + count);
 		displaySelect.setAttribute("onclick", "changeWriteToSelect('" + nodeId + "','" + count + "','simple')");
 		placeId.appendChild(displaySelect);
-
-		//placeId.innerHTML+='<button id="displaySelect_' + count + '" onclick="changeWriteToSelect(\'' + nodeId + '\',\'' + count + '\',\'simple\')"';
-
-
 		divFilterContainer.appendChild(okButton);
 		divFilterContainer.appendChild(cancelButton);
 
@@ -1135,7 +1131,7 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
 		}
 	}
 	var arrayValuesArranged = sortValuesForSelect(arrayValors);
-	console.log(arrayValors);
+	
 	var valueUndefined = true;
 
 	for (var i = 0; i < arrayValuesArranged.length; i++) { //fill selector (there are 3: Simple + 2 Intervals)
@@ -1355,11 +1351,11 @@ function adjustWidth(wichTextInput, number) { //and refill conditionSelect (inte
 // ];
 // var boxNames = ["0_0"];
 //var infoFilter = [];
-var elemFilter = {
-	elems: [0],
-	nexus: null,
-	boxName: "0_0"
-}
+// var elemFilter = {
+// 	elems: [0],
+// 	nexus: null,
+// 	boxName: "0_0"
+// }
 var urlAPICounter = [];
 var urlAPI = "";
 
@@ -1449,13 +1445,14 @@ function ShowFilterTable(/*dataAttributes, */nodeId) //posar la taula on sigui /
 {
 	currentNode.STACounter=[];
 	var counter = currentNode.STACounter;
+	//var elemFilter=currentNode.STAElemFilter;
 	
-	document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(elemFilter, /*dataAttributes, */nodeId, true);
+	document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(currentNode.STAElemFilter, /*dataAttributes, */nodeId, true); //I need to pass currentNode.elemFilter because it is a recursive function an need to start in this point
 	
 	for (var i = 0; i < counter.length; i++) {//Adding Selectors
 		createSelectorRowFilters(/*dataAttributes,*/ nodeId, counter[i]);
 	}
-	//addingSelectors(/*dataAttributes,*/ nodeId);
+//addingSelectors(/*dataAttributes,*/ nodeId);
 
 
 }
@@ -1475,10 +1472,10 @@ function ChangeConditionFilterTable(elem, iConNew, iConCurrent) {
 }
 
 function actualizeSelectChoice(boxName) {
-	console.log(boxName);
+
 	var select = document.getElementById("selectAndOrNot_" + boxName);
 	var option = select.options[select.selectedIndex].value
-	searchGrouptoChangeSelectChoice(boxName, elemFilter, option);
+	searchGrouptoChangeSelectChoice(boxName, currentNode.ElemFilter, option);
 
 }
 
@@ -1498,10 +1495,10 @@ function searchGrouptoChangeSelectChoice(boxName, elem, option) {
 var stopp;
 function MoveDownFilterCondition(currentNumber) {
 	event.preventDefault();
-	var nextElement = GiveNextConditionNextBoxFilterTable(elemFilter, currentNumber);
+	var nextElement = GiveNextConditionNextBoxFilterTable(currentNode.ElemFilter, currentNumber);
 
 	if (nextElement != -1) {
-		searchBoxName(elemFilter, currentNumber, "no", nextElement);
+		searchBoxName(currentNode.ElemFilter, currentNumber, "no", nextElement);
 		stopp = false;
 	}
 }
@@ -1535,7 +1532,7 @@ function changeElements(currentElement, nextElement, iCon) {
 	currentElement.elems = arrayElements;
 	nextElement.elems.push(iCon);
 	if (currentElement.elems.length == 0) {
-		searchGroupToDelete(currentElement.boxName, elemFilter, nodeId, "no");
+		searchGroupToDelete(currentElement.boxName, currentNode.ElemFilter, nodeId, "no");
 		//take the values ​​of the selectors and update an external variable 
 	}
 }
@@ -1597,10 +1594,9 @@ function LookForNextConditionFilterTable(elem, iCon) {
 //Up button
 function MoveUpFilterCondition(iCon) {
 	event.preventDefault();
-	var previousElement = GivePreviousConditionFilterTable(elemFilter, iCon);
-	console.log(previousElement)
+	var previousElement = GivePreviousConditionFilterTable(currentNode.ElemFilter, iCon);
 	if (previousElement != -1) {
-		searchBoxName(elemFilter, iCon, "no", previousElement);
+		searchBoxName(currentNode.ElemFilter, iCon, "no", previousElement);
 		stopp = false;
 	}
 }
@@ -1641,8 +1637,8 @@ function addNewCondition(boxName, paramsNodeId, fromBiggest) {
 		fromBiggest = false;
 	}
 
-	var elem = elemFilter;
-	searchFilterBoxName(boxName, elem, paramsNodeId, fromBiggest);
+	// var elem = elemFilter;
+	searchFilterBoxName(boxName, currentNode.STAElemFilter, paramsNodeId, fromBiggest);
 
 }
 
@@ -1696,7 +1692,8 @@ function addNewElement(elem, nodeId, boxName, fromBiggest) {
 					boxName: newBoxName,
 				})
 		}
-		boxNames.push(newBoxName)
+		currentNode.STABoxNames.push(newBoxName);
+		//currentNode.STAElemFilter=elements;
 
 		//If it's the second one, you must create a higher level and change the nexus so that it will be not null
 	}
@@ -1714,7 +1711,7 @@ function addNewElement(elem, nodeId, boxName, fromBiggest) {
 	if (newBoxName) {
 		var levelBox = newBoxName.charAt(0);
 		var boxNameToPass = newBoxName;
-		console.log("levelbox:  " + levelBox)
+
 		for (var i = levelBox; i > 0; i--) {
 			console.log(levelBox)
 			addNewCondition(boxNameToPass, currentNode.id);
@@ -1732,7 +1729,6 @@ function addNewElement(elem, nodeId, boxName, fromBiggest) {
 		//correct size to select(AndOrNot) div
 		resizeBottomPartSelectAndOrNot();
 	}
-
 
 
 }
@@ -1819,7 +1815,7 @@ function takeSelectInformation(nodeId) {
 
 function DeleteElementButton(numberOfElement) {
 	event.preventDefault()
-	searchElementToDelete(numberOfElement, elemFilter, currentNode.id);
+	searchElementToDelete(numberOfElement, currentNode.STAElemFilter, currentNode.id);
 }
 function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //elem has boxname...
 	var element;
@@ -1859,8 +1855,7 @@ function DeleteElementInElemFilter(elem, nodeId, numberOfElement) {
 //delete group
 function deleteGroup(numberOfElement, nodeId) {
 	event.preventDefault();
-	searchGroupToDelete(numberOfElement, elemFilter, nodeId, "no");
-	console.log(elemFilter)
+	searchGroupToDelete(numberOfElement, currentNode.STAElemFilter, nodeId, "no");
 	//get selector values and update an external variable 
 	takeSelectInformation(nodeId);
 	//repaint the selects
@@ -1898,10 +1893,10 @@ function DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem) {
 			fatherElem.nexus = null;
 			var copyFather = Object.assign(fatherElem.elems);
 			console.log(copyFather)
-			elemFilter = copyFather[0];
+			currentNode.STAElemFilter = copyFather[0];
 		}
 		var boxNames = currentNode.STABoxNames;
-		boxNames = actualizeBoxNames(elemFilter, arrayBoxNumbers);
+		boxNames = actualizeBoxNames(currentNode.STAElemFilter, arrayBoxNumbers);
 
 	}
 }
@@ -1940,11 +1935,12 @@ function biggestLevelButton(boxName, nodeId) {
 		nexus: null,
 		boxName: newBoxName
 	};
-	var copy = Object.assign(elemFilter);
+	var copy = Object.assign(currentNode.STAElemFilter);
 	newInsert.elems.push(copy);
-	var boxNames = currentNode.STABoxNames;
-	boxNames.push(newBoxName);
-	elemFilter = newInsert;
+	// var boxNames = currentNode.STABoxNames;
+	// boxNames.push(newBoxName);
+	currentNode.STABoxNames.push(newBoxName);
+	currentNode.STAElemFilter = newInsert;
 
 	var boxNameToPass = newBoxName;
 

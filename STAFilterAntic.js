@@ -47,8 +47,8 @@
 
 const selectConditionContent = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date'];
 const selectConditionContentText = [' = ', ' &ne; ', 'contains', 'no contains', 'starts with', 'ends with'];
-const selectConditionContentNumber = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date']
 
+//Applying the filter
 var stopReadInformationRowFilter = false;
 
 function readInformationRowFilter(elem, entity, nexus, parent) {
@@ -57,33 +57,29 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
             for (var i = 0; i < elem.elems.length; i++) {
                 readInformationRowFilter(elem.elems[i], entity, elem.nexus, elem);
             }
-            if (urlAPICounter.length != infoFilter.length & urlAPICounter.length != 0 & nexus != "no" & parent != "no") {
+            if (urlAPICounter.length != infoFilter.length && urlAPICounter.length != 0 && nexus != "no" && parent != "no") {
 
                 urlAPI += " " + nexus + " ";
             }
         }
         else { //Build url
-            console.log(elem)
-            //Last Array, wich contains the filters 
+            //Last Array, which contains the filters 
             var data = "";
             for (var i = 0; i < infoFilter.length; i++) {
-                console.log(elem)
                 if (infoFilter[i][0] == elem) { //To search the array that contains the info that we want
                     var parentLenght = parent.elems.length;
                     var indexOf = parent.elems.indexOf(elem);
                     console.log("parentLenght: " + parentLenght);
                     if (indexOf == 0) {
                         data += "(";
-                    }
-
-                    //For " = ", ' &ne; ' ... and [a,b], (a,b)... I need the entity in singular or plural  (infoFilter[i][1])
+}
 
                     var valueOfEntity = infoFilter[i][1]; //Always plural
                     var entitiesArray = STAEntities[valueOfEntity].entities; //Plural or singular
                     var valueEntityToURL;
                     var indexArray = entitiesArray.find(element => element == valueOfEntity); //Value undefined, doesn't exist -> Singular
 
-                    if (indexArray == undefined) { //singular
+                    if (typeof indexArray !== "undefined") { //singular
                         if (valueOfEntity == "ObservedProperties" || valueOfEntity == "FeaturesOfInterest" || valueOfEntity == "Parties") {  //need more than - "s"
                             switch (valueOfEntity) {
                                 case "ObservedProperties":
@@ -138,19 +134,18 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
                                 data += " lt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
                                 break;
                             default:
-                                console.log("error en la condiciÃ³")
 
                         }
                     }
                     else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
 
-                        data += "("
+                        
                         if (entity != valueOfEntity) {
                             valueEntityToURL = valueEntityToURL + "/" + infoFilter[i][2];
                         } else {
                             valueEntityToURL = infoFilter[i][2];
                         }
-
+data += "( " + valueEntityToURL;
 
                         switch (infoFilter[i][3]) {
                             case ' [a,b] ':
@@ -166,7 +161,6 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
                                 data += " gt " + infoFilter[i][4] + " and " + valueEntityToURL + " lt " + infoFilter[i][5] + ")";
                                 break;
                             default:
-                                console.log("error en la condiciÃ³")
                         }
                     }
                     else if (infoFilter[i][3] == 'contains' || infoFilter[i][3] == 'no contains' || infoFilter[i][3] == 'starts with' || infoFilter[i][3] == 'ends with') {
@@ -190,7 +184,6 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
                                 data += "endswith(" + valueEntityToURL + ",'" + infoFilter[i][4] + "')";
                                 break;
                             default:
-                                console.log("error en la condiciÃ³")
                         }
                     }
                     else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date') {
@@ -223,7 +216,6 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
                                 break;
 
                             default:
-                                console.log("Condition error")
                         }
                     }
 
@@ -255,13 +247,27 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 
 function typeOfValueFromInput(wichTextInput, number, value1, value2) {
     var typeOfValues;
+// if (wichTextInput == "simple") {
+	// 	// var textInput = document.getElementById("textInput_" + number);
+	// }
+	// else {
+	// 	var textIputInterval1 = document.getElementById("textInputInterval1_" + number);
+	// 	var textIputInterval2 = document.getElementById("textInputInterval2_" + number);
+	// }
+	//avoid error because input is empty so values are null
     if (wichTextInput == "simple") {
-        var textInput = document.getElementById("textInput_" + number);
+        if (value1 == null) {
+			value1 = "";
     }
-    else {
-        var textIputInterval1 = document.getElementById("textInputInterval1_" + number);
-        var textIputInterval2 = document.getElementById("textInputInterval2_" + number);
-    }
+    } else { //això és value1 i 2?
+		if (value1 == null) {
+			value1 = "";
+		} else if (value2 == null) {
+			value2 = "";
+		}
+}
+
+
     if (wichTextInput == "simple") {
 
         if (value1.includes("-") == true) {//inputText1
@@ -269,16 +275,16 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 
             if (value1.includes("/")) {
                 if (value1Array.length == 5) {
-                    if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+                    if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
                         typeOfValues = "date";
 
                     }
                 }
             } else {
                 if (value1Array.length == 3) {
-                    if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+                    if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
                         typeOfValues = "date";
-                    } else if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2].length == 2 & typeof parseInt(value1Array[0]) == "number" & typeof parseInt(value1Array[1]) == "number" & typeof parseInt(value1Array[2]) == "number") { //only date without Time
+                    } else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
                         typeOfValues = "date";
                     }
                 }
@@ -296,7 +302,7 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
                 }
                 value1 = newValue;
 
-                if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
+                if (value1.length != parseInt(value1).toString().length && value1.length != parseFloat(value1).toString().length) {
                     typeOfValues = "text";
                 } else {
                     typeOfValues = "number";
@@ -319,17 +325,17 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
             var value1Array = value1.split("-");
             if (value1.includes("/")) {
                 if (value1Array.length == 5) {
-                    if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+                    if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
                         inputText1 = "date";
 
                     }
                 }
             } else {
                 if (value1Array.length == 3) {
-                    if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2][2] == "T" & value1.endsWith("Z")) {
+                    if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
                         inputText1 = "date";
 
-                    } else if (value1Array[0].length == 4 & value1Array[1].length == 2 & value1Array[2].length == 2 & typeof parseInt(value1Array[0]) == "number" & typeof parseInt(value1Array[1]) == "number" & typeof parseInt(value1Array[2]) == "number") { //only date without Time
+                    } else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
                         typeOfValues = "date";
                     }
                 }
@@ -341,17 +347,17 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
             var value2Array = value2.split("-");
             if (value2.includes("/")) {
                 if (value2Array.length == 5) {
-                    if (value2Array[0].length == 4 & value2Array[1].length == 2 & value2Array[2][2] == "T" & value2.endsWith("Z")) {
+                    if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
                         inputText2 = "date";
 
                     }
                 }
             } else {
                 if (value2Array.length == 3) {
-                    if (value2Array[0].length == 4 & value2Array[1].length == 2 & value2Array[2][2] == "T" & value2.endsWith("Z")) {
+                    if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
                         inputText2 = "date";
 
-                    } else if (value2Array[0].length == 4 & value2Array[1].length == 2 & value2Array[2].length == 2 & typeof parseInt(value2Array[0]) == "number" & typeof parseInt(value2Array[1]) == "number" & typeof parseInt(value2Array[2]) == "number") { //only date without Time
+                    } else if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2].length == 2 && !isNaN(parseInt(value2Array[0])) && !isNaN(parseInt(value2Array[1])) && !isNaN(parseInt(value2Array[2]))) { //only date without Time
                         typeOfValues = "date";
                     }
                 }
@@ -368,7 +374,7 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
                     }
                 }
                 value1 = newValue;
-                if (value1.length != parseInt(value1).toString().length & value1.length != parseFloat(value1).toString().length) {
+                if (value1.length != parseInt(value1).toString().length && value1.length != parseFloat(value1).toString().length) {
                     inputText1 = "text";
                 } else { //number in value1
                     inputText1 = "number";
@@ -387,7 +393,7 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
                     }
                 }
                 value1 = newValue2;
-                if (value2.length != parseInt(value2).toString().length & value2.length != parseFloat(value2).toString().length) {
+                if (value2.length != parseInt(value2).toString().length && value2.length != parseFloat(value2).toString().length) {
                     inputText2 = "text";
                 } else {
                     inputText2 = "number";
@@ -400,10 +406,10 @@ function typeOfValueFromInput(wichTextInput, number, value1, value2) {
 
         if (inputText1 == "text" || inputText2 == "text") {
             typeOfValues = "text";
-        } else if ((inputText1 == "date" & inputText2 == "empty") || (inputText1 == "empty" & inputText2 == "date") || (inputText1 == "date" & inputText2 == "date")) {
+        } else if ((inputText1 == "date" && inputText2 == "empty") || (inputText1 == "empty" && inputText2 == "date") || (inputText1 == "date" && inputText2 == "date")) {
             typeOfValues = "date";
 
-        } else if (inputText1 == "empty" & inputText2 == "empty") {
+        } else if (inputText1 == "empty" && inputText2 == "empty") {
             typeOfValues = "empty";
         }
         else {
@@ -431,11 +437,15 @@ function changeWriteToSelect(nodeId, number, selector) {  //To take the text in 
     var divFilterContainer = document.getElementById("divFilterContainer_" + number);
     var textInput = document.getElementById("textInput_" + number);
     var displaySelect = document.getElementById("displaySelect_" + number);
+var selectorValue = document.getElementById("selectorValue_" + number);
 
     var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
     var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
     var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
     var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
+var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
+	var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
+
 
     //disconnect arrow buttons
     var buttonUp = document.getElementById("buttonUp_" + number);
@@ -443,17 +453,31 @@ function changeWriteToSelect(nodeId, number, selector) {  //To take the text in 
     buttonDown.setAttribute("disabled", true);
     buttonUp.setAttribute("disabled", true);
 
+	//save value from input in case of cancel button is pressed
+	if (selector == "simple") {
+		textInput.setAttribute("data-oldvalue", textInput.value);
+	} else {
+		textInputInterval1.setAttribute("data-oldvalue", textInputInterval1.value);
+		textInputInterval2.setAttribute("data-oldvalue", textInputInterval2.value);
+
+	}
+
     //Wich text is open?
     if (selector == "simple") {
         textInput.style.display = "none";
         displaySelect.style.display = "none";
         divFilterContainer.style.display = "inline-block";
+selectorValue.style.display = "inline-block";
+
 
     } else { //interval
         textInputInterval1.style.display = "none";
         textInputInterval2.style.display = "none";
         displaySelectInterval.style.display = "none";
         divFilterContainer2.style.display = "inline-block";
+selectorValueInterval1.style.display = "inline-block";
+		selectorValueInterval2.style.display = "inline-block";
+
     }
 }
 function showIntervalSelector(nodeId, number) {
@@ -521,7 +545,8 @@ function showIntervalSelector(nodeId, number) {
                     displaySelectInterval.style.display = "none";
 
                     //show textInput and display
-                    textInput.classList.add("inblock");
+                    textInput.style.display = "inline-block";
+					//textInput.classList.add("inblock");
                     if (parentLabel == select1Value) {
                         displaySelect.style.display = "inline-block";
                     }
@@ -583,12 +608,53 @@ function createSelectorRowFilters(dataAttributes, nodeId, number) {
     divFilterBox.appendChild(divIsAnObject);
 
 }
+function sortValuesForSelect(arrayValues) {
 
-function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, count) {
+	var arrayNumbers = [];
+	var arrayText = [];
+
+	for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
+		if (typeof arrayValues[i] !== "undefined") {
+			var isNumber = true;
+			for (var a = 0; a < arrayValues[i].length; a++) {
+				if (isNumber == true) {
+					if (isNaN(arrayValues[i][a])) {//is not a number 
+						isNumber = false;
+					}
+				}
+			}
+			if (isNumber == true) {
+				arrayNumbers.push(arrayValues[i]);
+			} else {
+				arrayText.push(arrayValues[i]);
+			}
+
+		}
+
+		var arrayNumbersArranged = arrayNumbers.sort((a, b) => a - b);
+		var arrayTextsArranged = arrayText.sort();
+
+		var arrayValuesArranged = arrayNumbersArranged.concat(arrayTextsArranged); //join arrays
+
+
+	}
+	return arrayValuesArranged;
+}
+
+function changeSelectValueRowFilter(nodeId, number) {
+	isAnObject(nodeId, number);
+
+}
+
+function createSelect(number, place_Id, nodeId, selectorInfo, count) {
+var previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
+	var parentNode = networkNodes.get(previousNode[0].id);
+	var data = parentNode.STAdata; //previous node
+	var dataAttributes = getDataAttributes(data);
 
     var placeId = document.getElementById(place_Id);
     var select = document.createElement("select");
-    var data, previousNode;
+    var data;
     var actualNode = networkNodes.get(nodeId);
     if (actualNode.image == "SelectRowsTable.png") { //CSV . Update current Node STAdata with info from previous Node !!!!!! (it works?)
         previousNode = networkNodes.get(network.getConnectedNodes(nodeId, "from"));
@@ -613,20 +679,27 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
         select.setAttribute("id", "selectorSTAEntity_" + count);
         select.setAttribute("onChange", "fillPropertySelector('" + nodeId + "','" + count + "')");
 
-        var staEntities = Object.keys(STAEntities);
+        var staEntitiesKeys = Object.keys(STAEntities);
 
         //Which Entity is: !!!!! Only works with STA (No csv)
         var entity;
+var isEntity = false;
         if (getSTAURLLastEntity(currentNode.STAURL)) {
             entity = getSTAURLLastEntity(currentNode.STAURL);
+for (var i = 0; i < staEntitiesKeys.length; i++) {
+				if (staEntitiesKeys[i] == entity) {
+					isEntity = true;
+					break;
+				}
+			}
+
         } else {
-            entity = "STAPlus"
+            entity = "STAPlus"; //Look how to erase this
         }
 
         var entitiesSTA;
-        if (entity != "STAPlus") {
-            entitiesSTA = STAEntities[entity].entities;
-            //First put Itself (Entity)
+        if (isEntity == true) {	//First put Itself (Entity)
+            entitiesSTA = STAEntities[entity].entities; //If it is not plural it doen't work, but if it is only one value you can't add Filter Rows, so it shouldn't happen.
             var option = document.createElement("option");
             option.setAttribute("value", entity);
             option.innerHTML = entity;
@@ -637,15 +710,15 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
             }
             select.appendChild(option);
         }
-        else
-            entitiesSTA = [];
+        
+
 
         var newEntityList = [];
         for (var i = 0; i < entitiesSTA.length; i++) {
 
             var indexArray = STAEntitiesArray.find(element => element == entitiesSTA[i]); //Value -1, doesn't exist -> Singular
 
-            if (indexArray == undefined) { //singular
+            if (typeof indexArray === "undefined") { //singular
                 if (entitiesSTA[i] == "ObservedProperty" || entitiesSTA[i] == "FeatureOfInterest" || entitiesSTA[i] == "Party") {  //need more than + "s"
                     switch (entitiesSTA[i]) {
                         case "ObservedProperty":
@@ -670,10 +743,8 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
                 newEntityList.push(entitiesSTA[i]);
             }
         }
-
-
         for (var i = 0; i < newEntityList.length; i++) {
-            if (newEntityList[i] != "Objectss" & newEntityList[i] != "Subjectss") {
+            if (newEntityList[i] != "Objectss" && newEntityList[i] != "Subjectss") {
                 var option = document.createElement("option");
                 option.setAttribute("value", newEntityList[i]);
                 option.innerHTML = newEntityList[i];
@@ -685,6 +756,8 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
                 select.appendChild(option);
             }
         }
+
+
         placeId.appendChild(select);
     }
 
@@ -719,7 +792,7 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
         if (selectorInfo.length != 0) {
             var typeOfValues = typeOfValueFromInput("simple", count, selectorInfo[0][4]);
             if (typeOfValues == "number") {
-                selectConditionContent2 = selectConditionContentNumber;
+                selectConditionContent2 = selectConditionContent;
             } else if (typeOfValues == "text") { //text
                 selectConditionContent2 = selectConditionContentText;
             } else { //data and empty
@@ -755,7 +828,7 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
         placeId.appendChild(divFilterContainer);
 
         select.setAttribute("id", "selectorValue_" + count);
-        select.setAttribute("onChange", "isAnObject('" + nodeId + "','" + count + "')");
+        select.setAttribute("onChange", "changeSelectValueRowFilter('" + nodeId + "','" + count + "')");
 
         var valor;
         var arrayValors = [];
@@ -764,18 +837,24 @@ function createSelect(number, place_Id, nodeId, dataAttributes, selectorInfo, co
         var valueUndefined = true;
         for (let index = 0; index < data.length; index++) {
             valor = data[index][select2PropertyValue];
-            if (valueUndefined == true & valor != undefined) { //All values are undefined? Don't show select
+            if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
                 valueUndefined = false;
             }
-            if (!arrayValors.find(element => element == valor)) {
-                var option = document.createElement("option");
-                option.setAttribute("value", valor);
-                option.innerHTML = valor;
-                select.appendChild(option);
+            if (!arrayValors.find(element => element == valor)) { //create array with not arranged values
                 arrayValors.push(valor);
-            } else {
             }
-        }
+		}
+
+		var arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
+
+
+		for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options
+			var option = document.createElement("option");
+			option.setAttribute("value", arrayValuesArranged[i]);
+			option.innerHTML = arrayValuesArranged[i];
+			select.appendChild(option);
+		}
+        
 
         divFilterContainer.appendChild(select);
 
@@ -1021,6 +1100,11 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
     var selectorSTAEntityValue = selectorSTAEntity.options[selectorSTAEntity.selectedIndex].value;
     var selectCondition = document.getElementById("selectorCondition_" + number);
     var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
+var divFilterContainer = document.getElementById("divFilterContainer_" + number);
+	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
+	var textInput = document.getElementById("textInput_" + number);
+	var textInputInterval1 = document.getElementById("textInputInterval1_" + number);
+	var textInputInterval2 = document.getElementById("textInputInterval2_" + number);
 
     var STALastEntity = getSTAURLLastEntity(currentNode.STAURL);
 
@@ -1044,16 +1128,17 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
             arrayValors.push(valor);
         }
     }
-
-    console.log(arrayValors);
+var arrayValuesArranged = sortValuesForSelect(arrayValors);
+    
     var valueUndefined = true;
-    for (var i = 0; i < arrayValors.length; i++) { //fill selector (there are 3: Simple + 2 Intervals)
+    
+	for (var i = 0; i < arrayValuesArranged.length; i++) { //fill selector (there are 3: Simple + 2 Intervals)
         var opcio = document.createElement("option");
         var opcio2 = document.createElement("option");
         var opcio3 = document.createElement("option");
-        valor = arrayValors[i];
+        valor = arrayValuesArranged[i];
 
-        if (valueUndefined == true & valor != undefined) { //All values are undefined? Don't show select
+        if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
             valueUndefined = false;
         }
         opcio.setAttribute("value", valor);
@@ -1068,12 +1153,26 @@ function fillValueSelector(nodeId, number) { //Onchange first selector, fill sec
     }
 
     if (valueUndefined == true) { //hidde
-        displaySelect.style.display = "none";
+        
+		if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") && (selectorSTAEntityValue == STALastEntity)) {
+			divFilterContainer2.style.display = "none";
         displaySelectInterval.style.display = "none";
+textInputInterval1.style.display = "inline-block";
+			textInputInterval2.style.display = "inline-block";
+		}
+		else {
+			divFilterContainer.style.display = "none"; //hidde select if it's open
+			displaySelect.style.display = "none"; //hidde button to display select
+			textInput.style.display = "inline-block"; //Show text input
+		}
+
+
+
+
     } else { //show
-        if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") & (selectorSTAEntityValue == STALastEntity)) {
+        if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") && (selectorSTAEntityValue == STALastEntity)) {
             displaySelectInterval.style.display = "inline-block";
-        } else if ((selectedValueCondition != " [a,b] " || selectedValueCondition != " (a,b] " || selectedValueCondition != " [a,b) " || selectedValueCondition != " (a,b) ") & (selectorSTAEntityValue == STALastEntity)) { //simple
+        } else if ((selectedValueCondition != " [a,b] " || selectedValueCondition != " (a,b] " || selectedValueCondition != " [a,b) " || selectedValueCondition != " (a,b) ") && (selectorSTAEntityValue == STALastEntity)) { //simple
             displaySelect.style.display = "inline-block";
         }
     }
@@ -1137,6 +1236,14 @@ function closeModalSelect(number, button, selector) { //Ok and Cancel Buttons
 
         }
 
+} else { //press "cancel"  ->>It is necesary???
+		if (selector == "simple") {
+			textInput.innerHTML = textInput.getAttribute("data-oldvalue");
+		} else {
+			textInputInterval1.innerHTML = textInputInterval1.getAttribute("data-oldvalue");
+			textInputInterval2.innerHTML = textInputInterval2.getAttribute("data-oldvalue");
+		}
+
     }
 
 
@@ -1162,7 +1269,8 @@ function changeSelectConditionValues(number, wichTextInput, value1, valueInput1,
     }
 
     var selectContent;
-    if (typeOfValues == "number") { selectContent = selectConditionContentNumber; }
+    selectCondition.innerHTML = ""; //Erase to not acumulate it
+	if (typeOfValues == "number") { selectContent = selectConditionContent; }
     else if (typeOfValues == "text") { selectContent = selectConditionContentText; } //text
     else { selectContent = selectConditionContent; }//data and empty
 
@@ -1314,15 +1422,14 @@ function GetFilterTable(elem, dataAttributes, nodeId, first) //Built table //The
 }
 
 
-function addingSelectors(dataAttributes, nodeId,) {
-    for (var i = 0; i < counter.length; i++) {
-
-        createSelectorRowFilters(dataAttributes, nodeId, counter[i]);
-    }
-
+// function addingSelectors(/*dataAttributes, */nodeId,) {
+    // 	for (var i = 0; i < counter.length; i++) {
+// 		createSelectorRowFilters(/*dataAttributes,*/ nodeId, counter[i]);
+    // 	}
 
 
-}
+
+// }
 
 function GetFilterCondition(elem, dataAttributes, nodeId) {
     counter.push(elem);
@@ -1337,7 +1444,7 @@ function ShowFilterTable(dataAttributes, nodeId) //posar la taula on sigui //El 
 
     counter = [];
     document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(elemFilter, dataAttributes, nodeId, true);
-    addingSelectors(dataAttributes, nodeId);
+//addingSelectors(/*dataAttributes,*/ nodeId);
 
 
 }
@@ -1395,7 +1502,7 @@ function searchBoxName(elem, iCon, fatherElement, nextElement) {
         }
     }
     else {
-        if (elem == iCon & stopp == false) {
+        if (elem == iCon && stopp == false) {
             changeElements(fatherElement, nextElement, iCon);
             takeSelectInformation(currentNode.id);
             drawTableAgain(currentNode.id);
@@ -1418,7 +1525,7 @@ function changeElements(currentElement, nextElement, iCon) {
     nextElement.elems.push(iCon);
     if (currentElement.elems.length == 0) {
         searchGroupToDelete(currentElement.boxName, elemFilter, nodeId, "no");
-        //take the values ââof the selectors and update an external variable 
+        //take the values ​​of the selectors and update an external variable 
     }
 }
 function GiveNextConditionNextBoxFilterTable(elem, iCon) {
@@ -1517,20 +1624,25 @@ function LookForPreviousConditionFilterTable(elem, iCon, parent) {
 
 //add conditions
 
-function addNewCondition(boxName, paramsNodeId) {
+function addNewCondition(boxName, paramsNodeId, fromBiggest) {
     event.preventDefault();
-    var elem = elemFilter;
-    searchFilterBoxName(boxName, elem, paramsNodeId);
+    if (typeof fromBiggest === "undefined") {
+		fromBiggest = false;
+	}
+
+	// var elem = elemFilter;
+    searchFilterBoxName(boxName, currentNode.STAElemFilter, paramsNodeId, fromBiggest);
 
 }
-function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //the elem has  boxName ...
+
+function searchFilterBoxName(boxNamee, elem, paramsNodeId, fromBiggest) { //the elem has  boxName ...
     var element;
     if (typeof elem === "object") {
         for (var i = 0; i < elem.elems.length; i++) {
-            searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId);
+            searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId, fromBiggest);
         }
         if (elem.boxName == boxNamee) {  //Add elems => elems[0,1...]
-            addNewElement(elem, paramsNodeId, boxNamee);
+            addNewElement(elem, paramsNodeId, boxNamee, fromBiggest);
         }
     }
     else {
@@ -1538,7 +1650,7 @@ function searchFilterBoxName(boxNamee, elem, paramsNodeId) { //the elem has  box
     }
 }
 
-function addNewElement(elem, nodeId, boxName) {
+function addNewElement(elem, nodeId, boxName, fromBiggest) {
     var elements = elem.elems;
     var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
     var nextNumber = parseInt(lastNumber) + 1; //for those who are within the 0_...
@@ -1582,13 +1694,13 @@ function addNewElement(elem, nodeId, boxName) {
         elem.nexus = "and"
     }
     conditionsFilter.push({ //add to conditionsFilter
-        property: "<div id='optionsRow_" + nextNumber + "' style='display: inline-block'></div>",
+        property: "<div id='optionsRow_" + nextNumber + "' style='display: inline-block'></div>", //class='optionsRow
         number: nextNumber
     });
     if (newBoxName) {
         var levelBox = newBoxName.charAt(0);
         var boxNameToPass = newBoxName;
-        console.log("levelbox:  " + levelBox)
+        
         for (var i = levelBox; i > 0; i--) {
             console.log(levelBox)
             addNewCondition(boxNameToPass, currentNode.id);
@@ -1596,8 +1708,8 @@ function addNewElement(elem, nodeId, boxName) {
 
         }
     }
-
-    //take selector values ââand update an external variable
+if (fromBiggest == false) {
+    //take selector values and update an external variable
     takeSelectInformation(nodeId);
 
     //repaint selects
@@ -1605,15 +1717,19 @@ function addNewElement(elem, nodeId, boxName) {
 
     //correct size to select(AndOrNot) div
     resizeBottomPartSelectAndOrNot();
+}
 
 
 }
 function resizeBottomPartSelectAndOrNot() {
     for (var i = 0; i < boxNames.length; i++) {
         var tdSelectAndOrNot = document.getElementById("tdSelectAndOrNot_" + boxNames[i]);
+if (tdSelectAndOrNot != null) {
         var tdSelectAndOrNotHeight = tdSelectAndOrNot.clientHeight;
         var bottomPartSelectAndOrNot = document.getElementById("bottomPartSelectAndOrNot_" + boxNames[i]);
-        bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 35) + "px";
+        bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 30) + "px";
+}
+
 
     }
 }
@@ -1641,15 +1757,33 @@ function takeSelectInformation(nodeId) {
             if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
                 textInputInterval1 = document.getElementById("textInputInterval1_" + counter[i]);
                 textInputInterval2 = document.getElementById("textInputInterval2_" + counter[i]);
+selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + counter[i]);
+				selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + counter[i]);
+				divFilterContainer2 = document.getElementById("divFilterContainer2_" + counter[i]);
+
+				if (divFilterContainer2.style.display == "inline-block") { //Select open
+					textInputInterval1Value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
+					textInputInterval2Value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
+				} else {
                 textInputInterval1Value = textInputInterval1.value;
                 textInputInterval2Value = textInputInterval2.value;
+}
+
                 arrayInfo.push(textInputInterval1Value);
                 arrayInfo.push(textInputInterval2Value);
                 var typeOfValue = typeOfValueFromInput("interval", counter[i], textInputInterval1Value, textInputInterval2Value)
 
             } else {
                 textInput = document.getElementById("textInput_" + counter[i]);
+divFilterContainer = document.getElementById("divFilterContainer_" + counter[i]);
+				selectorValue = document.getElementById("selectorValue_" + counter[i]);
+				if (divFilterContainer.style.display == "inline-block") { //Select open
+					textInputValue = selectorValue.options[selectorValue.selectedIndex].value;
+				} else {
                 textInputValue = textInput.value;
+}
+
+				console.log(textInputValue);
                 arrayInfo.push(textInputValue);
                 var typeOfValue = typeOfValueFromInput("simple", counter[i], textInputValue)
 
@@ -1694,7 +1828,7 @@ function DeleteElementInElemFilter(elem, nodeId, numberOfElement) {
         deleteGroup(elem.boxName, currentNode.id)
     }
 
-    //get selector values ââand update an external variable 
+    //get selector values and update an external variable 
     takeSelectInformation(nodeId);
     //repaint selects
     drawTableAgain(nodeId);
@@ -1706,8 +1840,7 @@ function DeleteElementInElemFilter(elem, nodeId, numberOfElement) {
 function deleteGroup(numberOfElement, nodeId) {
     event.preventDefault();
     searchGroupToDelete(numberOfElement, elemFilter, nodeId, "no");
-    console.log(elemFilter)
-    //get selector values ââand update an external variable 
+	//get selector values and update an external variable 
     takeSelectInformation(nodeId);
     //repaint the selects
     drawTableAgain(nodeId);
@@ -1747,7 +1880,7 @@ function DeleteGroupInElemFilter(elem, nodeId, numberOfElement, fatherElem) {
             elemFilter = copyFather[0];
         }
         boxNames = actualizeBoxNames(elemFilter, arrayBoxNumbers);
-        console.log(boxNames)
+
     }
 }
 
@@ -1766,13 +1899,13 @@ function actualizeBoxNames(elem, arrayBoxNumbers) {
 
 //drawTable
 function drawTableAgain(paramsNodeId) {
-    var parentNodeid = network.getConnectedNodes(currentNode.id, "from");
-    var parentNode = networkNodes.get(parentNodeid);
-    var data = parentNode[0].STAdata; //previous node
-    var dataAttributes = getDataAttributes(data);
+    // var parentNodeid = network.getConnectedNodes(currentNode.id, "from");
+    // var parentNode = networkNodes.get(parentNodeid);
+    // var data = parentNode[0].STAdata; //previous node
+    // var dataAttributes = getDataAttributes(data);
     document.getElementById("divSelectorRowsFilter").innerHTML = "";
 
-    ShowFilterTable(dataAttributes, paramsNodeId)
+    ShowFilterTable(/*dataAttributes,*/ currentNode.id)
 
 }
 
@@ -1792,11 +1925,10 @@ function biggestLevelButton(boxName, nodeId) {
 
     var boxNameToPass = newBoxName;
 
-    addNewCondition(boxNameToPass, currentNode.id);
+    addNewCondition(boxNameToPass, currentNode.id, true); //fromBiggest=true -> To avoid TakeSelect ...etc in addNewElement function
 
 
-    //take the values ââof the selectors and update an external variable
-
+    //take the values ​​of the selectors and update an external variable
 
     takeSelectInformation(nodeId);
 
@@ -1809,38 +1941,32 @@ function biggestLevelButton(boxName, nodeId) {
 }
 
 function addTitleInRowFilterDialog(divName) {
-    /*var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
-    var previousURL = previousNode[0].STAURL;
-    var final = "";
-    for (var i = previousURL.length - 1; i > 0; i--) { //que hi ha desprÃ©s de l'Ãºltima barra (buscant si es una entity)
-        if (previousURL[i] == "/") {
-            console.log("/")
-            break;
-        }
-        else {
-            final = previousURL[i] + final;
-        }
-    }*/
-
-    /*var entity = false;
-    for (var i = 0; i < STAEntitiesArray.length; i++) {
-        if (STAEntitiesArray[i] == final) {
-            entity = STAEntitiesArray[i];
-            break;
-        }
-    }
-    if (entity == false) {
-        entity = "STAPlus"
-    }*/
-
     //posar-ho al titol
     var divTitleSelectRows = document.getElementById(divName);
+var staEntitiesKeys = Object.keys(STAEntities);
     var entity;
+var isEntity = false;
+	divTitleSelectRows.innerHTML = ""; //Erase old title saved
     if (getSTAURLLastEntity(currentNode.STAURL)) {
         entity = getSTAURLLastEntity(currentNode.STAURL);
+for (var i = 0; i < staEntitiesKeys.length; i++) {
+			if (staEntitiesKeys[i] == entity) {
+				isEntity = true;
+				break;
+			}
+		}
+
     } else {
         entity = "STAPlus";
     }
-    divTitleSelectRows.innerHTML = entity;
+    
+	if (isEntity == false) {
+		divTitleSelectRows.innerHTML += `<img src='ogc.png' style='height:30px'> </img> "STAPlus"` + entity;
+	} else {
+		divTitleSelectRows.innerHTML += `<img src='${entity}.png' style='height:30px'> </img>` + entity;
+	}
+
+
+
 
 }
