@@ -2143,7 +2143,7 @@
 				entity = "STAPlus"
 			}
 
-			readInformationRowFilter(elemFilter, entity, "no", "no"); //And apply filter
+			readInformationRowFilter(currentNode.STAElemFilter, entity, "no", "no"); //And apply filter
 			console.log(urlAPI);
 			currentNode.STAURL = urlAPI;
 			//Selectors Information
@@ -2153,11 +2153,12 @@
 			//currentNode.STAConditionsFilter = conditionsFilter;
 
 			//keep in this node
-			elemFilter = { //restart for next node
-				elems: [0],
-				nexus: null,
-				boxName: "0_0"
-			}
+			//	elemFilter = { //restart for next node
+
+			// elems: [0],
+			// 	nexus: null,
+			// 		boxName: "0_0"
+			//}
 			//infoFilter = [];
 			//boxNames = ["0_0"];
 			// conditionsFilter = [ //valors de la taula
@@ -3203,12 +3204,12 @@
 
 			document.getElementById("DialogSelectRowsFilter").innerHTML = "<div id='selectorRowsContainer'><div id='divSelectorRowsFilter'></div></div>";
 			//Take elemFilter information from Node
-			if (currentNode.STAelementFilter) {
-				elemFilter = currentNode.STAelementFilter;
-				infoFilter = currentNode.STAinfoFilter;
-				boxNames = currentNode.STAboxName;
-				conditionsFilter = currentNode.STAConditionsFilter;
-			}
+			// if (currentNode.STAElementFilter) {
+			// 	elemFilter = currentNode.STAElementFilter;
+			// 	infoFilter = currentNode.STAInfoFilter;
+			// 	boxNames = currentNode.STABoxName;
+			// 	conditionsFilter = currentNode.STAConditionsFilter;
+			// }
 
 			ShowFilterTable(/*dataAttributes,*/ currentNode.id);
 		}

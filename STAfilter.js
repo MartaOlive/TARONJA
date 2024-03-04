@@ -1475,7 +1475,7 @@ function actualizeSelectChoice(boxName) {
 
 	var select = document.getElementById("selectAndOrNot_" + boxName);
 	var option = select.options[select.selectedIndex].value
-	searchGrouptoChangeSelectChoice(boxName, currentNode.ElemFilter, option);
+	searchGrouptoChangeSelectChoice(boxName, currentNode.STAElemFilter, option);
 
 }
 
@@ -1495,10 +1495,10 @@ function searchGrouptoChangeSelectChoice(boxName, elem, option) {
 var stopp;
 function MoveDownFilterCondition(currentNumber) {
 	event.preventDefault();
-	var nextElement = GiveNextConditionNextBoxFilterTable(currentNode.ElemFilter, currentNumber);
+	var nextElement = GiveNextConditionNextBoxFilterTable(currentNode.STAElemFilter, currentNumber);
 
 	if (nextElement != -1) {
-		searchBoxName(currentNode.ElemFilter, currentNumber, "no", nextElement);
+		searchBoxName(currentNode.STAElemFilter, currentNumber, "no", nextElement);
 		stopp = false;
 	}
 }
@@ -1532,7 +1532,7 @@ function changeElements(currentElement, nextElement, iCon) {
 	currentElement.elems = arrayElements;
 	nextElement.elems.push(iCon);
 	if (currentElement.elems.length == 0) {
-		searchGroupToDelete(currentElement.boxName, currentNode.ElemFilter, nodeId, "no");
+		searchGroupToDelete(currentElement.boxName, currentNode.STAElemFilter, nodeId, "no");
 		//take the values ​​of the selectors and update an external variable 
 	}
 }
@@ -1594,9 +1594,9 @@ function LookForNextConditionFilterTable(elem, iCon) {
 //Up button
 function MoveUpFilterCondition(iCon) {
 	event.preventDefault();
-	var previousElement = GivePreviousConditionFilterTable(currentNode.ElemFilter, iCon);
+	var previousElement = GivePreviousConditionFilterTable(currentNode.STAElemFilter, iCon);
 	if (previousElement != -1) {
-		searchBoxName(currentNode.ElemFilter, iCon, "no", previousElement);
+		searchBoxName(currentNode.STAElemFilter, iCon, "no", previousElement);
 		stopp = false;
 	}
 }
