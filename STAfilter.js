@@ -58,9 +58,9 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 			for (var i = 0; i < elem.elems.length; i++) {
 				readInformationRowFilter(elem.elems[i], entity, elem.nexus, elem);
 			}
-			if (urlAPICounter.length != infoFilter.length && urlAPICounter.length != 0 && nexus != "no" && parent != "no") {
+			if (currentNode.STAUrlAPICounter.length != infoFilter.length && currentNode.STAUrlAPICounter.length != 0 && nexus != "no" && parent != "no") {
 
-				urlAPI += " " + nexus + " ";
+				currentNode.STAUrlAPI += " " + nexus + " ";
 			}
 		}
 		else { //Build url
@@ -230,16 +230,16 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 					if ((indexOf + 1) == parentLenght) {
 						data += ")";
 					}
-					urlAPI += data
-					urlAPICounter.push(infoFilter[i][0]);
+					currentNode.STAUrlAPI += data
+					currentNode.STAUrlAPICounter.push(infoFilter[i][0]);
 
 				}
 			}
 
 		}
-		if (urlAPICounter.length == infoFilter.length) {
-			urlAPI.slice(0, "(");
-			urlAPI.slice(urlAPI.length + 1, ")");
+		if (currentNode.STAUrlAPICounter.length == infoFilter.length) {
+			currentNode.STAUrlAPI.slice(0, "(");
+			currentNode.STAUrlAPI.slice(currentNode.STAUrlAPI.length + 1, ")");
 			stopReadInformationRowFilter = true;
 		}
 	}
@@ -1356,8 +1356,8 @@ function adjustWidth(wichTextInput, number) { //and refill conditionSelect (inte
 // 	nexus: null,
 // 	boxName: "0_0"
 // }
-var urlAPICounter = [];
-var urlAPI = "";
+//var urlAPICounter = [];
+//var urlAPI = "";
 
 
 //var counter = [];
@@ -1990,6 +1990,7 @@ function addTitleInRowFilterDialog(divName) {
 
 }
 function addNecessaryVariablesToNode(nodeId) {
+	//Define properties
 	var conditionsFilter = [ //Table values
 		{
 			property: "<div id='optionsRow_0' style='display: inline-block;'></div>", //class='optionsRow'
@@ -2008,12 +2009,13 @@ function addNecessaryVariablesToNode(nodeId) {
 	var counter = [];
 	var actualNode = networkNodes.get(nodeId);
 
+	//Create node propierties
 	actualNode.STABoxNames = boxNames;
 	actualNode.STAConditionsFilter = conditionsFilter;
 	actualNode.STAInfoFilter = infoFilter;
 	actualNode.STAElemFilter = elemFilter;
 	actualNode.STAUrlAPICounter = urlAPICounter;
-	actualNode.STAurlAPI = urlAPI;
+	actualNode.STAUrlAPI = urlAPI;
 	actualNode.STACounter = counter;
 
 	networkNodes.update(actualNode);
