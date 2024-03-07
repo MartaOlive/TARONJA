@@ -78,60 +78,60 @@
 		function GetSelectExpands(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectExpands").close();
-			
+		
 			var previousSTAURL = currentNode.STAURL;
-			//var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
-			/*if (!currentNode.STASelectedExpands)
-				currentNode.STASelectedExpands={STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: deapCopy(dataAttributes), selected: []};
-			else
-				currentNode.STAURL = currentNode.STASelectedExpands.STAURLUnexpanded;
-			
-			if (document.getElementById("DialogSelectExpandsHTML").style.display != "none")
-			{
-				var dataAttr=currentNode.STASelectedExpands.dataAttributesUnexpanded;
-				var dataAttrArray=Object.keys(dataAttr)
-				for (var a = 0; a < dataAttrArray.length; a++) {
-					if (document.getElementById("SelectExpand_" + a) && document.getElementById("SelectExpand_" + a).checked)
-						break;
-				}
-				if (a < dataAttrArray.length) //A checked attribute has been found ("for" breaks before ending).
+				//var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
+				/*if (!currentNode.STASelectedExpands)
+					currentNode.STASelectedExpands={STAURLUnexpanded: currentNode.STAURL, dataAttributesUnexpanded: deapCopy(dataAttributes), selected: []};
+				else
+					currentNode.STAURL = currentNode.STASelectedExpands.STAURLUnexpanded;
+				
+				if (document.getElementById("DialogSelectExpandsHTML").style.display != "none")
 				{
-					var s;
-					currentNode.STAURL = AddKVPToURL(currentNode.STAURL, "$expand=");
+					var dataAttr=currentNode.STASelectedExpands.dataAttributesUnexpanded;
+					var dataAttrArray=Object.keys(dataAttr)
 					for (var a = 0; a < dataAttrArray.length; a++) {
-						if (document.getElementById("SelectExpand_" + a) && 
-							document.getElementById("SelectExpand_" + a).checked && 
-							dataAttrArray[a].endsWith("@iot.navigationLink")){
-							s = dataAttrArray[a].substring(0, dataAttrArray[a].length-"@iot.navigationLink".length);
-							currentNode.STAURL += s + ",";
-							currentNode.STASelectedExpands.selected[a]=true;
+						if (document.getElementById("SelectExpand_" + a) && document.getElementById("SelectExpand_" + a).checked)
+							break;
+					}
+					if (a < dataAttrArray.length) //A checked attribute has been found ("for" breaks before ending).
+					{
+						var s;
+						currentNode.STAURL = AddKVPToURL(currentNode.STAURL, "$expand=");
+						for (var a = 0; a < dataAttrArray.length; a++) {
+							if (document.getElementById("SelectExpand_" + a) && 
+								document.getElementById("SelectExpand_" + a).checked && 
+								dataAttrArray[a].endsWith("@iot.navigationLink")){
+								s = dataAttrArray[a].substring(0, dataAttrArray[a].length-"@iot.navigationLink".length);
+								currentNode.STAURL += s + ",";
+								currentNode.STASelectedExpands.selected[a]=true;
+							}
+							else
+								currentNode.STASelectedExpands.selected[a]=false;
 						}
-						else
+						currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.
+					}
+					else   //If no selected collumn has been found, no expand is needed and the previous request is fine
+					{					
+						for (var a = 0; a < dataAttrArray.length; a++)
 							currentNode.STASelectedExpands.selected[a]=false;
 					}
-					currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.
-				}
-				else   //If no selected collumn has been found, no expand is needed and the previous request is fine
-				{					
-					for (var a = 0; a < dataAttrArray.length; a++)
-						currentNode.STASelectedExpands.selected[a]=false;
-				}
-			}*/
-			if (document.getElementById("DialogSelectExpandsHTML").style.display != "none") {
-				GetSelectedSelectExpandsDialog(currentNode);
-				var s=GetKVPSelectedSelectExpands(currentNode.STASelectedExpands, true);
-				if (s)
-					currentNode.STAURL = AddKVPToURL(currentNode.STAURL, s);
-			}
-			if (!isNaN(parseInt(document.getElementById("SelectExpandsNumberOfRecords").value)))
-				currentNode.STAExpectedLength = parseInt(document.getElementById("SelectExpandsNumberOfRecords").value);
-			networkNodes.update(currentNode);
-			showInfoMessage("Selecting and Expanding STA columns...");
-			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
-			LoadJSONNodeSTAData(currentNode);
+				}*/
+				if (document.getElementById("DialogSelectExpandsHTML").style.display != "none") {
+					GetSelectedSelectExpandsDialog(currentNode,"");
+					var s=GetKVPSelectedSelectExpands(currentNode.STASelectedExpands, true);
+					if (s)
+						currentNode.STAURL = AddKVPToURL(currentNode.STAURL, s);
+									}
+									if (!isNaN(parseInt(document.getElementById("SelectExpandsNumberOfRecords").value)))
+						currentNode.STAExpectedLength = parseInt(document.getElementById("SelectExpandsNumberOfRecords").value);
+					networkNodes.update(currentNode);
+					showInfoMessage("Selecting and Expanding STA columns...");
+					UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
+					LoadJSONNodeSTAData(currentNode);					
 		}
 
-		function GetSelectedSelectExpandsDialog(node)
+		function GetSelectedSelectExpandsDialog(node,number)
 		{
 			var data = node.STAdata; 
 				
@@ -145,36 +145,36 @@
 			var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
 			const dataAttributesArray = Object.keys(dataAttributes);
 			
-			GetSelectedLevelSelectExpandsDialog(dataAttributesArray, node.STASelectedExpands, STAEntitiesArray[IdOfSTAEntity(GetFirstParentNode(node))], "");
+			GetSelectedLevelSelectExpandsDialog(dataAttributesArray, node.STASelectedExpands, STAEntitiesArray[IdOfSTAEntity(GetFirstParentNode(node))], "",number);
 			networkNodes.update(node);
 		}
 
-		function GetSelectedLevelSelectExpandsDialog(dataAttributesArray, selectedExpands, staEntityName, prefix)
+		function GetSelectedLevelSelectExpandsDialog(dataAttributesArray, selectedExpands, staEntityName, prefix,number)
 		{
 			var entities=STAEntities[getSTAEntityPlural(staEntityName, true)].entities;
 			var properties=STAEntities[getSTAEntityPlural(staEntityName, true)].properties;
 
-	if (currentNode.label=="ExpandColumnsSTA"){ //I use properties in this node, not in FilterRow
-			if (dataAttributesArray) {
-				for (var a = 0; a < dataAttributesArray.length; a++)
-				{
-					var da=dataAttributesArray[a]
-					for (var e=0; e < properties.length; e++)
+			//if (currentNode.label=="ExpandColumnsSTA"){ //I use properties in this node, not in FilterRow
+						if (dataAttributesArray) {
+					for (var a = 0; a < dataAttributesArray.length; a++)
 					{
-						if (properties[e]==da)
+						var da=dataAttributesArray[a]
+						for (var e=0; e < properties.length; e++)
 						{
-							if (document.getElementById("SelectExpand_select_" + prefix + "_" + da)?.checked)
-								selectedExpands.selected[da]=true;
+							if (properties[e]==da)
+							{
+								if (document.getElementById("SelectExpand_select_" + prefix + "_" + da)?.checked) //mires si la propertie  està checked, per posarlo checked al node
+									selectedExpands.selected[da]=true;
+							}
 						}
 					}
+				} else {
+					for (var e=0; e < properties.length; e++) {
+						if (document.getElementById("SelectExpand_select_" + prefix + "_" + properties[e])?.checked)
+							selectedExpands.selected[properties[e]]=true;
+					}
 				}
-			} else {
-				for (var e=0; e < properties.length; e++) {
-					if (document.getElementById("SelectExpand_select_" + prefix + "_" + properties[e])?.checked)
-						selectedExpands.selected[properties[e]]=true;
-				}
-			}
-	}
+			//}
 		
 
 			if (dataAttributesArray) {
@@ -187,10 +187,20 @@
 						{
 							if (entities[e]==da)
 							{
+								selectedExpands.expanded[da]={selected: [], expanded: []}; // Si està checked em crees aixo al node i tornes a cridar aquesta funcio
+								
 								if (document.getElementById("SelectExpand_expand_" + prefix + "_" + da)?.checked) {
-									selectedExpands.expanded[da]={selected: [], expanded: []};
-									GetSelectedLevelSelectExpandsDialog(null, selectedExpands.expanded[da], da, prefix+da);
+									// if (currentNode.label=="FilterRowsSTA"){ 
+									// 	//Escriure /+ entities[e] al input
+									// 	var inputForEntityFilterRow=document.getElementById("inputForEntityFilterRow_"+number);
+									// 	inputForEntityFilterRow.innerHTML=inputForEntityFilterRow.value+entities[e];
+									// }
+									//else{ //I want this only in ExpandColumnsSTA, but not in ExpandColumnsSTA.
+										selectedExpands.expanded[da]={selected: [], expanded: []}; // Si està checked em crees aixo al node i tornes a cridar aquesta funcio
+										GetSelectedLevelSelectExpandsDialog(null, selectedExpands.expanded[da], da, prefix+da,"");
+									//}
 								}
+															
 								break;
 							}
 						}
@@ -206,40 +216,41 @@
 			}
 		}
 
-		function RedrawTableSelectExpandsNodeId(nodeId)
+		function RedrawTableSelectExpandsNodeId(nodeId,number)
 		{	
+			//Mirar si no està en el value del input per veure si es pot seguir desplegant
 			var node = networkNodes.get(nodeId);
-			GetSelectedSelectExpandsDialog(node);
-			ShowTableSelectExpandsDialog(GetFirstParentNode(node), node, true);
-		}
+			GetSelectedSelectExpandsDialog(node,number);
+			ShowTableSelectExpandsDialog(GetFirstParentNode(node), node, true,number);
 
-		function GetHTMLLevelSelectExpandsDialog(dataAttributesArray, selectedExpands, node, staEntityName, staEntityParentName, prefix, spaces)
+		}
+		//GetHTMLLevelSelectExpandsDialog(dataAttributesArray, selectedExpands, node, STAEntitiesArray[IdOfSTAEntity(parentNode)], null, "", ""));
+		function GetHTMLLevelSelectExpandsDialog(dataAttributesArray, selectedExpands, node, staEntityName, staEntityParentName, prefix, spaces, number)
 		{
 			var cdns=[];
 			var entities=STAEntities[getSTAEntityPlural(staEntityName, true)].entities;
 
-			if (currentNode.label=="ExpandColumnsSTA"){
-			var properties=STAEntities[getSTAEntityPlural(staEntityName, true)].properties;
-
-			cdns.push(spaces, "Properties (to select):<br>");
-			if (dataAttributesArray) {
-				for (var a = 0; a < dataAttributesArray.length; a++)
-				{
-					var da=dataAttributesArray[a]
-					for (var e=0; e < properties.length; e++)
-					{
-						if (properties[e]==da)
+			//if (currentNode.label=="ExpandColumnsSTA"){
+				var properties=STAEntities[getSTAEntityPlural(staEntityName, true)].properties;
+				cdns.push(spaces, "Properties (to select):<br>");
+				if (dataAttributesArray) {
+					for (var a = 0; a < dataAttributesArray.length; a++)
+					{ 
+						var da=dataAttributesArray[a]
+						for (var e=0; e < properties.length; e++)
 						{
-							cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands && selectedExpands.selected[da]) ? "checked='checked'" : ""), " id='SelectExpand_select_", prefix, "_", da, "'/> ", da, "</label><br>");
-							break;
+							if (properties[e]==da)
+							{
+								cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands && selectedExpands.selected[da]) ? "checked='checked'" : ""), " id='SelectExpand_select_", prefix, "_", da, "'/> ", da, "</label><br>");
+								break;
+							}
 						}
 					}
+				} else {
+					for (var e=0; e < properties.length; e++)
+						cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands && selectedExpands.selected[properties[e]]) ? "checked='checked'" : ""), " id='SelectExpand_select_", prefix, "_", properties[e], "' /> ", properties[e], "</label><br>");
 				}
-			} else {
-				for (var e=0; e < properties.length; e++)
-					cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands && selectedExpands.selected[properties[e]]) ? "checked='checked'" : ""), " id='SelectExpand_select_", prefix, "_", properties[e], "' /> ", properties[e], "</label><br>");
-			}
-		}
+			//}
 
 
 			var staEntityParentNamePlural=getSTAEntityPlural(staEntityParentName, true)
@@ -256,11 +267,12 @@
 							{
 								if (currentNode.label=="ExpandColumnsSTA"){
 								cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands && selectedExpands.expanded[da]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", da, "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\")' /> ", da, "</label><br>");
-							}else{//in FIlterRows
-								cdns.push(spaces, "<label><input type='radio'", ((selectedExpands && selectedExpands.expanded[da]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", da, "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\")' /> ", da, "</label><br>");
-							}
-							if (selectedExpands && selectedExpands.expanded[da])
-									cdns.push(GetHTMLLevelSelectExpandsDialog(null, selectedExpands.expanded[da], node, da, staEntityName, prefix+da, spaces+"&emsp;"));
+								}else{//in FIlterRows
+									cdns.push(spaces, "<label><input type='radio'", ((selectedExpands && selectedExpands.expanded[da]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", da, "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\",\"",number,"\")' /> ", da, "</label><br>");
+								}
+								
+								if (selectedExpands && selectedExpands.expanded[da])
+									cdns.push(GetHTMLLevelSelectExpandsDialog(null, selectedExpands.expanded[da], node, da, staEntityName, prefix+da, spaces+"&emsp;",number));
 								break;
 							}
 						}
@@ -274,18 +286,17 @@
 							cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands&& selectedExpands.expanded[entities[e]]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", entities[e], "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\")' /> ", entities[e], "</label><br>");
 						}
 						else{ //in FIlterRows
-							cdns.push(spaces, "<label><input type='radio'", ((selectedExpands&& selectedExpands.expanded[entities[e]]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", entities[e], "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\")' /> ", entities[e], "</label><br>");
-
+							cdns.push(spaces, "<label><input type='radio'", ((selectedExpands&& selectedExpands.expanded[entities[e]]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", entities[e], "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\",\"",number,"\")' /> ", entities[e], "</label><br>");
 						}
 						if (selectedExpands && selectedExpands.expanded[entities[e]])
-							cdns.push(GetHTMLLevelSelectExpandsDialog(null, selectedExpands.expanded[entities[e]], node, entities[e], staEntityName, prefix+entities[e], spaces+"&emsp;"))
+							cdns.push(GetHTMLLevelSelectExpandsDialog(null, selectedExpands.expanded[entities[e]], node, entities[e], staEntityName, prefix+entities[e], spaces+"&emsp;",number))
 					}
 				}
 			}
 			return cdns.join("");
 		}
 
-		function ShowTableSelectExpandsDialog(parentNode, node, expandCheckboxes) 
+		function ShowTableSelectExpandsDialog(parentNode, node, expandCheckboxes, number) 
 		{
 			var cdns=[];
 			if (expandCheckboxes)
@@ -306,7 +317,7 @@
 	
 				var dataAttributes = node.STAdataAttributes ? node.STAdataAttributes : getDataAttributes(data);
 				const dataAttributesArray = Object.keys(dataAttributes);
-				cdns.push(GetHTMLLevelSelectExpandsDialog(dataAttributesArray, selectedExpands, node, STAEntitiesArray[IdOfSTAEntity(parentNode)], null, "", ""));
+				cdns.push(GetHTMLLevelSelectExpandsDialog(dataAttributesArray, selectedExpands, node, STAEntitiesArray[IdOfSTAEntity(parentNode)], null, "", "", number));
 				document.getElementById("DialogSelectExpandsCheckBoxes").innerHTML = cdns.join("");
 				document.getElementById("DialogSelectExpandsHTML").style.display = "inline-block";
 			}

@@ -79,379 +79,8 @@ function addNecessaryVariablesToNode(nodeId) {
 	actualNode.STACounter = counter;
 
 	networkNodes.update(actualNode);
-
-
-
 }
 
-
-
-//Applying the filter
-var stopReadInformationRowFilter = false;
-
-function readInformationRowFilter(elem, entity, nexus, parent) {
-	var infoFilter = currentNode.STAInfoFilter;
-	if (stopReadInformationRowFilter == false) {
-		if (typeof elem === "object") {
-			for (var i = 0; i < elem.elems.length; i++) {
-				readInformationRowFilter(elem.elems[i], entity, elem.nexus, elem);
-			}
-			if (currentNode.STAUrlAPICounter.length != infoFilter.length && currentNode.STAUrlAPICounter.length != 0 && nexus != "no" && parent != "no") {
-
-				currentNode.STAUrlAPI += " " + nexus + " ";
-			}
-		}
-		else { //Build url
-			//Last Array, which contains the filters 
-			var data = "";
-			for (var i = 0; i < infoFilter.length; i++) {
-				if (infoFilter[i][0] == elem) { //To search the array that contains the info that we want
-					var parentLenght = parent.elems.length;
-					var indexOf = parent.elems.indexOf(elem);
-					console.log("parentLenght: " + parentLenght);
-					if (indexOf == 0) {
-						data += "(";
-					}
-
-					var valueOfEntity = infoFilter[i][1]; //Always plural
-					var entitiesArray = STAEntities[valueOfEntity].entities; //Plural or singular
-					var valueEntityToURL;
-					var indexArray = entitiesArray.find(element => element == valueOfEntity); //Value undefined, doesn't exist -> Singular
-
-					if (typeof indexArray !== "undefined") { //singular
-						if (valueOfEntity == "ObservedProperties" || valueOfEntity == "FeaturesOfInterest" || valueOfEntity == "Parties") {  //need more than - "s"
-							switch (valueOfEntity) {
-								case "ObservedProperties":
-									valueEntityToURL = "ObservedProperty";
-									break;
-								case "FeaturesOfInterest":
-									valueEntityToURL = "FeatureOfInterest";
-									break;
-								case "Parties":
-									valueEntityToURL = "Party";
-									break;
-								default:
-									console.log("problem")
-									break;
-							}
-
-						} else {
-							valueEntityToURL = valueOfEntity.substring(0, valueOfEntity.length - 1); //entity - "s"
-						}
-
-					}
-
-					///Apply filter depending on Select Condition
-					if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') { //passarho a com STA+
-						data += "(";
-
-						if (entity != valueOfEntity) { //If it's not the entity of the node and it is a connected box need "node entity name "
-							data += valueEntityToURL + "/";
-						}
-						data += infoFilter[i][2];
-
-						var typeOfValue = infoFilter[i][5];
-						var apostropheOrSpace;
-						(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = "";
-						switch (infoFilter[i][3]) {
-							case ' = ':
-								data += " eq " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-								break;
-							case ' &ne; ':
-								data += " ne " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-								break;
-							case ' &ge; ':
-								data += " ge " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-								break;
-							case ' > ':
-								data += " gt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-								break;
-							case ' &le; ':
-								data += " le " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-								break;
-							case ' < ':
-								data += " lt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-								break;
-							default:
-
-						}
-					}
-					else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
-
-
-						if (entity != valueOfEntity) {
-							valueEntityToURL = valueEntityToURL + "/" + infoFilter[i][2];
-						} else {
-							valueEntityToURL = infoFilter[i][2];
-						}
-						data += "( " + valueEntityToURL;
-
-						switch (infoFilter[i][3]) {
-							case ' [a,b] ':
-								data += " ge " + infoFilter[i][4] + " and " + valueEntityToURL + " le " + infoFilter[i][5] + ")";
-								break;
-							case ' (a,b] ':
-								data += " gt " + infoFilter[i][4] + " and " + valueEntityToURL + " le " + infoFilter[i][5] + ")";
-								break;
-							case ' [a,b) ':
-								data += " ge " + infoFilter[i][4] + " and " + valueEntityToURL + " lt " + infoFilter[i][5] + ")";
-								break;
-							case ' (a,b) ':
-								data += " gt " + infoFilter[i][4] + " and " + valueEntityToURL + " lt " + infoFilter[i][5] + ")";
-								break;
-							default:
-						}
-					}
-					else if (infoFilter[i][3] == 'contains' || infoFilter[i][3] == 'no contains' || infoFilter[i][3] == 'starts with' || infoFilter[i][3] == 'ends with') {
-						if (entity != valueOfEntity) {
-							valueEntityToURL = valueEntityToURL + "/" + infoFilter[i][2];
-						} else {
-							valueEntityToURL = infoFilter[i][2];
-						}
-
-						switch (infoFilter[i][3]) {
-							case 'contains':
-								data += "substringof('" + infoFilter[i][4] + "'," + valueEntityToURL + ")";
-								break;
-							case 'no contains':
-								data += "not substringof('" + infoFilter[i][4] + "'," + valueEntityToURL + ")";
-								break;
-							case 'starts with':
-								data += "startswith(" + valueEntityToURL + ",'" + infoFilter[i][4] + "')";
-								break;
-							case 'ends with':
-								data += "endswith(" + valueEntityToURL + ",'" + infoFilter[i][4] + "')";
-								break;
-							default:
-						}
-					}
-					else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date') {
-						var newValue = "";
-						for (var a = 0; a < infoFilter[i][4].length; a++) {//erase 0 if starts with 0. 
-							if (infoFilter[i][4].charAt(a) != 0) {
-								newValue += infoFilter[i][4].charAt(a)
-							}
-						}
-						infoFilter[i][4] = newValue;
-
-						switch (infoFilter[i][3]) {
-							case 'year':
-								data += "year(resultTime) eq " + infoFilter[i][4];
-								break;
-							case 'month':
-								data += "month(resultTime) eq " + infoFilter[i][4];
-								break;
-							case 'day':
-								data += "day(resultTime) eq " + infoFilter[i][4];
-								break;
-							case 'hour':
-								data += "hour(resultTime) eq " + infoFilter[i][4];
-								break;
-							case 'minute':
-								data += "minute(resultTime) eq " + infoFilter[i][4];
-								break;
-							case 'date':
-								data += "date(resultTime) eq date('" + infoFilter[i][4] + "')";
-								break;
-
-							default:
-						}
-					}
-
-
-
-					if ((indexOf + 1) != parentLenght) {
-						data += nexus
-					}
-					console.log(indexOf + 1)
-					console.log(parentLenght)
-					if ((indexOf + 1) == parentLenght) {
-						data += ")";
-					}
-					currentNode.STAUrlAPI += data
-					currentNode.STAUrlAPICounter.push(infoFilter[i][0]);
-
-				}
-			}
-
-		}
-		if (currentNode.STAUrlAPICounter.length == infoFilter.length) {
-			currentNode.STAUrlAPI.slice(0, "(");
-			currentNode.STAUrlAPI.slice(currentNode.STAUrlAPI.length + 1, ")");
-			stopReadInformationRowFilter = true;
-		}
-	}
-
-}
-
-function typeOfValueFromInput(wichTextInput, value1, value2) {
-	var typeOfValues;
-	if (wichTextInput == "simple") {
-		if (value1 == null) {
-			value1 = "";
-		}
-	} else {
-
-		if (value1 == null) {
-			value1 = "";
-		} else if (value2 == null) {
-			value2 = "";
-		}
-	}
-
-
-	if (wichTextInput == "simple") {
-
-		if (value1.includes("-") == true) {//inputText1
-			var value1Array = value1.split("-");
-
-			if (value1.includes("/")) {
-				if (value1Array.length == 5) {
-					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
-						typeOfValues = "date";
-
-					}
-				}
-			} else {
-				if (value1Array.length == 3) {
-					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
-						typeOfValues = "date";
-					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
-						typeOfValues = "date";
-					}
-				}
-			}
-
-		}
-		if (typeOfValues != "date") {
-			if (Number.isNaN(parseInt(value1)) != true) {
-
-				var newValue = "";
-				for (var a = 0; a < value1.length; a++) {//erase 0 if starts with 0. 
-					if (value1.charAt(a) != 0) {
-						newValue += value1.charAt(a)
-					}
-				}
-				value1 = newValue;
-
-				if (value1.length != parseInt(value1).toString().length && value1.length != parseFloat(value1).toString().length) {
-					typeOfValues = "text";
-				} else {
-					typeOfValues = "number";
-				}
-
-			} else {
-				typeOfValues = "text";
-			}
-		}
-		if (value1.length == 0) {
-			typeOfValues = "empty";
-		}
-	}
-	else {//interval
-		var inputText1 = "no";
-		var inputText2 = "no";
-
-		//is date
-		if (value1.includes("-") == true) {//inputText1
-			var value1Array = value1.split("-");
-			if (value1.includes("/")) {
-				if (value1Array.length == 5) {
-					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
-						inputText1 = "date";
-
-					}
-				}
-			} else {
-				if (value1Array.length == 3) {
-					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
-						inputText1 = "date";
-
-					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
-						typeOfValues = "date";
-					}
-				}
-			}
-
-		}
-
-		if (value2.includes("-") == true) {//inputText1
-			var value2Array = value2.split("-");
-			if (value2.includes("/")) {
-				if (value2Array.length == 5) {
-					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
-						inputText2 = "date";
-
-					}
-				}
-			} else {
-				if (value2Array.length == 3) {
-					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
-						inputText2 = "date";
-
-					} else if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2].length == 2 && !isNaN(parseInt(value2Array[0])) && !isNaN(parseInt(value2Array[1])) && !isNaN(parseInt(value2Array[2]))) { //only date without Time
-						typeOfValues = "date";
-					}
-				}
-			}
-
-		}
-
-		if (inputText1 != "date") {
-			if (Number.isNaN(parseInt(value1)) != true) { //numero
-				var newValue = "";
-				for (var a = 0; a < value1.length; a++) {//erase 0 if starts with 0. 
-					if (value1.charAt(a) != 0) {
-						newValue += value1.charAt(a)
-					}
-				}
-				value1 = newValue;
-				if (value1.length != parseInt(value1).toString().length && value1.length != parseFloat(value1).toString().length) {
-					inputText1 = "text";
-				} else { //number in value1
-					inputText1 = "number";
-				}
-			} else if (value1.length == 0) { //If it's empty
-				inputText1 = "empty";
-			} else { inputText1 = "text"; }
-		}
-
-		if (inputText2 != "date") {
-			if (Number.isNaN(parseInt(value2)) != true) { //If first is not a number, let's see second
-				var newValue2 = "";
-				for (var a = 0; a < value1.length; a++) {//erase 0 if starts with 0. 
-					if (value1.charAt(a) != 0) {
-						newValue2 += value1.charAt(a)
-					}
-				}
-				value1 = newValue2;
-				if (value2.length != parseInt(value2).toString().length && value2.length != parseFloat(value2).toString().length) {
-					inputText2 = "text";
-				} else {
-					inputText2 = "number";
-				}
-			} else if (value2.length == 0) {
-				inputText2 = "empty";
-			} else { inputText2 = "text"; }
-		}
-
-
-		if (inputText1 == "text" || inputText2 == "text") {
-			typeOfValues = "text";
-		} else if ((inputText1 == "date" && inputText2 == "empty") || (inputText1 == "empty" && inputText2 == "date") || (inputText1 == "date" && inputText2 == "date")) {
-			typeOfValues = "date";
-
-		} else if (inputText1 == "empty" && inputText2 == "empty") {
-			typeOfValues = "empty";
-		}
-		else {
-			typeOfValues = "number";
-		}
-	}
-
-	return typeOfValues;
-
-}
 
 //Is an object?
 function isAnObject(nodeId, number) {
@@ -595,9 +224,9 @@ function showIntervalSelector(number) {
 function createSelectorRowFilters(number) {
 	//update STAdata from node
 	var divFilterBox = document.getElementById("optionsRow_" + number);
-	var optionsRow = document.createElement("div");
-	optionsRow.setAttribute("id", "optionsRow");
-	divFilterBox.appendChild(optionsRow);
+	// var optionsRow = document.createElement("div");
+	// optionsRow.setAttribute("id", "optionsRow");
+	// divFilterBox.appendChild(optionsRow);
 
 	var selectorInfo = [];
 	var infoFilter = currentNode.STAInfoFilter;
@@ -657,13 +286,22 @@ function changeSelectValueRowFilter(nodeId, number) {
 	//...for more functions
 
 }
+function openModalRowFilterEntities(number) { //To open Modat to see and select entities
+	event.preventDefault();
+	console.log(number)
+	var parentNode = GetFirstParentNode(currentNode);
+	if (parentNode) {
+		ShowTableSelectExpandsDialog(parentNode, currentNode, true, number);
+	}
+	document.getElementById("DialogSelectExpands").showModal();
+}
 
 function createSelect(number, selectorInfo, count) {
 
-	var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
-	var parentNode = networkNodes.get(previousNode[0].id);
-	var data = parentNode.STAdata; //previous node
-	var dataAttributes = getDataAttributes(data);
+	// var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
+	// var parentNode = networkNodes.get(previousNode[0].id);
+	// var data = parentNode.STAdata; //previous node
+	// var dataAttributes = getDataAttributes(data);
 
 	var placeId = document.getElementById("optionsRow_" + count);
 	var select = document.createElement("select");
@@ -680,6 +318,20 @@ function createSelect(number, selectorInfo, count) {
 	}
 
 	if (number == 1) {
+		//INPUT
+		var inputForEntityFilterRow = document.createElement("input");
+		inputForEntityFilterRow.setAttribute("type", "text");
+		inputForEntityFilterRow.setAttribute("READONLY", true);
+		inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
+		inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
+		inputForEntityFilterRow.innerHTML="";
+		placeId.appendChild(inputForEntityFilterRow);
+
+		var inputForEntityFilterRowButton = document.createElement("button");
+		inputForEntityFilterRowButton.innerHTML = "Search the Entity";
+		inputForEntityFilterRowButton.setAttribute("onclick", "openModalRowFilterEntities("+count+")");
+		placeId.appendChild(inputForEntityFilterRowButton);
+		//
 		select.setAttribute("id", "selectorSTAEntity_" + count);
 		select.setAttribute("onChange", "fillPropertySelector('" + count + "')");
 
@@ -998,7 +650,7 @@ function createSelect(number, selectorInfo, count) {
 
 var stopSearchparentLabel = false;
 
-function searchParentLabel() {
+function searchParentLabel() { //It is correct????? I am searching current Entity?? maybe it is better to use the function that ask for entity???
 	var entity = "0";
 	var parentNodeId = network.getConnectedNodes(currentNode.id, "from");
 	var parentNode = networkNodes.get(parentNodeId);
@@ -1297,6 +949,174 @@ function changesInInputValueRowFilter(wichTextInput, number) { //and refill cond
 
 }
 
+function typeOfValueFromInput(wichTextInput, value1, value2) {
+	var typeOfValues;
+	if (wichTextInput == "simple") {
+		if (value1 == null) {
+			value1 = "";
+		}
+	} else {
+
+		if (value1 == null) {
+			value1 = "";
+		} else if (value2 == null) {
+			value2 = "";
+		}
+	}
+
+
+	if (wichTextInput == "simple") {
+
+		if (value1.includes("-") == true) {//inputText1
+			var value1Array = value1.split("-");
+
+			if (value1.includes("/")) {
+				if (value1Array.length == 5) {
+					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
+						typeOfValues = "date";
+
+					}
+				}
+			} else {
+				if (value1Array.length == 3) {
+					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
+						typeOfValues = "date";
+					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
+						typeOfValues = "date";
+					}
+				}
+			}
+
+		}
+		if (typeOfValues != "date") {
+			if (Number.isNaN(parseInt(value1)) != true) {
+
+				var newValue = "";
+				for (var a = 0; a < value1.length; a++) {//erase 0 if starts with 0. 
+					if (value1.charAt(a) != 0) {
+						newValue += value1.charAt(a)
+					}
+				}
+				value1 = newValue;
+
+				if (value1.length != parseInt(value1).toString().length && value1.length != parseFloat(value1).toString().length) {
+					typeOfValues = "text";
+				} else {
+					typeOfValues = "number";
+				}
+
+			} else {
+				typeOfValues = "text";
+			}
+		}
+		if (value1.length == 0) {
+			typeOfValues = "empty";
+		}
+	}
+	else {//interval
+		var inputText1 = "no";
+		var inputText2 = "no";
+
+		//is date
+		if (value1.includes("-") == true) {//inputText1
+			var value1Array = value1.split("-");
+			if (value1.includes("/")) {
+				if (value1Array.length == 5) {
+					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
+						inputText1 = "date";
+
+					}
+				}
+			} else {
+				if (value1Array.length == 3) {
+					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
+						inputText1 = "date";
+
+					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
+						typeOfValues = "date";
+					}
+				}
+			}
+
+		}
+
+		if (value2.includes("-") == true) {//inputText1
+			var value2Array = value2.split("-");
+			if (value2.includes("/")) {
+				if (value2Array.length == 5) {
+					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
+						inputText2 = "date";
+
+					}
+				}
+			} else {
+				if (value2Array.length == 3) {
+					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
+						inputText2 = "date";
+
+					} else if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2].length == 2 && !isNaN(parseInt(value2Array[0])) && !isNaN(parseInt(value2Array[1])) && !isNaN(parseInt(value2Array[2]))) { //only date without Time
+						typeOfValues = "date";
+					}
+				}
+			}
+
+		}
+
+		if (inputText1 != "date") {
+			if (Number.isNaN(parseInt(value1)) != true) { //numero
+				var newValue = "";
+				for (var a = 0; a < value1.length; a++) {//erase 0 if starts with 0. 
+					if (value1.charAt(a) != 0) {
+						newValue += value1.charAt(a)
+					}
+				}
+				value1 = newValue;
+				if (value1.length != parseInt(value1).toString().length && value1.length != parseFloat(value1).toString().length) {
+					inputText1 = "text";
+				} else { //number in value1
+					inputText1 = "number";
+				}
+			} else if (value1.length == 0) { //If it's empty
+				inputText1 = "empty";
+			} else { inputText1 = "text"; }
+		}
+
+		if (inputText2 != "date") {
+			if (Number.isNaN(parseInt(value2)) != true) { //If first is not a number, let's see second
+				var newValue2 = "";
+				for (var a = 0; a < value1.length; a++) {//erase 0 if starts with 0. 
+					if (value1.charAt(a) != 0) {
+						newValue2 += value1.charAt(a)
+					}
+				}
+				value1 = newValue2;
+				if (value2.length != parseInt(value2).toString().length && value2.length != parseFloat(value2).toString().length) {
+					inputText2 = "text";
+				} else {
+					inputText2 = "number";
+				}
+			} else if (value2.length == 0) {
+				inputText2 = "empty";
+			} else { inputText2 = "text"; }
+		}
+
+
+		if (inputText1 == "text" || inputText2 == "text") {
+			typeOfValues = "text";
+		} else if ((inputText1 == "date" && inputText2 == "empty") || (inputText1 == "empty" && inputText2 == "date") || (inputText1 == "date" && inputText2 == "date")) {
+			typeOfValues = "date";
+
+		} else if (inputText1 == "empty" && inputText2 == "empty") {
+			typeOfValues = "empty";
+		}
+		else {
+			typeOfValues = "number";
+		}
+	}
+
+	return typeOfValues;
+
+}
 
 ////////////////New Table////////////////////
 
@@ -1869,3 +1689,200 @@ function addTitleInRowFilterDialog(divName) {
 }
 
 
+//Applying the filter
+var stopReadInformationRowFilter = false;
+
+function readInformationRowFilter(elem, entity, nexus, parent) {
+	var infoFilter = currentNode.STAInfoFilter;
+	if (stopReadInformationRowFilter == false) {
+		if (typeof elem === "object") {
+			for (var i = 0; i < elem.elems.length; i++) {
+				readInformationRowFilter(elem.elems[i], entity, elem.nexus, elem);
+			}
+			if (currentNode.STAUrlAPICounter.length != infoFilter.length && currentNode.STAUrlAPICounter.length != 0 && nexus != "no" && parent != "no") {
+
+				currentNode.STAUrlAPI += " " + nexus + " ";
+			}
+		}
+		else { //Build url
+			//Last Array, which contains the filters 
+			var data = "";
+			for (var i = 0; i < infoFilter.length; i++) {
+				if (infoFilter[i][0] == elem) { //To search the array that contains the info that we want
+					var parentLenght = parent.elems.length;
+					var indexOf = parent.elems.indexOf(elem);
+					console.log("parentLenght: " + parentLenght);
+					if (indexOf == 0) {
+						data += "(";
+					}
+
+					var valueOfEntity = infoFilter[i][1]; //Always plural
+					var entitiesArray = STAEntities[valueOfEntity].entities; //Plural or singular
+					var valueEntityToURL;
+					var indexArray = entitiesArray.find(element => element == valueOfEntity); //Value undefined, doesn't exist -> Singular
+
+					if (typeof indexArray !== "undefined") { //singular
+						if (valueOfEntity == "ObservedProperties" || valueOfEntity == "FeaturesOfInterest" || valueOfEntity == "Parties") {  //need more than - "s"
+							switch (valueOfEntity) {
+								case "ObservedProperties":
+									valueEntityToURL = "ObservedProperty";
+									break;
+								case "FeaturesOfInterest":
+									valueEntityToURL = "FeatureOfInterest";
+									break;
+								case "Parties":
+									valueEntityToURL = "Party";
+									break;
+								default:
+									console.log("problem")
+									break;
+							}
+
+						} else {
+							valueEntityToURL = valueOfEntity.substring(0, valueOfEntity.length - 1); //entity - "s"
+						}
+
+					}
+
+					///Apply filter depending on Select Condition
+					if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') { //passarho a com STA+
+						data += "(";
+
+						if (entity != valueOfEntity) { //If it's not the entity of the node and it is a connected box need "node entity name "
+							data += valueEntityToURL + "/";
+						}
+						data += infoFilter[i][2];
+
+						var typeOfValue = infoFilter[i][5];
+						var apostropheOrSpace;
+						(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = "";
+						switch (infoFilter[i][3]) {
+							case ' = ':
+								data += " eq " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+								break;
+							case ' &ne; ':
+								data += " ne " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+								break;
+							case ' &ge; ':
+								data += " ge " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+								break;
+							case ' > ':
+								data += " gt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+								break;
+							case ' &le; ':
+								data += " le " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+								break;
+							case ' < ':
+								data += " lt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+								break;
+							default:
+
+						}
+					}
+					else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
+
+
+						if (entity != valueOfEntity) {
+							valueEntityToURL = valueEntityToURL + "/" + infoFilter[i][2];
+						} else {
+							valueEntityToURL = infoFilter[i][2];
+						}
+						data += "( " + valueEntityToURL;
+
+						switch (infoFilter[i][3]) {
+							case ' [a,b] ':
+								data += " ge " + infoFilter[i][4] + " and " + valueEntityToURL + " le " + infoFilter[i][5] + ")";
+								break;
+							case ' (a,b] ':
+								data += " gt " + infoFilter[i][4] + " and " + valueEntityToURL + " le " + infoFilter[i][5] + ")";
+								break;
+							case ' [a,b) ':
+								data += " ge " + infoFilter[i][4] + " and " + valueEntityToURL + " lt " + infoFilter[i][5] + ")";
+								break;
+							case ' (a,b) ':
+								data += " gt " + infoFilter[i][4] + " and " + valueEntityToURL + " lt " + infoFilter[i][5] + ")";
+								break;
+							default:
+						}
+					}
+					else if (infoFilter[i][3] == 'contains' || infoFilter[i][3] == 'no contains' || infoFilter[i][3] == 'starts with' || infoFilter[i][3] == 'ends with') {
+						if (entity != valueOfEntity) {
+							valueEntityToURL = valueEntityToURL + "/" + infoFilter[i][2];
+						} else {
+							valueEntityToURL = infoFilter[i][2];
+						}
+
+						switch (infoFilter[i][3]) {
+							case 'contains':
+								data += "substringof('" + infoFilter[i][4] + "'," + valueEntityToURL + ")";
+								break;
+							case 'no contains':
+								data += "not substringof('" + infoFilter[i][4] + "'," + valueEntityToURL + ")";
+								break;
+							case 'starts with':
+								data += "startswith(" + valueEntityToURL + ",'" + infoFilter[i][4] + "')";
+								break;
+							case 'ends with':
+								data += "endswith(" + valueEntityToURL + ",'" + infoFilter[i][4] + "')";
+								break;
+							default:
+						}
+					}
+					else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date') {
+						var newValue = "";
+						for (var a = 0; a < infoFilter[i][4].length; a++) {//erase 0 if starts with 0. 
+							if (infoFilter[i][4].charAt(a) != 0) {
+								newValue += infoFilter[i][4].charAt(a)
+							}
+						}
+						infoFilter[i][4] = newValue;
+
+						switch (infoFilter[i][3]) {
+							case 'year':
+								data += "year(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'month':
+								data += "month(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'day':
+								data += "day(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'hour':
+								data += "hour(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'minute':
+								data += "minute(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'date':
+								data += "date(resultTime) eq date('" + infoFilter[i][4] + "')";
+								break;
+
+							default:
+						}
+					}
+
+
+
+					if ((indexOf + 1) != parentLenght) {
+						data += nexus
+					}
+					console.log(indexOf + 1)
+					console.log(parentLenght)
+					if ((indexOf + 1) == parentLenght) {
+						data += ")";
+					}
+					currentNode.STAUrlAPI += data
+					currentNode.STAUrlAPICounter.push(infoFilter[i][0]);
+
+				}
+			}
+
+		}
+		if (currentNode.STAUrlAPICounter.length == infoFilter.length) {
+			currentNode.STAUrlAPI.slice(0, "(");
+			currentNode.STAUrlAPI.slice(currentNode.STAUrlAPI.length + 1, ")");
+			stopReadInformationRowFilter = true;
+		}
+	}
+
+}
