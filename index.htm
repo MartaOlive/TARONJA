@@ -2281,6 +2281,7 @@
 			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
 			showInfoMessage("Filtering STA rows...");
+			currentNode.STASelectedExpands={selected: [], expanded: []}; //Erase what Entity Dialog has created
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
 		}
@@ -3653,7 +3654,7 @@
 				else if (currentNode.image == "ExpandColumnsSTA.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode) {
-						ShowTableSelectExpandsDialog(parentNode, currentNode, true);
+						ShowTableSelectExpandsDialog(parentNode, currentNode, true,"");
 						document.getElementById("DialogSelectExpands").showModal();
 					}
 				}

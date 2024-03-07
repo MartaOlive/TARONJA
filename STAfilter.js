@@ -288,10 +288,11 @@ function changeSelectValueRowFilter(nodeId, number) {
 }
 function openModalRowFilterEntities(number) { //To open Modat to see and select entities
 	event.preventDefault();
-	console.log(number)
+	var dialogSelectExpands=document.getElementById("DialogSelectExpands");
+	dialogSelectExpands.setAttribute("data-rowNumber",number);
 	var parentNode = GetFirstParentNode(currentNode);
 	if (parentNode) {
-		ShowTableSelectExpandsDialog(parentNode, currentNode, true, number);
+		ShowTableSelectExpandsDialog(parentNode, currentNode, true);
 	}
 	document.getElementById("DialogSelectExpands").showModal();
 }
@@ -324,7 +325,7 @@ function createSelect(number, selectorInfo, count) {
 		inputForEntityFilterRow.setAttribute("READONLY", true);
 		inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
 		inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
-		inputForEntityFilterRow.innerHTML="";
+		inputForEntityFilterRow.value="";
 		placeId.appendChild(inputForEntityFilterRow);
 
 		var inputForEntityFilterRowButton = document.createElement("button");
