@@ -286,15 +286,172 @@ function changeSelectValueRowFilter(nodeId, number) {
 	//...for more functions
 
 }
-function openModalRowFilterEntities(number) { //To open Modat to see and select entities
+function openModalRowFilterEntities(number, entity) { //To open Modat to see and select entities
 	event.preventDefault();
-	var dialogSelectExpands=document.getElementById("DialogSelectExpands");
-	dialogSelectExpands.setAttribute("data-rowNumber",number);
-	var parentNode = GetFirstParentNode(currentNode);
-	if (parentNode) {
-		ShowTableSelectExpandsDialog(parentNode, currentNode, true);
-	}
+	var dialogSelectExpands = document.getElementById("DialogSelectExpands");
+	dialogSelectExpands.setAttribute("data-rowNumber", number);
+	fillInDialogSelectExpandsInFilterRow(number, entity);
+
 	document.getElementById("DialogSelectExpands").showModal();
+}
+
+
+function fillInDialogSelectExpandsInFilterRow(number, selected) {
+	var dialogSelectExpandsCheckBoxes = document.getElementById("DialogSelectExpandsCheckBoxes");
+	dialogSelectExpandsCheckBoxes.innerHTML = "<p>Entities to select</p>";
+
+	//llegir el input
+	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + number);
+	var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
+	//update inputForEntityFilterRowValue
+	if (inputForEntityFilterRowValue != selected) { //avoid first time
+		inputForEntityFilterRowValue += "/" + selected;
+	}
+
+	inputForEntityFilterRow.value = inputForEntityFilterRowValue;
+	var inputForEntityFilterRowValueArray = inputForEntityFilterRowValue.split("/"); //Firstone has no "/"
+	var entitiesAcumulated=[];
+
+	AddEntitiesSelectetBelowInFilterRow(inputForEntityFilterRowValueArray, number, "DialogSelectExpandsCheckBoxes",0,entitiesAcumulated);
+
+
+
+	// 	entitiesFiltered=entities;
+	// 	for (var e = 0; e < entitiesAcumulated.length; e++){ //Take off from list entities already selected
+	// 		entitiesFiltered= entitiesFiltered.filter(entity=>entity!=entitiesAcumulated[e]);
+	// 	}
+
+
+
+	// 	for (var e = 0; e < entitiesFiltered.length; e++) { //create radiobuttons
+	// 		if (entitiesFiltered[e]==nextEntity){
+	// 		 	dialogSelectExpandsCheckBoxes.innerHTML +=  ` <div><input type='radio' id=' ${i}_${entitiesFiltered[e]} name='entity' value='${entitiesFiltered[e]}' checked=true  onClick='fillInDialogSelectExpandsInFilterRow("${number}"," ${entitiesFiltered[e]}")'/><label for='${entitiesFiltered[e]}'> ${entitiesFiltered[e]}</label></div>`
+	// 		}else {
+	// 			dialogSelectExpandsCheckBoxes.innerHTML += ` <div><input type='radio' id=' ${i}_${entitiesFiltered[e]} name='entity' value='${entitiesFiltered[e]}' onClick='fillInDialogSelectExpandsInFilterRow("${number}"," ${entitiesFiltered[e]}")'/><label for='${entitiesFiltered[e]}'> ${entitiesFiltered[e]}</label></div>`
+
+	// 		}
+	// 	}
+	//quan no hi hagi mes, posar algo?
+	//mirar lo dels singulars i plurals, xq si busco les entities d'un singular no les trobaré
+
+
+
+	//  for (var i = 0; i < entities.length; i++) {
+	//  	inputForEntityFilterRowValueArray[i]
+	//  	dialogSelectExpandsCheckBoxes.innerHTML += " <div><input type='radio' id='" + i + "_" + entities[i] + "' name='entity' value='" + entities[i] + "'/><label for='" + entities[i] + "'>" + entities[i] + "</label></div>"
+	//  }
+	//dialogSelectExpandsCheckBoxes.innerHTML += "</fieldset>";
+
+	// var dialogSelectExpandsCheckBoxes= document.getElementById("DialogSelectExpandsCheckBoxes");
+	// DialogSelectExpandsCheckBoxes.style.display="none"
+}
+
+function AddEntitiesSelectetBelowInFilterRow(inputForEntityFilterRowValueArray, number,place,counter,entitiesAcumulated) {
+	var entityFather= document.getElementById(place); //place to add radiobuttons. First: "DialogSelectExpandsCheckBoxes", then every entity that has to unfold radiobuttons
+	var entities, nextEntity, entitiesFiltered = [];
+
+	//There is next?
+	if (inputForEntityFilterRowValueArray[1]) { //take next entity to put it checked when radiobutton will be created (0 is entity from the node)
+		nextEntity = inputForEntityFilterRowValueArray[1];
+	} else {
+		nextEntity = "";
+	}
+	//entities connected with this entity
+	entities = STAEntities[getSTAEntityPlural(inputForEntityFilterRowValueArray[0], true)].entities; //entities to put in radiobuttons
+	//I need to erase entities selected yet. 
+	entitiesAcumulated.push(inputForEntityFilterRowValueArray[0]); //I need to list entities already connected
+	entitiesFiltered = entities //To use the filter (entities not filtered yet)
+	//Filter entities whith entitiesAcumulated
+	for (var e = 0; e < entitiesAcumulated.length; e++) { //Take off from list entities already selected
+		entitiesFiltered = entitiesFiltered.filter(entity => entity != entitiesAcumulated[e]);
+	}
+	for (var e = 0; e < entitiesFiltered.length; e++) { //create radiobuttons
+		console.log(entitiesFiltered[e].length + ", " + nextEntity.length);
+		var div = document.createElement("div");
+		var input = document.createElement("input");
+		div.setAttribute("id", "Group"+counter + "_" + entitiesFiltered[e]);
+		input.setAttribute("type", "radio");		
+		input.setAttribute("name", "entity_" + counter);
+		input.setAttribute("value", entitiesFiltered[e]);
+		input.setAttribute("onClick", `fillInDialogSelectExpandsInFilterRow("${number}","${entitiesFiltered[e]}")`);
+		var label = document.createElement("label");
+		label.setAttribute("for", entitiesFiltered[e]);
+		label.innerHTML = entitiesFiltered[e];
+		div.appendChild(input);
+		div.appendChild(label);
+		entityFather.appendChild(div);
+		if (entitiesFiltered[e] == nextEntity) {
+			input.setAttribute("checked", true);
+			counter++; //I need a counter to add to id and to entity ("name of radiobuttons pack")
+			inputForEntityFilterRowValueArray.shift() //Eliminate first element
+			AddEntitiesSelectetBelowInFilterRow(inputForEntityFilterRowValueArray, number, "Group"+(counter-1) + "_" + entitiesFiltered[e], counter,entitiesAcumulated);
+			
+		}
+		
+	}
+	//}
+	// 		<!-- 
+	// Online HTML, CSS and JavaScript editor to run code online.
+	// -->
+	// <!DOCTYPE html>
+	// <html lang="en">
+
+	// <head>
+	//   <meta charset="UTF-8" />
+	//   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	//   <link rel="stylesheet" href="style.css" />
+	//   <title>Browser</title>
+	// </head>
+
+	// <body>
+	//   <h1>
+	//     Write, edit and run HTML, CSS and JavaScript code online.
+	//   </h1>
+	//   <p>
+	//     Our HTML editor updates the webview automatically in real-time as you write code.
+	//   </p>
+
+	//   <fieldset style= "border:none">
+	//   <div>
+	//     <input type="radio" name="Entity_1" id="1_Datastream" value="Datastream" checked>
+	//     <label for="txt">Datastream</label>
+	//   </div>
+	//   <fieldset style= "border:none">
+	//      <div>
+	//         <input type="radio" name="Entity_2" id="2_Party" value="Party" checked>
+	//         <label for="txt">Party</label>
+	//       </div>
+	//        <div>
+	//         <input type="radio" name="Entity_2" id="2_Sensor" value="Sensor" checked>
+	//         <label for="txt">Sensor</label>
+	//       </div>
+	//         <div>
+	//         <input type="radio" name="Entity_2" id="2_ObservedProperty" value="ObservedProperty" checked>
+	//         <label for="txt">ObservedProperty</label>
+	//       </div>
+	//   </fieldset> 
+	//     <div>
+	//     <input type="radio" name="Entity_1" id="1_FeatureOfInterest" value="FeatureOfInterest" checked>
+	//     <label for="txt">FeatureOfInterest</label>
+	//   </div>
+	//    <div>
+	//     <input type="radio" name="Entity_1" id="1_Objects" value="Objects" checked>
+	//     <label for="txt">Objects</label>
+	//   </div>
+	// 	<div>
+	//     <input type="radio" name="Entity_1" id="1_ObservationGroups" value="ObservationGroups" checked>
+	//     <label for="txt">ObservationGroups</label>
+	//   </div>
+	// </fieldset>
+
+
+	//   <script src="script.js"></script>
+	// </body>
+
+	// </html>
+
+	//dialogSelectExpandsCheckBoxes.innerHTML += "</fieldset>";
+	//}
 }
 
 function createSelect(number, selectorInfo, count) {
@@ -319,28 +476,10 @@ function createSelect(number, selectorInfo, count) {
 	}
 
 	if (number == 1) {
-		//INPUT
-		var inputForEntityFilterRow = document.createElement("input");
-		inputForEntityFilterRow.setAttribute("type", "text");
-		inputForEntityFilterRow.setAttribute("READONLY", true);
-		inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
-		inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
-		inputForEntityFilterRow.value="";
-		placeId.appendChild(inputForEntityFilterRow);
-
-		var inputForEntityFilterRowButton = document.createElement("button");
-		inputForEntityFilterRowButton.innerHTML = "Search the Entity";
-		inputForEntityFilterRowButton.setAttribute("onclick", "openModalRowFilterEntities("+count+")");
-		placeId.appendChild(inputForEntityFilterRowButton);
-		//
-		select.setAttribute("id", "selectorSTAEntity_" + count);
-		select.setAttribute("onChange", "fillPropertySelector('" + count + "')");
-
-		var staEntitiesKeys = Object.keys(STAEntities);
-
 		//Which Entity is: !!!!! Only works with STA (No csv)
 		var entity;
 		var isEntity = false;
+		var staEntitiesKeys = Object.keys(STAEntities);
 		if (getSTAURLLastEntity(currentNode.STAURL)) {
 			entity = getSTAURLLastEntity(currentNode.STAURL);
 			for (var i = 0; i < staEntitiesKeys.length; i++) {
@@ -351,6 +490,26 @@ function createSelect(number, selectorInfo, count) {
 			}
 
 		}
+		//INPUT
+		var inputForEntityFilterRow = document.createElement("input");
+		inputForEntityFilterRow.setAttribute("type", "text");
+		inputForEntityFilterRow.setAttribute("READONLY", true);
+		inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
+		inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
+		inputForEntityFilterRow.value = entity; //first value is current entity
+		placeId.appendChild(inputForEntityFilterRow);
+
+		var inputForEntityFilterRowButton = document.createElement("button");
+		inputForEntityFilterRowButton.innerHTML = "Search the Entity";
+		inputForEntityFilterRowButton.setAttribute("onclick", "openModalRowFilterEntities('" + count + "','" + entity + "')");
+		placeId.appendChild(inputForEntityFilterRowButton);
+		//
+		select.setAttribute("id", "selectorSTAEntity_" + count);
+		select.setAttribute("onChange", "fillPropertySelector('" + count + "')");
+
+
+
+
 
 		var entitiesSTA;
 		if (isEntity == true) {	//First put Itself (Entity)

@@ -133,7 +133,7 @@
 
 		function GetSelectedSelectExpandsDialog(node)
 		{
-			var data = node.STAdata;
+			var data = node.STAdata; 
 				
 			if (!node.STASelectedExpands)
 				node.STASelectedExpands={selected: [], expanded: []};
@@ -154,7 +154,6 @@
 			var entities=STAEntities[getSTAEntityPlural(staEntityName, true)].entities;
 			var properties=STAEntities[getSTAEntityPlural(staEntityName, true)].properties;
 
-		if (currentNode.label=="ExpandColumnsSTA"){ //I use properties in this node, not in FilterRow
 			if (dataAttributesArray) {
 				for (var a = 0; a < dataAttributesArray.length; a++)
 				{
@@ -163,7 +162,7 @@
 					{
 						if (properties[e]==da)
 						{
-							if (document.getElementById("SelectExpand_select_" + prefix + "_" + da)?.checked) //mires si la propertie  està checked, per posarlo checked al node
+							if (document.getElementById("SelectExpand_select_" + prefix + "_" + da)?.checked)
 								selectedExpands.selected[da]=true;
 						}
 					}
@@ -174,8 +173,7 @@
 						selectedExpands.selected[properties[e]]=true;
 				}
 			}
-	}
-		
+
 			if (dataAttributesArray) {
 				for (var a = 0; a < dataAttributesArray.length; a++)
 				{
@@ -186,11 +184,7 @@
 						{
 							if (entities[e]==da)
 							{
-																
 								if (document.getElementById("SelectExpand_expand_" + prefix + "_" + da)?.checked) {
-									// var inputForEntityFilterRow=document.getElementById("inputForEntityFilterRow_"+number);
-									// inputForEntityFilterRow.innerHTML=inputForEntityFilterRow.value+entities[e];
-									//console.log(entities[e])
 									selectedExpands.expanded[da]={selected: [], expanded: []};
 									GetSelectedLevelSelectExpandsDialog(null, selectedExpands.expanded[da], da, prefix+da);
 								}
@@ -202,7 +196,6 @@
 			} else {
 				for (var e=0; e < entities.length; e++) {
 					if (document.getElementById("SelectExpand_expand_" + prefix + "_" + entities[e])?.checked) {
-						//console.log("2: "+entities[e])
 						selectedExpands.expanded[entities[e]]={selected: [], expanded: []};
 						GetSelectedLevelSelectExpandsDialog(null, selectedExpands.expanded[entities[e]], entities[e], prefix+entities[e]);
 					}
@@ -211,50 +204,18 @@
 		}
 
 		function RedrawTableSelectExpandsNodeId(nodeId)
-		{	if (currentNode.label="FilterRowsSTA"){
-				//Mirar si no està en el value del input per veure si es pot seguir desplegant
-				//console.log(event.srcElement.id); //SelectExpand_expand_DatastreamCampaignsParty_ObservationGroups
-				var DialogSelectExpands=document.getElementById("DialogSelectExpands");
-				var number=DialogSelectExpands.getAttribute("data-rowNumber");
-				var inputForEntityFilterRow=document.getElementById("inputForEntityFilterRow_"+number);
-				var inputForEntityFilterRowContent=inputForEntityFilterRow.value;
-				
-				var elementClickedId=event.srcElement.id;
-				var entities="";
-
-				if (elementClickedId.includes("__")){//first time clicked (Example: SelectExpand_expand__Datastream)
-					entities=elementClickedId.split ("__")[1];
-				}else{ //Second time or more (Example: SelectExpand_expand_Datastream_Party)
-					var arrayEntities=elementClickedId.split ("_");
-					for (var i=0;i<arrayEntities.length;i++){
-						if (i==arrayEntities.length-1){
-						entities=inputForEntityFilterRowContent+"/"+arrayEntities[i];
-						} //quan s'hagi de fer servir, mirar si s'ha de treure la "/" final
-					}
-				}
-				inputForEntityFilterRow.value=entities;
-				console.log(entities);
-
-			
-
-			}
-	
-				
-
-
-
+		{	
 			var node = networkNodes.get(nodeId);
 			GetSelectedSelectExpandsDialog(node);
 			ShowTableSelectExpandsDialog(GetFirstParentNode(node), node, true);
-
 		}
+
 		function GetHTMLLevelSelectExpandsDialog(dataAttributesArray, selectedExpands, node, staEntityName, staEntityParentName, prefix, spaces)
 		{
 			var cdns=[];
 			var entities=STAEntities[getSTAEntityPlural(staEntityName, true)].entities;
-
-			if (currentNode.label=="ExpandColumnsSTA"){
 			var properties=STAEntities[getSTAEntityPlural(staEntityName, true)].properties;
+
 			cdns.push(spaces, "Properties (to select):<br>");
 			if (dataAttributesArray) {
 				for (var a = 0; a < dataAttributesArray.length; a++)
@@ -273,8 +234,6 @@
 				for (var e=0; e < properties.length; e++)
 					cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands && selectedExpands.selected[properties[e]]) ? "checked='checked'" : ""), " id='SelectExpand_select_", prefix, "_", properties[e], "' /> ", properties[e], "</label><br>");
 			}
-		}
-
 
 			var staEntityParentNamePlural=getSTAEntityPlural(staEntityParentName, true)
 			cdns.push(spaces, "Entities (to expand):<br>");
@@ -288,13 +247,8 @@
 						{
 							if (entities[e]==da && staEntityParentNamePlural!=da)
 							{
-								if (currentNode.label=="ExpandColumnsSTA"){
 								cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands && selectedExpands.expanded[da]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", da, "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\")' /> ", da, "</label><br>");
-							}else{//in FIlterRows
-								cdns.push(spaces, "<label><input type='radio'", ((selectedExpands && selectedExpands.expanded[da]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", da, "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\")' /> ", da, "</label><br>");
-							}
-
-							if (selectedExpands && selectedExpands.expanded[da])
+								if (selectedExpands && selectedExpands.expanded[da])
 									cdns.push(GetHTMLLevelSelectExpandsDialog(null, selectedExpands.expanded[da], node, da, staEntityName, prefix+da, spaces+"&emsp;"));
 								break;
 							}
@@ -305,12 +259,7 @@
 				for (var e=0; e < entities.length; e++)
 				{
 					if (staEntityParentNamePlural!=entities[e]) {  //Evito que ofereixi l'objecte anterior (i vaig endarrera) 
-						if (currentNode.label=="ExpandColumnsSTA"){
-							cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands&& selectedExpands.expanded[entities[e]]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", entities[e], "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\")' /> ", entities[e], "</label><br>");
-						}
-						else{ //in FIlterRows
-							cdns.push(spaces, "<label><input type='radio'", ((selectedExpands&& selectedExpands.expanded[entities[e]]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", entities[e], "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\")' /> ", entities[e], "</label><br>");
-						}
+						cdns.push(spaces, "<label><input type='checkbox'", ((selectedExpands&& selectedExpands.expanded[entities[e]]) ? "checked='checked'" : ""), " id='SelectExpand_expand_", prefix, "_", entities[e], "' onClick='RedrawTableSelectExpandsNodeId(\"", node.id, "\")' /> ", entities[e], "</label><br>");
 						if (selectedExpands && selectedExpands.expanded[entities[e]])
 							cdns.push(GetHTMLLevelSelectExpandsDialog(null, selectedExpands.expanded[entities[e]], node, entities[e], staEntityName, prefix+entities[e], spaces+"&emsp;"))
 					}
