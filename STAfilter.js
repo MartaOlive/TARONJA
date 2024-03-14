@@ -342,9 +342,15 @@ function takeEntitiesAndFilterThemInFilterRow(filterRowEntities, i) {
 	var entitiesFiltered = entities; //To use the filter (entities not filtered yet);
 	if (i != 0) {
 		for (var a = 0; a < i; a++) { //I need entities before this entity in the array 
-			entitiesFiltered = entitiesFiltered.filter(entity => getSTAEntityPlural(entity, true) != getSTAEntityPlural(entities[a], true));
+			entitiesFiltered = entitiesFiltered.filter(entity => {
+				console.log(getSTAEntityPlural(entity, true));
+				console.log(getSTAEntityPlural(entities[a], true));
+
+				return getSTAEntityPlural(entity, true) != getSTAEntityPlural(filterRowEntities[a], true)
+			});
 		}
 	}
+
 	return entitiesFiltered;
 }
 
@@ -394,7 +400,7 @@ function AddEntitiesSelectetBelowInFilterRow(number) {
 				var positionElement = placeToPutChilds.getBoundingClientRect().left;
 				//div.style.position = "absolute";
 				console.log(positionElement)
-				div.style.marginLeft =  10*i + "px";
+				div.style.marginLeft = 10 * i + "px";
 				console.log(div.style.left)
 			}
 			placeToPutChilds.appendChild(div);
