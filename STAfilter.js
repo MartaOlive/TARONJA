@@ -299,11 +299,11 @@ function changeSelectValueRowFilter(nodeId, number) {
 }
 function openModalRowFilterEntities(number) { //To open Modat to see and select entities
 	event.preventDefault();
-	var dialogSelectExpands = document.getElementById("DialogSelectExpands");
-	dialogSelectExpands.setAttribute("data-rowNumber", number);
-	fillInDialogSelectExpandsInFilterRow(number, 0, "");
+	var dialogFilterRowEntities = document.getElementById("DialogFilterRowEntities");
+	dialogFilterRowEntities.setAttribute("data-rowNumber", number);
+	fillInDialogDialogFilterRowEntities(number, 0, "");
 
-	document.getElementById("DialogSelectExpands").showModal();
+	document.getElementById("DialogFilterRowEntities").showModal();
 }
 
 function updateSTAFilterRowEntities(number, counter, entity) {
@@ -322,9 +322,9 @@ function updateSTAFilterRowEntities(number, counter, entity) {
 }
 
 
-function fillInDialogSelectExpandsInFilterRow(number, row, selected) {
-	var dialogSelectExpandsCheckBoxes = document.getElementById("DialogSelectExpandsCheckBoxes");
-	dialogSelectExpandsCheckBoxes.innerHTML = "<p>Entities to select</p>"; //Empty DialogSelectExpandsCheckBoxes
+function fillInDialogDialogFilterRowEntities(number, row, selected) {
+	var dialogFilterRowEntitiesCheckBoxes = document.getElementById("DialogFilterRowEntitiesCheckBoxes");
+	dialogFilterRowEntitiesCheckBoxes.innerHTML = ""; //Empty DialogFilterRowEntitiesCheckBoxes
 	//update inputForEntityFilterRowValue with entity selected 
 	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + number);
 	var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
@@ -354,7 +354,6 @@ function takeEntitiesAndFilterThemInFilterRow(filterRowEntities, i) {
 	return entitiesFiltered;
 }
 
-
 function AddEntitiesSelectetBelowInFilterRow(number) {
 	var entitiesFiltered;
 	var optionsRow = "optionsRow" + number;
@@ -372,7 +371,7 @@ function AddEntitiesSelectetBelowInFilterRow(number) {
 
 		var placeToPutChilds;
 		if (i == 0) {
-			placeToPutChilds = document.getElementById("DialogSelectExpandsCheckBoxes");
+			placeToPutChilds = document.getElementById("DialogFilterRowEntitiesCheckBoxes");
 		} else {
 			placeToPutChilds = document.getElementById("Group" + (i - 1) + "_" + filterRowEntities[i]); //previous entity (previous group)
 		}
@@ -386,7 +385,7 @@ function AddEntitiesSelectetBelowInFilterRow(number) {
 			input.setAttribute("name", "entity_" + i);
 			input.setAttribute("id", id + "input")
 			input.setAttribute("value", entitiesFiltered[e]);
-			input.setAttribute("onClick", `fillInDialogSelectExpandsInFilterRow("${number}","${numi}","${entitiesFiltered[e]}")`);
+			input.setAttribute("onClick", `fillInDialogDialogFilterRowEntities("${number}","${numi}","${entitiesFiltered[e]}")`);
 			if (entitiesFiltered[e] == nextEntity) {
 				input.setAttribute("checked", true)
 			}
@@ -397,13 +396,30 @@ function AddEntitiesSelectetBelowInFilterRow(number) {
 			div.appendChild(label);
 
 			if (i != 0) {//position children "visually inside" father. Ask for position and add more px
-				div.style.marginLeft = 10 * i + "px";
+				div.style.marginLeft = 20  + "px";
 			}
 			placeToPutChilds.appendChild(div);
 		}
 	}
 }
 
+function OkButtonInRowFilterEntities(event){
+	event.preventDefault(); // We don't want to submit this form
+	var dialogFilterRowEntities = document.getElementById("DialogFilterRowEntities");
+	var number= dialogFilterRowEntities.getAttribute("data-rowNumber");
+
+	var inputForEntityFilterRow=document.getElementById("inputForEntityFilterRow_"+number);
+
+	inputForEntityFilterRow.style.width =inputForEntityFilterRow.value.length *7+"px";
+
+
+	//fillPropertySelector(number)//To change properties of select
+	document.getElementById("DialogFilterRowEntities").close();
+
+
+
+
+}
 function createSelect(number, selectorInfo, count) {
 
 	// var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
@@ -759,7 +775,6 @@ function createSelect(number, selectorInfo, count) {
 
 
 var stopSearchparentLabel = false;
-
 function searchParentLabel() { //It is correct????? I am searching current Entity?? maybe it is better to use the function that ask for entity???
 	var entity = "0";
 	var parentNodeId = network.getConnectedNodes(currentNode.id, "from");
