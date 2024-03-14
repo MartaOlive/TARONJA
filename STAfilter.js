@@ -69,6 +69,16 @@ function addNecessaryVariablesToNode(nodeId) {
 	var counter = [];
 	var actualNode = networkNodes.get(nodeId);
 
+	var entity = getSTAURLLastEntity(actualNode.STAURL)
+	var filterRowEntities = {
+		optionsRow0: [entity]
+	}
+	// currentNode. STAFilterRowEntities= {
+	// 	optionsRow1: ["Observation","Datastream"], //Observations/Datastream length=2, counter 1
+	// 	optionsRow2: ["Observation","Datastream","Party"], //Observations/Datastream/Party
+	// 	optionsRow3: ["Observation","Datastream","Campaign",X,X]//Observations/Datastream/Party length=5, counter=2
+	// }
+
 	//Create node propierties
 	actualNode.STABoxNames = boxNames;
 	actualNode.STAConditionsFilter = conditionsFilter;
@@ -77,6 +87,7 @@ function addNecessaryVariablesToNode(nodeId) {
 	actualNode.STAUrlAPICounter = urlAPICounter;
 	actualNode.STAUrlAPI = urlAPI;
 	actualNode.STACounter = counter;
+	actualNode.STAFilterRowEntities = filterRowEntities;
 
 	networkNodes.update(actualNode);
 }
@@ -286,109 +297,142 @@ function changeSelectValueRowFilter(nodeId, number) {
 	//...for more functions
 
 }
-function openModalRowFilterEntities(number, entity) { //To open Modat to see and select entities
+function openModalRowFilterEntities(number) { //To open Modat to see and select entities
 	event.preventDefault();
 	var dialogSelectExpands = document.getElementById("DialogSelectExpands");
 	dialogSelectExpands.setAttribute("data-rowNumber", number);
-	fillInDialogSelectExpandsInFilterRow(number, entity);
+	fillInDialogSelectExpandsInFilterRow(number, 0,"");
 
 	document.getElementById("DialogSelectExpands").showModal();
 }
 
+function updateSTAFilterRowEntities(number, counter, entity) {
+	var filterRowEntities =currentNode. STAFilterRowEntities;
+	// const meses = ['Enero', 'Marzo', 'Abril', 'Mayo'];
+	// meses.splice(1, 0, 'Febrero');
 
-function fillInDialogSelectExpandsInFilterRow(number, selected) {
-	var dialogSelectExpandsCheckBoxes = document.getElementById("DialogSelectExpandsCheckBoxes");
-	dialogSelectExpandsCheckBoxes.innerHTML = "<p>Entities to select</p>";
-
-	//llegir el input
-	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + number);
-	var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
-	//update inputForEntityFilterRowValue
-	if (inputForEntityFilterRowValue != selected) { //avoid first time
-		inputForEntityFilterRowValue += "/" + selected;
+	if (filterRowEntities["optionsRow" + number].length + 1 == counter) {
+		filterRowEntities["optionsRow" + number].push(entity); //If there is no entity in this position, just add it
+	} else {
+		var elementsToSplice = filterRowEntities["optionsRow" + number].length - counter; //Elements to erase to final. If entity changes, the rest has no sense
+		filterRowEntities["optionsRow" + number].splice(counter, elementsToSplice, entity);
 	}
 
-	inputForEntityFilterRow.value = inputForEntityFilterRowValue;
-	var inputForEntityFilterRowValueArray = inputForEntityFilterRowValue.split("/"); //Firstone has no "/"
-	var entitiesAcumulated=[];
-
-	AddEntitiesSelectetBelowInFilterRow(inputForEntityFilterRowValueArray, number, "DialogSelectExpandsCheckBoxes",0,entitiesAcumulated);
-
-
-
-	// 	entitiesFiltered=entities;
-	// 	for (var e = 0; e < entitiesAcumulated.length; e++){ //Take off from list entities already selected
-	// 		entitiesFiltered= entitiesFiltered.filter(entity=>entity!=entitiesAcumulated[e]);
-	// 	}
-
-
-
-	// 	for (var e = 0; e < entitiesFiltered.length; e++) { //create radiobuttons
-	// 		if (entitiesFiltered[e]==nextEntity){
-	// 		 	dialogSelectExpandsCheckBoxes.innerHTML +=  ` <div><input type='radio' id=' ${i}_${entitiesFiltered[e]} name='entity' value='${entitiesFiltered[e]}' checked=true  onClick='fillInDialogSelectExpandsInFilterRow("${number}"," ${entitiesFiltered[e]}")'/><label for='${entitiesFiltered[e]}'> ${entitiesFiltered[e]}</label></div>`
-	// 		}else {
-	// 			dialogSelectExpandsCheckBoxes.innerHTML += ` <div><input type='radio' id=' ${i}_${entitiesFiltered[e]} name='entity' value='${entitiesFiltered[e]}' onClick='fillInDialogSelectExpandsInFilterRow("${number}"," ${entitiesFiltered[e]}")'/><label for='${entitiesFiltered[e]}'> ${entitiesFiltered[e]}</label></div>`
-
-	// 		}
-	// 	}
-	//quan no hi hagi mes, posar algo?
-	//mirar lo dels singulars i plurals, xq si busco les entities d'un singular no les trobaré
-
-
-
-	//  for (var i = 0; i < entities.length; i++) {
-	//  	inputForEntityFilterRowValueArray[i]
-	//  	dialogSelectExpandsCheckBoxes.innerHTML += " <div><input type='radio' id='" + i + "_" + entities[i] + "' name='entity' value='" + entities[i] + "'/><label for='" + entities[i] + "'>" + entities[i] + "</label></div>"
-	//  }
-	//dialogSelectExpandsCheckBoxes.innerHTML += "</fieldset>";
-
-	// var dialogSelectExpandsCheckBoxes= document.getElementById("DialogSelectExpandsCheckBoxes");
-	// DialogSelectExpandsCheckBoxes.style.display="none"
+	//el counter em diu el name (entity_counter) i això em diu el lloc a l'array
 }
 
-function AddEntitiesSelectetBelowInFilterRow(inputForEntityFilterRowValueArray, number,place,counter,entitiesAcumulated) {
-	var entityFather= document.getElementById(place); //place to add radiobuttons. First: "DialogSelectExpandsCheckBoxes", then every entity that has to unfold radiobuttons
-	var entities, nextEntity, entitiesFiltered = [];
 
-	//There is next?
-	if (inputForEntityFilterRowValueArray[1]) { //take next entity to put it checked when radiobutton will be created (0 is entity from the node)
-		nextEntity = inputForEntityFilterRowValueArray[1];
-	} else {
-		nextEntity = "";
+function fillInDialogSelectExpandsInFilterRow(number, row,selected) {
+	var dialogSelectExpandsCheckBoxes = document.getElementById("DialogSelectExpandsCheckBoxes");
+	dialogSelectExpandsCheckBoxes.innerHTML = "<p>Entities to select</p>"; //Empty DialogSelectExpandsCheckBoxes
+	//update inputForEntityFilterRowValue with entity selected 
+	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + number);
+	var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
+	if (selected != "") { //avoid first time
+		inputForEntityFilterRowValue += "/" + selected;
+		updateSTAFilterRowEntities(number, row, selected);//Update currentNode.STAFilterRowEntities
 	}
-	//entities connected with this entity
-	entities = STAEntities[getSTAEntityPlural(inputForEntityFilterRowValueArray[0], true)].entities; //entities to put in radiobuttons
-	//I need to erase entities selected yet. 
-	entitiesAcumulated.push(inputForEntityFilterRowValueArray[0]); //I need to list entities already connected
-	entitiesFiltered = entities //To use the filter (entities not filtered yet)
-	//Filter entities whith entitiesAcumulated
-	for (var e = 0; e < entitiesAcumulated.length; e++) { //Take off from list entities already selected
-		entitiesFiltered = entitiesFiltered.filter(entity => entity != entitiesAcumulated[e]);
-	}
-	for (var e = 0; e < entitiesFiltered.length; e++) { //create radiobuttons
-		console.log(entitiesFiltered[e].length + ", " + nextEntity.length);
-		var div = document.createElement("div");
-		var input = document.createElement("input");
-		div.setAttribute("id", "Group"+counter + "_" + entitiesFiltered[e]);
-		input.setAttribute("type", "radio");		
-		input.setAttribute("name", "entity_" + counter);
-		input.setAttribute("value", entitiesFiltered[e]);
-		input.setAttribute("onClick", `fillInDialogSelectExpandsInFilterRow("${number}","${entitiesFiltered[e]}")`);
-		var label = document.createElement("label");
-		label.setAttribute("for", entitiesFiltered[e]);
-		label.innerHTML = entitiesFiltered[e];
-		div.appendChild(input);
-		div.appendChild(label);
-		entityFather.appendChild(div);
-		if (entitiesFiltered[e] == nextEntity) {
-			input.setAttribute("checked", true);
-			counter++; //I need a counter to add to id and to entity ("name of radiobuttons pack")
-			inputForEntityFilterRowValueArray.shift() //Eliminate first element
-			AddEntitiesSelectetBelowInFilterRow(inputForEntityFilterRowValueArray, number, "Group"+(counter-1) + "_" + entitiesFiltered[e], counter,entitiesAcumulated);
-			
+	inputForEntityFilterRow.value = inputForEntityFilterRowValue;
+
+	AddEntitiesSelectetBelowInFilterRow(number);
+}
+
+function takeEntitiesAndFilterThemInFilterRow(filterRowEntities, i) {
+	var entities = STAEntities[getSTAEntityPlural(filterRowEntities[i], true)].entities;
+	var entitiesFiltered = entities; //To use the filter (entities not filtered yet);
+	if (i != 0) {
+		for (var a = 0; a < i; a++) { //I need entities before this entity in the array 
+			entitiesFiltered = entitiesFiltered.filter(entity => getSTAEntityPlural(entity, true) != getSTAEntityPlural(entities[a], true));
 		}
-		
 	}
+	return entitiesFiltered;
+}
+
+
+function AddEntitiesSelectetBelowInFilterRow(number) {
+	var entitiesFiltered;
+	var optionsRow = "optionsRow" + number;
+	var filterRowEntities = currentNode.STAFilterRowEntities[optionsRow];
+	var nextEntity;
+	for (var i = 0; i < filterRowEntities.length; i++) {
+		entitiesFiltered = takeEntitiesAndFilterThemInFilterRow(filterRowEntities, i);
+
+		//There is next?
+		if (filterRowEntities[i + 1]) { //take next entity to put it checked when radiobutton will be created (0 is entity from the node)
+			nextEntity = filterRowEntities[i + 1];
+		} else {
+			nextEntity = "";
+		}
+
+		var placeToPutChilds;
+		if (i == 0) {
+			placeToPutChilds = document.getElementById("DialogSelectExpandsCheckBoxes");
+		} else {
+			placeToPutChilds = document.getElementById("Group" + (i - 1) + "_" + filterRowEntities[i]); //previous entity (previous group)
+		}
+		for (var e = 0; e < entitiesFiltered.length; e++) {	//Create radiobuttons
+			var div = document.createElement("div");
+			var input = document.createElement("input");
+			var numi=i+1
+			var id = "Group" + i + "_" + entitiesFiltered[e];
+			div.setAttribute("id", id);
+			input.setAttribute("type", "radio");
+			input.setAttribute("name", "entity_" + i);
+			input.setAttribute("id", id + "input")
+			input.setAttribute("value", entitiesFiltered[e]);
+			input.setAttribute("onClick", `fillInDialogSelectExpandsInFilterRow("${number}","${numi}","${entitiesFiltered[e]}")`);
+			if (entitiesFiltered[e] == nextEntity) {
+				input.setAttribute("checked", true)
+			}
+			var label = document.createElement("label");
+			label.setAttribute("for", id + "input");
+			label.innerHTML = entitiesFiltered[e];
+			div.appendChild(input);
+			div.appendChild(label);
+			placeToPutChilds.appendChild(div);
+		}
+
+
+
+
+
+
+	}
+
+
+	// for (var e = 0; e < entitiesFiltered.length; e++) { //create radiobuttons
+	// 	console.log(entitiesFiltered[e].length + ", " + nextEntity.length);
+	// 	var div = document.createElement("div");
+	// 	var input = document.createElement("input");
+	// 	var id="Group" + counter + "_" + entitiesFiltered[e];
+	// 	div.setAttribute("id", id);
+	// 	input.setAttribute("type", "radio");
+	// 	input.setAttribute("name", "entity_" + counter);
+	// 	input.setAttribute("value", entitiesFiltered[e]);
+	// 	input.setAttribute("onClick", `fillInDialogSelectExpandsInFilterRow("${number}","${counter}","${entitiesFiltered[e]}")`);
+	// 	var label = document.createElement("label");
+	// 	label.setAttribute("for", entitiesFiltered[e]);
+	// 	label.innerHTML = entitiesFiltered[e];
+	// 	div.appendChild(input);
+	// 	div.appendChild(label);
+	// 	entityFather.appendChild(div);
+	// 	// if (counter != 0) {//position children "visually inside" father. Ask for position and add more px
+	// 	// 	var positionElement = entityFather.getBoundingClientRect().left;
+	// 	// 	div.style.position = "relative";
+	// 	// 	div.style.left = positionElement + 10 + "px";
+	// 	// }
+	// 	if (entitiesFiltered[e] == nextEntity) {
+	// 		input.setAttribute("checked", true);
+	// 		place = "Group" + (counter) + "_" + entitiesFiltered[e]
+	// 	}
+	// }
+	// inputForEntityFilterRowValueArray.shift() //Eliminate first element
+	// counter++;//I need a counter to add to id and to entity ("name of radiobuttons pack")
+
+	// if (inputForEntityFilterRowValueArray.length > 0) {
+	// 	AddEntitiesSelectetBelowInFilterRow(number, place, counter, entitiesAcumulated);
+	// }
+
 	//}
 	// 		<!-- 
 	// Online HTML, CSS and JavaScript editor to run code online.
@@ -501,7 +545,7 @@ function createSelect(number, selectorInfo, count) {
 
 		var inputForEntityFilterRowButton = document.createElement("button");
 		inputForEntityFilterRowButton.innerHTML = "Search the Entity";
-		inputForEntityFilterRowButton.setAttribute("onclick", "openModalRowFilterEntities('" + count + "','" + entity + "')");
+		inputForEntityFilterRowButton.setAttribute("onclick", "openModalRowFilterEntities('" + count + "')");
 		placeId.appendChild(inputForEntityFilterRowButton);
 		//
 		select.setAttribute("id", "selectorSTAEntity_" + count);
