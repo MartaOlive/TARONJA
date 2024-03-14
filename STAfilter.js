@@ -397,120 +397,11 @@ function AddEntitiesSelectetBelowInFilterRow(number) {
 			div.appendChild(label);
 
 			if (i != 0) {//position children "visually inside" father. Ask for position and add more px
-				var positionElement = placeToPutChilds.getBoundingClientRect().left;
-				//div.style.position = "absolute";
-				console.log(positionElement)
 				div.style.marginLeft = 10 * i + "px";
-				console.log(div.style.left)
 			}
 			placeToPutChilds.appendChild(div);
-
 		}
-
-
-
-
-
-
 	}
-
-
-	// for (var e = 0; e < entitiesFiltered.length; e++) { //create radiobuttons
-	// 	console.log(entitiesFiltered[e].length + ", " + nextEntity.length);
-	// 	var div = document.createElement("div");
-	// 	var input = document.createElement("input");
-	// 	var id="Group" + counter + "_" + entitiesFiltered[e];
-	// 	div.setAttribute("id", id);
-	// 	input.setAttribute("type", "radio");
-	// 	input.setAttribute("name", "entity_" + counter);
-	// 	input.setAttribute("value", entitiesFiltered[e]);
-	// 	input.setAttribute("onClick", `fillInDialogSelectExpandsInFilterRow("${number}","${counter}","${entitiesFiltered[e]}")`);
-	// 	var label = document.createElement("label");
-	// 	label.setAttribute("for", entitiesFiltered[e]);
-	// 	label.innerHTML = entitiesFiltered[e];
-	// 	div.appendChild(input);
-	// 	div.appendChild(label);
-	// 	entityFather.appendChild(div);
-	// 	// if (counter != 0) {//position children "visually inside" father. Ask for position and add more px
-	// 	// 	var positionElement = entityFather.getBoundingClientRect().left;
-	// 	// 	div.style.position = "relative";
-	// 	// 	div.style.left = positionElement + 10 + "px";
-	// 	// }
-	// 	if (entitiesFiltered[e] == nextEntity) {
-	// 		input.setAttribute("checked", true);
-	// 		place = "Group" + (counter) + "_" + entitiesFiltered[e]
-	// 	}
-	// }
-	// inputForEntityFilterRowValueArray.shift() //Eliminate first element
-	// counter++;//I need a counter to add to id and to entity ("name of radiobuttons pack")
-
-	// if (inputForEntityFilterRowValueArray.length > 0) {
-	// 	AddEntitiesSelectetBelowInFilterRow(number, place, counter, entitiesAcumulated);
-	// }
-
-	//}
-	// 		<!-- 
-	// Online HTML, CSS and JavaScript editor to run code online.
-	// -->
-	// <!DOCTYPE html>
-	// <html lang="en">
-
-	// <head>
-	//   <meta charset="UTF-8" />
-	//   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	//   <link rel="stylesheet" href="style.css" />
-	//   <title>Browser</title>
-	// </head>
-
-	// <body>
-	//   <h1>
-	//     Write, edit and run HTML, CSS and JavaScript code online.
-	//   </h1>
-	//   <p>
-	//     Our HTML editor updates the webview automatically in real-time as you write code.
-	//   </p>
-
-	//   <fieldset style= "border:none">
-	//   <div>
-	//     <input type="radio" name="Entity_1" id="1_Datastream" value="Datastream" checked>
-	//     <label for="txt">Datastream</label>
-	//   </div>
-	//   <fieldset style= "border:none">
-	//      <div>
-	//         <input type="radio" name="Entity_2" id="2_Party" value="Party" checked>
-	//         <label for="txt">Party</label>
-	//       </div>
-	//        <div>
-	//         <input type="radio" name="Entity_2" id="2_Sensor" value="Sensor" checked>
-	//         <label for="txt">Sensor</label>
-	//       </div>
-	//         <div>
-	//         <input type="radio" name="Entity_2" id="2_ObservedProperty" value="ObservedProperty" checked>
-	//         <label for="txt">ObservedProperty</label>
-	//       </div>
-	//   </fieldset> 
-	//     <div>
-	//     <input type="radio" name="Entity_1" id="1_FeatureOfInterest" value="FeatureOfInterest" checked>
-	//     <label for="txt">FeatureOfInterest</label>
-	//   </div>
-	//    <div>
-	//     <input type="radio" name="Entity_1" id="1_Objects" value="Objects" checked>
-	//     <label for="txt">Objects</label>
-	//   </div>
-	// 	<div>
-	//     <input type="radio" name="Entity_1" id="1_ObservationGroups" value="ObservationGroups" checked>
-	//     <label for="txt">ObservationGroups</label>
-	//   </div>
-	// </fieldset>
-
-
-	//   <script src="script.js"></script>
-	// </body>
-
-	// </html>
-
-	//dialogSelectExpandsCheckBoxes.innerHTML += "</fieldset>";
-	//}
 }
 
 function createSelect(number, selectorInfo, count) {
@@ -1616,18 +1507,17 @@ function addNewCondition(boxName, fromBiggest) {
 }
 
 function searchFilterBoxName(boxNamee, elem, paramsNodeId, fromBiggest) { //the elem has  boxName ...
-	var element;
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
 			searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId, fromBiggest);
 		}
 		if (elem.boxName == boxNamee) {  //Add elems => elems[0,1...]
-			addNewElement(elem, paramsNodeId, boxNamee, fromBiggest);
+			addNewElement(elem,fromBiggest);
 		}
 	}
 }
 
-function addNewElement(elem, nodeId, boxName, fromBiggest) {
+function addNewElement(elem,fromBiggest) {
 	var elements = elem.elems;
 	var conditionsFilter = currentNode.STAConditionsFilter;
 	var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
@@ -1688,8 +1578,12 @@ function addNewElement(elem, nodeId, boxName, fromBiggest) {
 
 		}
 	}
-	if (fromBiggest == false) {
+	//update currentNode.STAFilterRowEntities
+	var entity = getSTAURLLastEntity(currentNode.STAURL);
+	currentNode.STAFilterRowEntities["optionsRow"+nextNumber] = [entity];
 
+	if (fromBiggest == false) {
+	
 		takeSelectInformation();//take selector values and update an external variable
 		drawTableAgain();//repaint selects
 		resizeBottomPartSelectAndOrNot();//correct size to select(AndOrNot) div
@@ -1761,9 +1655,12 @@ function takeSelectInformation() {
 
 //Delete element
 function DeleteElementButton(numberOfElement) {
-	event.preventDefault()
+	event.preventDefault();
+	//Delete elemen from currentNode.STAFilterRowEntities 
+	delete currentNode.STAFilterRowEntities["optionsRow"+numberOfElement];
 	searchElementToDelete(numberOfElement, currentNode.STAElemFilter, currentNode.id);
 }
+
 function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //elem has boxname...
 	var element;
 	if (typeof elem === "object") {

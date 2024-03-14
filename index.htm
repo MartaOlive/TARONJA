@@ -150,6 +150,28 @@
 		</form>
 	</dialog>
 
+	<dialog id="DialogFilterRowEntities">
+		<form>
+			<fieldset id="DialogFilterRowEntitiesHTML">
+				<legend>Choose the way to get to the Entity you want to filter</legend>
+				<span id="DialogFilterRowEntitiesCheckBoxes"> 
+				</span>
+			</fieldset>
+			<br>
+			<label>Number records to request:
+				<input type="text" id="SelectExpandsNumberOfRecords" size="6" maxlength="6" value="100"></input>
+			</label>
+			<div class="center">
+				<button value="default" onClick="GetSelectExpands(event)">OK</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
+
+
+
+
 	<dialog id="DialogSelectNRecords">
 		<form>
 			<label>Number records to request:
