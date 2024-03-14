@@ -301,13 +301,13 @@ function openModalRowFilterEntities(number) { //To open Modat to see and select 
 	event.preventDefault();
 	var dialogSelectExpands = document.getElementById("DialogSelectExpands");
 	dialogSelectExpands.setAttribute("data-rowNumber", number);
-	fillInDialogSelectExpandsInFilterRow(number, 0,"");
+	fillInDialogSelectExpandsInFilterRow(number, 0, "");
 
 	document.getElementById("DialogSelectExpands").showModal();
 }
 
 function updateSTAFilterRowEntities(number, counter, entity) {
-	var filterRowEntities =currentNode. STAFilterRowEntities;
+	var filterRowEntities = currentNode.STAFilterRowEntities;
 	// const meses = ['Enero', 'Marzo', 'Abril', 'Mayo'];
 	// meses.splice(1, 0, 'Febrero');
 
@@ -322,7 +322,7 @@ function updateSTAFilterRowEntities(number, counter, entity) {
 }
 
 
-function fillInDialogSelectExpandsInFilterRow(number, row,selected) {
+function fillInDialogSelectExpandsInFilterRow(number, row, selected) {
 	var dialogSelectExpandsCheckBoxes = document.getElementById("DialogSelectExpandsCheckBoxes");
 	dialogSelectExpandsCheckBoxes.innerHTML = "<p>Entities to select</p>"; //Empty DialogSelectExpandsCheckBoxes
 	//update inputForEntityFilterRowValue with entity selected 
@@ -373,7 +373,7 @@ function AddEntitiesSelectetBelowInFilterRow(number) {
 		for (var e = 0; e < entitiesFiltered.length; e++) {	//Create radiobuttons
 			var div = document.createElement("div");
 			var input = document.createElement("input");
-			var numi=i+1
+			var numi = i + 1
 			var id = "Group" + i + "_" + entitiesFiltered[e];
 			div.setAttribute("id", id);
 			input.setAttribute("type", "radio");
@@ -389,7 +389,16 @@ function AddEntitiesSelectetBelowInFilterRow(number) {
 			label.innerHTML = entitiesFiltered[e];
 			div.appendChild(input);
 			div.appendChild(label);
+
+			if (i != 0) {//position children "visually inside" father. Ask for position and add more px
+				var positionElement = placeToPutChilds.getBoundingClientRect().left;
+				//div.style.position = "absolute";
+				console.log(positionElement)
+				div.style.marginLeft =  10*i + "px";
+				console.log(div.style.left)
+			}
 			placeToPutChilds.appendChild(div);
+
 		}
 
 
