@@ -434,7 +434,6 @@ function OkButtonInRowFilterEntities(event) {
 }
 function createSelect(number, selectorInfo, count) {
 
-
 	var placeId = document.getElementById("optionsRow_" + count);
 	var select = document.createElement("select");
 	var actualNode = networkNodes.get(currentNode.id);
@@ -448,29 +447,36 @@ function createSelect(number, selectorInfo, count) {
 		var parentNode = networkNodes.get(parentNodeid);
 		var data = parentNode[0].STAdata; //STAdata: All data comes from previous Node (Api or filtered previously)
 	}
+	var entity;
+	var isEntity = false;
+	var staEntitiesKeys = Object.keys(STAEntities);
+	if (getSTAURLLastEntity(currentNode.STAURL)) {
+		entity = getSTAURLLastEntity(currentNode.STAURL);
+		for (var i = 0; i < staEntitiesKeys.length; i++) {
+			if (staEntitiesKeys[i] == entity) {
+				isEntity = true;
+				break;
+			}
+		}
 
+	}
 	if (number == 1) {
 		//Which Entity is: !!!!! Only works with STA (No csv)
-		var entity;
-		var isEntity = false;
-		var staEntitiesKeys = Object.keys(STAEntities);
-		if (getSTAURLLastEntity(currentNode.STAURL)) {
-			entity = getSTAURLLastEntity(currentNode.STAURL);
-			for (var i = 0; i < staEntitiesKeys.length; i++) {
-				if (staEntitiesKeys[i] == entity) {
-					isEntity = true;
-					break;
-				}
-			}
 
-		}
 		//INPUT
 		var inputForEntityFilterRow = document.createElement("input");
 		inputForEntityFilterRow.setAttribute("type", "text");
 		inputForEntityFilterRow.setAttribute("READONLY", true);
 		inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
 		inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
-		inputForEntityFilterRow.value = entity; //first value is current entity
+		var entityToInput;
+		if(currentNode.STAFilterRowEntities["optionsRow"+count].length==1){//only entity from parent Node
+			entityToInput=entity;
+		}else{
+			entityToInput=selectorInfo[0][1];
+		}
+		inputForEntityFilterRow.value = entityToInput; 
+		inputForEntityFilterRow.style.width = entityToInput.length * 7 + "px";
 		placeId.appendChild(inputForEntityFilterRow);
 
 		var inputForEntityFilterRowButton = document.createElement("button");
@@ -549,15 +555,15 @@ function createSelect(number, selectorInfo, count) {
 	if (number == 2) {
 		select.setAttribute("id", "selectorProperty_" + count);
 		select.setAttribute("onChange", "fillValueSelector('" + count + "')");
-		var select1 = document.getElementById("selectorSTAEntity_" + count);
-		var select1Value = select1.options[select1.selectedIndex].value;
+		// var select1 = document.getElementById("selectorSTAEntity_" + count);
+		// var select1Value = select1.options[select1.selectedIndex].value;
 
-		for (let i = 0; i < STAEntities[select1Value]["properties"].length; i++) {//To fill property
+		for (let i = 0; i < STAEntities[entity]["properties"].length; i++) {//To fill property
 			var option = document.createElement("option");
-			option.setAttribute("value", STAEntities[select1Value]["properties"][i]);
-			option.innerHTML = STAEntities[select1Value]["properties"][i];
+			option.setAttribute("value", STAEntities[entity]["properties"][i]);
+			option.innerHTML = STAEntities[entity]["properties"][i];
 			if (selectorInfo.length != 0) {
-				if (STAEntities[select1Value]["properties"][i] == selectorInfo[0][2]) {
+				if (STAEntities[entity]["properties"][i] == selectorInfo[0][2]) {
 					option.setAttribute("selected", true);
 				}
 			}
@@ -569,9 +575,7 @@ function createSelect(number, selectorInfo, count) {
 
 	else if (number == 3) {
 		select.setAttribute("id", "selectorCondition_" + count);
-
 		var selectConditionContent2;
-
 		if (selectorInfo.length != 0) {
 			var typeOfValues = typeOfValueFromInput("simple", selectorInfo[0][4]);
 			if (typeOfValues == "text") {
@@ -804,7 +808,7 @@ function fillPropertySelector(number, lastEntity) {
 	var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
 	selectProperty.innerHTML = "";
 
-	var properties=STAEntities[getSTAEntityPlural(lastEntity, true)]["properties"];
+	var properties = STAEntities[getSTAEntityPlural(lastEntity, true)]["properties"];
 	for (let i = 0; i < properties.length; i++) {// to fill property/property
 		var option = document.createElement("option");
 		option.setAttribute("value", properties[i]);
@@ -1614,8 +1618,8 @@ function addNewElement(elem, fromBiggest) {
 
 function takeSelectInformation() {
 	var optionsRow;
-	var selectorSTAEntity, selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
-	var selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
+	var inputForEntityFilterRow, selectorProperty, selectorCondition, textInput, textInputInterval1, textInputInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
+	var inputForEntityFilterRowValue, selectorPropertyValue, selectorConditionValue, textInputValue, textInputInterval1Value, textInputInterval2Value;
 	var arrayInfo;
 	var infoFilter = [];
 	var counter = currentNode.STACounter;
@@ -1623,14 +1627,14 @@ function takeSelectInformation() {
 		optionsRow = document.getElementById("optionsRow_" + counter[i]);
 		arrayInfo = [];
 		if (optionsRow != null) {
-			selectorSTAEntity = document.getElementById("selectorSTAEntity_" + counter[i]);
-			selectorSTAEntityValue = selectorSTAEntity.options[selectorSTAEntity.selectedIndex].value;
+			inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + counter[i]);
+			inputForEntityFilterRowValue = inputForEntityFilterRow.value;
 			selectorProperty = document.getElementById("selectorProperty_" + counter[i]);
 			selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
 			selectorCondition = document.getElementById("selectorCondition_" + counter[i]);
 			selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
 			arrayInfo.push(counter[i]); //they are out of order, it is necessary to put each info in its place when painting the select
-			arrayInfo.push(selectorSTAEntityValue, selectorPropertyValue, selectorConditionValue);
+			arrayInfo.push(inputForEntityFilterRowValue, selectorPropertyValue, selectorConditionValue);
 
 			if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
 				textInputInterval1 = document.getElementById("textInputInterval1_" + counter[i]);
