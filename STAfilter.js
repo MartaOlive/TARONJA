@@ -327,12 +327,12 @@ function fillInDialogDialogFilterRowEntities(number, row, selected) {
 	dialogFilterRowEntitiesCheckBoxes.innerHTML = ""; //Empty DialogFilterRowEntitiesCheckBoxes
 	//update inputForEntityFilterRowValue with entity selected 
 	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + number);
-	var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
+	//var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
 	if (selected != "") { //avoid first time
-		inputForEntityFilterRowValue += "/" + selected;
+		//inputForEntityFilterRowValue += "/" + selected;
 		updateSTAFilterRowEntities(number, row, selected);//Update currentNode.STAFilterRowEntities
 	}
-	inputForEntityFilterRow.value = inputForEntityFilterRowValue;
+	//inputForEntityFilterRow.value = inputForEntityFilterRowValue;
 
 	AddEntitiesSelectetBelowInFilterRow(number);
 }
@@ -396,24 +396,36 @@ function AddEntitiesSelectetBelowInFilterRow(number) {
 			div.appendChild(label);
 
 			if (i != 0) {//position children "visually inside" father. Ask for position and add more px
-				div.style.marginLeft = 20  + "px";
+				div.style.marginLeft = 20 + "px";
 			}
 			placeToPutChilds.appendChild(div);
 		}
 	}
 }
 
-function OkButtonInRowFilterEntities(event){
+function OkButtonInRowFilterEntities(event) {
 	event.preventDefault(); // We don't want to submit this form
 	var dialogFilterRowEntities = document.getElementById("DialogFilterRowEntities");
-	var number= dialogFilterRowEntities.getAttribute("data-rowNumber");
+	var number = dialogFilterRowEntities.getAttribute("data-rowNumber");
 
-	var inputForEntityFilterRow=document.getElementById("inputForEntityFilterRow_"+number);
+	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + number);
 
-	inputForEntityFilterRow.style.width =inputForEntityFilterRow.value.length *7+"px";
+	var inputValue;
+	var lastEntity;
+	for (var i = 0; i < currentNode.STAFilterRowEntities["optionsRow" + number].length; i++) {
+		if (i == 0) {
+			inputValue = currentNode.STAFilterRowEntities["optionsRow" + number][i];
+			lastEntity = currentNode.STAFilterRowEntities["optionsRow" + number][i];
+		} else {
+			inputValue += "/" + currentNode.STAFilterRowEntities["optionsRow" + number][i];
+			lastEntity = currentNode.STAFilterRowEntities["optionsRow" + number][i];
+		}
+	}
+	inputForEntityFilterRow.value = inputValue;
+	inputForEntityFilterRow.style.width = inputValue.length * 7 + "px";
 
 
-	//fillPropertySelector(number)//To change properties of select
+	fillPropertySelector(number, lastEntity);//To change properties of select
 	document.getElementById("DialogFilterRowEntities").close();
 
 
@@ -422,10 +434,6 @@ function OkButtonInRowFilterEntities(event){
 }
 function createSelect(number, selectorInfo, count) {
 
-	// var previousNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
-	// var parentNode = networkNodes.get(previousNode[0].id);
-	// var data = parentNode.STAdata; //previous node
-	// var dataAttributes = getDataAttributes(data);
 
 	var placeId = document.getElementById("optionsRow_" + count);
 	var select = document.createElement("select");
@@ -789,19 +797,18 @@ function searchParentLabel() { //It is correct????? I am searching current Entit
 	return entity;
 }
 
-function fillPropertySelector(number) {
-	var selectEntity = document.getElementById("selectorSTAEntity_" + number);
+function fillPropertySelector(number, lastEntity) {
+	//var selectEntity = document.getElementById("selectorSTAEntity_" + number);
 	var selectProperty = document.getElementById("selectorProperty_" + number);
 	var selectCondition = document.getElementById("selectorCondition_" + number);
 	var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
 	selectProperty.innerHTML = "";
 
-	var selectEntityValue = selectEntity.options[selectEntity.selectedIndex].value;
-
-	for (let i = 0; i < STAEntities[selectEntityValue]["properties"].length; i++) {// to fill property/property
+	var properties=STAEntities[getSTAEntityPlural(lastEntity, true)]["properties"];
+	for (let i = 0; i < properties.length; i++) {// to fill property/property
 		var option = document.createElement("option");
-		option.setAttribute("value", STAEntities[selectEntityValue]["properties"][i]);
-		option.innerHTML = STAEntities[selectEntityValue]["properties"][i];
+		option.setAttribute("value", properties[i]);
+		option.innerHTML = properties[i];
 		selectProperty.appendChild(option);
 	}
 	//look who is the father to hide the button show the select
@@ -810,7 +817,7 @@ function fillPropertySelector(number) {
 
 	var parentLabel = searchParentLabel();
 
-	if (parentLabel == selectEntityValue) { //show
+	if (parentLabel == getSTAEntityPlural(lastEntity, true)) { //show
 		if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
 			displaySelectInterval.style.display = "inline-block";
 		} else {
@@ -1527,12 +1534,12 @@ function searchFilterBoxName(boxNamee, elem, paramsNodeId, fromBiggest) { //the 
 			searchFilterBoxName(boxNamee, elem.elems[i], paramsNodeId, fromBiggest);
 		}
 		if (elem.boxName == boxNamee) {  //Add elems => elems[0,1...]
-			addNewElement(elem,fromBiggest);
+			addNewElement(elem, fromBiggest);
 		}
 	}
 }
 
-function addNewElement(elem,fromBiggest) {
+function addNewElement(elem, fromBiggest) {
 	var elements = elem.elems;
 	var conditionsFilter = currentNode.STAConditionsFilter;
 	var lastNumber = conditionsFilter[conditionsFilter.length - 1].number;
@@ -1595,10 +1602,10 @@ function addNewElement(elem,fromBiggest) {
 	}
 	//update currentNode.STAFilterRowEntities
 	var entity = getSTAURLLastEntity(currentNode.STAURL);
-	currentNode.STAFilterRowEntities["optionsRow"+nextNumber] = [entity];
+	currentNode.STAFilterRowEntities["optionsRow" + nextNumber] = [entity];
 
 	if (fromBiggest == false) {
-	
+
 		takeSelectInformation();//take selector values and update an external variable
 		drawTableAgain();//repaint selects
 		resizeBottomPartSelectAndOrNot();//correct size to select(AndOrNot) div
@@ -1672,7 +1679,7 @@ function takeSelectInformation() {
 function DeleteElementButton(numberOfElement) {
 	event.preventDefault();
 	//Delete elemen from currentNode.STAFilterRowEntities 
-	delete currentNode.STAFilterRowEntities["optionsRow"+numberOfElement];
+	delete currentNode.STAFilterRowEntities["optionsRow" + numberOfElement];
 	searchElementToDelete(numberOfElement, currentNode.STAElemFilter, currentNode.id);
 }
 
