@@ -343,9 +343,6 @@ function takeEntitiesAndFilterThemInFilterRow(filterRowEntities, i) {
 	if (i != 0) {
 		for (var a = 0; a < i; a++) { //I need entities before this entity in the array 
 			entitiesFiltered = entitiesFiltered.filter(entity => {
-				console.log(getSTAEntityPlural(entity, true));
-				console.log(getSTAEntityPlural(entities[a], true));
-
 				return getSTAEntityPlural(entity, true) != getSTAEntityPlural(filterRowEntities[a], true)
 			});
 		}
@@ -432,6 +429,18 @@ function OkButtonInRowFilterEntities(event) {
 
 
 }
+function extractLastEntityFromTextFromInputInFilterRow(textFromInput){
+var arrayFromText, lastEntity;
+if (textFromInput.includes("/")){ //only first entity
+	arrayFromText=textFromInput.split("/");
+	lastEntity=arrayFromText[arrayFromText.length-1];
+}else{
+	lastEntity=textFromInput
+}
+return lastEntity;
+
+}
+
 function createSelect(number, selectorInfo, count) {
 
 	var placeId = document.getElementById("optionsRow_" + count);
@@ -486,10 +495,6 @@ function createSelect(number, selectorInfo, count) {
 		//
 		select.setAttribute("id", "selectorSTAEntity_" + count);
 		select.setAttribute("onChange", "fillPropertySelector('" + count + "')");
-
-
-
-
 
 		var entitiesSTA;
 		if (isEntity == true) {	//First put Itself (Entity)
@@ -557,6 +562,12 @@ function createSelect(number, selectorInfo, count) {
 		select.setAttribute("onChange", "fillValueSelector('" + count + "')");
 		// var select1 = document.getElementById("selectorSTAEntity_" + count);
 		// var select1Value = select1.options[select1.selectedIndex].value;
+		if(currentNode.STAFilterRowEntities["optionsRow"+count].length==1){//only entity from parent Node
+			entity=getSTAEntityPlural(entity, true);
+		}else{
+			entity=getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(selectorInfo[0][1]),true);
+		}
+		
 
 		for (let i = 0; i < STAEntities[entity]["properties"].length; i++) {//To fill property
 			var option = document.createElement("option");
