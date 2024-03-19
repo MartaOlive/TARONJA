@@ -136,7 +136,7 @@
 		<form>
 			<fieldset id="DialogSelectExpandsHTML">
 				<legend>Choose subclasses you want details (expand) and attributes to select</legend>
-				<span id="DialogSelectExpandsCheckBoxes"> 
+				<span id="DialogSelectExpandsCheckBoxes">
 				</span>
 			</fieldset>
 			<br>
@@ -149,7 +149,6 @@
 			</div>
 		</form>
 	</dialog>
-
 	<dialog id="DialogFilterRowEntities">
 		<form>
 			<fieldset id="DialogFilterRowEntitiesHTML">
@@ -578,7 +577,7 @@
 
 		const STAEntities = {ObservedProperties: {singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"]},
 				Observations: {singular: "Observation", entities: ["Datastream", "MultiDatastream", "FeatureOfInterest", "ObservationGroups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"], entityLinks: ["Object", "Subject"]}, 
-      			FeaturesOfInterest: {singular: "FeatureOfInterest", entities: ["Observations"], properties: ["name", "description", "encodingType", "feature", "properties"]},
+      				FeaturesOfInterest: {singular: "FeatureOfInterest", entities: ["Observations"], properties: ["name", "description", "encodingType", "feature", "properties"]},
 				Sensors: {singular: "Sensor", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "description", "encodingType", "metadata", "properties"]}, 
 				Things: {singular: "Thing", entities: ["Datastreams", "MultiDatastreams", "Party", "Locations", "HistoricalLocations"], properties: ["name", "description", "proprties"]},
 				Locations: {singular: "Location", entities: ["Things", "HistoricalLocations"], properties: ["name", "description", "encodingType", "location", "properties"]},
@@ -1209,7 +1208,7 @@
 		}
 
 		function RetrieveMeaningTableCallback(usage_descr, params_function) {
-			if (usage_descr.codeMediaType=="application/json" /*&& usage_descr.schema==urlSchemaMeaning The part after the # is not stored of recovered from the server.*/)
+			if (usage_descr.codeMediaType=="application/json" && usage_descr.schema==urlSchemaMeaning)
 				params_function.node.STAdataAttributes=JSON.parse(usage_descr.code);  //The saved format is tha TAPIS internal format
 			networkNodes.update(params_function.node);
 			showInfoMessage("Meaning retrieved from NiMMbus.");
@@ -2296,7 +2295,6 @@
 			currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
 			showInfoMessage("Filtering STA rows...");
-			currentNode.STASelectedExpands={selected: [], expanded: []}; //Erase what Entity Dialog has created
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
 		}
@@ -2994,13 +2992,13 @@
 		function ShowSaveLayerDialogSelects(node, descripUoM) {
 			var parentNode=GetFirstParentNode(node);
 			if (parentNode) {
-				var data = networkNodes.get(parentNode).STAdata;
+				var data = parentNode.STAdata;
 				var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
 				var s, elem;
 				PopulateSelectSaveLayerDialog("DialogSaveLayerPlace", dataAttributes, "FeatureOfInterest/description");
 				PopulateSelectSaveLayerDialog("DialogSaveLayerLongitude", dataAttributes, "FeatureOfInterest/feature/coordinates_0");
 				PopulateSelectSaveLayerDialog("DialogSaveLayerLatitude", dataAttributes, "FeatureOfInterest/feature/coordinates_1");
-				PopulateSelectSaveLayerDialog("DialogSaveLayerTime", dataAttributes, "PhenomenonTime");
+				PopulateSelectSaveLayerDialog("DialogSaveLayerTime", dataAttributes, "phenomenonTime");
 				PopulateSelectSaveLayerDialog("DialogSaveLayerVariable", dataAttributes, "Datastream/ObservedProperty/name");
 				if (descripUoM){
 					document.getElementById("DialogMeaningVariableDescriptionUoM").style.display="inline-block";
