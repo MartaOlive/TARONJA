@@ -214,12 +214,13 @@
 		<div id="divTitleSelectRows" class="center" style="font-size: large;"></div>
 		<form>
 			Filter:
-			<br>
-			<label>Number records to request:
-				<input type="text" id="SelectNumberOfRecordsFilterRow" size="6" maxlength="6" value="100"></input>
-			</label>
+
 			<span id="DialogSelectRowsFilter">
 			</span>
+			<br>
+			<label style= "display: flex; justify-content: center">Number records to request:
+				<input type="text" id="SelectNumberOfRecordsFilterRow" size="6" maxlength="6" value="100"></input>
+			</label>
 			<div class="center">
 				<button value="default" onClick="GetFilterRows(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
