@@ -136,93 +136,6 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 
 }
 
-function showIntervalSelector(number) {
-	event.preventDefault();
-	var selectorCondition = document.getElementById("selectorCondition_" + number);
-	var selectedValue = selectorCondition.options[selectorCondition.selectedIndex].value;
-	var selectorValue = document.getElementById("selectorValue_" + number);
-	var selectorValueHasChildren;
-	if (selectorValue.hasChildNodes()) {
-		selectorValueHasChildren = true;
-	} else {
-		selectorValueHasChildren = false;
-	}
-	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
-	var inputText = document.getElementById("inputText_" + number);
-	var displaySelect = document.getElementById("displaySelect_" + number);
-
-
-	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
-	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
-
-	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-
-	showAndHiddeSelectorAndInputsFilterRow(number);
-	// if (selectedValue == " [a,b] " || selectedValue == " (a,b] " || selectedValue == " [a,b) " || selectedValue == " (a,b) ") {
-	// 	if (inputTextInterval1.style.display == "none") { //selectors are shown
-	// 		if (selectorValueHasChildren) { //show display button, hidde inputTexts
-	// 			divFilterContainer2.style.display ="inline-block";
-	// 			inputTextInterval1.style.display ="none";
-	// 			inputTextInterval2.style.display ="none";
-
-	// 		} else { // hidde selector things and show inputText
-	// 			divFilterContainer2.style.display ="none";
-	// 			displaySelectInterval.style.display = "none";
-	// 			inputTextInterval1.style.display ="inline-block";
-	// 			inputTextInterval2.style.display ="inline-block";
-	// 		}
-
-	// 	} else { //inputs are shown
-	// 		if (selectorValueHasChildren) { //show display button
-	// 			displaySelectInterval.style.display = "inline-block";
-	// 		}else{
-	// 			displaySelectInterval.style.display = "none";
-	// 		}
-	// 		inputTextInterval1.style.display ="inline-block";
-	// 		inputTextInterval2.style.display ="inline-block";
-	// 		divFilterContainer2.style.display ="none";
-
-	// 	}
-	// 	//simple : hide all
-	// 	inputText.style.display = "none";
-	// 	divFilterContainer.style.display = "none";
-	// 	displaySelect.style.display = "none"
-
-	// } else { //simple
-	// 	if (inputText.style.display == "none") { //selectors are shown
-	// 		if (selectorValueHasChildren) { //show display button, hidde inputTexts
-	// 			divFilterContainer.style.display ="inline-block";
-	// 			inputText.style.display ="none";
-	// 			inputText.style.display ="none";
-
-	// 		} else { // hidde selector things and show inputText
-	// 			divFilterContainer.style.display ="none";
-	// 			displaySelect.style.display = "none";
-	// 			inputText.style.display ="inline-block";
-	// 			inputText.style.display ="inline-block";
-	// 		}
-	// 	} else { //inputs are shown
-	// 		if (selectorValueHasChildren) { //show display button
-	// 			displaySelect.style.display = "inline-block";
-	// 		}else{
-	// 			displaySelect.style.display = "none";
-	// 		}
-	// 		inputText.style.display ="inline-block";
-	// 		inputText.style.display ="inline-block";
-	// 		divFilterContainer.style.display ="none";
-
-	// 	}
-	// 	//Interval : hide all
-	// 	inputTextInterval1.style.display ="none";
-	// 	inputTextInterval2.style.display ="none";
-	// 	divFilterContainer2.style.display ="none";
-	// 	displaySelectInterval.style.display = "none";
-
-	// }
-
-
-}
 //Build selectors
 function createSelectorRowFilters(number) {
 	//update STAdata from node
@@ -495,19 +408,14 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 }
 
 async function fillValueSelectorFilterRow(count) {
-	var entityUrl; ///!!!!!!!!!!!!!!!!
+
 	if (getSTAURLLastEntity(currentNode.STAURL)) {
-		entityUrl = getSTAURLLastEntity(currentNode.STAURL);
+		var entityUrl = getSTAURLLastEntity(currentNode.STAURL);
 	}
 
 
 	var inputForEntityFilterRowValue = document.getElementById("inputForEntityFilterRow_" + count).value;
 	var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue, true));
-
-
-	// if (selectedEntityValue != entityUrl) {
-	// 	displaySelect.style.display = "none";
-	// }
 
 	var url = getURLWithoutQueryParams(currentNode.STAURL);
 	//Find the entity to search values
@@ -576,50 +484,8 @@ async function fillValueSelectorFilterRow(count) {
 		selectorValueInterval2.appendChild(option3);
 	}
 
-	//Hidde divFilterContainer if it is empty
-	var divFilterContainer = document.getElementById("divFilterContainer_" + count);
-	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + count);
-	var textInput = document.getElementById("inputText_" + count);
-	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + count);
-	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + count);
-	var displaySelect = document.getElementById("displaySelect_" + count);
-	var displaySelectInterval = document.getElementById("displaySelectInterval_" + count);
-	var selectorConditionValue = document.getElementById("selectorCondition_" + count).value;
-
 	showAndHiddeSelectorAndInputsFilterRow(count);
-	// if (valueUndefined == true) { //if it's empty don't show it
-	// 	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") { //interval
-	// 		divFilterContainer2.style.display = "none";
-	// 		inputTextInterval1.style.display = "inline-block";
-	// 		inputTextInterval2.style.display = "inline-block";
-	// 		displaySelect.style.display = "none";
-	// 		displaySelectInterval.style.display = "none";
 
-	// 	} else { //simple
-	// 		divFilterContainer.style.display = "none";
-	// 		textInput.style.display = "inline-block";
-	// 		displaySelect.style.display = "none";
-	// 		displaySelectInterval.style.display = "none";
-
-	// 	}
-
-	// } else {
-	// 	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") {
-	// 		divFilterContainer2.style.display = "inline-block";
-	// 		inputTextInterval1.style.display = "none";
-	// 		inputTextInterval2.style.display = "none";
-	// 		displaySelect.style.display = "none";
-	// 		displaySelectInterval.style.display = "inline-block";
-
-	// 	} else {
-	// 		divFilterContainer.style.display = "inline-block";
-	// 		textInput.style.display = "none";
-	// 		displaySelect.style.display = "inline-block";
-	// 		displaySelectInterval.style.display = "none";
-	// 	}
-
-	// }
-	showAndHiddeSelectorAndInputsFilterRow(count);
 
 }
 
@@ -725,7 +591,7 @@ function createSelect(number, selectorInfo, count) {
 		for (var i = 0; i < selectConditionContent2.length; i++) { //create options in condition Select
 			var opcioCondicio = document.createElement("option");
 			opcioCondicio.setAttribute("value", selectConditionContent2[i]);
-			select.setAttribute("onChange", "showIntervalSelector('" + count + "')");
+			select.setAttribute("onChange", "showAndHiddeSelectorAndInputsFilterRow('" + count + "')");
 			opcioCondicio.innerHTML = selectConditionContent2[i];
 			if (selectorInfo.length != 0) {
 				if (selectConditionContent2[i] == selectorInfo[0][3]) {
@@ -863,29 +729,6 @@ function createSelect(number, selectorInfo, count) {
 
 		fillValueSelectorFilterRow(count);
 
-		// if (selectorInfo.length != 0) {
-		// 	if (selectorInfo[0].length == 6) {//simple
-		// 		divFilterContainer2.style.display = "none";
-		// 		inputTextInterval1.style.display = "none";
-		// 		inputTextInterval2.style.display = "none";
-
-		// 		displaySelectInterval.style.display = "none";
-		// 		inputText.value = selectorInfo[0][4];
-
-		// 	} else if (selectorInfo[0].length == 7) { //interval
-		// 		inputText.style.display = "none";
-		// 		divFilterContainer.style.display = "none";
-		// 		divFilterContainer2.style.display = "none";
-		// 		displaySelect.style.display = "none";
-		// 		inputTextInterval1.value = selectorInfo[0][4];
-		// 		inputTextInterval2.value = selectorInfo[0][5];
-		// 	}
-		// } else { //Last or first
-		// 	divFilterContainer2.style.display = "none";
-		// 	inputTextInterval1.style.display = "none";
-		// 	inputTextInterval2.style.display = "none";
-		// 	displaySelectInterval.style.display = "none";
-		// }
 	}
 }
 
@@ -907,8 +750,6 @@ function searchParentLabel() {
 
 function fillPropertySelector(number, lastEntity) { //lastEntity: Entity obtained in input
 	var selectProperty = document.getElementById("selectorProperty_" + number);
-	var selectCondition = document.getElementById("selectorCondition_" + number);
-	var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
 	selectProperty.innerHTML = "";
 
 	var properties = STAEntities[getSTAEntityPlural(lastEntity, true)]["properties"];
@@ -918,169 +759,11 @@ function fillPropertySelector(number, lastEntity) { //lastEntity: Entity obtaine
 		option.innerHTML = properties[i];
 		selectProperty.appendChild(option);
 	}
-	//look who is the father to hide the button show the select
-	var displaySelect = document.getElementById("displaySelect_" + number);
-	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-
-	// var parentLabel = searchParentLabel();
-
-	// if (parentLabel == getSTAEntityPlural(lastEntity, true)) { //show
-	// 	if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
-	// 		displaySelectInterval.style.display = "inline-block";
-	// 	} else {
-	// 		displaySelect.style.display = "inline-block";
-	// 	}
-	// } 
-	// else {
-	// 	if (selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") {
-	// 		displaySelectInterval.style.display = "none";
-	// 	} else {
-	// 		displaySelect.style.display = "none";
-	// 	}
-	// }
-
-	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
-	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-
-	var inputText = document.getElementById("inputText_" + number);
-	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
-	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
-
-
 	showAndHiddeSelectorAndInputsFilterRow(number);
 
-	// if (divFilterContainer.style.display == "inline-block" || divFilterContainer2.style.display == "inline-block") {
-	// 	if (divFilterContainer.style.display == "inline-block") { //simple
-	// 		divFilterContainer.style.display = "none";
-	// 		inputText.style.display = "inline-block";
-	// 		inputText.innerHTML = "";
-	// 	} else { //interval
-	// 		divFilterContainer2.style.display = "none";
-	// 		inputTextInterval1.style.display = "inline-block";
-	// 		inputTextInterval1.innerHTML = "";
-	// 		inputTextInterval2.style.display = "inline-block";
-	// 		inputTextInterval2.innerHTML = "";
-	// 	}
-	// }
 }
 
-function fillValueSelector(number) { //Onchange first selector, fill second selector
 
-	//Find the entity to search values
-	var parentLabel = searchParentLabel();
-	if (parentLabel != entity) {
-		var parentLabelLength = parentLabel.length;
-		url = url.slice(parentLabelLength); //Erase entity without "/"
-		url += entity;
-	}
-	fillValueSelectorFilterRow(number);
-
-
-
-	// var parentNodeid = network.getConnectedNodes(currentNode.id, "from");
-	// var parentNode = networkNodes.get(parentNodeid);
-	// var data = parentNode[0].STAdata;
-
-
-	// var select = document.getElementById("selectorProperty_" + number);
-	// var selectedProperty = select.options[select.selectedIndex].value;
-	// var selectorValue, selectorValueInterval, selectorValueInterval2;
-	// var displaySelect = document.getElementById("displaySelect_" + number);
-	// var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-
-	// var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + number);
-	// var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
-	// var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue), true)
-
-	// var selectCondition = document.getElementById("selectorCondition_" + number);
-	// var selectedValueCondition = selectCondition.options[selectCondition.selectedIndex].value;
-	// var divFilterContainer = document.getElementById("divFilterContainer_" + number);
-	// var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	// var inputText = document.getElementById("inputText_" + number);
-	// var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
-	// var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
-
-	// var STALastEntity = getSTAURLLastEntity(currentNode.STAURL);
-
-
-	// selectorValue = document.getElementById("selectorValue_" + number);
-	// selectorValue.innerHTML = "";
-	// selectorValueInterval = document.getElementById("selectorValueInterval1_" + number);
-	// selectorValueInterval.innerHTML = "";
-	// selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
-	// selectorValueInterval2.innerHTML = "";
-
-	// var valor;
-	// var arrayValors = [];
-	// var isAnObject;
-
-	// //it must be filtered
-	// for (var index = 0; index < data.length; index++) { //built values array
-	// 	valor = data[index][selectedProperty];
-	// 	if (typeof valor === "object") isAnObject = "yes";
-	// 	if (!arrayValors.find(element => element == valor)) {
-	// 		arrayValors.push(valor);
-	// 	}
-	// }
-	// var arrayValuesArranged = sortValuesForSelect(arrayValors);
-
-	// var valueUndefined = true;
-
-	// for (var i = 0; i < arrayValuesArranged.length; i++) { //fill selector (there are 3: Simple + 2 Intervals)
-	// 	var opcio = document.createElement("option");
-	// 	var opcio2 = document.createElement("option");
-	// 	var opcio3 = document.createElement("option");
-	// 	valor = arrayValuesArranged[i];
-
-	// 	if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
-	// 		valueUndefined = false;
-	// 	}
-	// 	opcio.setAttribute("value", valor);
-	// 	opcio2.setAttribute("value", valor);
-	// 	opcio3.setAttribute("value", valor);
-	// 	opcio.innerHTML = valor;
-	// 	opcio2.innerHTML = valor;
-	// 	opcio3.innerHTML = valor;
-	// 	selectorValue.appendChild(opcio);
-	// 	selectorValueInterval.appendChild(opcio2);
-	// 	selectorValueInterval2.appendChild(opcio3);
-	// }
-
-	// if (valueUndefined == true) { //hidde
-
-	// 	if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") && (entity == STALastEntity)) {
-	// 		divFilterContainer2.style.display = "none";
-	// 		displaySelectInterval.style.display = "none";
-	// 		inputTextInterval1.style.display = "inline-block";
-	// 		inputTextInterval2.style.display = "inline-block";
-	// 	}
-	// 	else {
-	// 		divFilterContainer.style.display = "none"; //hidde select if it's open
-	// 		displaySelect.style.display = "none"; //hidde button to display select
-	// 		inputText.style.display = "inline-block"; //Show text input
-	// 	}
-
-
-
-
-	// } else { //show
-	// 	if ((selectedValueCondition == " [a,b] " || selectedValueCondition == " (a,b] " || selectedValueCondition == " [a,b) " || selectedValueCondition == " (a,b) ") && (entity == STALastEntity)) {
-	// 		displaySelectInterval.style.display = "inline-block";
-	// 	} else if ((selectedValueCondition != " [a,b] " || selectedValueCondition != " (a,b] " || selectedValueCondition != " [a,b) " || selectedValueCondition != " (a,b) ") && (entity == STALastEntity)) { //simple
-	// 		displaySelect.style.display = "inline-block";
-	// 	}
-	// }
-
-	// var divIsAnObject = document.getElementById("divIsAnObject");
-	// if (isAnObject === "yes") { //n//It is not finished!!!!!
-	// 	selectorValue.setAttribute("class", "objectInSelect");
-	// 	divIsAnObject.style.display = "inline-block";
-	// } else {
-	// 	selectorValue.classList.remove("objectInSelect");
-	// 	divIsAnObject.style.display = "none";
-
-	//}
-}
 
 function closeModalSelect(number, button) { //Ok and Cancel Buttons
 	event.preventDefault();
@@ -1389,7 +1072,7 @@ function GetFilterTable(elem, nodeId, first) //Built table //The second will be 
 	}
 
 	if (first) {
-		s += `<div class="topButtonsFilterRow"><button onclick="biggestLevelButton('${elem.boxName}','${nodeId}')">Add a higher group</button>`;
+		s += `<div class="topButtonsFilterRow"><button onclick="biggestLevelButton('${elem.boxName}')">Add a higher group</button>`;
 	}
 	if (elem.boxName) {
 
@@ -1800,14 +1483,14 @@ function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //elem has
 			element = searchElementToDelete(numberOfElement, elem.elems[i], paramsNodeId);
 		}
 		if (elem.elems.includes(numberOfElement)) { //add a elems => elems[0,1...]
-			DeleteElementInElemFilter(elem, paramsNodeId, numberOfElement);
+			DeleteElementInElemFilter(elem, numberOfElement);
 		}
 	}
 	else {
 
 	}
 }
-function DeleteElementInElemFilter(elem, nodeId, numberOfElement) {
+function DeleteElementInElemFilter(elem, numberOfElement) {
 	//do not delete the conditions filter because it is the position
 
 	var index = elem.elems.indexOf(parseInt(numberOfElement));
@@ -1840,7 +1523,7 @@ function searchGroupToDelete(numberOfElement, elem, nodeId, fatherElem) { //elem
 			element = searchGroupToDelete(numberOfElement, elem.elems[i], nodeId, elem);
 		}
 		if (elem.boxName == numberOfElement) { //add to elems => elems[0,1...]
-			var parent = DeleteGroupInElemFilter(elem, fatherElem);
+			DeleteGroupInElemFilter(elem, fatherElem);
 
 		}
 	}
@@ -1888,7 +1571,7 @@ function drawTableAgain() {
 }
 
 //Add bigger Level
-function biggestLevelButton(boxName, nodeId) {
+function biggestLevelButton(boxName) {
 	event.preventDefault();
 	var newBoxName = (parseInt(boxName.charAt(0)) + 1) + "_0";
 	var newInsert = {
@@ -2113,7 +1796,7 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 }
 
 async function loadAPIDataToFillSelectInRowFilter(url) {
-	var response, jsonData, options = {}, STAdata;
+	var response,options = {}, STAdata;
 	try {
 		var url_fetch;
 		url_fetch = url;
@@ -2148,9 +1831,6 @@ async function loadAPIDataToFillSelectInRowFilter(url) {
 		STAdata = null;
 
 	}
-
-	showInfoMessage("Completed.");
-
 	return STAdata;
 
 
