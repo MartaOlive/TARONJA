@@ -133,13 +133,20 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 		selectorValueInterval2.style.display = "inline-block";
 
 	}
+
 }
 
 function showIntervalSelector(number) {
 	event.preventDefault();
 	var selectorCondition = document.getElementById("selectorCondition_" + number);
 	var selectedValue = selectorCondition.options[selectorCondition.selectedIndex].value;
-
+	var selectorValue = document.getElementById("selectorValue_" + number);
+	var selectorValueHasChildren;
+	if (selectorValue.hasChildNodes()) {
+		selectorValueHasChildren = true;
+	} else {
+		selectorValueHasChildren = false;
+	}
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 	var inputText = document.getElementById("inputText_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
@@ -150,75 +157,69 @@ function showIntervalSelector(number) {
 	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
 
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-	var parentLabel = searchParentLabel();
 
+	showAndHiddeSelectorAndInputsFilterRow(number);
+	// if (selectedValue == " [a,b] " || selectedValue == " (a,b] " || selectedValue == " [a,b) " || selectedValue == " (a,b) ") {
+	// 	if (inputTextInterval1.style.display == "none") { //selectors are shown
+	// 		if (selectorValueHasChildren) { //show display button, hidde inputTexts
+	// 			divFilterContainer2.style.display ="inline-block";
+	// 			inputTextInterval1.style.display ="none";
+	// 			inputTextInterval2.style.display ="none";
 
-	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + number);
-	var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
-	var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue), true)
+	// 		} else { // hidde selector things and show inputText
+	// 			divFilterContainer2.style.display ="none";
+	// 			displaySelectInterval.style.display = "none";
+	// 			inputTextInterval1.style.display ="inline-block";
+	// 			inputTextInterval2.style.display ="inline-block";
+	// 		}
 
+	// 	} else { //inputs are shown
+	// 		if (selectorValueHasChildren) { //show display button
+	// 			displaySelectInterval.style.display = "inline-block";
+	// 		}else{
+	// 			displaySelectInterval.style.display = "none";
+	// 		}
+	// 		inputTextInterval1.style.display ="inline-block";
+	// 		inputTextInterval2.style.display ="inline-block";
+	// 		divFilterContainer2.style.display ="none";
 
-	if (selectedValue == " [a,b] " || selectedValue == " (a,b] " || selectedValue == " [a,b) " || selectedValue == " (a,b) ") {
-		if (divFilterContainer2.style.display == "none") { //Not shown
-			if (inputTextInterval1.style.display == "none") { //Not shown (simple is shown)
-				if (divFilterContainer.style.display == "none") { //Simple text and display are shown
-					//hidden to texts and display
-					inputText.style.display = "none"
-					displaySelect.style.display = "none";
+	// 	}
+	// 	//simple : hide all
+	// 	inputText.style.display = "none";
+	// 	divFilterContainer.style.display = "none";
+	// 	displaySelect.style.display = "none"
 
-					//Show inputText and display
-					inputTextInterval1.style.display = "inline-block";
-					inputTextInterval2.style.display = "inline-block";
-					displaySelect.style.display = "none";
+	// } else { //simple
+	// 	if (inputText.style.display == "none") { //selectors are shown
+	// 		if (selectorValueHasChildren) { //show display button, hidde inputTexts
+	// 			divFilterContainer.style.display ="inline-block";
+	// 			inputText.style.display ="none";
+	// 			inputText.style.display ="none";
 
-					// if (parentLabel == entity) {
-					// 	displaySelectInterval.style.display = "inline-block";
-					// }
+	// 		} else { // hidde selector things and show inputText
+	// 			divFilterContainer.style.display ="none";
+	// 			displaySelect.style.display = "none";
+	// 			inputText.style.display ="inline-block";
+	// 			inputText.style.display ="inline-block";
+	// 		}
+	// 	} else { //inputs are shown
+	// 		if (selectorValueHasChildren) { //show display button
+	// 			displaySelect.style.display = "inline-block";
+	// 		}else{
+	// 			displaySelect.style.display = "none";
+	// 		}
+	// 		inputText.style.display ="inline-block";
+	// 		inputText.style.display ="inline-block";
+	// 		divFilterContainer.style.display ="none";
 
-				} else { // divContainer is shown
-					//hidden to divFilterContainer
-					divFilterContainer.style.display = "none";
-					//show inputText and display from Interval
-					inputTextInterval1.style.display = "inline-block";
-					inputTextInterval2.style.display = "inline-block";
-					// if (parentLabel == entity)
-					// 	displaySelectInterval.style.display = "inline-block";
-				}
-			} //Simple text  is shown 
-			//Nothing
-		} //If FilterCOntains is shown, don't touch
-	}
-	else { //simple
-		//comes from itself
-		if (divFilterContainer.style.display == "none") { //It is not shown
-			if (inputText.style.display == "none") { //It is not shown (interval is shown)
-				if (divFilterContainer2.style.display == "none") { // texts and display from interval are shown
-					//hidden to texts and diplay
-					inputTextInterval1.style.display = "none";
-					inputTextInterval2.style.display = "none";
-					displaySelectInterval.style.display = "none";
+	// 	}
+	// 	//Interval : hide all
+	// 	inputTextInterval1.style.display ="none";
+	// 	inputTextInterval2.style.display ="none";
+	// 	divFilterContainer2.style.display ="none";
+	// 	displaySelectInterval.style.display = "none";
 
-					//show inputText and display
-					inputText.style.display = "inline-block";
-					//inputText.classList.add("inblock");
-					// if (parentLabel == entity) {
-					// 	displaySelect.style.display = "inline-block";
-					// }
-				}
-				else { //divContainer2 is shown
-					//hidden to divFilterContainer2
-					divFilterContainer2.style.display = "none";
-					//show inputText and display
-					inputText.style.display = "inline-block";
-					displaySelect.style.display = "inline-block";;
-
-				}
-			} //Simple text  is shown 
-			//Nothing
-		} //If FilterCOntains is shown, don't touch
-
-	}
-
+	// }
 
 
 }
@@ -251,7 +252,7 @@ function createSelectorRowFilters(number) {
 function sortValuesForSelect(arrayValues) {
 	var arrayNumbers = [];
 	var arrayText = [];
-	var arrayNumbersArranged,arrayTextsArranged,arrayValuesArranged ;
+	var arrayNumbersArranged, arrayTextsArranged, arrayValuesArranged;
 
 	for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
 		if (typeof arrayValues[i] !== "undefined") {
@@ -414,6 +415,84 @@ function extractLastEntityFromTextFromInputInFilterRow(textFromInput) {
 	return lastEntity;
 
 }
+function showAndHiddeSelectorAndInputsFilterRow(number) {
+	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
+	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
+	var inputText = document.getElementById("inputText_" + number);
+	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
+	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
+	var displaySelect = document.getElementById("displaySelect_" + number);
+	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
+	var selectorConditionValue = document.getElementById("selectorCondition_" + number).value;
+	var selectorValue = document.getElementById("selectorValue_" + number);
+	var selectorValueHasChildren;
+	if (selectorValue.hasChildNodes()) {
+		selectorValueHasChildren = true;
+	} else {
+		selectorValueHasChildren = false;
+	}
+
+	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") {
+		if (inputTextInterval1.style.display == "none" && inputText.style.display == "none") { //selectors are shown
+			if (selectorValueHasChildren) { //show display button, hidde inputTexts
+				divFilterContainer2.style.display = "inline-block";
+				inputTextInterval1.style.display = "none";
+				inputTextInterval2.style.display = "none";
+
+			} else { // hidde selector things and show inputText
+				divFilterContainer2.style.display = "none";
+				displaySelectInterval.style.display = "none";
+				inputTextInterval1.style.display = "inline-block";
+				inputTextInterval2.style.display = "inline-block";
+			}
+
+		} else { //inputs are shown
+			if (selectorValueHasChildren) { //show display button
+				displaySelectInterval.style.display = "inline-block";
+			} else {
+				displaySelectInterval.style.display = "none";
+			}
+			inputTextInterval1.style.display = "inline-block";
+			inputTextInterval2.style.display = "inline-block";
+			divFilterContainer2.style.display = "none";
+		}
+		//simple : hide all
+		inputText.style.display = "none";
+		divFilterContainer.style.display = "none";
+		displaySelect.style.display = "none"
+
+	} else { //simple
+		if (inputText.style.display == "none" && inputTextInterval1.style.display == "none") { //selectors are shown
+			if (selectorValueHasChildren) { //show display button, hidde inputTexts
+				divFilterContainer.style.display = "inline-block";
+				inputText.style.display = "none";
+				inputText.style.display = "none";
+
+			} else { // hidde selector things and show inputText
+				divFilterContainer.style.display = "none";
+				displaySelect.style.display = "none";
+				inputText.style.display = "inline-block";
+				inputText.style.display = "inline-block";
+			}
+		} else { //inputs are shown
+			if (selectorValueHasChildren) { //show display button
+				displaySelect.style.display = "inline-block";
+			} else {
+				displaySelect.style.display = "none";
+			}
+			inputText.style.display = "inline-block";
+			inputText.style.display = "inline-block";
+			divFilterContainer.style.display = "none";
+
+		}
+		//Interval : hide all
+		inputTextInterval1.style.display = "none";
+		inputTextInterval2.style.display = "none";
+		divFilterContainer2.style.display = "none";
+		displaySelectInterval.style.display = "none";
+
+	}
+}
 
 async function fillValueSelectorFilterRow(count) {
 	var entityUrl; ///!!!!!!!!!!!!!!!!
@@ -498,13 +577,50 @@ async function fillValueSelectorFilterRow(count) {
 	}
 
 	//Hidde divFilterContainer if it is empty
-	var divFilterContainer=document.getElementById("divFilterContainer_"+count);
-	var divFilterContainer2=document.getElementById("divFilterContainer2_"+count);
+	var divFilterContainer = document.getElementById("divFilterContainer_" + count);
+	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + count);
+	var textInput = document.getElementById("inputText_" + count);
+	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + count);
+	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + count);
+	var displaySelect = document.getElementById("displaySelect_" + count);
+	var displaySelectInterval = document.getElementById("displaySelectInterval_" + count);
+	var selectorConditionValue = document.getElementById("selectorCondition_" + count).value;
 
-	if (valueUndefined == true) { //if it's empty don't show it
-		divFilterContainer.style.display = "none";
-		divFilterContainer2.style.display = "none";
-	}
+	showAndHiddeSelectorAndInputsFilterRow(count);
+	// if (valueUndefined == true) { //if it's empty don't show it
+	// 	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") { //interval
+	// 		divFilterContainer2.style.display = "none";
+	// 		inputTextInterval1.style.display = "inline-block";
+	// 		inputTextInterval2.style.display = "inline-block";
+	// 		displaySelect.style.display = "none";
+	// 		displaySelectInterval.style.display = "none";
+
+	// 	} else { //simple
+	// 		divFilterContainer.style.display = "none";
+	// 		textInput.style.display = "inline-block";
+	// 		displaySelect.style.display = "none";
+	// 		displaySelectInterval.style.display = "none";
+
+	// 	}
+
+	// } else {
+	// 	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") {
+	// 		divFilterContainer2.style.display = "inline-block";
+	// 		inputTextInterval1.style.display = "none";
+	// 		inputTextInterval2.style.display = "none";
+	// 		displaySelect.style.display = "none";
+	// 		displaySelectInterval.style.display = "inline-block";
+
+	// 	} else {
+	// 		divFilterContainer.style.display = "inline-block";
+	// 		textInput.style.display = "none";
+	// 		displaySelect.style.display = "inline-block";
+	// 		displaySelectInterval.style.display = "none";
+	// 	}
+
+	// }
+	showAndHiddeSelectorAndInputsFilterRow(count);
+
 }
 
 function createSelect(number, selectorInfo, count) {
@@ -747,29 +863,29 @@ function createSelect(number, selectorInfo, count) {
 
 		fillValueSelectorFilterRow(count);
 
-		if (selectorInfo.length != 0) {
-			if (selectorInfo[0].length == 6) {//simple
-				divFilterContainer2.style.display = "none";
-				inputTextInterval1.style.display = "none";
-				inputTextInterval2.style.display = "none";
+		// if (selectorInfo.length != 0) {
+		// 	if (selectorInfo[0].length == 6) {//simple
+		// 		divFilterContainer2.style.display = "none";
+		// 		inputTextInterval1.style.display = "none";
+		// 		inputTextInterval2.style.display = "none";
 
-				displaySelectInterval.style.display = "none";
-				inputText.value = selectorInfo[0][4];
+		// 		displaySelectInterval.style.display = "none";
+		// 		inputText.value = selectorInfo[0][4];
 
-			} else if (selectorInfo[0].length == 7) { //interval
-				inputText.style.display = "none";
-				divFilterContainer.style.display = "none";
-				divFilterContainer2.style.display = "none";
-				displaySelect.style.display = "none";
-				inputTextInterval1.value = selectorInfo[0][4];
-				inputTextInterval2.value = selectorInfo[0][5];
-			}
-		} else { //Last or first
-			divFilterContainer2.style.display = "none";
-			inputTextInterval1.style.display = "none";
-			inputTextInterval2.style.display = "none";
-			displaySelectInterval.style.display = "none";
-		}
+		// 	} else if (selectorInfo[0].length == 7) { //interval
+		// 		inputText.style.display = "none";
+		// 		divFilterContainer.style.display = "none";
+		// 		divFilterContainer2.style.display = "none";
+		// 		displaySelect.style.display = "none";
+		// 		inputTextInterval1.value = selectorInfo[0][4];
+		// 		inputTextInterval2.value = selectorInfo[0][5];
+		// 	}
+		// } else { //Last or first
+		// 	divFilterContainer2.style.display = "none";
+		// 	inputTextInterval1.style.display = "none";
+		// 	inputTextInterval2.style.display = "none";
+		// 	displaySelectInterval.style.display = "none";
+		// }
 	}
 }
 
@@ -831,20 +947,21 @@ function fillPropertySelector(number, lastEntity) { //lastEntity: Entity obtaine
 	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
 
 
+	showAndHiddeSelectorAndInputsFilterRow(number);
 
-	if (divFilterContainer.style.display == "inline-block" || divFilterContainer2.style.display == "inline-block") {
-		if (divFilterContainer.style.display == "inline-block") { //simple
-			divFilterContainer.style.display = "none";
-			inputText.style.display = "inline-block";
-			inputText.innerHTML = "";
-		} else { //interval
-			divFilterContainer2.style.display = "none";
-			inputTextInterval1.style.display = "inline-block";
-			inputTextInterval1.innerHTML = "";
-			inputTextInterval2.style.display = "inline-block";
-			inputTextInterval2.innerHTML = "";
-		}
-	}
+	// if (divFilterContainer.style.display == "inline-block" || divFilterContainer2.style.display == "inline-block") {
+	// 	if (divFilterContainer.style.display == "inline-block") { //simple
+	// 		divFilterContainer.style.display = "none";
+	// 		inputText.style.display = "inline-block";
+	// 		inputText.innerHTML = "";
+	// 	} else { //interval
+	// 		divFilterContainer2.style.display = "none";
+	// 		inputTextInterval1.style.display = "inline-block";
+	// 		inputTextInterval1.innerHTML = "";
+	// 		inputTextInterval2.style.display = "inline-block";
+	// 		inputTextInterval2.innerHTML = "";
+	// 	}
+	// }
 }
 
 function fillValueSelector(number) { //Onchange first selector, fill second selector
@@ -995,6 +1112,8 @@ function closeModalSelect(number, button) { //Ok and Cancel Buttons
 		displaySelectInterval.style.display = "inline-block";
 		interval = true;
 	}
+
+
 
 	if (button == "ok") {
 		if (interval == false) {
