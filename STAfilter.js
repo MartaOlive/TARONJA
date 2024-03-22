@@ -409,11 +409,6 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 
 async function fillValueSelectorFilterRow(count) {
 
-	if (getSTAURLLastEntity(currentNode.STAURL)) {
-		var entityUrl = getSTAURLLastEntity(currentNode.STAURL);
-	}
-
-
 	var inputForEntityFilterRowValue = document.getElementById("inputForEntityFilterRow_" + count).value;
 	var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue, true));
 
@@ -727,7 +722,23 @@ function createSelect(number, selectorInfo, count) {
 		divFilterContainer2.appendChild(okButtonInterval);
 		divFilterContainer2.appendChild(cancelButtonInterval);
 
+
+
+		//Put previous values in input Text( 
+		if (selectorInfo.length!=0) {
+			if (selectorInfo[0][3] == ' [a,b] ' || selectorInfo[0][3] == ' (a,b] ' || selectorInfo[0][3] == ' [a,b) ' || selectorInfo[0][3] == ' (a,b) ') {
+				inputTextInterval1.value = selectorInfo[0][4];
+				inputTextInterval2.value = selectorInfo[0][5];
+			} else { //simple
+				inputText.value = selectorInfo[0][4];
+			}
+		}
+
 		fillValueSelectorFilterRow(count);
+		showAndHiddeSelectorAndInputsFilterRow(count);
+
+
+	
 
 	}
 }
@@ -1796,7 +1807,7 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 }
 
 async function loadAPIDataToFillSelectInRowFilter(url) {
-	var response,options = {}, STAdata;
+	var response, options = {}, STAdata;
 	try {
 		var url_fetch;
 		url_fetch = url;
