@@ -156,7 +156,7 @@ function createSelectorRowFilters(number) {
 	createConditionSelectInFilterRows(selectorInfo, number);
 	createValueSelectInFilterRows(selectorInfo, number);
 
-	
+
 
 	var divIsAnObject = document.createElement("div"); //It will be shown when property selected will be an object
 	divIsAnObject.setAttribute("id", "divIsAnObject");
@@ -410,15 +410,49 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 
 	}
 }
-// function fillSTAentityValuesForSelect(entity, dataToFillSelect) {
-// 	currentNode.STAentityValuesForSelect2 = [entity];
-// 	var properties = STAEntities.entity["properties"];
+function filterValuesForSelect(valuesArray){
+	var filteredValuesArray = [];
+	var valueUndefined = true;
+	var value;
+	for (var index = 0; index < valuesArray.length; index++) {
+		value = valuesArray[index];
+		if (valueUndefined == true && typeof value !== "undefined") { //All values are undefined? Don't show select
+			valueUndefined = false;
+		}
+		if (!filteredValuesArray.find(element => element == value)) { //create array with not arranged values
+			filteredValuesArray.push(value);
+		}
+	}
+	return filteredValuesArray;
+}
 
-// 	for (var i = 0; i < properties.length; i++) {
+function filterAndSortValues(valuesArray){
+	var filteredValues= filterValuesForSelect(valuesArray);
+	var filteredSortedValues =sortValuesForSelect (filteredValues);
+	return filteredSortedValues;
+}
+
+function fillSTAentityValuesForSelect(entity, dataToFillSelect) {
+	currentNode.STAentityValuesForSelect = [entity,{}];
+	var propertiesArray = STAEntities[entity]["properties"];
+	console.log(dataToFillSelect[0][propertiesArray[0]]);
+	var valuesArray;
+	 for (var p = 0; p < propertiesArray.length; p++) {
+		valuesArray=[];
+
+	 	for (var i = 0; i < dataToFillSelect.length; i++) {
+			valuesArray.push(dataToFillSelect[i][propertiesArray[p]]);
+	 		console.log(dataToFillSelect[i][propertiesArray[p]]);
+	 	}
+		var valuesArraySorted= filterAndSortValues(valuesArray);
+		 currentNode.STAentityValuesForSelect[1][propertiesArray[p]]=valuesArraySorted;
+
+	 }
+	 console.log(currentNode.STAentityValuesForSelect);
 
 
-// 	}
-// }
+}
+
 async function fillValueSelectorFilterRow(count) {
 
 	var inputForEntityFilterRowValue = document.getElementById("inputForEntityFilterRow_" + count).value;
@@ -436,17 +470,18 @@ async function fillValueSelectorFilterRow(count) {
 	if (typeof currentNode.STAentityValuesForSelect !== "undefined") {
 		if (entity != currentNode.STAentityValuesForSelect[0]) { //avoid to call to API for same entity
 			dataToFillSelect = await loadAPIDataToFillSelectInRowFilter(url);
-			
+			fillSTAentityValuesForSelect(entity, dataToFillSelect);
+
 
 			currentNode.STAentityValuesForSelect = [entity, dataToFillSelect];
-			//fillSTAentityValuesForSelect(entity, dataToFillSelect);
+
 			dataToFillSelect = currentNode.STAentityValuesForSelect[1];
 		} else {
 			dataToFillSelect = currentNode.STAentityValuesForSelect[1];
 		}
 	} else {
 		dataToFillSelect = await loadAPIDataToFillSelectInRowFilter(url);
-
+		fillSTAentityValuesForSelect(entity, dataToFillSelect);
 
 		currentNode.STAentityValuesForSelect = [entity, dataToFillSelect];
 		dataToFillSelect = currentNode.STAentityValuesForSelect[1];
@@ -720,7 +755,7 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	}
 
 	fillValueSelectorFilterRow(count);
-	
+
 
 
 
