@@ -410,7 +410,7 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 
 	}
 }
-function filterValuesForSelect(valuesArray){
+function filterValuesForSelect(valuesArray) {
 	var filteredValuesArray = [];
 	var valueUndefined = true;
 	var value;
@@ -426,29 +426,66 @@ function filterValuesForSelect(valuesArray){
 	return filteredValuesArray;
 }
 
-function filterAndSortValues(valuesArray){
-	var filteredValues= filterValuesForSelect(valuesArray);
-	var filteredSortedValues =sortValuesForSelect (filteredValues);
+function filterAndSortValues(valuesArray) {
+	var filteredValues = filterValuesForSelect(valuesArray);
+	var filteredSortedValues = sortValuesForSelect(filteredValues);
 	return filteredSortedValues;
 }
+function putObjectsInSTAentityValuesForSelect(dataToFillSelect, property, valuesArray) {
+	var keyArray = [], keyArrayFiltered = [], arrayToValuesArray;
+	var dataInsideObjects, objecs = false;
 
+	for (var a = 0; a < valuesArray.length; a++) { //for every key obtain its key
+		for(var i = 0; i < dataToFillSelect[valuesArray[a]]; i++) {//Obtain keys from data
+			keyArray = [];
+			keyArray.push(Object.keys(dataToFillSelect[i]));
+			for (var a = 0; a < keyArray.length; a++) {
+				if (!keyArrayFiltered.includes(keyArray[a])) {
+					keyArrayFiltered.push([keyArray[a]]);
+				}
+			}
+		}
+	}
+	
+	//Join valuesArray with new keys ()
+	if (valuesArray.length != 0) {
+
+	} else { //first round when valuesArray is empty
+		arrayToValuesArray = keyArrayFiltered;
+	}
+
+
+
+
+
+
+
+
+	//currentNode.STAentityValuesForSelect[1]
+}
 function fillSTAentityValuesForSelect(entity, dataToFillSelect) {
-	currentNode.STAentityValuesForSelect = [entity,{}];
+	currentNode.STAentityValuesForSelect = [entity, {}];
 	var propertiesArray = STAEntities[entity]["properties"];
-	console.log(dataToFillSelect[0][propertiesArray[0]]);
-	var valuesArray;
-	 for (var p = 0; p < propertiesArray.length; p++) {
-		valuesArray=[];
+	// console.log(dataToFillSelect[0][propertiesArray[0]]);
+	var valuesArray, propertiesValues, propertiInObjects = [];
+	for (var p = 0; p < propertiesArray.length; p++) {
+		valuesArray = [];
+		//propertiesValues = dataToFillSelect[propertiesArray[p]]
+		console.log(propertiesValues);
+		if (!typeof propertiesValues === "object") {
+			for (var i = 0; i < dataToFillSelect.length; i++) {
+				valuesArray.push(dataToFillSelect[i][propertiesArray[p]]);
+				console.log(dataToFillSelect[i][propertiesArray[p]]);
+			}
+		} else { //Objecte
+			putObjectsInSTAentityValuesForSelect(dataToFillSelect, propertiesArray[p]), [];
+		}
 
-	 	for (var i = 0; i < dataToFillSelect.length; i++) {
-			valuesArray.push(dataToFillSelect[i][propertiesArray[p]]);
-	 		console.log(dataToFillSelect[i][propertiesArray[p]]);
-	 	}
-		var valuesArraySorted= filterAndSortValues(valuesArray);
-		 currentNode.STAentityValuesForSelect[1][propertiesArray[p]]=valuesArraySorted;
+		var valuesArraySorted = filterAndSortValues(valuesArray);
+		currentNode.STAentityValuesForSelect[1][propertiesArray[p]] = valuesArraySorted;
 
-	 }
-	 console.log(currentNode.STAentityValuesForSelect);
+	}
+	console.log(currentNode.STAentityValuesForSelect);
 
 
 }
