@@ -45,8 +45,8 @@
 
 "use strict"
 
-const selectConditionContent = [' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date'];
-const selectConditionContentText = [' = ', ' &ne; ', 'contains', 'no contains', 'starts with', 'ends with'];
+const selectConditionContent = ['---Choose operator ---', ' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date'];
+const selectConditionContentText = ['---Choose operator ---',' = ', ' &ne; ', 'contains', 'no contains', 'starts with', 'ends with'];
 
 
 function addNecessaryVariablesToFilterRowsSTANode(actualNode) {
@@ -499,7 +499,11 @@ async function fillValueSelectorFilterRow(count) {
 
 function createEntitySelectorInFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
-
+	
+	//Label
+	var labelForEntityFilterRow = document.createElement("label");
+	labelForEntityFilterRow.innerHTML = "Search the Entity:";
+	
 	//INPUT
 	var inputForEntityFilterRow = document.createElement("input");
 	inputForEntityFilterRow.setAttribute("type", "text");
@@ -508,13 +512,11 @@ function createEntitySelectorInFilterRows(selectorInfo, count) {
 	inputForEntityFilterRow.setAttribute("onclick", "openModalRowFilterEntities('" + count + "')");
 	inputForEntityFilterRow.addEventListener('mouseover', () => {
 		inputForEntityFilterRow.style.cursor = "pointer";
-		inputForEntityFilterRow.style.background = "#bdc2ba";
+		inputForEntityFilterRow.style.background = "#bdc2ba";//Darker grey
 	});
-
-	// Add a mouseout event listener
 	inputForEntityFilterRow.addEventListener('mouseout', () => {
 		inputForEntityFilterRow.style.cursor = "auto";
-		inputForEntityFilterRow.style.background  = "#d8dfd6";
+		inputForEntityFilterRow.style.background  = "#d8dfd6"; 
 	});
 	inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
 	inputForEntityFilterRow.style.marginRight = "5px";
@@ -527,18 +529,14 @@ function createEntitySelectorInFilterRows(selectorInfo, count) {
 	inputForEntityFilterRow.value = entityToInput;
 	inputForEntityFilterRow.style.width = entityToInput.length * 7 + "px"; //Adjust width of the input to fit all content
 
-	var inputForEntityFilterRowButton = document.createElement("button");
-	inputForEntityFilterRowButton.innerHTML = "Search the Entity";
-	inputForEntityFilterRowButton.setAttribute("onclick", "openModalRowFilterEntities('" + count + "')");
-
-	optionsRow.appendChild(inputForEntityFilterRowButton);
+	optionsRow.appendChild(labelForEntityFilterRow);
 	optionsRow.appendChild(inputForEntityFilterRow);
-
 }
+
 function createPropertySelectInFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
-	var select = document.createElement("select");
 
+	var select = document.createElement("select");
 	select.setAttribute("id", "selectorProperty_" + count);
 	select.setAttribute("onChange", "fillValueSelectorFilterRow('" + count + "')");
 	select.style.marginRight = "5px";
@@ -548,8 +546,16 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 	} else {
 		var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(selectorInfo[0][1]), true);
 	}
+	//Input for properties/parameters
+	var inputForProperty=document.createElement("input");
+	inputForProperty.setAttribute("type", "text");
+	inputForProperty.setAttribute("id", "inputForProperty_"+count);
+	//inputForProperty.style.display="none";
+	inputForProperty.style.marginRight="5px";
 
 	optionsRow.appendChild(select);
+	optionsRow.appendChild(inputForProperty);
+
 	fillPropertySelector(count, entity);
 
 
@@ -620,6 +626,7 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	var inputText = document.createElement("input");
 	inputText.setAttribute("id", "inputText_" + count);
 	inputText.setAttribute("type", "text");
+	inputText.setAttribute("placeholder", "write a value");
 	inputText.addEventListener("input", function () {
 		changesInInputValueRowFilter("simple", count)
 	});
@@ -733,267 +740,266 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 
 }
 
-function createSelect(number, selectorInfo, count) {
+// function createSelect(number, selectorInfo, count) {
 
-	var placeId = document.getElementById("optionsRow_" + count);
-	var select = document.createElement("select");
-	var actualNode = networkNodes.get(currentNode.id);
+// 	var placeId = document.getElementById("optionsRow_" + count);
+// 	var select = document.createElement("select");
+// 	var actualNode = networkNodes.get(currentNode.id);
 
-	if (actualNode.image == "SelectRowsTable.png") { //CSV . Update current Node STAdata with info from previous Node !!!!!! (it works?)
-		actualNode.STAdata = previousNode[0].STAdata;
-		networkNodes.update(actualNode);
+// 	if (actualNode.image == "SelectRowsTable.png") { //CSV . Update current Node STAdata with info from previous Node !!!!!! (it works?)
+// 		actualNode.STAdata = previousNode[0].STAdata;
+// 		networkNodes.update(actualNode);
 
-	} else { //CSV (It has to be revised)
-		var parentNodeid = network.getConnectedNodes(currentNode.id, "from");
-		var parentNode = networkNodes.get(parentNodeid);
-		var data = parentNode[0].STAdata; //STAdata: All data comes from previous Node (Api or filtered previously)
-	}
-	var entity = "";
-	if (getSTAURLLastEntity(currentNode.STAURL)) {
-		entity = getSTAURLLastEntity(currentNode.STAURL);
-		for (var i = 0; i < STAEntitiesArray.length; i++) {
-			if (STAEntitiesArray[i] == entity)
-				break;
-		}
-		if (i == STAEntitiesArray.length)
-			entity = "";
-	}
-	if (number == 1) {
-		//Which Entity is: !!!!! Only works with STA (No csv)
+// 	} else { //CSV (It has to be revised)
+// 		var parentNodeid = network.getConnectedNodes(currentNode.id, "from");
+// 		var parentNode = networkNodes.get(parentNodeid);
+// 		var data = parentNode[0].STAdata; //STAdata: All data comes from previous Node (Api or filtered previously)
+// 	}
+// 	var entity = "";
+// 	if (getSTAURLLastEntity(currentNode.STAURL)) {
+// 		entity = getSTAURLLastEntity(currentNode.STAURL);
+// 		for (var i = 0; i < STAEntitiesArray.length; i++) {
+// 			if (STAEntitiesArray[i] == entity)
+// 				break;
+// 		}
+// 		if (i == STAEntitiesArray.length)
+// 			entity = "";
+// 	}
+// 	if (number == 1) {
+// 		//Which Entity is: !!!!! Only works with STA (No csv)
 
-		//INPUT
-		var inputForEntityFilterRow = document.createElement("input");
-		inputForEntityFilterRow.setAttribute("type", "text");
-		inputForEntityFilterRow.setAttribute("READONLY", true);
-		inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
-		inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
-		inputForEntityFilterRow.style.marginRight = "5px";
-		var entityToInput;
-		if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
-			entityToInput = entity;
-		} else {
-			entityToInput = selectorInfo[0][1];
-		}
-		inputForEntityFilterRow.value = entityToInput;
-		inputForEntityFilterRow.style.width = entityToInput.length * 7 + "px"; //Adjust width of the input to fit all content
+// 		//INPUT
+// 		var inputForEntityFilterRow = document.createElement("input");
+// 		inputForEntityFilterRow.setAttribute("type", "text");
+// 		inputForEntityFilterRow.setAttribute("READONLY", true);
+// 		inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
+// 		inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
+// 		inputForEntityFilterRow.style.marginRight = "5px";
+// 		var entityToInput;
+// 		if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
+// 			entityToInput = entity;
+// 		} else {
+// 			entityToInput = selectorInfo[0][1];
+// 		}
+// 		inputForEntityFilterRow.value = entityToInput;
+// 		inputForEntityFilterRow.style.width = entityToInput.length * 7 + "px"; //Adjust width of the input to fit all content
 
-		var inputForEntityFilterRowButton = document.createElement("button");
-		inputForEntityFilterRowButton.innerHTML = "Search the Entity";
-		inputForEntityFilterRowButton.setAttribute("onclick", "openModalRowFilterEntities('" + count + "')");
+// 		var labelForEntityFilterRow = document.createElement("label");
+// 		labelForEntityFilterRowButton.innerHTML = "Search the Entity: ";
+		
+// 		placeId.appendChild(labelForEntityFilterRowButton);
+// 		placeId.appendChild(inputForEntityFilterRow);
 
-		placeId.appendChild(inputForEntityFilterRowButton);
-		placeId.appendChild(inputForEntityFilterRow);
+// 	}
 
-	}
+// 	if (number == 2) {
+// 		select.setAttribute("id", "selectorProperty_" + count);
+// 		select.setAttribute("onChange", "fillValueSelectorFilterRow('" + count + "')");
+// 		select.style.marginRight = "5px";
 
-	if (number == 2) {
-		select.setAttribute("id", "selectorProperty_" + count);
-		select.setAttribute("onChange", "fillValueSelectorFilterRow('" + count + "')");
-		select.style.marginRight = "5px";
+// 		if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
+// 			entity = getSTAEntityPlural(entity, true);
+// 		} else {
+// 			entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(selectorInfo[0][1]), true);
+// 		}
 
-		if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
-			entity = getSTAEntityPlural(entity, true);
-		} else {
-			entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(selectorInfo[0][1]), true);
-		}
+// 		for (let i = 0; i < STAEntities[entity]["properties"].length; i++) {//To fill property
+// 			var propierty = STAEntities[entity]["properties"][i];
+// 			var option = document.createElement("option");
+// 			// if (propierty=="properties"||propierty=="unitOfMeasurement"||propierty=="dataQuality"||propierty=="parameters"){
 
-		for (let i = 0; i < STAEntities[entity]["properties"].length; i++) {//To fill property
-			var propierty = STAEntities[entity]["properties"][i];
-			var option = document.createElement("option");
-			// if (propierty=="properties"||propierty=="unitOfMeasurement"||propierty=="dataQuality"||propierty=="parameters"){
+// 			// }else{
 
-			// }else{
-
-			// }
-			option.setAttribute("value", propierty);
-			option.innerHTML = propierty;
-			if (selectorInfo.length != 0) {
-				if (propierty == selectorInfo[0][2]) {
-					option.setAttribute("selected", true);
-				}
-			}
-			select.appendChild(option);
-		}
-		placeId.appendChild(select);
-	}
-
-
-	else if (number == 3) {
-		select.setAttribute("id", "selectorCondition_" + count);
-		select.style.marginRight = "5px";
-		var selectConditionContent2;
-		if (selectorInfo.length != 0) {
-			var typeOfValues = typeOfValueFromInput("simple", selectorInfo[0][4]);
-			if (typeOfValues == "text") {
-				selectConditionContent2 = selectConditionContentText;
-			} else { //data,empty,number
-				selectConditionContent2 = selectConditionContent;
-			}
-		} else {
-
-			selectConditionContent2 = selectConditionContent;
-		}
+// 			// }
+// 			option.setAttribute("value", propierty);
+// 			option.innerHTML = propierty;
+// 			if (selectorInfo.length != 0) {
+// 				if (propierty == selectorInfo[0][2]) {
+// 					option.setAttribute("selected", true);
+// 				}
+// 			}
+// 			select.appendChild(option);
+// 		}
+// 		placeId.appendChild(select);
+// 	}
 
 
-		for (var i = 0; i < selectConditionContent2.length; i++) { //create options in condition Select
-			var opcioCondicio = document.createElement("option");
-			opcioCondicio.setAttribute("value", selectConditionContent2[i]);
-			select.setAttribute("onChange", "showAndHiddeSelectorAndInputsFilterRow('" + count + "')");
-			opcioCondicio.innerHTML = selectConditionContent2[i];
-			if (selectorInfo.length != 0) {
-				if (selectConditionContent2[i] == selectorInfo[0][3]) {
-					opcioCondicio.setAttribute("selected", true);
-				}
-			}
-			select.appendChild(opcioCondicio);
-		}
-		placeId.appendChild(select);
+// 	else if (number == 3) {
+// 		select.setAttribute("id", "selectorCondition_" + count);
+// 		select.style.marginRight = "5px";
+// 		var selectConditionContent2;
+// 		if (selectorInfo.length != 0) {
+// 			var typeOfValues = typeOfValueFromInput("simple", selectorInfo[0][4]);
+// 			if (typeOfValues == "text") {
+// 				selectConditionContent2 = selectConditionContentText;
+// 			} else { //data,empty,number
+// 				selectConditionContent2 = selectConditionContent;
+// 			}
+// 		} else {
 
-	}
-	else if (number == 4) { //Select box, ok and change button
-		var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + count);
-		var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
-		var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue), true);
+// 			selectConditionContent2 = selectConditionContent;
+// 		}
 
 
-		var url = getURLWithoutQueryParams(currentNode.STAURL);
-		//Find the entity to search values
-		var parentLabel = searchParentLabel();
-		if (parentLabel != entity) {
-			var parentLabelLength = parentLabel.length;
-			url = url.slice(parentLabelLength); //Erase entity without "/"
-			url += entity;
-		}
+// 		for (var i = 0; i < selectConditionContent2.length; i++) { //create options in condition Select
+// 			var opcioCondicio = document.createElement("option");
+// 			opcioCondicio.setAttribute("value", selectConditionContent2[i]);
+// 			select.setAttribute("onChange", "showAndHiddeSelectorAndInputsFilterRow('" + count + "')");
+// 			opcioCondicio.innerHTML = selectConditionContent2[i];
+// 			if (selectorInfo.length != 0) {
+// 				if (selectConditionContent2[i] == selectorInfo[0][3]) {
+// 					opcioCondicio.setAttribute("selected", true);
+// 				}
+// 			}
+// 			select.appendChild(opcioCondicio);
+// 		}
+// 		placeId.appendChild(select);
 
-		//Selects
-		var divFilterContainer = document.createElement("div");
-		divFilterContainer.setAttribute("id", "divFilterContainer_" + count);
-		divFilterContainer.setAttribute("style", "display: none;");
-		placeId.appendChild(divFilterContainer);
-
-		select.setAttribute("id", "selectorValue_" + count);
-		select.setAttribute("onChange", "changeSelectValueRowFilter('" + currentNode.id + "','" + count + "')");
-		divFilterContainer.appendChild(select);
-
-
-		//Simple: inputText, buttons and displaySelects
-		var inputText = document.createElement("input");
-		inputText.setAttribute("id", "inputText_" + count);
-		inputText.setAttribute("type", "text");
-		inputText.addEventListener("input", function () {
-			changesInInputValueRowFilter("simple", count)
-		});
-		inputText.addEventListener("keypress", function (event) {
-			// If the user presses the "Enter" key on the keyboard
-			if (event.key === "Enter") {
-				event.preventDefault();
-			}
-		});
-
-		placeId.appendChild(inputText);
-
-		var okButton = document.createElement("button");
-		okButton.setAttribute("onclick", "closeModalSelect('" + count + "','ok')");
-		okButton.setAttribute("id", "okButton_" + count);
-		okButton.innerHTML = "Ok";
-
-		divFilterContainer.appendChild(select);
-		var cancelButton = document.createElement("button");
-		cancelButton.setAttribute("onclick", "closeModalSelect('" + count + "','cancel')");
-		cancelButton.setAttribute("id", "cancelButton_" + count);
-		cancelButton.innerHTML = "Cancel";
-
-		var displaySelect = document.createElement("button");
-		displaySelect.setAttribute("id", "displaySelect_" + count);
-		displaySelect.setAttribute("onclick", "changeWriteToSelect('" + count + "','simple')");
-		placeId.appendChild(displaySelect);
-		divFilterContainer.appendChild(okButton);
-		divFilterContainer.appendChild(cancelButton);
-
-		var buttonImage2 = document.createElement("img"); //Button image
-		buttonImage2.setAttribute("src", "arrowSelectButton.png");
-		displaySelect.appendChild(buttonImage2);
-
-		//Interval: inputText, buttons and displaySelects
-		var divFilterContainer2 = document.createElement("div");
-		divFilterContainer2.setAttribute("id", "divFilterContainer2_" + count);
-		placeId.appendChild(divFilterContainer2);
-		var selectorValueInterval1 = document.createElement("select");
-		selectorValueInterval1.setAttribute("id", "selectorValueInterval1_" + count);
-		var selectorValueInterval2 = document.createElement("select");
-		selectorValueInterval2.setAttribute("id", "selectorValueInterval2_" + count);
-
-		divFilterContainer2.appendChild(selectorValueInterval1);
-		divFilterContainer2.appendChild(selectorValueInterval2);
+// 	}
+// 	else if (number == 4) { //Select box, ok and change button
+// 		var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + count);
+// 		var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
+// 		var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue), true);
 
 
-		var inputTextInterval1 = inputText.cloneNode(true);
-		inputTextInterval1.setAttribute("id", "inputTextInterval1_" + count);
-		var inputTextInterval2 = inputText.cloneNode(true);
-		inputTextInterval2.setAttribute("id", "inputTextInterval2_" + count);
+// 		var url = getURLWithoutQueryParams(currentNode.STAURL);
+// 		//Find the entity to search values
+// 		var parentLabel = searchParentLabel();
+// 		if (parentLabel != entity) {
+// 			var parentLabelLength = parentLabel.length;
+// 			url = url.slice(parentLabelLength); //Erase entity without "/"
+// 			url += entity;
+// 		}
 
-		inputTextInterval1.addEventListener("input", function () {
-			changesInInputValueRowFilter("interval", count)
-		});
-		inputTextInterval2.addEventListener("input", function () {
-			changesInInputValueRowFilter("interval", count)
-		});
-		inputTextInterval1.addEventListener("keypress", function (event) {
-			if (event.key === "Enter") {
-				event.preventDefault();
-			}
-		});
-		inputTextInterval2.addEventListener("keypress", function (event) {
-			if (event.key === "Enter") {
-				event.preventDefault();
-			}
-		});
+// 		//Selects
+// 		var divFilterContainer = document.createElement("div");
+// 		divFilterContainer.setAttribute("id", "divFilterContainer_" + count);
+// 		divFilterContainer.setAttribute("style", "display: none;");
+// 		placeId.appendChild(divFilterContainer);
 
-		placeId.appendChild(inputTextInterval1);
-		placeId.appendChild(inputTextInterval2);
+// 		select.setAttribute("id", "selectorValue_" + count);
+// 		select.setAttribute("onChange", "changeSelectValueRowFilter('" + currentNode.id + "','" + count + "')");
+// 		divFilterContainer.appendChild(select);
 
 
-		var okButtonInterval = document.createElement("button");
-		okButtonInterval.setAttribute("onclick", "closeModalSelect('" + count + "','ok')");
-		okButtonInterval.setAttribute("id", "okButtonInterval_" + count);
-		okButtonInterval.innerHTML = "Ok";
+// 		//Simple: inputText, buttons and displaySelects
+// 		var inputText = document.createElement("input");
+// 		inputText.setAttribute("id", "inputText_" + count);
+// 		inputText.setAttribute("type", "text");
+// 		inputText.addEventListener("input", function () {
+// 			changesInInputValueRowFilter("simple", count)
+// 		});
+// 		inputText.addEventListener("keypress", function (event) {
+// 			// If the user presses the "Enter" key on the keyboard
+// 			if (event.key === "Enter") {
+// 				event.preventDefault();
+// 			}
+// 		});
 
-		var cancelButtonInterval = document.createElement("button");
-		cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + count + "','cancel')");
-		cancelButtonInterval.setAttribute("id", "cancelButtonInterval_" + count);
-		cancelButtonInterval.innerHTML = "Cancel";
+// 		placeId.appendChild(inputText);
 
-		var displaySelectInterval = document.createElement("button");
-		displaySelectInterval.setAttribute("id", "displaySelectInterval_" + count);
-		displaySelectInterval.setAttribute("onclick", "changeWriteToSelect('" + count + "','interval')");
-		var buttonImage3 = document.createElement("img"); //button image
-		buttonImage3.setAttribute("src", "arrowSelectButton.png");
-		displaySelectInterval.appendChild(buttonImage3);
+// 		var okButton = document.createElement("button");
+// 		okButton.setAttribute("onclick", "closeModalSelect('" + count + "','ok')");
+// 		okButton.setAttribute("id", "okButton_" + count);
+// 		okButton.innerHTML = "Ok";
 
-		placeId.appendChild(displaySelectInterval);
-		divFilterContainer2.appendChild(okButtonInterval);
-		divFilterContainer2.appendChild(cancelButtonInterval);
+// 		divFilterContainer.appendChild(select);
+// 		var cancelButton = document.createElement("button");
+// 		cancelButton.setAttribute("onclick", "closeModalSelect('" + count + "','cancel')");
+// 		cancelButton.setAttribute("id", "cancelButton_" + count);
+// 		cancelButton.innerHTML = "Cancel";
+
+// 		var displaySelect = document.createElement("button");
+// 		displaySelect.setAttribute("id", "displaySelect_" + count);
+// 		displaySelect.setAttribute("onclick", "changeWriteToSelect('" + count + "','simple')");
+// 		placeId.appendChild(displaySelect);
+// 		divFilterContainer.appendChild(okButton);
+// 		divFilterContainer.appendChild(cancelButton);
+
+// 		var buttonImage2 = document.createElement("img"); //Button image
+// 		buttonImage2.setAttribute("src", "arrowSelectButton.png");
+// 		displaySelect.appendChild(buttonImage2);
+
+// 		//Interval: inputText, buttons and displaySelects
+// 		var divFilterContainer2 = document.createElement("div");
+// 		divFilterContainer2.setAttribute("id", "divFilterContainer2_" + count);
+// 		placeId.appendChild(divFilterContainer2);
+// 		var selectorValueInterval1 = document.createElement("select");
+// 		selectorValueInterval1.setAttribute("id", "selectorValueInterval1_" + count);
+// 		var selectorValueInterval2 = document.createElement("select");
+// 		selectorValueInterval2.setAttribute("id", "selectorValueInterval2_" + count);
+
+// 		divFilterContainer2.appendChild(selectorValueInterval1);
+// 		divFilterContainer2.appendChild(selectorValueInterval2);
 
 
+// 		var inputTextInterval1 = inputText.cloneNode(true);
+// 		inputTextInterval1.setAttribute("id", "inputTextInterval1_" + count);
+// 		var inputTextInterval2 = inputText.cloneNode(true);
+// 		inputTextInterval2.setAttribute("id", "inputTextInterval2_" + count);
 
-		//Put previous values in input Text( 
-		if (selectorInfo.length != 0) {
-			if (selectorInfo[0][3] == ' [a,b] ' || selectorInfo[0][3] == ' (a,b] ' || selectorInfo[0][3] == ' [a,b) ' || selectorInfo[0][3] == ' (a,b) ') {
-				inputTextInterval1.value = selectorInfo[0][4];
-				inputTextInterval2.value = selectorInfo[0][5];
-			} else { //simple
-				inputText.value = selectorInfo[0][4];
-			}
-		}
+// 		inputTextInterval1.addEventListener("input", function () {
+// 			changesInInputValueRowFilter("interval", count)
+// 		});
+// 		inputTextInterval2.addEventListener("input", function () {
+// 			changesInInputValueRowFilter("interval", count)
+// 		});
+// 		inputTextInterval1.addEventListener("keypress", function (event) {
+// 			if (event.key === "Enter") {
+// 				event.preventDefault();
+// 			}
+// 		});
+// 		inputTextInterval2.addEventListener("keypress", function (event) {
+// 			if (event.key === "Enter") {
+// 				event.preventDefault();
+// 			}
+// 		});
 
-		fillValueSelectorFilterRow(count);
-		showAndHiddeSelectorAndInputsFilterRow(count);
+// 		placeId.appendChild(inputTextInterval1);
+// 		placeId.appendChild(inputTextInterval2);
+
+
+// 		var okButtonInterval = document.createElement("button");
+// 		okButtonInterval.setAttribute("onclick", "closeModalSelect('" + count + "','ok')");
+// 		okButtonInterval.setAttribute("id", "okButtonInterval_" + count);
+// 		okButtonInterval.innerHTML = "Ok";
+
+// 		var cancelButtonInterval = document.createElement("button");
+// 		cancelButtonInterval.setAttribute("onclick", "closeModalSelect('" + count + "','cancel')");
+// 		cancelButtonInterval.setAttribute("id", "cancelButtonInterval_" + count);
+// 		cancelButtonInterval.innerHTML = "Cancel";
+
+// 		var displaySelectInterval = document.createElement("button");
+// 		displaySelectInterval.setAttribute("id", "displaySelectInterval_" + count);
+// 		displaySelectInterval.setAttribute("onclick", "changeWriteToSelect('" + count + "','interval')");
+// 		var buttonImage3 = document.createElement("img"); //button image
+// 		buttonImage3.setAttribute("src", "arrowSelectButton.png");
+// 		displaySelectInterval.appendChild(buttonImage3);
+
+// 		placeId.appendChild(displaySelectInterval);
+// 		divFilterContainer2.appendChild(okButtonInterval);
+// 		divFilterContainer2.appendChild(cancelButtonInterval);
 
 
 
+// 		//Put previous values in input Text( 
+// 		if (selectorInfo.length != 0) {
+// 			if (selectorInfo[0][3] == ' [a,b] ' || selectorInfo[0][3] == ' (a,b] ' || selectorInfo[0][3] == ' [a,b) ' || selectorInfo[0][3] == ' (a,b) ') {
+// 				inputTextInterval1.value = selectorInfo[0][4];
+// 				inputTextInterval2.value = selectorInfo[0][5];
+// 			} else { //simple
+// 				inputText.value = selectorInfo[0][4];
+// 			}
+// 		}
 
-	}
-}
+// 		fillValueSelectorFilterRow(count);
+// 		showAndHiddeSelectorAndInputsFilterRow(count);
+
+
+
+
+// 	}
+// }
 
 
 var stopSearchparentLabel = false;
@@ -1016,6 +1022,12 @@ function fillPropertySelector(number, lastEntity) { //lastEntity: Entity obtaine
 	selectProperty.innerHTML = "";
 
 	var properties = STAEntities[getSTAEntityPlural(lastEntity, true)]["properties"];
+	var option = document.createElement("option"); //First option
+	option.setAttribute("value", " ");
+		option.innerHTML = "--- choose Property ---";
+		selectProperty.appendChild(option);
+
+
 	for (let i = 0; i < properties.length; i++) {// to fill property/property
 		var option = document.createElement("option");
 		option.setAttribute("value", properties[i]);
