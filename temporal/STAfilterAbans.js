@@ -156,7 +156,7 @@ function createSelectorRowFilters(number) {
 	createConditionSelectInFilterRows(selectorInfo, number);
 	createValueSelectInFilterRows(selectorInfo, number);
 
-
+	
 
 	var divIsAnObject = document.createElement("div"); //It will be shown when property selected will be an object
 	divIsAnObject.setAttribute("id", "divIsAnObject");
@@ -505,17 +505,6 @@ function createEntitySelectorInFilterRows(selectorInfo, count) {
 	inputForEntityFilterRow.setAttribute("type", "text");
 	inputForEntityFilterRow.setAttribute("READONLY", true);
 	inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
-	inputForEntityFilterRow.setAttribute("onclick", "openModalRowFilterEntities('" + count + "')");
-	inputForEntityFilterRow.addEventListener('mouseover', () => {
-		inputForEntityFilterRow.style.cursor = "pointer";
-		inputForEntityFilterRow.style.background = "#bdc2ba";
-	});
-
-	// Add a mouseout event listener
-	inputForEntityFilterRow.addEventListener('mouseout', () => {
-		inputForEntityFilterRow.style.cursor = "auto";
-		inputForEntityFilterRow.style.background  = "#d8dfd6";
-	});
 	inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
 	inputForEntityFilterRow.style.marginRight = "5px";
 	var entityToInput;
@@ -727,7 +716,7 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	}
 
 	fillValueSelectorFilterRow(count);
-
+	
 
 
 
