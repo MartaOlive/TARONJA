@@ -502,7 +502,8 @@ function createEntitySelectorInFilterRows(selectorInfo, count) {
 	
 	//Label
 	var labelForEntityFilterRow = document.createElement("label");
-	labelForEntityFilterRow.innerHTML = "Search the Entity:";
+	labelForEntityFilterRow.innerHTML = "Choose the Entity:";
+	labelForEntityFilterRow.style.fontSize="15px";
 	
 	//INPUT
 	var inputForEntityFilterRow = document.createElement("input");
@@ -519,7 +520,7 @@ function createEntitySelectorInFilterRows(selectorInfo, count) {
 		inputForEntityFilterRow.style.background  = "#d8dfd6"; 
 	});
 	inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
-	inputForEntityFilterRow.style.marginRight = "5px";
+	inputForEntityFilterRow.style.marginLeft = "5px";
 	var entityToInput;
 	if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
 		entityToInput = getSTAURLLastEntity(currentNode.STAURL);
@@ -539,7 +540,7 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 	var select = document.createElement("select");
 	select.setAttribute("id", "selectorProperty_" + count);
 	select.setAttribute("onChange", "fillValueSelectorFilterRow('" + count + "')");
-	select.style.marginRight = "5px";
+	select.style.marginLeft = "10px";
 
 	if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
 		var entity = getSTAURLLastEntity(currentNode.STAURL); //que entity ni que entoto
@@ -550,8 +551,9 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 	var inputForProperty=document.createElement("input");
 	inputForProperty.setAttribute("type", "text");
 	inputForProperty.setAttribute("id", "inputForProperty_"+count);
+	inputForProperty.setAttribute("placeholder", "Example: /type");
 	//inputForProperty.style.display="none";
-	inputForProperty.style.marginRight="5px";
+	//inputForProperty.style.marginLeft="5px";
 
 	optionsRow.appendChild(select);
 	optionsRow.appendChild(inputForProperty);
@@ -565,7 +567,7 @@ function createConditionSelectInFilterRows(selectorInfo, count) {
 	var select = document.createElement("select");
 
 	select.setAttribute("id", "selectorCondition_" + count);
-	select.style.marginRight = "5px";
+	select.style.marginLeft = "10px";
 	var selectConditionContent2;
 	if (selectorInfo.length != 0) {
 		var typeOfValues = typeOfValueFromInput("simple", selectorInfo[0][4]);
@@ -626,7 +628,8 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	var inputText = document.createElement("input");
 	inputText.setAttribute("id", "inputText_" + count);
 	inputText.setAttribute("type", "text");
-	inputText.setAttribute("placeholder", "write a value");
+	inputText.setAttribute("placeholder", "introduce a value");
+	inputText.style.marginLeft="10px";
 	inputText.addEventListener("input", function () {
 		changesInInputValueRowFilter("simple", count)
 	});
@@ -667,8 +670,10 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	optionsRow.appendChild(divFilterContainer2);
 	var selectorValueInterval1 = document.createElement("select");
 	selectorValueInterval1.setAttribute("id", "selectorValueInterval1_" + count);
+	selectorValueInterval1.style.marginLeft = "10px";
 	var selectorValueInterval2 = document.createElement("select");
 	selectorValueInterval2.setAttribute("id", "selectorValueInterval2_" + count);
+	selectorValueInterval2.style.marginLeft = "5px";
 
 	divFilterContainer2.appendChild(selectorValueInterval1);
 	divFilterContainer2.appendChild(selectorValueInterval2);
@@ -676,8 +681,10 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 
 	var inputTextInterval1 = inputText.cloneNode(true);
 	inputTextInterval1.setAttribute("id", "inputTextInterval1_" + count);
+	inputTextInterval1.style.marginLeft = "10px";
 	var inputTextInterval2 = inputText.cloneNode(true);
 	inputTextInterval2.setAttribute("id", "inputTextInterval2_" + count);
+	inputTextInterval2.style.marginLeft = "5px";
 
 	inputTextInterval1.addEventListener("input", function () {
 		changesInInputValueRowFilter("interval", count)
@@ -774,7 +781,7 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 // 		inputForEntityFilterRow.setAttribute("READONLY", true);
 // 		inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
 // 		inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
-// 		inputForEntityFilterRow.style.marginRight = "5px";
+// 		inputForEntityFilterRow.style.marginLeft = "10px";
 // 		var entityToInput;
 // 		if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
 // 			entityToInput = entity;
@@ -795,7 +802,7 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 // 	if (number == 2) {
 // 		select.setAttribute("id", "selectorProperty_" + count);
 // 		select.setAttribute("onChange", "fillValueSelectorFilterRow('" + count + "')");
-// 		select.style.marginRight = "5px";
+// 		select.style.marginLeft = "10px";
 
 // 		if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
 // 			entity = getSTAEntityPlural(entity, true);
@@ -826,7 +833,7 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 
 // 	else if (number == 3) {
 // 		select.setAttribute("id", "selectorCondition_" + count);
-// 		select.style.marginRight = "5px";
+// 		select.style.marginLeft = "10px";
 // 		var selectConditionContent2;
 // 		if (selectorInfo.length != 0) {
 // 			var typeOfValues = typeOfValueFromInput("simple", selectorInfo[0][4]);
