@@ -293,7 +293,7 @@ function AddEntitiesSelectedBelowInFilterRow(number) {
 	}
 }
 
-function OkButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
+function okButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 	event.preventDefault();
 	var dialogFilterRowEntities = document.getElementById("DialogFilterRowEntities");
 	var number = dialogFilterRowEntities.getAttribute("data-rowNumber");

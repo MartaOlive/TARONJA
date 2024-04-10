@@ -304,7 +304,7 @@ function AddEntitiesSelectedBelowInFilterRow(number) {
 		}
 	}
 }
-function OkButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
+function okButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 	event.preventDefault();
 	var dialogFilterRowEntities = document.getElementById("DialogFilterRowEntities");
 	var number = dialogFilterRowEntities.getAttribute("data-rowNumber");
@@ -327,6 +327,7 @@ function OkButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 	fillPropertySelector(number, lastEntity);//To change properties of select
 	fillValueSelectorFilterRow(number);
 	showAndHiddeSelectorAndInputsFilterRow(number);
+	showInputProperty(number);
 	document.getElementById("DialogFilterRowEntities").close();
 }
 //PropertySelect
@@ -336,9 +337,9 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 	//optionsRow.innerHTML += `<select id="selectorProperty_${count}" onchange="fillValueSelectorFilterRow('${count}')" style="margin-left:10px"></select>`; //If I use this , the value of the entity disappears
 
 	var select = document.createElement("select");
-	  select.setAttribute("id", "selectorProperty_" + count);
-	  select.setAttribute("onChange", "fillValueSelectorFilterRow('" + count + "')");
-	  select.style.marginLeft = "10px";
+	select.setAttribute("id", "selectorProperty_" + count);
+	select.setAttribute("onChange", "onchangePropertySelect('" + count + "')");
+	select.style.marginLeft = "10px";
 
 	if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
 		var entity = getSTAURLLastEntity(currentNode.STAURL);
@@ -359,10 +360,24 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 
 	optionsRow.appendChild(select);
 	optionsRow.appendChild(inputForProperty);
-	
+
 	fillPropertySelector(count, entity);
 
 
+}
+function onchangePropertySelect(count){
+	fillValueSelectorFilterRow(count);
+	showInputProperty(count);
+}
+function showInputProperty(count){
+	var selectorProperty=document.getElementById("selectorProperty_"+count);
+	var selectorPropertyValue= selectorProperty.options[selectorProperty.selectedIndex].value;
+	var inputForProperty=document.getElementById("inputForProperty_"+count)
+	if (selectorPropertyValue.includes("properties")||selectorPropertyValue =="parameters"){
+		inputForProperty.style.display="inline-block";
+	}else{
+		inputForProperty.style.display="none";
+	}
 }
 function extractLastEntityFromTextFromInputInFilterRow(textFromInput) {
 	var arrayFromText, lastEntity;
@@ -385,12 +400,30 @@ function fillPropertySelector(number, lastEntity) { //lastEntity: Entity obtaine
 	option.innerHTML = "--- choose Property ---";
 	selectProperty.appendChild(option);
 
+	var unitOfMeasurement = ["unitOfMeasurement/name", "unitOfMeasurement/symbol", "unitOfMeasurement/definition"]; //Datastream
+	var feature = ["feature/type", "feature/coordinates/0", "feature/coordinates/1", "feature/type", "feature/geometry/type", "feature/geometry/coordinates/0", "feature/geometry/coordinates/1", "feature/properties"] //featureOfInterest
 
-	for (let i = 0; i < properties.length; i++) {// to fill property/property
-		var option = document.createElement("option");
-		option.setAttribute("value", properties[i]);
-		option.innerHTML = properties[i];
-		selectProperty.appendChild(option);
+	for (var i = 0; i < properties.length; i++) {// to fill property/property
+		if (properties[i] == "unitOfMeasurement") {
+			for (var u = 0; u < unitOfMeasurement.length; u++) {
+				var option = document.createElement("option");
+				option.setAttribute("value", unitOfMeasurement[u]);
+				option.innerHTML = unitOfMeasurement[u];
+				selectProperty.appendChild(option);
+			}
+		} else if (properties[i] == "feature") {
+			for (var a = 0; a < feature.length; a++) {
+				var option = document.createElement("option");
+				option.setAttribute("value", feature[a]);
+				option.innerHTML = feature[a];
+				selectProperty.appendChild(option);
+			}
+		} else {
+			var option = document.createElement("option");
+			option.setAttribute("value", properties[i]);
+			option.innerHTML = properties[i];
+			selectProperty.appendChild(option);
+		}
 	}
 }
 //condition select
