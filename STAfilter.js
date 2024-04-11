@@ -361,22 +361,22 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 	optionsRow.appendChild(select);
 	optionsRow.appendChild(inputForProperty);
 
-	fillPropertySelector(count, entity);
+	fillPropertySelector(count, entity, selectorInfo);
 
 
 }
-function onchangePropertySelect(count){
+function onchangePropertySelect(count) {
 	fillValueSelectorFilterRow(count);
 	showInputProperty(count);
 }
-function showInputProperty(count){
-	var selectorProperty=document.getElementById("selectorProperty_"+count);
-	var selectorPropertyValue= selectorProperty.options[selectorProperty.selectedIndex].value;
-	var inputForProperty=document.getElementById("inputForProperty_"+count)
-	if (selectorPropertyValue.includes("properties")||selectorPropertyValue =="parameters"){
-		inputForProperty.style.display="inline-block";
-	}else{
-		inputForProperty.style.display="none";
+function showInputProperty(count) {
+	var selectorProperty = document.getElementById("selectorProperty_" + count);
+	var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
+	var inputForProperty = document.getElementById("inputForProperty_" + count)
+	if (selectorPropertyValue.includes("properties") || selectorPropertyValue == "parameters/" || selectorPropertyValue == "observedArea/coordinates/" || selectorPropertyValue == "dataQuality/") {
+		inputForProperty.style.display = "inline-block";
+	} else {
+		inputForProperty.style.display = "none";
 	}
 }
 function extractLastEntityFromTextFromInputInFilterRow(textFromInput) {
@@ -390,7 +390,14 @@ function extractLastEntityFromTextFromInputInFilterRow(textFromInput) {
 	return lastEntity;
 
 }
-function fillPropertySelector(number, lastEntity) { //lastEntity: Entity obtained in input
+const unitOfMeasurementExtension = ["unitOfMeasurement/name", "unitOfMeasurement/symbol", "unitOfMeasurement/definition"]; //Datastream
+const observedAreaExtension = ["observedArea/type", "observedArea/coordinates/"]; //Datastream
+const featureExtension = ["feature/type", "feature/coordinates/0", "feature/coordinates/1", "feature/type", "feature/geometry/type", "feature/geometry/coordinates/0", "feature/geometry/coordinates/1", "feature/properties/"] //featureOfInterest
+
+//const location Location
+//const metadata Sensor
+//const resultQuality Observation
+function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: Entity obtained in input
 	var selectProperty = document.getElementById("selectorProperty_" + number);
 	selectProperty.innerHTML = "";
 
@@ -400,32 +407,73 @@ function fillPropertySelector(number, lastEntity) { //lastEntity: Entity obtaine
 	option.innerHTML = "--- choose Property ---";
 	selectProperty.appendChild(option);
 
-	var unitOfMeasurement = ["unitOfMeasurement/name", "unitOfMeasurement/symbol", "unitOfMeasurement/definition"]; //Datastream
-	var feature = ["feature/type", "feature/coordinates/0", "feature/coordinates/1", "feature/type", "feature/geometry/type", "feature/geometry/coordinates/0", "feature/geometry/coordinates/1", "feature/properties"] //featureOfInterest
 
 	for (var i = 0; i < properties.length; i++) {// to fill property/property
 		if (properties[i] == "unitOfMeasurement") {
-			for (var u = 0; u < unitOfMeasurement.length; u++) {
+			for (var u = 0; u < unitOfMeasurementExtension.length; u++) {
 				var option = document.createElement("option");
-				option.setAttribute("value", unitOfMeasurement[u]);
-				option.innerHTML = unitOfMeasurement[u];
+				option.setAttribute("value", unitOfMeasurementExtension[u]);
+				option.innerHTML = unitOfMeasurementExtension[u];
 				selectProperty.appendChild(option);
+				if (selectorInfo && selectorInfo.length != 0) {
+					if (unitOfMeasurementExtension[u] == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
+						option.setAttribute("selected", true);
+					}
+				}
+
 			}
 		} else if (properties[i] == "feature") {
-			for (var a = 0; a < feature.length; a++) {
+			for (var a = 0; a < featureExtension.length; a++) {
 				var option = document.createElement("option");
-				option.setAttribute("value", feature[a]);
-				option.innerHTML = feature[a];
+				option.setAttribute("value", featureExtension[a]);
+				option.innerHTML = featureExtension[a];
 				selectProperty.appendChild(option);
+				if (selectorInfo && selectorInfo.length != 0) {
+					if (featureExtension[a] == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
+						option.setAttribute("selected", true);
+					}
+				}
 			}
-		} else {
-			var option = document.createElement("option");
-			option.setAttribute("value", properties[i]);
-			option.innerHTML = properties[i];
-			selectProperty.appendChild(option);
+		} else if (properties[i] == "observedArea") {
+			for (var a = 0; a < observedAreaExtension.length; a++) {
+				var option = document.createElement("option");
+				option.setAttribute("value", observedAreaExtension[a]);
+				option.innerHTML = observedAreaExtension[a];
+				selectProperty.appendChild(option);
+				if (selectorInfo && selectorInfo.length != 0) {
+					if (observedAreaExtension[a] == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
+						option.setAttribute("selected", true);
+					}
+				}
+			}
+
 		}
+		else {
+			var option = document.createElement("option");
+			var property;
+			if (properties[i] == "properties" || properties[i] == "dataQuality" || properties[i] == "parameters") {
+				property = properties[i] + "/";
+				option.setAttribute("value", property);
+				option.innerHTML = property;
+
+			} else {
+				option.setAttribute("value", properties[i]);
+				property = properties[i]
+				option.innerHTML = property;
+
+			}
+			if (selectorInfo && selectorInfo.length != 0) {
+				if (property == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
+					option.setAttribute("selected", true);
+				}
+			}
+
+		}
+
+		selectProperty.appendChild(option);
 	}
 }
+
 //condition select
 function createConditionSelectInFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
@@ -1594,8 +1642,8 @@ function drawTableAgain() {
 }
 function takeSelectInformation() {
 	var optionsRow;
-	var inputForEntityFilterRow, selectorProperty, selectorCondition, inputText, inputTextInterval1, inputTextInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
-	var inputForEntityFilterRowValue, selectorPropertyValue, selectorConditionValue, inputTextValue, inputTextInterval1Value, inputTextInterval2Value;
+	var inputForEntityFilterRow, selectorProperty, inputProperty, selectorCondition, inputText, inputTextInterval1, inputTextInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
+	var inputForEntityFilterRowValue, selectorPropertyValue = [], selectorConditionValue, inputTextValue, inputTextInterval1Value, inputTextInterval2Value;
 	var arrayInfo;
 	var infoFilter = [];
 	var counter = currentNode.STACounter;
@@ -1606,7 +1654,14 @@ function takeSelectInformation() {
 			inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + counter[i]);
 			inputForEntityFilterRowValue = inputForEntityFilterRow.value;
 			selectorProperty = document.getElementById("selectorProperty_" + counter[i]);
-			selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
+			inputProperty = document.getElementById("inputForProperty_" + counter[i]);
+			selectorPropertyValue = [];
+			selectorPropertyValue.push(selectorProperty.options[selectorProperty.selectedIndex].value);
+			if (inputProperty.style.display == "inline-block") {
+				selectorPropertyValue.push(inputProperty.value);
+			}
+
+
 			selectorCondition = document.getElementById("selectorCondition_" + counter[i]);
 			selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
 			arrayInfo.push(counter[i]); //they are out of order, it is necessary to put each info in its place when painting the select
@@ -1718,7 +1773,10 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 						if (entity != valueOfEntity) { //If it's not the entity of the node and it is a connected box need "node entity name "
 							data += valueOfEntity + "/";
 						}
-						data += infoFilter[i][2];
+						data += infoFilter[i][2][0];
+						if (infoFilter[i][2].length == 2) {
+							data += infoFilter[i][2][1];
+						}
 
 						var typeOfValue = infoFilter[i][5];
 						var apostropheOrSpace;
@@ -1751,8 +1809,12 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 
 						if (entity != valueOfEntity) {
 							valueOfEntity = valueOfEntity + "/" + infoFilter[i][2];
+
 						} else {
 							valueOfEntity = infoFilter[i][2];
+						}
+						if (infoFilter[i][2].length == 2) {
+							valueOfEntity += infoFilter[i][2][1];
 						}
 						data += "( " + valueOfEntity;
 
@@ -1777,6 +1839,9 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 							valueOfEntity = valueOfEntity + "/" + infoFilter[i][2];
 						} else {
 							valueOfEntity = infoFilter[i][2];
+						}
+						if (infoFilter[i][2].length == 2) {
+							valueOfEntity += infoFilter[i][2][1];
 						}
 
 						switch (infoFilter[i][3]) {
