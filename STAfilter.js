@@ -354,7 +354,7 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 	var inputForProperty = document.createElement("input");
 	inputForProperty.setAttribute("type", "text");
 	inputForProperty.setAttribute("id", "inputForProperty_" + count);
-	inputForProperty.setAttribute("placeholder", "Example: /type");
+	inputForProperty.setAttribute("placeholder", "Example: type");
 	inputForProperty.style.display = "none";
 	inputForProperty.style.marginLeft = "5px";
 
@@ -373,7 +373,8 @@ function showInputProperty(count) {
 	var selectorProperty = document.getElementById("selectorProperty_" + count);
 	var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
 	var inputForProperty = document.getElementById("inputForProperty_" + count)
-	if (selectorPropertyValue.includes("properties") || selectorPropertyValue == "parameters/" || selectorPropertyValue == "observedArea/coordinates/" || selectorPropertyValue == "dataQuality/") {
+	if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1)=="/"){
+		//selectorPropertyVaue.includes("properties") || selectorPropertyValue == "parameters/" || selectorPropertyValue == "observedArea/coordinates/" || selectorPropertyValue == "dataQuality/") {
 		inputForProperty.style.display = "inline-block";
 	} else {
 		inputForProperty.style.display = "none";
@@ -399,6 +400,7 @@ const featureExtension = ["feature/type", "feature/coordinates/0", "feature/coor
 //const resultQuality Observation
 function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: Entity obtained in input
 	var selectProperty = document.getElementById("selectorProperty_" + number);
+	var inputForProperty= document.getElementById("inputForProperty_" + number);
 	selectProperty.innerHTML = "";
 
 	var properties = STAEntities[getSTAEntityPlural(lastEntity, true)]["properties"];
@@ -416,7 +418,7 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 				option.innerHTML = unitOfMeasurementExtension[u];
 				selectProperty.appendChild(option);
 				if (selectorInfo && selectorInfo.length != 0) {
-					if (unitOfMeasurementExtension[u] == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
+					if (unitOfMeasurementExtension[u] == selectorInfo[0][2][0]) {  //selectorInfo[0][2] : If inputForPropery is open, the element 0 in the array is the select and the second is the input
 						option.setAttribute("selected", true);
 					}
 				}
@@ -441,7 +443,7 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 				option.innerHTML = observedAreaExtension[a];
 				selectProperty.appendChild(option);
 				if (selectorInfo && selectorInfo.length != 0) {
-					if (observedAreaExtension[a] == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
+					if (observedAreaExtension[a] == selectorInfo[0][2][0]) { 
 						option.setAttribute("selected", true);
 					}
 				}
@@ -472,6 +474,10 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 
 		selectProperty.appendChild(option);
 	}
+	if (selectorInfo && selectorInfo.length != 0 &&selectorInfo[0][2].length==2) {//selectorInfo[0][2] : If inputForPropery is open, the element 0 in the array is the select and the second is the input
+		inputForProperty.value=selectorInfo[0][2][1];
+	}
+
 }
 
 //condition select
@@ -1110,6 +1116,8 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var selectorConditionValue = document.getElementById("selectorCondition_" + number).value;
 	var selectorValue = document.getElementById("selectorValue_" + number);
+	var selectorProperty=document.getElementById("selectorProperty_"+number);
+	var inputForProperty=document.getElementById("inputForProperty_"+number);
 	var selectorValueHasChildren;
 
 	if (selectorValue.hasChildNodes()) {
@@ -1177,6 +1185,13 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 		divFilterContainer2.style.display = "none";
 		displaySelectInterval.style.display = "none";
 
+	}
+
+	var selectorPropertyValue= selectorProperty.options[selectorProperty.selectedIndex].value;
+	if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1)=="/"){
+		inputForProperty.style.display="inline-block";
+	}else{
+		inputForProperty.style.display="none";
 	}
 }
 var stopSearchparentLabel = false;
@@ -1551,15 +1566,13 @@ function DeleteElementButton(numberOfElement) {
 function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //elem has boxname...
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
-			element = searchElementToDelete(numberOfElement, elem.elems[i], paramsNodeId);
+			searchElementToDelete(numberOfElement, elem.elems[i], paramsNodeId);
 		}
 		if (elem.elems.includes(numberOfElement)) { //add a elems => elems[0,1...]
 			DeleteElementInElemFilter(elem, numberOfElement);
 		}
 	}
-	else {
-
-	}
+	
 }
 function DeleteElementInElemFilter(elem, numberOfElement) {
 	//do not delete the conditions filter because it is the position
