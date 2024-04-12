@@ -919,8 +919,9 @@ async function fillValueSelectorFilterRow(count) {
 		}
 		if (typeof valor === "undefined") {
 			valor=dataToFillSelect[index];
-			for (var a = 0; a < selectPropertyValue.length; a++) {
-				valor = valor[selectPropertyValue[a]];
+			var selectPropertyValueArray= selectPropertyValue.split("/");
+			for (var a = 0; a < selectPropertyValueArray.length; a++) {
+				valor = valor[selectPropertyValueArray[a]];
 			}
 
 		}
