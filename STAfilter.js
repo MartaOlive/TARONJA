@@ -262,6 +262,27 @@ function AddEntitiesSelectedBelowInFilterRow(number) {
 	var filterRowEntities = currentNode.STAFilterRowEntities[optionsRow];
 	var nextEntity;
 
+	//first Entity (currentNode)
+	var entity = searchParentLabel();
+	var DialogFilterRowEntitiesCheckBoxes = document.getElementById("DialogFilterRowEntitiesCheckBoxes");
+	var div = document.createElement("div");
+	var input = document.createElement("input");
+	var id = "Group" + 0 + "_" + entity;
+	div.setAttribute("id", id);
+	input.setAttribute("type", "radio");
+	input.setAttribute("name", "entity_" + 0);
+	input.setAttribute("id", id + "input")
+	input.setAttribute("value", entity);
+	input.setAttribute("onClick", `fillDialogFilterRowEntities("${number}","1","${entity}")`);
+	input.setAttribute("checked", true)
+	var label = document.createElement("label");
+	label.setAttribute("for", id + "input");
+	label.innerHTML = entity;
+	DialogFilterRowEntitiesCheckBoxes.appendChild(div);
+	div.appendChild(input);
+	div.appendChild(label);
+
+
 	for (var i = 0; i < filterRowEntities.length; i++) {
 		entitiesFiltered = takeEntitiesAndFilterThemInFilterRow(filterRowEntities, i);
 
@@ -273,38 +294,43 @@ function AddEntitiesSelectedBelowInFilterRow(number) {
 		}
 
 		var placeToPutChilds;
+		// if (i == 0) {
+		// 	placeToPutChilds = document.getElementById("DialogFilterRowEntitiesCheckBoxes");
+		// } else {
 		if (i == 0) {
-			placeToPutChilds = document.getElementById("DialogFilterRowEntitiesCheckBoxes");
+			placeToPutChilds = document.getElementById("Group" + i + "_" + entity);
 		} else {
-			placeToPutChilds = document.getElementById("Group" + (i - 1) + "_" + filterRowEntities[i]); //previous entity (previous group)
-		}
+			placeToPutChilds = document.getElementById("Group" + i + "_" + filterRowEntities[i]); //previous entity (previous group)
 
+		}
+		//}
 
 
 		for (var e = 0; e < entitiesFiltered.length; e++) {	//Create radiobuttons
-			var div = document.createElement("div");
-			var input = document.createElement("input");
-			var numi = i + 1
-			var id = "Group" + i + "_" + entitiesFiltered[e];
-			div.setAttribute("id", id);
-			input.setAttribute("type", "radio");
-			input.setAttribute("name", "entity_" + i);
-			input.setAttribute("id", id + "input")
-			input.setAttribute("value", entitiesFiltered[e]);
-			input.setAttribute("onClick", `fillDialogFilterRowEntities("${number}","${numi}","${entitiesFiltered[e]}")`);
+			var div2 = document.createElement("div");
+			var input2 = document.createElement("input");
+			var numToGroup = i + 1;
+			var numi = i + 2
+			var id = "Group" + numToGroup + "_" + entitiesFiltered[e];
+			div2.setAttribute("id", id);
+			input2.setAttribute("type", "radio");
+			input2.setAttribute("name", "entity_" + numToGroup);
+			input2.setAttribute("id", id + "input")
+			input2.setAttribute("value", entitiesFiltered[e]);
+			input2.setAttribute("onClick", `fillDialogFilterRowEntities("${number}","${numi}","${entitiesFiltered[e]}")`);
 			if (entitiesFiltered[e] == nextEntity) {
-				input.setAttribute("checked", true)
+				input2.setAttribute("checked", true)
 			}
 			var label = document.createElement("label");
 			label.setAttribute("for", id + "input");
 			label.innerHTML = entitiesFiltered[e];
-			div.appendChild(input);
-			div.appendChild(label);
+			div2.appendChild(input2);
+			div2.appendChild(label);
 
-			if (i != 0) {//position children "visually inside" father. 
-				div.style.marginLeft = 20 + "px";
-			}
-			placeToPutChilds.appendChild(div);
+
+			div2.style.marginLeft = 20 + "px"; //position children "visually inside" father. 
+
+			placeToPutChilds.appendChild(div2);
 		}
 	}
 }
@@ -918,8 +944,8 @@ async function fillValueSelectorFilterRow(count) {
 			valueUndefined = false;
 		}
 		if (typeof valor === "undefined") {
-			valor=dataToFillSelect[index];
-			var selectPropertyValueArray= selectPropertyValue.split("/");
+			valor = dataToFillSelect[index];
+			var selectPropertyValueArray = selectPropertyValue.split("/");
 			for (var a = 0; a < selectPropertyValueArray.length; a++) {
 				valor = valor[selectPropertyValueArray[a]];
 			}
