@@ -261,6 +261,7 @@ function AddEntitiesSelectedBelowInFilterRow(number) {
 	var optionsRow = "optionsRow" + number;
 	var filterRowEntities = currentNode.STAFilterRowEntities[optionsRow];
 	var nextEntity;
+
 	for (var i = 0; i < filterRowEntities.length; i++) {
 		entitiesFiltered = takeEntitiesAndFilterThemInFilterRow(filterRowEntities, i);
 
@@ -277,6 +278,9 @@ function AddEntitiesSelectedBelowInFilterRow(number) {
 		} else {
 			placeToPutChilds = document.getElementById("Group" + (i - 1) + "_" + filterRowEntities[i]); //previous entity (previous group)
 		}
+
+
+
 		for (var e = 0; e < entitiesFiltered.length; e++) {	//Create radiobuttons
 			var div = document.createElement("div");
 			var input = document.createElement("input");
@@ -373,7 +377,7 @@ function showInputProperty(count) {
 	var selectorProperty = document.getElementById("selectorProperty_" + count);
 	var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
 	var inputForProperty = document.getElementById("inputForProperty_" + count)
-	if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1)=="/"){
+	if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
 		//selectorPropertyVaue.includes("properties") || selectorPropertyValue == "parameters/" || selectorPropertyValue == "observedArea/coordinates/" || selectorPropertyValue == "dataQuality/") {
 		inputForProperty.style.display = "inline-block";
 	} else {
@@ -400,7 +404,7 @@ const featureExtension = ["feature/type", "feature/coordinates/0", "feature/coor
 //const resultQuality Observation
 function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: Entity obtained in input
 	var selectProperty = document.getElementById("selectorProperty_" + number);
-	var inputForProperty= document.getElementById("inputForProperty_" + number);
+	var inputForProperty = document.getElementById("inputForProperty_" + number);
 	selectProperty.innerHTML = "";
 
 	var properties = STAEntities[getSTAEntityPlural(lastEntity, true)]["properties"];
@@ -443,7 +447,7 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 				option.innerHTML = observedAreaExtension[a];
 				selectProperty.appendChild(option);
 				if (selectorInfo && selectorInfo.length != 0) {
-					if (observedAreaExtension[a] == selectorInfo[0][2][0]) { 
+					if (observedAreaExtension[a] == selectorInfo[0][2][0]) {
 						option.setAttribute("selected", true);
 					}
 				}
@@ -474,8 +478,8 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 
 		selectProperty.appendChild(option);
 	}
-	if (selectorInfo && selectorInfo.length != 0 &&selectorInfo[0][2].length==2) {//selectorInfo[0][2] : If inputForPropery is open, the element 0 in the array is the select and the second is the input
-		inputForProperty.value=selectorInfo[0][2][1];
+	if (selectorInfo && selectorInfo.length != 0 && selectorInfo[0][2].length == 2) {//selectorInfo[0][2] : If inputForPropery is open, the element 0 in the array is the select and the second is the input
+		inputForProperty.value = selectorInfo[0][2][1];
 	}
 
 }
@@ -891,6 +895,7 @@ async function fillValueSelectorFilterRow(count) {
 
 	}
 
+
 	//Fill Select
 	//Simple
 	var select = document.getElementById("selectorValue_" + count);
@@ -912,23 +917,36 @@ async function fillValueSelectorFilterRow(count) {
 		if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
 			valueUndefined = false;
 		}
+		if (typeof valor === "undefined") {
+			valor=dataToFillSelect[index];
+			for (var a = 0; a < selectPropertyValue.length; a++) {
+				valor = valor[selectPropertyValue[a]];
+			}
+
+		}
+
+
 		if (!arrayValors.find(element => element == valor)) { //create array with not arranged values
 			arrayValors.push(valor);
 		}
 	}
 
 	var arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
+	var valueToinput;
 
 	for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options
+
+		valueToinput = arrayValuesArranged[i];
+
 		var option = document.createElement("option");
-		option.setAttribute("value", arrayValuesArranged[i]);
-		option.innerHTML = arrayValuesArranged[i];
+		option.setAttribute("value", valueToinput);
+		option.innerHTML = valueToinput;
 		var option2 = document.createElement("option");
-		option2.setAttribute("value", arrayValuesArranged[i]);
-		option2.innerHTML = arrayValuesArranged[i];
+		option2.setAttribute("value", valueToinput);
+		option2.innerHTML = valueToinput;
 		var option3 = document.createElement("option");
-		option3.setAttribute("value", arrayValuesArranged[i]);
-		option3.innerHTML = arrayValuesArranged[i];
+		option3.setAttribute("value", valueToinput);
+		option3.innerHTML = valueToinput;
 		select.appendChild(option);
 		selectorValueInterval1.appendChild(option2);
 		selectorValueInterval2.appendChild(option3);
@@ -1116,8 +1134,8 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var selectorConditionValue = document.getElementById("selectorCondition_" + number).value;
 	var selectorValue = document.getElementById("selectorValue_" + number);
-	var selectorProperty=document.getElementById("selectorProperty_"+number);
-	var inputForProperty=document.getElementById("inputForProperty_"+number);
+	var selectorProperty = document.getElementById("selectorProperty_" + number);
+	var inputForProperty = document.getElementById("inputForProperty_" + number);
 	var selectorValueHasChildren;
 
 	if (selectorValue.hasChildNodes()) {
@@ -1187,11 +1205,11 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 
 	}
 
-	var selectorPropertyValue= selectorProperty.options[selectorProperty.selectedIndex].value;
-	if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1)=="/"){
-		inputForProperty.style.display="inline-block";
-	}else{
-		inputForProperty.style.display="none";
+	var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
+	if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
+		inputForProperty.style.display = "inline-block";
+	} else {
+		inputForProperty.style.display = "none";
 	}
 }
 var stopSearchparentLabel = false;
@@ -1572,7 +1590,7 @@ function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //elem has
 			DeleteElementInElemFilter(elem, numberOfElement);
 		}
 	}
-	
+
 }
 function DeleteElementInElemFilter(elem, numberOfElement) {
 	//do not delete the conditions filter because it is the position
