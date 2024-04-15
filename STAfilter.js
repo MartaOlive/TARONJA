@@ -223,15 +223,26 @@ function openModalRowFilterEntities(number) { //To open Modat to see and select 
 	document.getElementById("DialogFilterRowEntities").showModal();
 }
 
-function updateSTAFilterRowEntities(number, counter, entity) { //Modify or erase what is necessary
+function updateSTAFilterRowEntities(number, counter, entitySelected) { //Modify or erase what is necessary
 	var filterRowEntities = currentNode.STAFilterRowEntities;
+	var entity= searchParentLabel();
+
 
 	if (filterRowEntities["optionsRow" + number].length + 1 == counter) {
-		filterRowEntities["optionsRow" + number].push(entity); //If there is no entity in this position, just add it
+		filterRowEntities["optionsRow" + number].push(entitySelected); //If there is no entity in this position, just add it
 	} else {
-		var elementsToSplice = filterRowEntities["optionsRow" + number].length - counter; //Elements to erase to final. If entity changes, the rest has no sense
-		filterRowEntities["optionsRow" + number].splice(counter, elementsToSplice, entity);
+		if (entity != entitySelected) {
+			var elementsToSplice = filterRowEntities["optionsRow" + number].length - counter; //Elements to erase to final. If entity changes, the rest has no sense
+			filterRowEntities["optionsRow" + number].splice(counter, elementsToSplice, entitySelected);
+		}
+		else{
+			filterRowEntities["optionsRow" + number] = [entitySelected];
+		}
+
+
 	}
+
+
 
 }
 function fillDialogFilterRowEntities(number, row, selected) {
@@ -347,7 +358,11 @@ function okButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 			inputValue = currentNode.STAFilterRowEntities["optionsRow" + number][i];
 			lastEntity = currentNode.STAFilterRowEntities["optionsRow" + number][i];
 		} else {
-			inputValue += "/" + currentNode.STAFilterRowEntities["optionsRow" + number][i];
+			var entity = searchParentLabel();
+			if (entity != currentNode.STAFilterRowEntities["optionsRow" + number][i]) {
+				inputValue += "/" + currentNode.STAFilterRowEntities["optionsRow" + number][i];
+
+			}
 			lastEntity = currentNode.STAFilterRowEntities["optionsRow" + number][i];
 		}
 	}
@@ -404,7 +419,6 @@ function showInputProperty(count) {
 	var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
 	var inputForProperty = document.getElementById("inputForProperty_" + count)
 	if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
-		//selectorPropertyVaue.includes("properties") || selectorPropertyValue == "parameters/" || selectorPropertyValue == "observedArea/coordinates/" || selectorPropertyValue == "dataQuality/") {
 		inputForProperty.style.display = "inline-block";
 	} else {
 		inputForProperty.style.display = "none";
@@ -467,18 +481,7 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 				}
 			}
 		} else if (properties[i] == "observedArea") {
-			for (var a = 0; a < observedAreaExtension.length; a++) {
-				var option = document.createElement("option");
-				option.setAttribute("value", observedAreaExtension[a]);
-				option.innerHTML = observedAreaExtension[a];
-				selectProperty.appendChild(option);
-				if (selectorInfo && selectorInfo.length != 0) {
-					if (observedAreaExtension[a] == selectorInfo[0][2][0]) {
-						option.setAttribute("selected", true);
-					}
-				}
-			}
-
+			//nothing. Avoid that appear in the list. It is a poligon and it can't be filtered. 
 		}
 		else {
 			var option = document.createElement("option");
