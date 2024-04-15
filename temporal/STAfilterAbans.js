@@ -313,7 +313,6 @@ function okButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 	inputForEntityFilterRow.value = inputValue;
 	inputForEntityFilterRow.style.width = inputValue.length * 7 + "px";
 
-
 	fillPropertySelector(number, lastEntity);//To change properties of select
 	fillValueSelectorFilterRow(number);
 	showAndHiddeSelectorAndInputsFilterRow(number);

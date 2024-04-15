@@ -225,24 +225,25 @@ function openModalRowFilterEntities(number) { //To open Modat to see and select 
 
 function updateSTAFilterRowEntities(number, counter, entitySelected) { //Modify or erase what is necessary
 	var filterRowEntities = currentNode.STAFilterRowEntities;
-	var entity= searchParentLabel();
+	//var entity = searchParentLabel();
 
 
 	if (filterRowEntities["optionsRow" + number].length + 1 == counter) {
 		filterRowEntities["optionsRow" + number].push(entitySelected); //If there is no entity in this position, just add it
 	} else {
-		if (entity != entitySelected) {
+
+		var index = filterRowEntities["optionsRow" + number].indexOf(entitySelected);
+		if (index == (-1)) { //it doesnt exists yet
 			var elementsToSplice = filterRowEntities["optionsRow" + number].length - counter; //Elements to erase to final. If entity changes, the rest has no sense
 			filterRowEntities["optionsRow" + number].splice(counter, elementsToSplice, entitySelected);
+		} else { //it exist previously
+			var newArray = [];
+			for (var a=0;a<(index+1);a++){
+				newArray.push(filterRowEntities["optionsRow" + number][a]);
+			}
+			filterRowEntities["optionsRow" + number]=newArray;
 		}
-		else{
-			filterRowEntities["optionsRow" + number] = [entitySelected];
-		}
-
-
 	}
-
-
 
 }
 function fillDialogFilterRowEntities(number, row, selected) {
@@ -359,9 +360,12 @@ function okButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 			lastEntity = currentNode.STAFilterRowEntities["optionsRow" + number][i];
 		} else {
 			var entity = searchParentLabel();
+
 			if (entity != currentNode.STAFilterRowEntities["optionsRow" + number][i]) {
 				inputValue += "/" + currentNode.STAFilterRowEntities["optionsRow" + number][i];
 
+			} else {
+				inputValue = currentNode.STAFilterRowEntities["optionsRow" + number][i];
 			}
 			lastEntity = currentNode.STAFilterRowEntities["optionsRow" + number][i];
 		}
@@ -436,15 +440,12 @@ function extractLastEntityFromTextFromInputInFilterRow(textFromInput) {
 
 }
 const unitOfMeasurementExtension = ["unitOfMeasurement/name", "unitOfMeasurement/symbol", "unitOfMeasurement/definition"]; //Datastream
-const observedAreaExtension = ["observedArea/type", "observedArea/coordinates/"]; //Datastream
-const featureExtension = ["feature/type", "feature/coordinates/0", "feature/coordinates/1", "feature/type", "feature/geometry/type", "feature/geometry/coordinates/0", "feature/geometry/coordinates/1", "feature/properties/"] //featureOfInterest
+const featureExtension = ["feature/", "feature/type", "feature/coordinates/0", "feature/coordinates/1", "feature/type", "feature/geometry/type", "feature/geometry/coordinates/0", "feature/geometry/coordinates/1", "feature/properties/"] //featureOfInterest
+const locationExtension = ["location/", "location/type", "location/properties/", "location/geometry/type", "location/geometry/coordinates", "location/coordinates"]
 
-//const location Location
-//const metadata Sensor
-//const resultQuality Observation
 function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: Entity obtained in input
 	var selectProperty = document.getElementById("selectorProperty_" + number);
-	var inputForProperty = document.getElementById("inputForProperty_" + number);
+	//var inputForProperty = document.getElementById("inputForProperty_" + number);
 	selectProperty.innerHTML = "";
 
 	var properties = STAEntities[getSTAEntityPlural(lastEntity, true)]["properties"];
@@ -480,13 +481,28 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 					}
 				}
 			}
-		} else if (properties[i] == "observedArea") {
+		}
+		else if (properties[i] == "location") {
+			for (var a = 0; a < locationExtension.length; a++) {
+				var option = document.createElement("option");
+				option.setAttribute("value", locationExtension[a]);
+				option.innerHTML = locationExtension[a];
+				selectProperty.appendChild(option);
+				if (selectorInfo && selectorInfo.length != 0) {
+					if (locationExtension[a] == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
+						option.setAttribute("selected", true);
+					}
+				}
+			}
+		}
+
+		else if (properties[i] == "observedArea") {
 			//nothing. Avoid that appear in the list. It is a poligon and it can't be filtered. 
 		}
 		else {
 			var option = document.createElement("option");
 			var property;
-			if (properties[i] == "properties" || properties[i] == "dataQuality" || properties[i] == "parameters") {
+			if (properties[i] == "properties" || properties[i] == "dataQuality" || properties[i] == "parameters" || properties[i] == "resultQuality") {
 				property = properties[i] + "/";
 				option.setAttribute("value", property);
 				option.innerHTML = property;
