@@ -238,10 +238,10 @@ function updateSTAFilterRowEntities(number, counter, entitySelected) { //Modify 
 			filterRowEntities["optionsRow" + number].splice(counter, elementsToSplice, entitySelected);
 		} else { //it exist previously
 			var newArray = [];
-			for (var a=0;a<(index+1);a++){
+			for (var a = 0; a < (index + 1); a++) {
 				newArray.push(filterRowEntities["optionsRow" + number][a]);
 			}
-			filterRowEntities["optionsRow" + number]=newArray;
+			filterRowEntities["optionsRow" + number] = newArray;
 		}
 	}
 
@@ -416,7 +416,10 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 }
 function onchangePropertySelect(count) {
 	fillValueSelectorFilterRow(count);
+	//Dins el fillValue s'ha de mirar si la property acaba en "/", si es així, deixar el select buit i potser aixo ja farà q s'amagui al ser undefined
 	showInputProperty(count);
+
+	//
 }
 function showInputProperty(count) {
 	var selectorProperty = document.getElementById("selectorProperty_" + count);
@@ -957,46 +960,50 @@ async function fillValueSelectorFilterRow(count) {
 	var selectPropertyValue = selectProperty.options[selectProperty.selectedIndex].value;
 	var valueUndefined = true;
 
-	for (let index = 0; index < dataToFillSelect.length; index++) {
-		valor = dataToFillSelect[index][selectPropertyValue];
-		if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
-			valueUndefined = false;
-		}
-		if (typeof valor === "undefined") {
-			valor = dataToFillSelect[index];
-			var selectPropertyValueArray = selectPropertyValue.split("/");
-			for (var a = 0; a < selectPropertyValueArray.length; a++) {
-				valor = valor[selectPropertyValueArray[a]];
+	
+	if (selectPropertyValue.charAt(selectPropertyValue.length - 1) != "/") { //If property values can be charged. 
+		for (let index = 0; index < dataToFillSelect.length; index++) {
+			valor = dataToFillSelect[index][selectPropertyValue];
+			if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
+				valueUndefined = false;
+			}
+			if (typeof valor === "undefined" && selectPropertyValue.charAt(selectPropertyValue.length - 1) == "/") {
+				valor = dataToFillSelect[index];
+				var selectPropertyValueArray = selectPropertyValue.split("/");
+				for (var a = 0; a < selectPropertyValueArray.length; a++) {
+					valor = valor[selectPropertyValueArray[a]];
+				}
+
 			}
 
+
+			if (!arrayValors.find(element => element == valor)) { //create array with not arranged values
+				arrayValors.push(valor);
+			}
 		}
 
+		var arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
+		var valueToinput;
 
-		if (!arrayValors.find(element => element == valor)) { //create array with not arranged values
-			arrayValors.push(valor);
+		for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options
+
+			valueToinput = arrayValuesArranged[i];
+
+			var option = document.createElement("option");
+			option.setAttribute("value", valueToinput);
+			option.innerHTML = valueToinput;
+			var option2 = document.createElement("option");
+			option2.setAttribute("value", valueToinput);
+			option2.innerHTML = valueToinput;
+			var option3 = document.createElement("option");
+			option3.setAttribute("value", valueToinput);
+			option3.innerHTML = valueToinput;
+			select.appendChild(option);
+			selectorValueInterval1.appendChild(option2);
+			selectorValueInterval2.appendChild(option3);
 		}
 	}
 
-	var arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
-	var valueToinput;
-
-	for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options
-
-		valueToinput = arrayValuesArranged[i];
-
-		var option = document.createElement("option");
-		option.setAttribute("value", valueToinput);
-		option.innerHTML = valueToinput;
-		var option2 = document.createElement("option");
-		option2.setAttribute("value", valueToinput);
-		option2.innerHTML = valueToinput;
-		var option3 = document.createElement("option");
-		option3.setAttribute("value", valueToinput);
-		option3.innerHTML = valueToinput;
-		select.appendChild(option);
-		selectorValueInterval1.appendChild(option2);
-		selectorValueInterval2.appendChild(option3);
-	}
 
 	showAndHiddeSelectorAndInputsFilterRow(count);
 
