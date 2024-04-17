@@ -747,23 +747,42 @@
 		}
 
 		//Return null if there is no reason (and there is a "fit").
+	
 		function reasonNodeDoesNotFitWithPrevious(node, parentNode) {
-			if (parentNode.image=="ogc.png")
+			if (parentNode.image == "ogc.png" && node.image != "FilterRowsSTA.png") {
+				
 				return null;
+			} else if (parentNode.image == "ogc.png" && node.image == "FilterRowsSTA.png") {
+				console.log("nop");
+				return "You need to select first an Entity";
+			}
 			if (TableOperations[removeExtension(parentNode.image)] && TableOperations[removeExtension(parentNode.image)].leafNode==true)
 				return "Parent node is a leaf node and cannot be connected with any other node";
 			if (node.image=="OneValue.png" && parentNode.image!="Observations.png")
 				return "'One value' node is designed be connected to an 'observations' node only.";
 			var idNode=IdOfSTAEntity(node);
-			if (idNode<0)
+			if (idNode < 0) {
+				var entity = getSTAURLLastEntity(parentNode.STAURL);
+				var staEntitiesList = Object.keys(STAEntities);
+				var isPlural = false;
+				for (var i = 0; i < staEntitiesList.length; i++) {
+					if (staEntitiesList[i] == entity) {
+						isPlural = true;
+						break;
+					}
+				}
+				if (node.image == "FilterRowsSTA.png" && isPlural == false) {
+					return "Your result is already one value, you can not filter it more"
+				} else {
 				return null;
-			if (!parentNode.STAURL)
-				return null;
+			}
+			}
 			var getCon=getConnectionSTAEntity(parentNode, node)
 			if (getCon.error)
 				return getCon.error;
 			return null;
 		}
+		
 
 
 		window.onbeforeunload = function () { return "Your work will be lost."; }
