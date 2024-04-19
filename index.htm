@@ -236,7 +236,7 @@
 		<div id="divTitleSelectRow" class="center" style="font-size: large;"></div>
 		<form>
 			Select an element:
-			<span id="DialogSelectRowsTable">
+			<span id="DialogFilterRowsTable">
 			</span>
 			<div class="center">
 				<button value="default" onClick="GetSelectRow(event)">OK</button>
@@ -289,7 +289,8 @@
 						height="20" valign="middle"> Add STA service</button><br>
 				<span id="ButtonsContextMenuObjects"></span><br>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button>
-				<button onclick='renameCircularImage(event, "DialogContextMenu")'>Rename</button><br>
+				<button onclick='renameCircularImage(event, "DialogContextMenu")'>Rename</button>
+				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br><br>
 			</p>
 			<div class="center">
 				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
@@ -686,7 +687,7 @@
 					SelectColumnsTable: {description: "Select Columns"},
 					SelectRowTable: {description: "Select Row"},
 					JoinTables: {description: "Join Tables"},
-					/*SelectRowsTable: {description: "Select Rows"},*/
+					FilterRowsTable: {description: "Filter Rows"}, 
 					SeparateColumns: {description: "Separate Columns"},
 					ScatterPlot: {description: "Scatter Plot", leafNode: true},
 					OneValue: {description: "One Value", leafNode: true},
@@ -796,7 +797,7 @@
 			if (node.image=="OneValue.png" && parentNode.image!="Observations.png")
 				return "'One value' node is designed be connected to an 'observations' node only.";
 			var idNode=IdOfSTAEntity(node);
-			if (idNode < 0) {
+			if (idNode < 0 && node.label !="FilterRowsTable") {
 				var entity = getSTAURLLastEntity(parentNode.STAURL);
 				var staEntitiesList = Object.keys(STAEntities);
 				var isPlural = false;
@@ -810,11 +811,14 @@
 					return "Your result is already one value, you can not filter it more"
 				} else {
 				return null;
+				}
 			}
+			if (node.label != "FilterRowsTable"){
+				var getCon=getConnectionSTAEntity(parentNode, node)
+				if (getCon.error)
+					return getCon.error;
 			}
-			var getCon=getConnectionSTAEntity(parentNode, node)
-			if (getCon.error)
-				return getCon.error;
+			
 			return null;
 		}
 
@@ -3911,20 +3915,23 @@
 				addTitleInRowFilterDialog("divTitleSelectRow");
 
 			if (!data || !data.length) {
-				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
+				document.getElementById("DialogFilterRowsTable").innerHTML = "No data to show.";
 				return;
 			}
-			document.getElementById("DialogSelectRowsTable").innerHTML = GetHTMLTable(data, parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data), false, "SelectRow_", node.STAURLIdSelected ? node.STAURLIdSelected : 0, null, "", isAttributeAnyURI);
+			document.getElementById("DialogFilterRowsTable").innerHTML = GetHTMLTable(data, parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data), false, "SelectRow_", node.STAURLIdSelected ? node.STAURLIdSelected : 0, null, "", isAttributeAnyURI);
 		}
 
 		function ShowTableFilterRowsDialog(parentNode, node) {
 			var data = parentNode.STAdata;
 			var dataAttributes = getDataAttributes(data);
 
-			addTitleInRowFilterDialog("divTitleSelectRows");
+			//if (parentNode.label!= "FilterRowsTable"){
+				addTitleInRowFilterDialog("divTitleSelectRows");
+			//}
+			
 
 			if (!data || !data.length) {
-				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
+				document.getElementById("DialogFilterRowsTable").innerHTML = "No data to show.";
 				return;
 			}
 
@@ -4102,7 +4109,7 @@
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				return true;
 			}
-			if (nodeTo.image == "SelectRowTable.png") {
+			if (nodeTo.image == "SelectRowTable.png" || nodeTo.image == "FilterRowsTable.png"){
 				if (nodeFrom.STAdata)
 					nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
 				if (nodeFrom.STAdataAttributes)
@@ -4288,11 +4295,20 @@
 						document.getElementById("DialogSelectRow").showModal();
 					}
 				}
-				else if (currentNode.image == "FilterRowsSTA.png") {
+				else if (currentNode.image == "FilterRowsSTA.png" || currentNode.image == "FilterRowsTable.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode) {
-						if (parentNode.STAURL)
-							ShowTableFilterRowsDialog(parentNode, currentNode);
+						if (parentNode.STAURL){
+							if (currentNode.image == "FilterRowsSTA.png"&& parentNode.STAURL){
+								ShowTableFilterRowsDialog(parentNode, currentNode);
+							}
+						}else{
+							if (currentNode.image == "FilterRowsTable.png"){ //It comes from CSV, it hasn't got STAURL
+								ShowTableFilterRowsDialog(parentNode, currentNode);
+							}
+						}
+					
+						
 						document.getElementById("DialogFilterRows").showModal();
 					}
 				}
@@ -4599,6 +4615,12 @@
 					});
 				}
 			}
+		}
+		function giveMeNetworkInformation(event) {
+			if (event)
+				event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectColumns").close();
+			console.log(networkNodes);
 		}
 	</script>
 

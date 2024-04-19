@@ -50,7 +50,7 @@ const selectConditionContentText = ['---Choose operator ---', ' = ', ' &ne; ', '
 
 
 function addNecessaryVariablesToFilterRowsSTANode(actualNode) {
-
+	var actualNodeLabel = actualNode.label;
 	//Create node propierties
 	if (!actualNode.STAboxNames)
 		actualNode.STAboxNames = ["0_0"];
@@ -69,15 +69,18 @@ function addNecessaryVariablesToFilterRowsSTANode(actualNode) {
 			nexus: null,
 			boxName: "0_0"
 		};
-	if (typeof actualNode.STAUrlAPICounter === "undefined")
-		actualNode.STAUrlAPICounter = [];
-	if (typeof actualNode.STAUrlAPI === "undefined")
-		actualNode.STAUrlAPI = "";
+
 	if (typeof actualNode.STACounter === "undefined")
 		actualNode.STACounter = "";
+
+	
+	if (typeof actualNode.STAUrlAPI === "undefined")
+		actualNode.STAUrlAPI = "";
+	if (typeof actualNode.STAUrlAPICounter === "undefined")
+		actualNode.STAUrlAPICounter = [];
 	if (!actualNode.STAFilterRowEntities)
 		actualNode.STAFilterRowEntities = {
-			optionsRow0: [getSTAURLLastEntity(actualNode.STAURL)]
+			optionsRow0: [actualNode.STAURL ? getSTAURLLastEntity(actualNode.STAURL) : ""]
 		};
 
 	networkNodes.update(actualNode);
@@ -86,7 +89,7 @@ function addTitleInRowFilterDialog(divName) {
 	var divTitleSelectRows = document.getElementById(divName);
 	var entity = null;
 	divTitleSelectRows.innerHTML = ""; //Erase old title saved
-	if (getSTAURLLastEntity(currentNode.STAURL)) {
+	if (currentNode.STAURL && getSTAURLLastEntity(currentNode.STAURL)) {
 		entity = getSTAURLLastEntity(currentNode.STAURL);
 		for (var i = 0; i < STAEntitiesArray.length; i++) {
 			if (STAEntitiesArray[i] == entity) {
@@ -100,15 +103,6 @@ function addTitleInRowFilterDialog(divName) {
 }
 
 
-//Is an object? !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-function isAnObject(nodeId, number) {
-	var select = document.getElementById("selectorValue_" + number);
-	var selectOption = select.options[select.selectedIndex].value;
-	if (selectOption === "[object Object]") {
-
-	}
-
-}
 
 //Build selectors
 function createSelectorRowFilters(number) {
@@ -205,7 +199,7 @@ function createEntitySelectorInFilterRows(selectorInfo, count) {
 
 	var entityToInput;
 	if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
-		entityToInput = getSTAURLLastEntity(currentNode.STAURL);
+		entityToInput = currentNode.STAURL ? getSTAURLLastEntity(currentNode.STAURL) : "";
 	} else {
 		entityToInput = selectorInfo[0][1];
 	}
@@ -960,7 +954,7 @@ async function fillValueSelectorFilterRow(count) {
 	var selectPropertyValue = selectProperty.options[selectProperty.selectedIndex].value;
 	var valueUndefined = true;
 
-	
+
 	if (selectPropertyValue.charAt(selectPropertyValue.length - 1) != "/") { //If property values can be charged. 
 		for (let index = 0; index < dataToFillSelect.length; index++) {
 			valor = dataToFillSelect[index][selectPropertyValue];
@@ -2001,4 +1995,3 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 	}
 
 }
-
