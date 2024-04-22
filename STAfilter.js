@@ -121,11 +121,46 @@ function createSelectorRowFilters(number) {
 			}
 		}
 	}
-	createEntitySelectorInFilterRows(selectorInfo, number);
-	createPropertySelectInFilterRows(selectorInfo, number);
-	createConditionSelectInFilterRows(selectorInfo, number);
-	createValueSelectInFilterRows(selectorInfo, number);
 
+	var currentNodeLabel = currentNode.label;
+
+	if (currentNodeLabel == "FilterRowsSTA") {
+		createEntitySelectorInFilterRows(selectorInfo, number);
+		createPropertySelectInFilterRows(selectorInfo, number);
+		createConditionSelectInFilterRows(selectorInfo, number);
+		createValueSelectInFilterRows(selectorInfo, number);
+	} else { //CSV
+		createColumsSelectorFilterRows(selectorInfo, number);
+		createValuesSelectorFilterRows(selectorInfo, number);
+	}
+
+
+}
+
+function createColumsSelectorFilterRows(selectorInfo, count) {
+	var optionsRow = document.getElementById("optionsRow_" + count);
+	var selectColums = document.createElement("select");
+	selectColums.setAttribute("id", "selectorColums_" + count);
+	//select.setAttribute("onChange", "onchangeColumsSelect('" + count + "')");
+	var option = document.createElement("option"); //First option
+	option.setAttribute("value", "columna1");
+	option.innerHTML = "Columna1";
+	selectColums.appendChild(option);
+	optionsRow.appendChild(selectColums);
+	//FillSelector
+}
+function createValuesSelectorFilterRows(selectorInfo, count) {
+	var optionsRow = document.getElementById("optionsRow_" + count);
+	var selectValues = document.createElement("select");
+	selectValues.setAttribute("id", "selectorValues_" + count);
+	//select.setAttribute("onChange", "onchangeValuesSelect('" + count + "')");
+	var option = document.createElement("option"); //First option
+	option.setAttribute("value", "value1");
+	option.innerHTML = "value1";
+	selectValues.appendChild(option);
+	optionsRow.appendChild(selectValues)
+	
+	//FillSelector
 }
 //Obtain Data from API
 async function loadAPIDataToFillSelectInRowFilter(url) {
