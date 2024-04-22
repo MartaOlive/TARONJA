@@ -50,7 +50,7 @@ const selectConditionContentText = ['---Choose operator ---', ' = ', ' &ne; ', '
 
 
 function addNecessaryVariablesToFilterRowsSTANode(actualNode) {
-	var actualNodeLabel = actualNode.label;
+
 	//Create node propierties
 	if (!actualNode.STAboxNames)
 		actualNode.STAboxNames = ["0_0"];
@@ -69,21 +69,16 @@ function addNecessaryVariablesToFilterRowsSTANode(actualNode) {
 			nexus: null,
 			boxName: "0_0"
 		};
-
+	if (typeof actualNode.STAUrlAPICounter === "undefined")
+		actualNode.STAUrlAPICounter = [];
+	if (typeof actualNode.STAUrlAPI === "undefined")
+		actualNode.STAUrlAPI = "";
 	if (typeof actualNode.STACounter === "undefined")
 		actualNode.STACounter = "";
-
-	if (actualNodeLabel == "FilterRowsSTA") { //Only necessary in STA Filter, not in CSV
-		if (typeof actualNode.STAUrlAPI === "undefined")
-			actualNode.STAUrlAPI = "";
-		if (typeof actualNode.STAUrlAPICounter === "undefined")
-			actualNode.STAUrlAPICounter = [];
-		if (!actualNode.STAFilterRowEntities)
-			actualNode.STAFilterRowEntities = {
-				optionsRow0: [actualNode.STAURL ? getSTAURLLastEntity(actualNode.STAURL) : ""]
-			};
-
-	}
+	if (!actualNode.STAFilterRowEntities)
+		actualNode.STAFilterRowEntities = {
+			optionsRow0: [actualNode.STAURL ? getSTAURLLastEntity(actualNode.STAURL) : ""]
+		};
 
 	networkNodes.update(actualNode);
 }
@@ -105,6 +100,15 @@ function addTitleInRowFilterDialog(divName) {
 }
 
 
+//Is an object? !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+function isAnObject(nodeId, number) {
+	var select = document.getElementById("selectorValue_" + number);
+	var selectOption = select.options[select.selectedIndex].value;
+	if (selectOption === "[object Object]") {
+
+	}
+
+}
 
 //Build selectors
 function createSelectorRowFilters(number) {
@@ -242,8 +246,15 @@ function updateSTAFilterRowEntities(number, counter, entitySelected) { //Modify 
 	}
 
 }
+function fillDialogFilterRowEntities(number, row, selected) {
+	var dialogFilterRowEntitiesCheckBoxes = document.getElementById("DialogFilterRowEntitiesCheckBoxes");
+	dialogFilterRowEntitiesCheckBoxes.innerHTML = ""; //Empty DialogFilterRowEntitiesCheckBoxes
 
-
+	if (selected != "") { //avoid first time
+		updateSTAFilterRowEntities(number, row, selected);//Update currentNode.STAFilterRowEntities
+	}
+	AddEntitiesSelectedBelowInFilterRow(number);
+}
 function takeEntitiesAndFilterThemInFilterRow(filterRowEntities, i) { //avoid duplications
 	var entities = STAEntities[getSTAEntityPlural(filterRowEntities[i], true)].entities;
 	var entitiesFiltered = entities; //To use the filter (entities not filtered yet);
@@ -335,22 +346,12 @@ function AddEntitiesSelectedBelowInFilterRow(number) {
 		}
 	}
 }
-
-function fillDialogFilterRowEntities(number, row, selected) { //Ok in DialogFilterRowEntities
-	var dialogFilterRowEntitiesCheckBoxes = document.getElementById("DialogFilterRowEntitiesCheckBoxes");
-
-	dialogFilterRowEntitiesCheckBoxes.innerHTML = ""; //Empty DialogFilterRowEntitiesCheckBoxes
-
-	if (selected != "") { //avoid first time
-		updateSTAFilterRowEntities(number, row, selected);//Update currentNode.STAFilterRowEntities
-	}
-	AddEntitiesSelectedBelowInFilterRow(number);
-}
 function okButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 	event.preventDefault();
 	var dialogFilterRowEntities = document.getElementById("DialogFilterRowEntities");
 	var number = dialogFilterRowEntities.getAttribute("data-rowNumber");
 	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + number);
+
 	var inputValue;
 	var lastEntity;
 	for (var i = 0; i < currentNode.STAFilterRowEntities["optionsRow" + number].length; i++) {
@@ -371,6 +372,7 @@ function okButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 	}
 	inputForEntityFilterRow.value = inputValue;
 	inputForEntityFilterRow.style.width = inputValue.length * 7 + "px";
+
 	fillPropertySelector(number, lastEntity);//To change properties of select
 	fillValueSelectorFilterRow(number);
 	showAndHiddeSelectorAndInputsFilterRow(number);
@@ -380,16 +382,22 @@ function okButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 //PropertySelect
 function createPropertySelectInFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
+
 	//optionsRow.innerHTML += `<select id="selectorProperty_${count}" onchange="fillValueSelectorFilterRow('${count}')" style="margin-left:10px"></select>`; //If I use this , the value of the entity disappears
+
 	var select = document.createElement("select");
 	select.setAttribute("id", "selectorProperty_" + count);
 	select.setAttribute("onChange", "onchangePropertySelect('" + count + "')");
 	select.style.marginLeft = "10px";
+
 	if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
 		var entity = getSTAURLLastEntity(currentNode.STAURL);
 	} else {
 		var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(selectorInfo[0][1]), true);
 	}
+
+
+
 	//Input for properties/parameters
 	//optionsRow.innerHTML += `<input type="text" id="inputForProperty_${count}" placeholder="Example: /type" style="margin-left:5px"></input>`;
 	var inputForProperty = document.createElement("input");
@@ -398,14 +406,19 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 	inputForProperty.setAttribute("placeholder", "Example: type");
 	inputForProperty.style.display = "none";
 	inputForProperty.style.marginLeft = "5px";
+
 	optionsRow.appendChild(select);
 	optionsRow.appendChild(inputForProperty);
+
 	fillPropertySelector(count, entity, selectorInfo);
+
+
 }
 function onchangePropertySelect(count) {
 	fillValueSelectorFilterRow(count);
 	//Dins el fillValue s'ha de mirar si la property acaba en "/", si es així, deixar el select buit i potser aixo ja farà q s'amagui al ser undefined
 	showInputProperty(count);
+
 	//
 }
 function showInputProperty(count) {
@@ -443,6 +456,8 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 	option.setAttribute("value", " ");
 	option.innerHTML = "--- choose Property ---";
 	selectProperty.appendChild(option);
+
+
 	for (var i = 0; i < properties.length; i++) {// to fill property/property
 		if (properties[i] == "unitOfMeasurement") {
 			for (var u = 0; u < unitOfMeasurementExtension.length; u++) {
@@ -455,6 +470,7 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 						option.setAttribute("selected", true);
 					}
 				}
+
 			}
 		} else if (properties[i] == "feature") {
 			for (var a = 0; a < featureExtension.length; a++) {
@@ -494,30 +510,33 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 				option.setAttribute("value", property);
 				option.innerHTML = property;
 
-
-
-
 			} else {
 				option.setAttribute("value", properties[i]);
 				property = properties[i]
 				option.innerHTML = property;
+
 			}
 			if (selectorInfo && selectorInfo.length != 0) {
 				if (property == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
 					option.setAttribute("selected", true);
 				}
 			}
+
 		}
+
 		selectProperty.appendChild(option);
 	}
 	if (selectorInfo && selectorInfo.length != 0 && selectorInfo[0][2].length == 2) {//selectorInfo[0][2] : If inputForPropery is open, the element 0 in the array is the select and the second is the input
 		inputForProperty.value = selectorInfo[0][2][1];
 	}
+
 }
+
 //condition select
 function createConditionSelectInFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
 	var select = document.createElement("select");
+
 	select.setAttribute("id", "selectorCondition_" + count);
 	select.style.marginLeft = "10px";
 	var selectConditionContent2;
@@ -529,8 +548,11 @@ function createConditionSelectInFilterRows(selectorInfo, count) {
 			selectConditionContent2 = selectConditionContent;
 		}
 	} else {
+
 		selectConditionContent2 = selectConditionContent;
 	}
+
+
 	for (var i = 0; i < selectConditionContent2.length; i++) { //create options in condition Select
 		var opcioCondicio = document.createElement("option");
 		opcioCondicio.setAttribute("value", selectConditionContent2[i]);
@@ -546,13 +568,17 @@ function createConditionSelectInFilterRows(selectorInfo, count) {
 	optionsRow.appendChild(select);
 }
 function changeSelectConditionValues(number, wichinputText, value1, valueInput1, valueInput2) {
+
 	var selectCondition = document.getElementById("selectorCondition_" + number);
+
 	if (wichinputText == "simple") {
 		var typeOfValues = typeOfValueFromInput(wichinputText, value1);
+
 	} else {
 		var typeOfValues = typeOfValueFromInput(wichinputText, valueInput1, valueInput2);
 	}
 	var actualConditionSelected = selectCondition.options[selectCondition.selectedIndex].value;
+
 	var selectContent;
 	selectCondition.innerHTML = ""; //Erase to not acumulate it
 	if (wichinputText == "simple") {
@@ -561,9 +587,11 @@ function changeSelectConditionValues(number, wichinputText, value1, valueInput1,
 	} else {
 		selectContent = selectConditionContent; //Has no sense to have an interval with text
 	}
+
 	for (var i = 0; i < selectContent.length; i++) { //Create options to select condition
 		var opcioCondicio = document.createElement("option");
 		opcioCondicio.setAttribute("value", selectContent[i]);
+
 		opcioCondicio.innerHTML = selectContent[i];
 		if (selectContent[i] == actualConditionSelected) {
 			opcioCondicio.setAttribute("selected", true);
@@ -578,19 +606,25 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 			value1 = "";
 		}
 	} else {
+
 		if (value1 == null) {
 			value1 = "";
 		} else if (value2 == null) {
 			value2 = "";
 		}
 	}
+
+
 	if (wichinputText == "simple") {
+
 		if (value1.includes("-") == true) {//inputText1
 			var value1Array = value1.split("-");
+
 			if (value1.includes("/")) {
 				if (value1Array.length == 5) {
 					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
 						typeOfValues = "date";
+
 					}
 				}
 			} else {
@@ -602,9 +636,11 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 					}
 				}
 			}
+
 		}
 		if (typeOfValues != "date") {
 			if (Number.isNaN(parseInt(value1)) != true) {
+
 				var newValue = "";
 				for (var a = 0; a < value1.length; a++) {//erase 0 if starts with 0. 
 					if (value1.charAt(a) != 0) {
@@ -612,11 +648,13 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 					}
 				}
 				value1 = newValue;
+
 				if (value1.length != parseInt(value1).toString().length && value1.length != parseFloat(value1).toString().length) {
 					typeOfValues = "text";
 				} else {
 					typeOfValues = "number";
 				}
+
 			} else {
 				typeOfValues = "text";
 			}
@@ -628,6 +666,7 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 	else {//interval
 		var inputText1 = "no";
 		var inputText2 = "no";
+
 		//is date
 		if (value1.includes("-") == true) {//inputText1
 			var value1Array = value1.split("-");
@@ -635,36 +674,44 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 				if (value1Array.length == 5) {
 					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
 						inputText1 = "date";
+
 					}
 				}
 			} else {
 				if (value1Array.length == 3) {
 					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
 						inputText1 = "date";
+
 					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
 						typeOfValues = "date";
 					}
 				}
 			}
+
 		}
+
 		if (value2.includes("-") == true) {//inputText1
 			var value2Array = value2.split("-");
 			if (value2.includes("/")) {
 				if (value2Array.length == 5) {
 					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
 						inputText2 = "date";
+
 					}
 				}
 			} else {
 				if (value2Array.length == 3) {
 					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
 						inputText2 = "date";
+
 					} else if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2].length == 2 && !isNaN(parseInt(value2Array[0])) && !isNaN(parseInt(value2Array[1])) && !isNaN(parseInt(value2Array[2]))) { //only date without Time
 						typeOfValues = "date";
 					}
 				}
 			}
+
 		}
+
 		if (inputText1 != "date") {
 			if (Number.isNaN(parseInt(value1)) != true) { //numero
 				var newValue = "";
@@ -683,6 +730,7 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 				inputText1 = "empty";
 			} else { inputText1 = "text"; }
 		}
+
 		if (inputText2 != "date") {
 			if (Number.isNaN(parseInt(value2)) != true) { //If first is not a number, let's see second
 				var newValue2 = "";
@@ -701,10 +749,13 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 				inputText2 = "empty";
 			} else { inputText2 = "text"; }
 		}
+
+
 		if (inputText1 == "text" || inputText2 == "text") {
 			typeOfValues = "text";
 		} else if ((inputText1 == "date" && inputText2 == "empty") || (inputText1 == "empty" && inputText2 == "date") || (inputText1 == "date" && inputText2 == "date")) {
 			typeOfValues = "date";
+
 		} else if (inputText1 == "empty" && inputText2 == "empty") {
 			typeOfValues = "empty";
 		}
@@ -712,7 +763,9 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 			typeOfValues = "number";
 		}
 	}
+
 	return typeOfValues;
+
 }
 //Values select
 function createValueSelectInFilterRows(selectorInfo, count) {
@@ -721,6 +774,8 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + count);
 	var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
 	var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue), true);
+
+
 	var url = getURLWithoutQueryParams(currentNode.STAURL);
 	//Find the entity to search values
 	var parentLabel = searchParentLabel();
@@ -729,14 +784,18 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 		url = url.slice(parentLabelLength); //Erase entity without "/"
 		url += entity;
 	}
+
 	//Selects
 	var divFilterContainer = document.createElement("div");
 	divFilterContainer.setAttribute("id", "divFilterContainer_" + count);
 	divFilterContainer.setAttribute("style", "display: none;");
 	optionsRow.appendChild(divFilterContainer);
+
 	select.setAttribute("id", "selectorValue_" + count);
 	select.setAttribute("onChange", "changeSelectValueRowFilter('" + currentNode.id + "','" + count + "')");
 	divFilterContainer.appendChild(select);
+
+
 	//Simple: inputText, buttons and displaySelects
 	var inputText = document.createElement("input");
 	inputText.setAttribute("id", "inputText_" + count);
@@ -752,25 +811,31 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 			event.preventDefault();
 		}
 	});
+
 	optionsRow.appendChild(inputText);
+
 	var okButton = document.createElement("button");
 	okButton.setAttribute("onclick", "closeModalSelectInValue('" + count + "','ok')");
 	okButton.setAttribute("id", "okButton_" + count);
 	okButton.innerHTML = "Ok";
+
 	divFilterContainer.appendChild(select);
 	var cancelButton = document.createElement("button");
 	cancelButton.setAttribute("onclick", "closeModalSelectInValue('" + count + "','cancel')");
 	cancelButton.setAttribute("id", "cancelButton_" + count);
 	cancelButton.innerHTML = "Cancel";
+
 	var displaySelect = document.createElement("button");
 	displaySelect.setAttribute("id", "displaySelect_" + count);
 	displaySelect.setAttribute("onclick", "changeWriteToSelect('" + count + "','simple')");
 	optionsRow.appendChild(displaySelect);
 	divFilterContainer.appendChild(okButton);
 	divFilterContainer.appendChild(cancelButton);
+
 	var buttonImage2 = document.createElement("img"); //Button image
 	buttonImage2.setAttribute("src", "arrowSelectButton.png");
 	displaySelect.appendChild(buttonImage2);
+
 	//Interval: inputText, buttons and displaySelects
 	var divFilterContainer2 = document.createElement("div");
 	divFilterContainer2.setAttribute("id", "divFilterContainer2_" + count);
@@ -781,14 +846,18 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	var selectorValueInterval2 = document.createElement("select");
 	selectorValueInterval2.setAttribute("id", "selectorValueInterval2_" + count);
 	selectorValueInterval2.style.marginLeft = "5px";
+
 	divFilterContainer2.appendChild(selectorValueInterval1);
 	divFilterContainer2.appendChild(selectorValueInterval2);
+
+
 	var inputTextInterval1 = inputText.cloneNode(true);
 	inputTextInterval1.setAttribute("id", "inputTextInterval1_" + count);
 	inputTextInterval1.style.marginLeft = "10px";
 	var inputTextInterval2 = inputText.cloneNode(true);
 	inputTextInterval2.setAttribute("id", "inputTextInterval2_" + count);
 	inputTextInterval2.style.marginLeft = "5px";
+
 	inputTextInterval1.addEventListener("input", function () {
 		changesInInputValueRowFilter("interval", count)
 	});
@@ -805,25 +874,34 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 			event.preventDefault();
 		}
 	});
+
 	optionsRow.appendChild(inputTextInterval1);
 	optionsRow.appendChild(inputTextInterval2);
+
+
 	var okButtonInterval = document.createElement("button");
 	okButtonInterval.setAttribute("onclick", "closeModalSelectInValue('" + count + "','ok')");
 	okButtonInterval.setAttribute("id", "okButtonInterval_" + count);
 	okButtonInterval.innerHTML = "Ok";
+
 	var cancelButtonInterval = document.createElement("button");
 	cancelButtonInterval.setAttribute("onclick", "closeModalSelectInValue('" + count + "','cancel')");
 	cancelButtonInterval.setAttribute("id", "cancelButtonInterval_" + count);
 	cancelButtonInterval.innerHTML = "Cancel";
+
 	var displaySelectInterval = document.createElement("button");
 	displaySelectInterval.setAttribute("id", "displaySelectInterval_" + count);
 	displaySelectInterval.setAttribute("onclick", "changeWriteToSelect('" + count + "','interval')");
 	var buttonImage3 = document.createElement("img"); //button image
 	buttonImage3.setAttribute("src", "arrowSelectButton.png");
 	displaySelectInterval.appendChild(buttonImage3);
+
 	optionsRow.appendChild(displaySelectInterval);
 	divFilterContainer2.appendChild(okButtonInterval);
 	divFilterContainer2.appendChild(cancelButtonInterval);
+
+
+
 	//Put previous values in input Text( 
 	if (selectorInfo.length != 0) {
 		if (selectorInfo[0][3] == ' [a,b] ' || selectorInfo[0][3] == ' (a,b] ' || selectorInfo[0][3] == ' [a,b) ' || selectorInfo[0][3] == ' (a,b) ') {
@@ -833,17 +911,22 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 			inputText.value = selectorInfo[0][4];
 		}
 	}
+
 	fillValueSelectorFilterRow(count);
 }
 async function fillValueSelectorFilterRow(count) {
+
 	var inputForEntityFilterRowValue = document.getElementById("inputForEntityFilterRow_" + count).value;
 	var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue, true));
+
 	var url = getURLWithoutQueryParams(currentNode.STAURL);
 	//Find the entity to search values
 	var parentLabel = searchParentLabel();
 	if (parentLabel != entity) {
 		url = url.replace(parentLabel, entity);
+
 	}
+
 	var dataToFillSelect;
 	if (typeof currentNode.STAentityValuesForSelect !== "undefined") {
 		if (entity != currentNode.STAentityValuesForSelect[0]) { //avoid to call to API for same entity
@@ -857,7 +940,10 @@ async function fillValueSelectorFilterRow(count) {
 		dataToFillSelect = await loadAPIDataToFillSelectInRowFilter(url);
 		currentNode.STAentityValuesForSelect = [entity, dataToFillSelect];
 		dataToFillSelect = currentNode.STAentityValuesForSelect[1];
+
 	}
+
+
 	//Fill Select
 	//Simple
 	var select = document.getElementById("selectorValue_" + count);
@@ -867,11 +953,14 @@ async function fillValueSelectorFilterRow(count) {
 	select.innerHTML = "";
 	selectorValueInterval1.innerHTML = "";
 	selectorValueInterval2.innerHTML = "";
+
 	var valor;
 	var arrayValors = [];
 	var selectProperty = document.getElementById("selectorProperty_" + count);
 	var selectPropertyValue = selectProperty.options[selectProperty.selectedIndex].value;
 	var valueUndefined = true;
+
+	
 	if (selectPropertyValue.charAt(selectPropertyValue.length - 1) != "/") { //If property values can be charged. 
 		for (let index = 0; index < dataToFillSelect.length; index++) {
 			valor = dataToFillSelect[index][selectPropertyValue];
@@ -884,15 +973,22 @@ async function fillValueSelectorFilterRow(count) {
 				for (var a = 0; a < selectPropertyValueArray.length; a++) {
 					valor = valor[selectPropertyValueArray[a]];
 				}
+
 			}
+
+
 			if (!arrayValors.find(element => element == valor)) { //create array with not arranged values
 				arrayValors.push(valor);
 			}
 		}
+
 		var arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
 		var valueToinput;
+
 		for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options
+
 			valueToinput = arrayValuesArranged[i];
+
 			var option = document.createElement("option");
 			option.setAttribute("value", valueToinput);
 			option.innerHTML = valueToinput;
@@ -907,12 +1003,18 @@ async function fillValueSelectorFilterRow(count) {
 			selectorValueInterval2.appendChild(option3);
 		}
 	}
+
+
 	showAndHiddeSelectorAndInputsFilterRow(count);
+
+
 }
+
 function sortValuesForSelect(arrayValues) {
 	var arrayNumbers = [];
 	var arrayText = [];
 	var arrayNumbersArranged, arrayTextsArranged, arrayValuesArranged;
+
 	for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
 		if (typeof arrayValues[i] !== "undefined") {
 			var isNumber = true;
@@ -929,8 +1031,10 @@ function sortValuesForSelect(arrayValues) {
 				arrayText.push(arrayValues[i]);
 			}
 		}
+
 		arrayNumbersArranged = arrayNumbers.sort((a, b) => a - b);
 		arrayTextsArranged = arrayText.sort();
+
 		arrayValuesArranged = arrayNumbersArranged.concat(arrayTextsArranged); //join arrays
 	}
 	return arrayValuesArranged;
@@ -941,23 +1045,29 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 	var inputText = document.getElementById("inputText_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
 	var selectorValue = document.getElementById("selectorValue_" + number);
+
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
 	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
 	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
 	var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
+
+
 	//disconnect arrow buttons
 	var buttonUp = document.getElementById("buttonUp_" + number);
 	var buttonDown = document.getElementById("buttonDown_" + number);
 	buttonDown.setAttribute("disabled", true);
 	buttonUp.setAttribute("disabled", true);
+
 	//Wich text is open?
 	if (selector == "simple") {
 		inputText.style.display = "none";
 		displaySelect.style.display = "none";
 		divFilterContainer.style.display = "inline-block";
 		selectorValue.style.display = "inline-block";
+
+
 	} else { //interval
 		inputTextInterval1.style.display = "none";
 		inputTextInterval2.style.display = "none";
@@ -965,26 +1075,33 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 		divFilterContainer2.style.display = "inline-block";
 		selectorValueInterval1.style.display = "inline-block";
 		selectorValueInterval2.style.display = "inline-block";
+
 	}
+
 }
+
 function changeSelectValueRowFilter(nodeId, number) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	isAnObject(nodeId, number);
 	//...for more functions
+
 }
 function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 	event.preventDefault();
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 	var inputText = document.getElementById("inputText_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
+
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
 	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
 	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var interval;
+
 	var buttonUp = document.getElementById("buttonUp_" + number);
 	var buttonDown = document.getElementById("buttonDown_" + number);
 	buttonDown.disabled = false;
 	buttonUp.disabled = false;
+
 	//If it comes from simple. Hidde container and show text and display
 	if (divFilterContainer.style.display != "none") {
 		divFilterContainer.style.display = "none";
@@ -998,6 +1115,9 @@ function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 		displaySelectInterval.style.display = "inline-block";
 		interval = true;
 	}
+
+
+
 	if (button == "ok") {
 		if (interval == false) {
 			var selectorValue = document.getElementById("selectorValue_" + number);
@@ -1009,6 +1129,7 @@ function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 			inputTextInterval1.value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
 			inputTextInterval2.value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
 			changesInInputValueRowFilter("interval", number);
+
 		}
 	}
 }
@@ -1022,6 +1143,8 @@ function changesInInputValueRowFilter(wichinputText, number) { //and refill cond
 	var value1, valueInput1, valueInput2;
 	var valueLength, valueLengthInterval1, valueLengthInterval2;
 	var width, withInterval1, withInterval2;
+
+
 	if (wichinputText == "interval") {
 		valueInput1 = textIputInterval1.value;
 		valueLengthInterval1 = valueInput1.length;
@@ -1031,6 +1154,7 @@ function changesInInputValueRowFilter(wichinputText, number) { //and refill cond
 		value1 = inputText.value;
 		valueLength = value1.length;
 	}
+
 	//Adjusting input length
 	if (valueLength > 15) {
 		width = valueLength * 8; // 8px per character
@@ -1050,6 +1174,7 @@ function changesInInputValueRowFilter(wichinputText, number) { //and refill cond
 	}
 	//Change options in selector depending of type of value selector
 	changeSelectConditionValues(number, wichinputText, value1, valueInput1, valueInput2);
+
 }
 //General selects in FilterRow
 function showAndHiddeSelectorAndInputsFilterRow(number) {
@@ -1065,23 +1190,27 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 	var selectorProperty = document.getElementById("selectorProperty_" + number);
 	var inputForProperty = document.getElementById("inputForProperty_" + number);
 	var selectorValueHasChildren;
+
 	if (selectorValue.hasChildNodes()) {
 		selectorValueHasChildren = true;
 	} else {
 		selectorValueHasChildren = false;
 	}
+
 	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") {
 		if (inputTextInterval1.style.display == "none" && inputText.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
 				divFilterContainer2.style.display = "inline-block";
 				inputTextInterval1.style.display = "none";
 				inputTextInterval2.style.display = "none";
+
 			} else { // hidde selector things and show inputText
 				divFilterContainer2.style.display = "none";
 				displaySelectInterval.style.display = "none";
 				inputTextInterval1.style.display = "inline-block";
 				inputTextInterval2.style.display = "inline-block";
 			}
+
 		} else { //inputs are shown
 			if (selectorValueHasChildren) { //show display button
 				displaySelectInterval.style.display = "inline-block";
@@ -1096,12 +1225,14 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 		inputText.style.display = "none";
 		divFilterContainer.style.display = "none";
 		displaySelect.style.display = "none"
+
 	} else { //simple
 		if (inputText.style.display == "none" && inputTextInterval1.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
 				divFilterContainer.style.display = "inline-block";
 				inputText.style.display = "none";
 				inputText.style.display = "none";
+
 			} else { // hidde selector things and show inputText
 				divFilterContainer.style.display = "none";
 				displaySelect.style.display = "none";
@@ -1117,13 +1248,16 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 			inputText.style.display = "inline-block";
 			inputText.style.display = "inline-block";
 			divFilterContainer.style.display = "none";
+
 		}
 		//Interval : hide all
 		inputTextInterval1.style.display = "none";
 		inputTextInterval2.style.display = "none";
 		divFilterContainer2.style.display = "none";
 		displaySelectInterval.style.display = "none";
+
 	}
+
 	var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
 	if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
 		inputForProperty.style.display = "inline-block";
@@ -1136,77 +1270,108 @@ function searchParentLabel() {
 	var entity = "0";
 	var parentNodeId = network.getConnectedNodes(currentNode.id, "from");
 	var parentNode = networkNodes.get(parentNodeId);
+
 	for (var i = 0; i < STAEntitiesArray.length; i++) {
 		if (parentNode[0].label == STAEntitiesArray[i]) {
 			entity = STAEntitiesArray[i];
 		}
 	}
+
 	return entity;
 }
+
+
+
+
 ////////////////New Table////////////////////
+
 function GetFilterTable(elem, nodeId, first) //Built table //The second will be called by showFilter
 {
 	//when the element that comes to you is the elemFilter, add a button to add one more level
+
 	if (elem.boxName) {
 		var s = '<table style="margin-top: 10px;"><tr class="trBoxName"><td style="position: relative;border: 2px solid #34383aef; " id="boxName_' + elem.boxName + '">'; //class="tableFilter
 	} else {
 		var s = '<table><tr class="trLineBoxName"><td>';
 	}
+
 	if (first) {
 		s += `<div class="topButtonsFilterRow"><button onclick="biggestLevelButton('${elem.boxName}')">Add a higher group</button>`;
 	}
 	if (elem.boxName) {
+
 		s += '<button onclick="addNewCondition(\'' + elem.boxName + '\')">Add a new condition below</button></div>';
+
 	}
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
 			s += GetFilterTable(elem.elems[i], nodeId);
 		}
+
 		if (elem.nexus) {
+
 			s += `</td><td valign="middle" class="tdSelectAndOrNot" id='tdSelectAndOrNot_${elem.boxName}'><div class="topPartSelectAndOrNot" ></div><div class="bottomPartSelectAndOrNot" id= "bottomPartSelectAndOrNot_${elem.boxName}"><select class="selectAndOrNot" name="selectAndOrNot"  onchange= "actualizeSelectChoice('${elem.boxName}')" id="selectAndOrNot_${elem.boxName}">`;
+
 			if (elem.nexus == " and ") {
 				s += '<option value=" and " selected>And</option>';
+
 			} else {
 				s += '<option value=" and ">And</option>';
 			}
 			if (elem.nexus == " or ") {
 				s += '<option value=" or " selected>Or</option>';
+
 			} else {
 				s += '<option value=" or ">Or</option>';
 			}
 			if (elem.nexus == " not ") {
 				s += '<option value=" not " selected>Not</option>';
+
 			} else {
 				s += '<option value=" not ">Not</option>';
 			}
+
 			s += '</select></div>';
 		}
 	}
 	else {
 		s += GetFilterCondition(elem);
+
 	}
+
 	s += '</td></tr></table>';
+
+
+
 	return s;
+
 }
+
 function GetFilterCondition(elem) {
 	currentNode.STACounter.push(elem);
 	return currentNode.STAconditionsFilter[elem].property + '<div class="buttonsInFilterRow"><button id="buttonDown_' + elem + '" onClick="MoveDownFilterCondition(' + elem + ')"><img src="arrowDown.png" alt="Move down" title="Move down"></button> <button  id="buttonUp_' + elem + '"onClick="MoveUpFilterCondition(' + elem + ')"><img src="arrowUp.png" alt="Move up" title="Move up"></button><button onClick="DeleteElementButton(' + elem + ')"><img src="trash.png" alt="Remove" title="Remove"></button></div>';
+
 }
 function ShowFilterTable() //This is who iniciates the table
 {
 	currentNode.STACounter = []; //To not acumulate
 	document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(currentNode.STAelementFilter, currentNode.id, true); //I need to pass currentNode.elemFilter because it is a recursive function an need to start in this point
+
 	for (var i = 0; i < currentNode.STACounter.length; i++) {//Adding Selectors
 		createSelectorRowFilters(currentNode.STACounter[i]);
 	}
 }
+
 //Select Nexus (And, or, not)
 function actualizeSelectChoice(boxName) { //When select nexus changes (put selected option in STAelementFilter)
+
 	var select = document.getElementById("selectAndOrNot_" + boxName);
 	var option = select.options[select.selectedIndex].value
 	searchGroupToChangeSelectChoice(boxName, currentNode.STAelementFilter, option);
+
 }
 function searchGroupToChangeSelectChoice(boxName, elem, option) {
+
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
 			searchGroupToChangeSelectChoice(boxName, elem.elems[i], option);
@@ -1218,6 +1383,7 @@ function searchGroupToChangeSelectChoice(boxName, elem, option) {
 }
 function resizeBottomPartSelectAndOrNot() {
 	var boxNames = currentNode.STAboxNames;
+
 	for (var i = 0; i < boxNames.length; i++) {
 		var tdSelectAndOrNot = document.getElementById("tdSelectAndOrNot_" + boxNames[i]);
 		if (tdSelectAndOrNot != null) {
@@ -1225,18 +1391,23 @@ function resizeBottomPartSelectAndOrNot() {
 			var bottomPartSelectAndOrNot = document.getElementById("bottomPartSelectAndOrNot_" + boxNames[i]);
 			bottomPartSelectAndOrNot.style.height = (tdSelectAndOrNotHeight - 30) + "px";
 		}
+
+
 	}
 }
+
 //Down button
 var stopMoveDownFilterCondition;
 function MoveDownFilterCondition(currentNumber) {
 	event.preventDefault();
 	var nextElement = GiveNextConditionNextBoxFilterTable(currentNode.STAelementFilter, currentNumber);
+
 	if (nextElement != -1) {
 		searchBoxName(currentNode.STAelementFilter, currentNumber, "no", nextElement);
 		stopMoveDownFilterCondition = false;
 	}
 }
+
 function searchBoxName(elem, iCon, fatherElement, nextElement) {
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
@@ -1250,8 +1421,10 @@ function searchBoxName(elem, iCon, fatherElement, nextElement) {
 			drawTableAgain();
 			resizeBottomPartSelectAndOrNot();
 			stopMoveDownFilterCondition = true;
+
 		}
 	}
+
 }
 function changeElements(currentElement, nextElement, iCon) {
 	var arrayElements = []
@@ -1271,6 +1444,7 @@ function GiveNextConditionNextBoxFilterTable(elem, iCon) {
 	LookForNextConditionNextBoxFilterTableFound = 0;
 	return LookForNextConditionNextBoxFilterTable(elem, iCon);
 }
+
 var LookForNextConditionNextBoxFilterTableFound;
 function LookForNextConditionNextBoxFilterTable(elem, iCon) {
 	var next;
@@ -1293,10 +1467,12 @@ function LookForNextConditionNextBoxFilterTable(elem, iCon) {
 	}
 	return -1;
 }
+
 function GiveNextConditionFilterTable(elem, iCon) {
 	LookForNextConditionFilterTableFound = false;
 	return LookForNextConditionFilterTable(elem, iCon);
 }
+
 var LookForNextConditionFilterTableFound;
 function LookForNextConditionFilterTable(elem, iCon) {
 	var next;
@@ -1315,6 +1491,8 @@ function LookForNextConditionFilterTable(elem, iCon) {
 	}
 	return -1;
 }
+
+
 //Up button
 function MoveUpFilterCondition(iCon) {
 	event.preventDefault();
@@ -1324,10 +1502,12 @@ function MoveUpFilterCondition(iCon) {
 		stopMoveDownFilterCondition = false;
 	}
 }
+
 function GivePreviousConditionFilterTable(elem, iCon) {
 	LookForPreviousConditionFilterTableFound = 0;
 	return LookForPreviousConditionFilterTable(elem, iCon);
 }
+
 var LookForPreviousConditionFilterTableFound;
 function LookForPreviousConditionFilterTable(elem, iCon, parent) {
 	var prev;
@@ -1350,14 +1530,18 @@ function LookForPreviousConditionFilterTable(elem, iCon, parent) {
 	}
 	return -1;
 }
+
 //Add conditions
+
 function addNewCondition(boxName, fromBiggest) {
 	event.preventDefault();
 	if (typeof fromBiggest === "undefined") {
 		fromBiggest = false;
 	}
 	searchFilterBoxName(boxName, currentNode.STAelementFilter, currentNode.Id, fromBiggest);
+
 }
+
 function searchFilterBoxName(boxNamee, elem, paramsNodeId, fromBiggest) { //the elem has  boxName ...
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
@@ -1368,6 +1552,7 @@ function searchFilterBoxName(boxNamee, elem, paramsNodeId, fromBiggest) { //the 
 		}
 	}
 }
+
 function addNewElement(elem, fromBiggest) {
 	var elements = elem.elems;
 	var conditionsFilter = currentNode.STAconditionsFilter;
@@ -1386,6 +1571,7 @@ function addNewElement(elem, fromBiggest) {
 			nextBoxNumber = "0";
 		}
 		var newBoxName = firstNumberBoxNameInside + "_" + nextBoxNumber;
+
 		if (elem.boxName.charAt(0) != 1) {
 			elements.push( //I have to put it at the same height
 				{
@@ -1403,6 +1589,7 @@ function addNewElement(elem, fromBiggest) {
 				})
 		}
 		currentNode.STAboxNames.push(newBoxName);
+
 		//If it's the second one, you must create a higher level and change the nexus so that it will be not null
 	}
 	else { //inside group 0_...
@@ -1418,20 +1605,27 @@ function addNewElement(elem, fromBiggest) {
 	if (newBoxName) {
 		var levelBox = newBoxName.charAt(0);
 		var boxNameToPass = newBoxName;
+
 		for (var i = levelBox; i > 0; i--) {
 			addNewCondition(boxNameToPass, currentNode.id);
 			boxNameToPass = boxNames[boxNames.length - 1]; //must be the last to be created (the one that was just created)
+
 		}
 	}
 	//update currentNode.STAFilterRowEntities
 	var entity = getSTAURLLastEntity(currentNode.STAURL);
 	currentNode.STAFilterRowEntities["optionsRow" + nextNumber] = [entity];
+
 	if (fromBiggest == false) {
+
 		takeSelectInformation();//take selector values and update an external variable
 		drawTableAgain();//repaint selects
 		resizeBottomPartSelectAndOrNot();//correct size to select(AndOrNot) div
 	}
 }
+
+
+
 //Delete element
 function DeleteElementButton(numberOfElement) {
 	event.preventDefault();
@@ -1439,6 +1633,7 @@ function DeleteElementButton(numberOfElement) {
 	delete currentNode.STAFilterRowEntities["optionsRow" + numberOfElement];
 	searchElementToDelete(numberOfElement, currentNode.STAelementFilter, currentNode.id);
 }
+
 function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //elem has boxname...
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
@@ -1448,20 +1643,24 @@ function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //elem has
 			DeleteElementInElemFilter(elem, numberOfElement);
 		}
 	}
+
 }
 function DeleteElementInElemFilter(elem, numberOfElement) {
 	//do not delete the conditions filter because it is the position
+
 	var index = elem.elems.indexOf(parseInt(numberOfElement));
 	elem.elems.splice(index, 1); //delete from elemFilter	
 	if (elem.elems.length == 1) { //if only  remains one, remove nexus
 		elem.nexus = null;
 	}
+
 	if (elem.elems.length == 0) {
 		deleteGroup(elem.boxName, currentNode.id)
 	}
 	takeSelectInformation();//get selector values and update an external variable 
 	drawTableAgain();//repaint selects
 	resizeBottomPartSelectAndOrNot();
+
 }
 //Delete group (necesary when it is the last condition in the group)
 function deleteGroup(numberOfElement, nodeId) {
@@ -1469,7 +1668,9 @@ function deleteGroup(numberOfElement, nodeId) {
 	searchGroupToDelete(numberOfElement, currentNode.STAelementFilter, nodeId, "no");
 	takeSelectInformation();//get selector values and update an external variable 
 	drawTableAgain();//repaint the selects
+
 }
+
 function searchGroupToDelete(numberOfElement, elem, nodeId, fatherElem) { //elem has boxes ...
 	var element;
 	if (typeof elem === "object") {
@@ -1478,9 +1679,11 @@ function searchGroupToDelete(numberOfElement, elem, nodeId, fatherElem) { //elem
 		}
 		if (elem.boxName == numberOfElement) { //add to elems => elems[0,1...]
 			DeleteGroupInElemFilter(elem, fatherElem);
+
 		}
 	}
 }
+
 function DeleteGroupInElemFilter(elem, fatherElem) {
 	var newArray = [];
 	if (fatherElem != "no") {
@@ -1499,9 +1702,12 @@ function DeleteGroupInElemFilter(elem, fatherElem) {
 		}
 		var boxNames = currentNode.STAboxNames;
 		boxNames = actualizeBoxNames(currentNode.STAelementFilter, arrayBoxNumbers);
+
 	}
 }
+
 function actualizeBoxNames(elem, arrayBoxNumbers) {
+
 	if (typeof elem === "object") {
 		arrayBoxNumbers.push(elem.boxName)
 		for (var i = 0; i < elem.elems.length; i++) {
@@ -1510,10 +1716,13 @@ function actualizeBoxNames(elem, arrayBoxNumbers) {
 	}
 	return arrayBoxNumbers;
 }
+
+
 //DrawTable
 function drawTableAgain() {
 	document.getElementById("divSelectorRowsFilter").innerHTML = "";
 	ShowFilterTable()
+
 }
 function takeSelectInformation() {
 	var optionsRow;
@@ -1535,16 +1744,20 @@ function takeSelectInformation() {
 			if (inputProperty.style.display == "inline-block") {
 				selectorPropertyValue.push(inputProperty.value);
 			}
+
+
 			selectorCondition = document.getElementById("selectorCondition_" + counter[i]);
 			selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
 			arrayInfo.push(counter[i]); //they are out of order, it is necessary to put each info in its place when painting the select
 			arrayInfo.push(inputForEntityFilterRowValue, selectorPropertyValue, selectorConditionValue);
+
 			if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
 				inputTextInterval1 = document.getElementById("inputTextInterval1_" + counter[i]);
 				inputTextInterval2 = document.getElementById("inputTextInterval2_" + counter[i]);
 				selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + counter[i]);
 				selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + counter[i]);
 				divFilterContainer2 = document.getElementById("divFilterContainer2_" + counter[i]);
+
 				if (divFilterContainer2.style.display == "inline-block") { //Select open
 					inputTextInterval1Value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
 					inputTextInterval2Value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
@@ -1552,9 +1765,11 @@ function takeSelectInformation() {
 					inputTextInterval1Value = inputTextInterval1.value;
 					inputTextInterval2Value = inputTextInterval2.value;
 				}
+
 				arrayInfo.push(inputTextInterval1Value);
 				arrayInfo.push(inputTextInterval2Value);
 				var typeOfValue = typeOfValueFromInput("interval", inputTextInterval1Value, inputTextInterval2Value)
+
 			} else {
 				inputText = document.getElementById("inputText_" + counter[i]);
 				divFilterContainer = document.getElementById("divFilterContainer_" + counter[i]);
@@ -1564,13 +1779,17 @@ function takeSelectInformation() {
 				} else {
 					inputTextValue = inputText.value;
 				}
+
 				arrayInfo.push(inputTextValue);
 				var typeOfValue = typeOfValueFromInput("simple", inputTextValue)
+
 			}
 		}
 		arrayInfo.push(typeOfValue)
 		infoFilter.push(arrayInfo);
+
 	}
+
 	currentNode.STAinfoFilter = infoFilter;
 }
 //Add bigger Level
@@ -1586,12 +1805,18 @@ function biggestLevelButton(boxName) {
 	newInsert.elems.push(copy);
 	currentNode.STAboxNames.push(newBoxName);
 	currentNode.STAelementFilter = newInsert;
+
 	var boxNameToPass = newBoxName;
+
 	addNewCondition(boxNameToPass, currentNode.id, true); //fromBiggest=true -> To avoid TakeSelect ...etc in addNewElement function
 	takeSelectInformation();//take the values ​​of the selectors and update an external variable
 	drawTableAgain();
 	resizeBottomPartSelectAndOrNot();//correct size to select(AndOrNot) div
+
 }
+
+
+
 //Applying the filter
 var stopReadInformationRowFilter = false;
 
@@ -1603,6 +1828,7 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 				readInformationRowFilter(elem.elems[i], entity, elem.nexus, elem);
 			}
 			if (currentNode.STAUrlAPICounter.length != infoFilter.length && currentNode.STAUrlAPICounter.length != 0 && nexus != "no" && parent != "no") {
+
 				currentNode.STAUrlAPI += " " + nexus + " ";
 			}
 		}
@@ -1616,14 +1842,18 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 					if (indexOf == 0) {
 						data += "(";
 					}
+
 					var valueOfEntity = infoFilter[i][1];
 					var lengthEntity = valueOfEntity.indexOf("/")
 					if (-1 != lengthEntity) { //Erase first entity name in the path
 						valueOfEntity = valueOfEntity.slice(lengthEntity + 1); //Erase entity and "/"
 					}
+
+
 					///Apply filter depending on Select Condition
 					if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') { //passarho a com STA+
 						data += "(";
+
 						if (entity != valueOfEntity) { //If it's not the entity of the node and it is a connected box need "node entity name "
 							data += valueOfEntity + "/";
 						}
@@ -1631,6 +1861,7 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 						if (infoFilter[i][2].length == 2) {
 							data += infoFilter[i][2][1];
 						}
+
 						var typeOfValue = infoFilter[i][5];
 						var apostropheOrSpace;
 						(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = "";
@@ -1654,11 +1885,15 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 								data += " lt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 								break;
 							default:
+
 						}
 					}
 					else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
+
+
 						if (entity != valueOfEntity) {
 							valueOfEntity = valueOfEntity + "/" + infoFilter[i][2];
+
 						} else {
 							valueOfEntity = infoFilter[i][2];
 						}
@@ -1666,6 +1901,7 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 							valueOfEntity += infoFilter[i][2][1];
 						}
 						data += "( " + valueOfEntity;
+
 						switch (infoFilter[i][3]) {
 							case ' [a,b] ':
 								data += " ge " + infoFilter[i][4] + " and " + valueOfEntity + " le " + infoFilter[i][5] + ")";
@@ -1691,6 +1927,7 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 						if (infoFilter[i][2].length == 2) {
 							valueOfEntity += infoFilter[i][2][1];
 						}
+
 						switch (infoFilter[i][3]) {
 							case 'contains':
 								data += "substringof('" + infoFilter[i][4] + "'," + valueOfEntity + ")";
@@ -1715,6 +1952,7 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 							}
 						}
 						infoFilter[i][4] = newValue;
+
 						switch (infoFilter[i][3]) {
 							case 'year':
 								data += "year(resultTime) eq " + infoFilter[i][4];
@@ -1734,19 +1972,26 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 							case 'date':
 								data += "date(resultTime) eq date('" + infoFilter[i][4] + "')";
 								break;
+
 							default:
 						}
 					}
+
+
+
 					if ((indexOf + 1) != parentLenght) {
 						data += nexus
 					}
+
 					if ((indexOf + 1) == parentLenght) {
 						data += ")";
 					}
 					currentNode.STAUrlAPI += data
 					currentNode.STAUrlAPICounter.push(infoFilter[i][0]);
+
 				}
 			}
+
 		}
 		if (currentNode.STAUrlAPICounter.length == infoFilter.length) {
 			currentNode.STAUrlAPI.slice(0, "(");
@@ -1754,4 +1999,5 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 			stopReadInformationRowFilter = true;
 		}
 	}
+
 }
