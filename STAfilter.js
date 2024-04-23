@@ -113,16 +113,23 @@ function createSelectorRowFilters(number) {
 
 	var selectorInfo = [];
 	var infoFilter = currentNode.STAinfoFilter;
+	var currentNodeLabel = currentNode.label;
 	if (infoFilter.length != 0) {
 
 		for (var i = 0; i < infoFilter.length; i++) {
-			if (infoFilter[i][0] == number) {
-				selectorInfo.push(infoFilter[i]);
+			if (currentNodeLabel == "FilterRowsSTA") {
+				if (infoFilter[i][0] == number) {
+					selectorInfo.push(infoFilter[i]);
+				}
+			} else {
+				if (infoFilter[i][0] == number) {
+					selectorInfo.push(infoFilter[i]);
+				}
 			}
 		}
 	}
 
-	var currentNodeLabel = currentNode.label;
+
 
 	if (currentNodeLabel == "FilterRowsSTA") {
 		createEntitySelectorInFilterRows(selectorInfo, number);
@@ -140,28 +147,64 @@ function createSelectorRowFilters(number) {
 function createColumsSelectorFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
 	var selectColums = document.createElement("select");
-	selectColums.setAttribute("id", "selectorColums_" + count);
-	//select.setAttribute("onChange", "onchangeColumsSelect('" + count + "')");
-	var option = document.createElement("option"); //First option
-	option.setAttribute("value", "columna1");
-	option.innerHTML = "Columna1";
-	selectColums.appendChild(option);
+	selectColums.setAttribute("id", "selectorColumns_" + count);
 	optionsRow.appendChild(selectColums);
-	//FillSelector
+	//select.setAttribute("onChange", "onchangeColumsSelect('" + count + "')");
+
+	fillColumsSelectorFilterRows(selectorInfo, count)
+
+
 }
+const columnes = ["columna1", "columna2", "columna3"]; //a borrar quan tingui els valors
+const valors = ["valor1", "valor2", "valor3"];
+
+function fillColumsSelectorFilterRows(selectorInfo, count) {
+
+	var selectColums = document.getElementById("selectorColumns_" + count);
+	for (var i = 0; i < columnes.length; i++) {
+		var selectColums = document.getElementById("selectorColumns_" + count);
+		var option = document.createElement("option"); //First option
+		option.setAttribute("value", columnes[i]);
+		option.innerHTML = columnes[i];
+		if (selectorInfo.length != 0) {
+			if (selectorInfo[0][1] == columnes[i]) {
+				option.setAttribute("selected", true);
+			}
+		}
+
+		selectColums.appendChild(option);
+	}
+}
+
 function createValuesSelectorFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
 	var selectValues = document.createElement("select");
 	selectValues.setAttribute("id", "selectorValues_" + count);
-	//select.setAttribute("onChange", "onchangeValuesSelect('" + count + "')");
-	var option = document.createElement("option"); //First option
-	option.setAttribute("value", "value1");
-	option.innerHTML = "value1";
-	selectValues.appendChild(option);
 	optionsRow.appendChild(selectValues)
+	//select.setAttribute("onChange", "onchangeValuesSelect('" + count + "')");
 
-	//FillSelector
+	fillValuesSelectorFilterRows(selectorInfo, count)
+
 }
+
+function fillValuesSelectorFilterRows(selectorInfo, count) {
+	var selectValues = document.getElementById("selectorValues_" + count);
+
+	for (var i = 0; i < valors.length; i++) {
+
+		var option = document.createElement("option"); //First option
+		option.setAttribute("value", valors[i]);
+		option.innerHTML = valors[i];
+		if (selectorInfo.length != 0) {
+			if (selectorInfo[0][2] == valors[i]) {
+				option.setAttribute("selected", true);
+			}
+		}
+		selectValues.appendChild(option);
+	}
+}
+
+
 //Obtain Data from API
 async function loadAPIDataToFillSelectInRowFilter(url) {
 	var response, options = {}, STAdata;
@@ -1458,9 +1501,14 @@ function addNewElement(elem, fromBiggest) {
 			boxNameToPass = boxNames[boxNames.length - 1]; //must be the last to be created (the one that was just created)
 		}
 	}
-	//update currentNode.STAFilterRowEntities
-	var entity = getSTAURLLastEntity(currentNode.STAURL);
-	currentNode.STAFilterRowEntities["optionsRow" + nextNumber] = [entity];
+
+	if (currentNode.label == "FilterRowsSTA") {
+		//update currentNode.STAFilterRowEntities
+		var entity = getSTAURLLastEntity(currentNode.STAURL);
+		currentNode.STAFilterRowEntities["optionsRow" + nextNumber] = [entity];
+
+	}
+
 	if (fromBiggest == false) {
 		takeSelectInformation();//take selector values and update an external variable
 		drawTableAgain();//repaint selects
@@ -1550,6 +1598,9 @@ function drawTableAgain() {
 	document.getElementById("divSelectorRowsFilter").innerHTML = "";
 	ShowFilterTable()
 }
+
+
+
 function takeSelectInformationSTA() {
 	var optionsRow;
 	var inputForEntityFilterRow, selectorProperty, inputProperty, selectorCondition, inputText, inputTextInterval1, inputTextInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
@@ -1609,18 +1660,18 @@ function takeSelectInformationSTA() {
 	currentNode.STAinfoFilter = infoFilter;
 }
 function takeSelectInformationCSV() {
-	var selectorColums, selectorValues;
+	var selectorColumns, selectorValues;
 	var infoFilter = [];
 	var arrayInfo;
-	
+
 	var counter = currentNode.STACounter;
 	for (var i = 0; i < counter.length; i++) {
-		arrayInfo=[];
-		var selectorColums = documen.getElementById("selectorColums_" + counter[i]);
-		var selectorValues = documen.getElementById("selectorValues_" + counter[i]);
-		var selectorColumsSelected = selectorColums.options[selectorColums.selectedIndex].value;
+		arrayInfo = [];
+		var selectorColumns = document.getElementById("selectorColumns_" + counter[i]);
+		var selectorValues = document.getElementById("selectorValues_" + counter[i]);
+		var selectorColumnsSelected = selectorColumns.options[selectorColumns.selectedIndex].value;
 		var selectorValuesSelected = selectorValues.options[selectorValues.selectedIndex].value;
-		arrayInfo.push(selectorColumsSelected,selectorValuesSelected);
+		arrayInfo.push(counter[i], selectorColumnsSelected, selectorValuesSelected);
 		infoFilter.push(arrayInfo);
 	}
 	currentNode.STAinfoFilter = infoFilter;
