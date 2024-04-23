@@ -159,7 +159,7 @@ function createValuesSelectorFilterRows(selectorInfo, count) {
 	option.innerHTML = "value1";
 	selectValues.appendChild(option);
 	optionsRow.appendChild(selectValues)
-	
+
 	//FillSelector
 }
 //Obtain Data from API
@@ -1550,7 +1550,7 @@ function drawTableAgain() {
 	document.getElementById("divSelectorRowsFilter").innerHTML = "";
 	ShowFilterTable()
 }
-function takeSelectInformation() {
+function takeSelectInformationSTA() {
 	var optionsRow;
 	var inputForEntityFilterRow, selectorProperty, inputProperty, selectorCondition, inputText, inputTextInterval1, inputTextInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
 	var inputForEntityFilterRowValue, selectorPropertyValue = [], selectorConditionValue, inputTextValue, inputTextInterval1Value, inputTextInterval2Value;
@@ -1607,6 +1607,32 @@ function takeSelectInformation() {
 		infoFilter.push(arrayInfo);
 	}
 	currentNode.STAinfoFilter = infoFilter;
+}
+function takeSelectInformationCSV() {
+	var selectorColums, selectorValues;
+	var infoFilter = [];
+	var arrayInfo;
+	
+	var counter = currentNode.STACounter;
+	for (var i = 0; i < counter.length; i++) {
+		arrayInfo=[];
+		var selectorColums = documen.getElementById("selectorColums_" + counter[i]);
+		var selectorValues = documen.getElementById("selectorValues_" + counter[i]);
+		var selectorColumsSelected = selectorColums.options[selectorColums.selectedIndex].value;
+		var selectorValuesSelected = selectorValues.options[selectorValues.selectedIndex].value;
+		arrayInfo.push(selectorColumsSelected,selectorValuesSelected);
+		infoFilter.push(arrayInfo);
+	}
+	currentNode.STAinfoFilter = infoFilter;
+}
+
+function takeSelectInformation() {
+	var currentNodeLabel = currentNode.label;
+	if (currentNodeLabel == "FilterRowsSTA") {
+		takeSelectInformationSTA();
+	} else {
+		takeSelectInformationCSV();
+	}
 }
 //Add bigger Level
 function biggestLevelButton(boxName) {
