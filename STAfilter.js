@@ -1519,7 +1519,11 @@ function addNewElement(elem, fromBiggest) {
 function DeleteElementButton(numberOfElement) {
 	event.preventDefault();
 	//Delete elemen from currentNode.STAFilterRowEntities 
-	delete currentNode.STAFilterRowEntities["optionsRow" + numberOfElement];
+	var currentNodeLabel = currentNode.label;
+	if (currentNodeLabel == "FilterRowsSTA") {
+		delete currentNode.STAFilterRowEntities["optionsRow" + numberOfElement];
+	}
+	
 	searchElementToDelete(numberOfElement, currentNode.STAelementFilter, currentNode.id);
 }
 function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //elem has boxname...
