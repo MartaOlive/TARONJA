@@ -146,9 +146,10 @@ function createSelectorRowFilters(number) {
 
 function createColumsSelectorFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
-	var selectColums = document.createElement("select");
-	selectColums.setAttribute("id", "selectorColumns_" + count);
-	optionsRow.appendChild(selectColums);
+	var selectColumns = document.createElement("select");
+	selectColumns.setAttribute("id", "selectorColumns_" + count);
+	selectColumns.setAttribute("onchange", "fillValuesSelectorFilterRows('" + count + "')");
+	optionsRow.appendChild(selectColumns);
 	//select.setAttribute("onChange", "onchangeColumsSelect('" + count + "')");
 
 	fillColumsSelectorFilterRows(selectorInfo, count)
@@ -169,17 +170,18 @@ const valors = ["valor1", "valor2", "valor3"];
 function fillColumsSelectorFilterRows(selectorInfo, count) {
 	var selectColums = document.getElementById("selectorColumns_" + count);
 	var columns = currentNode.STAdata[0];
-	
 	for (var i = 0; i < columns.length; i++) {
 		var selectColums = document.getElementById("selectorColumns_" + count);
 		var option = document.createElement("option"); //First option
 		option.setAttribute("value", columns[i]);
 		option.innerHTML = columns[i];
-		if (selectorInfo.length != 0) {
-			if (selectorInfo[0][1] == columns[i]) {
-				option.setAttribute("selected", true);
+
+			if (selectorInfo.length != 0) {
+				if (selectorInfo[0][1] == columns[i]) {
+					option.setAttribute("selected", true);
+				}
 			}
-		}
+		
 
 		selectColums.appendChild(option);
 	}
@@ -191,22 +193,34 @@ function createValuesSelectorFilterRows(selectorInfo, count) {
 	selectValues.setAttribute("id", "selectorValues_" + count);
 	optionsRow.appendChild(selectValues)
 	//select.setAttribute("onChange", "onchangeValuesSelect('" + count + "')");
+	fillValuesSelectorFilterRows(count, selectorInfo);
 
-	fillValuesSelectorFilterRows(selectorInfo, count)
+}
+function obtainValuesFromSTAdataInCSV(column) {
+	var data = currentNode.STAdata;
+	var index = data[0].indexOf(column);
+
+	console.log(index);
 
 }
 
-function fillValuesSelectorFilterRows(selectorInfo, count) {
+function fillValuesSelectorFilterRows(count, selectorInfo) {
 	var selectValues = document.getElementById("selectorValues_" + count);
+	selectValues.innerHTML = "";
+	var selectorColumns = document.getElementById("selectorColumns_" + count);
+	var selectorColumnsValue = selectorColumns.options[selectorColumns.selectedIndex].value;
 
+	obtainValuesFromSTAdataInCSV(selectorColumnsValue);
 	for (var i = 0; i < valors.length; i++) {
 
 		var option = document.createElement("option"); //First option
 		option.setAttribute("value", valors[i]);
 		option.innerHTML = valors[i];
-		if (selectorInfo.length != 0) {
-			if (selectorInfo[0][2] == valors[i]) {
-				option.setAttribute("selected", true);
+		if (typeof selectorInfo != "undefined") {
+			if (selectorInfo.length != 0) {
+				if (selectorInfo[0][2] == valors[i]) {
+					option.setAttribute("selected", true);
+				}
 			}
 		}
 		selectValues.appendChild(option);
