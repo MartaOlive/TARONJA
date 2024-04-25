@@ -158,16 +158,25 @@ function createColumsSelectorFilterRows(selectorInfo, count) {
 const columnes = ["columna1", "columna2", "columna3"]; //a borrar quan tingui els valors
 const valors = ["valor1", "valor2", "valor3"];
 
-function fillColumsSelectorFilterRows(selectorInfo, count) {
+//  var STAdataObject = {
+// 	dia :["a","b","..."],
+// 	estacio:["a","b","..."],
+// 	nivell_absolut :["a","b","..."],
+// 	percentatge_volum_embassat :["a","b","..."],
+// 	volum_embassat:["a","b","..."]
+//  }
 
+function fillColumsSelectorFilterRows(selectorInfo, count) {
 	var selectColums = document.getElementById("selectorColumns_" + count);
-	for (var i = 0; i < columnes.length; i++) {
+	var columns = currentNode.STAdata[0];
+	
+	for (var i = 0; i < columns.length; i++) {
 		var selectColums = document.getElementById("selectorColumns_" + count);
 		var option = document.createElement("option"); //First option
-		option.setAttribute("value", columnes[i]);
-		option.innerHTML = columnes[i];
+		option.setAttribute("value", columns[i]);
+		option.innerHTML = columns[i];
 		if (selectorInfo.length != 0) {
-			if (selectorInfo[0][1] == columnes[i]) {
+			if (selectorInfo[0][1] == columns[i]) {
 				option.setAttribute("selected", true);
 			}
 		}
@@ -1523,7 +1532,7 @@ function DeleteElementButton(numberOfElement) {
 	if (currentNodeLabel == "FilterRowsSTA") {
 		delete currentNode.STAFilterRowEntities["optionsRow" + numberOfElement];
 	}
-	
+
 	searchElementToDelete(numberOfElement, currentNode.STAelementFilter, currentNode.id);
 }
 function searchElementToDelete(numberOfElement, elem, paramsNodeId) { //elem has boxname...
