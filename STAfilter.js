@@ -176,12 +176,12 @@ function fillColumsSelectorFilterRows(selectorInfo, count) {
 		option.setAttribute("value", columns[i]);
 		option.innerHTML = columns[i];
 
-			if (selectorInfo.length != 0) {
-				if (selectorInfo[0][1] == columns[i]) {
-					option.setAttribute("selected", true);
-				}
+		if (selectorInfo.length != 0) {
+			if (selectorInfo[0][1] == columns[i]) {
+				option.setAttribute("selected", true);
 			}
-		
+		}
+
 
 		selectColums.appendChild(option);
 	}
@@ -199,9 +199,19 @@ function createValuesSelectorFilterRows(selectorInfo, count) {
 function obtainValuesFromSTAdataInCSV(column) {
 	var data = currentNode.STAdata;
 	var index = data[0].indexOf(column);
+	var valuesArray = []
+	for (var i = 0; i < data.length; i++) {
+		if (i != 0) {
+			//valuesArray.push(data[i][index]);
+			if (!valuesArray.find(element => element == data[i][index])) { //create array with not arranged values
+				valuesArray.push(data[i][index]);
+			}
+		}
+	}
+	var valuesSorted= sortValuesForSelect(valuesArray);
 
-	console.log(index);
-
+	//console.log(valuesSorted);
+	return valuesSorted;
 }
 
 function fillValuesSelectorFilterRows(count, selectorInfo) {
@@ -210,15 +220,14 @@ function fillValuesSelectorFilterRows(count, selectorInfo) {
 	var selectorColumns = document.getElementById("selectorColumns_" + count);
 	var selectorColumnsValue = selectorColumns.options[selectorColumns.selectedIndex].value;
 
-	obtainValuesFromSTAdataInCSV(selectorColumnsValue);
-	for (var i = 0; i < valors.length; i++) {
-
+	var arrayValuesSorted= obtainValuesFromSTAdataInCSV(selectorColumnsValue);
+	for (var i = 0; i < arrayValuesSorted.length; i++) {
 		var option = document.createElement("option"); //First option
-		option.setAttribute("value", valors[i]);
-		option.innerHTML = valors[i];
+		option.setAttribute("value", arrayValuesSorted[i]);
+		option.innerHTML = arrayValuesSorted[i];
 		if (typeof selectorInfo != "undefined") {
 			if (selectorInfo.length != 0) {
-				if (selectorInfo[0][2] == valors[i]) {
+				if (selectorInfo[0][2] == arrayValuesSorted[i]) {
 					option.setAttribute("selected", true);
 				}
 			}
@@ -1014,13 +1023,19 @@ function sortValuesForSelect(arrayValues) {
 	var arrayNumbers = [];
 	var arrayText = [];
 	var arrayNumbersArranged, arrayTextsArranged, arrayValuesArranged;
+	var isNumber, punctuationMark;
 	for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
 		if (typeof arrayValues[i] !== "undefined") {
-			var isNumber = true;
-			for (var a = 0; a < arrayValues[i].length; a++) {
-				if (isNumber == true) {
+			isNumber = true;
+			punctuationMark=false;
+			for (var a = 0; a < arrayValues[i].length; a++) { //check each character
+				if (isNumber == true && arrayValues[i] !=","  && arrayValues[i] !="." && punctuationMark!=true) {
 					if (isNaN(arrayValues[i][a])) {//is not a number 
 						isNumber = false;
+						
+					}
+					if (arrayValues[i] !=","  || arrayValues[i] !="."){
+						punctuationMark=true;
 					}
 				}
 			}
