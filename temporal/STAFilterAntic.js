@@ -840,43 +840,43 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	var divFilterContainer2 = document.createElement("div");
 	divFilterContainer2.setAttribute("id", "divFilterContainer2_" + count);
 	optionsRow.appendChild(divFilterContainer2);
-	var selectorValueInterval1 = document.createElement("select");
-	selectorValueInterval1.setAttribute("id", "selectorValueInterval1_" + count);
-	selectorValueInterval1.style.marginLeft = "10px";
-	var selectorValueInterval2 = document.createElement("select");
-	selectorValueInterval2.setAttribute("id", "selectorValueInterval2_" + count);
-	selectorValueInterval2.style.marginLeft = "5px";
+	var selectorValueInterval1STA = document.createElement("select");
+	selectorValueInterval1STA.setAttribute("id", "selectorValueInterval1STA_" + count);
+	selectorValueInterval1STA.style.marginLeft = "10px";
+	var selectorValueInterval2STA = document.createElement("select");
+	selectorValueInterval2STA.setAttribute("id", "selectorValueInterval2STA_" + count);
+	selectorValueInterval2STA.style.marginLeft = "5px";
 
-	divFilterContainer2.appendChild(selectorValueInterval1);
-	divFilterContainer2.appendChild(selectorValueInterval2);
+	divFilterContainer2.appendChild(selectorValueInterval1STA);
+	divFilterContainer2.appendChild(selectorValueInterval2STA);
 
 
-	var inputTextInterval1 = inputText.cloneNode(true);
-	inputTextInterval1.setAttribute("id", "inputTextInterval1_" + count);
-	inputTextInterval1.style.marginLeft = "10px";
-	var inputTextInterval2 = inputText.cloneNode(true);
-	inputTextInterval2.setAttribute("id", "inputTextInterval2_" + count);
-	inputTextInterval2.style.marginLeft = "5px";
+	var inputTextInterval1STA = inputText.cloneNode(true);
+	inputTextInterval1STA.setAttribute("id", "inputTextInterval1STA_" + count);
+	inputTextInterval1STA.style.marginLeft = "10px";
+	var inputTextInterval2STA = inputText.cloneNode(true);
+	inputTextInterval2STA.setAttribute("id", "inputTextInterval2STA_" + count);
+	inputTextInterval2STA.style.marginLeft = "5px";
 
-	inputTextInterval1.addEventListener("input", function () {
+	inputTextInterval1STA.addEventListener("input", function () {
 		changesInInputValueRowFilter("interval", count)
 	});
-	inputTextInterval2.addEventListener("input", function () {
+	inputTextInterval2STA.addEventListener("input", function () {
 		changesInInputValueRowFilter("interval", count)
 	});
-	inputTextInterval1.addEventListener("keypress", function (event) {
+	inputTextInterval1STA.addEventListener("keypress", function (event) {
 		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	});
-	inputTextInterval2.addEventListener("keypress", function (event) {
+	inputTextInterval2STA.addEventListener("keypress", function (event) {
 		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	});
 
-	optionsRow.appendChild(inputTextInterval1);
-	optionsRow.appendChild(inputTextInterval2);
+	optionsRow.appendChild(inputTextInterval1STA);
+	optionsRow.appendChild(inputTextInterval2STA);
 
 
 	var okButtonInterval = document.createElement("button");
@@ -905,8 +905,8 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	//Put previous values in input Text( 
 	if (selectorInfo.length != 0) {
 		if (selectorInfo[0][3] == ' [a,b] ' || selectorInfo[0][3] == ' (a,b] ' || selectorInfo[0][3] == ' [a,b) ' || selectorInfo[0][3] == ' (a,b) ') {
-			inputTextInterval1.value = selectorInfo[0][4];
-			inputTextInterval2.value = selectorInfo[0][5];
+			inputTextInterval1STA.value = selectorInfo[0][4];
+			inputTextInterval2STA.value = selectorInfo[0][5];
 		} else { //simple
 			inputText.value = selectorInfo[0][4];
 		}
@@ -948,11 +948,11 @@ async function fillValueSelectorFilterRow(count) {
 	//Simple
 	var select = document.getElementById("selectorValue_" + count);
 	//Interval
-	var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + count);
-	var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + count);
+	var selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + count);
+	var selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + count);
 	select.innerHTML = "";
-	selectorValueInterval1.innerHTML = "";
-	selectorValueInterval2.innerHTML = "";
+	selectorValueInterval1STA.innerHTML = "";
+	selectorValueInterval2STA.innerHTML = "";
 
 	var valor;
 	var arrayValors = [];
@@ -999,8 +999,8 @@ async function fillValueSelectorFilterRow(count) {
 			option3.setAttribute("value", valueToinput);
 			option3.innerHTML = valueToinput;
 			select.appendChild(option);
-			selectorValueInterval1.appendChild(option2);
-			selectorValueInterval2.appendChild(option3);
+			selectorValueInterval1STA.appendChild(option2);
+			selectorValueInterval2STA.appendChild(option3);
 		}
 	}
 
@@ -1047,11 +1047,11 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 	var selectorValue = document.getElementById("selectorValue_" + number);
 
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
-	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
+	var inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + number);
+	var inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-	var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
-	var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
+	var selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + number);
+	var selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + number);
 
 
 	//disconnect arrow buttons
@@ -1069,12 +1069,12 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 
 
 	} else { //interval
-		inputTextInterval1.style.display = "none";
-		inputTextInterval2.style.display = "none";
+		inputTextInterval1STA.style.display = "none";
+		inputTextInterval2STA.style.display = "none";
 		displaySelectInterval.style.display = "none";
 		divFilterContainer2.style.display = "inline-block";
-		selectorValueInterval1.style.display = "inline-block";
-		selectorValueInterval2.style.display = "inline-block";
+		selectorValueInterval1STA.style.display = "inline-block";
+		selectorValueInterval2STA.style.display = "inline-block";
 
 	}
 
@@ -1092,8 +1092,8 @@ function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 	var displaySelect = document.getElementById("displaySelect_" + number);
 
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
-	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
+	var inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + number);
+	var inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var interval;
 
@@ -1110,8 +1110,8 @@ function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 		interval = false;
 	} else {//if it comes from interval. Hidde container and show texts and display
 		divFilterContainer2.style.display = "none";
-		inputTextInterval1.style.display = "inline-block";
-		inputTextInterval2.style.display = "inline-block";
+		inputTextInterval1STA.style.display = "inline-block";
+		inputTextInterval2STA.style.display = "inline-block";
 		displaySelectInterval.style.display = "inline-block";
 		interval = true;
 	}
@@ -1124,10 +1124,10 @@ function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 			inputText.value = selectorValue.options[selectorValue.selectedIndex].value;
 			changesInInputValueRowFilter("simple", number);
 		} else {
-			var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
-			var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
-			inputTextInterval1.value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
-			inputTextInterval2.value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
+			var selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + number);
+			var selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + number);
+			inputTextInterval1STA.value = selectorValueInterval1STA.options[selectorValueInterval1STA.selectedIndex].value;
+			inputTextInterval2STA.value = selectorValueInterval2STA.options[selectorValueInterval2STA.selectedIndex].value;
 			changesInInputValueRowFilter("interval", number);
 
 		}
@@ -1137,8 +1137,8 @@ function changesInInputValueRowFilter(wichinputText, number) { //and refill cond
 	var inputText, textIputInterval1, textIputInterval2;
 	if (wichinputText == "simple") { inputText = document.getElementById("inputText_" + number); }
 	else {
-		textIputInterval1 = document.getElementById("inputTextInterval1_" + number);
-		textIputInterval2 = document.getElementById("inputTextInterval2_" + number);
+		textIputInterval1 = document.getElementById("inputTextInterval1STA_" + number);
+		textIputInterval2 = document.getElementById("inputTextInterval2STA_" + number);
 	}
 	var value1, valueInput1, valueInput2;
 	var valueLength, valueLengthInterval1, valueLengthInterval2;
@@ -1181,8 +1181,8 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
 	var inputText = document.getElementById("inputText_" + number);
-	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
-	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
+	var inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + number);
+	var inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var selectorConditionValue = document.getElementById("selectorCondition_" + number).value;
@@ -1198,17 +1198,17 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 	}
 
 	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") {
-		if (inputTextInterval1.style.display == "none" && inputText.style.display == "none") { //selectors are shown
+		if (inputTextInterval1STA.style.display == "none" && inputText.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
 				divFilterContainer2.style.display = "inline-block";
-				inputTextInterval1.style.display = "none";
-				inputTextInterval2.style.display = "none";
+				inputTextInterval1STA.style.display = "none";
+				inputTextInterval2STA.style.display = "none";
 
 			} else { // hidde selector things and show inputText
 				divFilterContainer2.style.display = "none";
 				displaySelectInterval.style.display = "none";
-				inputTextInterval1.style.display = "inline-block";
-				inputTextInterval2.style.display = "inline-block";
+				inputTextInterval1STA.style.display = "inline-block";
+				inputTextInterval2STA.style.display = "inline-block";
 			}
 
 		} else { //inputs are shown
@@ -1217,8 +1217,8 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 			} else {
 				displaySelectInterval.style.display = "none";
 			}
-			inputTextInterval1.style.display = "inline-block";
-			inputTextInterval2.style.display = "inline-block";
+			inputTextInterval1STA.style.display = "inline-block";
+			inputTextInterval2STA.style.display = "inline-block";
 			divFilterContainer2.style.display = "none";
 		}
 		//simple : hide all
@@ -1227,7 +1227,7 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 		displaySelect.style.display = "none"
 
 	} else { //simple
-		if (inputText.style.display == "none" && inputTextInterval1.style.display == "none") { //selectors are shown
+		if (inputText.style.display == "none" && inputTextInterval1STA.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
 				divFilterContainer.style.display = "inline-block";
 				inputText.style.display = "none";
@@ -1251,8 +1251,8 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 
 		}
 		//Interval : hide all
-		inputTextInterval1.style.display = "none";
-		inputTextInterval2.style.display = "none";
+		inputTextInterval1STA.style.display = "none";
+		inputTextInterval2STA.style.display = "none";
 		divFilterContainer2.style.display = "none";
 		displaySelectInterval.style.display = "none";
 
@@ -1726,8 +1726,8 @@ function drawTableAgain() {
 }
 function takeSelectInformation() {
 	var optionsRow;
-	var inputForEntityFilterRow, selectorProperty, inputProperty, selectorCondition, inputText, inputTextInterval1, inputTextInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
-	var inputForEntityFilterRowValue, selectorPropertyValue = [], selectorConditionValue, inputTextValue, inputTextInterval1Value, inputTextInterval2Value;
+	var inputForEntityFilterRow, selectorProperty, inputProperty, selectorCondition, inputText, inputTextInterval1STA, inputTextInterval2STA, selectorValue, selectorValueInterval1STA, selectorValueInterval2STA, divFilterContainer, divFilterContainer2;
+	var inputForEntityFilterRowValue, selectorPropertyValue = [], selectorConditionValue, inputTextValue, inputTextInterval1STAValue, inputTextInterval2STAValue;
 	var arrayInfo;
 	var infoFilter = [];
 	var counter = currentNode.STACounter;
@@ -1752,23 +1752,23 @@ function takeSelectInformation() {
 			arrayInfo.push(inputForEntityFilterRowValue, selectorPropertyValue, selectorConditionValue);
 
 			if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
-				inputTextInterval1 = document.getElementById("inputTextInterval1_" + counter[i]);
-				inputTextInterval2 = document.getElementById("inputTextInterval2_" + counter[i]);
-				selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + counter[i]);
-				selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + counter[i]);
+				inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + counter[i]);
+				inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + counter[i]);
+				selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + counter[i]);
+				selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + counter[i]);
 				divFilterContainer2 = document.getElementById("divFilterContainer2_" + counter[i]);
 
 				if (divFilterContainer2.style.display == "inline-block") { //Select open
-					inputTextInterval1Value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
-					inputTextInterval2Value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
+					inputTextInterval1STAValue = selectorValueInterval1STA.options[selectorValueInterval1STA.selectedIndex].value;
+					inputTextInterval2STAValue = selectorValueInterval2STA.options[selectorValueInterval2STA.selectedIndex].value;
 				} else {
-					inputTextInterval1Value = inputTextInterval1.value;
-					inputTextInterval2Value = inputTextInterval2.value;
+					inputTextInterval1STAValue = inputTextInterval1STA.value;
+					inputTextInterval2STAValue = inputTextInterval2STA.value;
 				}
 
-				arrayInfo.push(inputTextInterval1Value);
-				arrayInfo.push(inputTextInterval2Value);
-				var typeOfValue = typeOfValueFromInput("interval", inputTextInterval1Value, inputTextInterval2Value)
+				arrayInfo.push(inputTextInterval1STAValue);
+				arrayInfo.push(inputTextInterval2STAValue);
+				var typeOfValue = typeOfValueFromInput("interval", inputTextInterval1STAValue, inputTextInterval2STAValue)
 
 			} else {
 				inputText = document.getElementById("inputText_" + counter[i]);

@@ -128,9 +128,6 @@ function createSelectorRowFilters(number) {
 			}
 		}
 	}
-
-
-
 	if (currentNodeLabel == "FilterRowsSTA") {
 		createEntitySelectorInFilterRows(selectorInfo, number);
 		createPropertySelectInFilterRows(selectorInfo, number);
@@ -138,17 +135,18 @@ function createSelectorRowFilters(number) {
 		createValueSelectInFilterRows(selectorInfo, number);
 	} else { //CSV
 		createColumsSelectorFilterRows(selectorInfo, number);
+		createConditionSelectInFilterRows(selectorInfo, number);
 		createValuesSelectorFilterRows(selectorInfo, number);
 	}
-
-
 }
 
 function createColumsSelectorFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
+	
 	var selectColumns = document.createElement("select");
 	selectColumns.setAttribute("id", "selectorColumns_" + count);
 	selectColumns.setAttribute("onchange", "fillValuesSelectorFilterRows('" + count + "')");
+
 	optionsRow.appendChild(selectColumns);
 	//select.setAttribute("onChange", "onchangeColumsSelect('" + count + "')");
 
@@ -168,11 +166,18 @@ const valors = ["valor1", "valor2", "valor3"];
 //  }
 
 function fillColumsSelectorFilterRows(selectorInfo, count) {
-	var selectColums = document.getElementById("selectorColumns_" + count);
+	var selectorColumns = document.getElementById("selectorColumns_" + count);
 	var columns = currentNode.STAdata[0];
-	for (var i = 0; i < columns.length; i++) {
-		var selectColums = document.getElementById("selectorColumns_" + count);
+
+	//First option (-- choose a field--)
 		var option = document.createElement("option"); //First option
+		option.setAttribute("value", "-- choose a field--");
+		option.innerHTML = "-- choose a field--";
+		selectorColumns.appendChild(option);
+
+	//Real options 
+	for (var i = 0; i < columns.length; i++) {
+		option = document.createElement("option"); //First option
 		option.setAttribute("value", columns[i]);
 		option.innerHTML = columns[i];
 
@@ -183,18 +188,20 @@ function fillColumsSelectorFilterRows(selectorInfo, count) {
 		}
 
 
-		selectColums.appendChild(option);
+		selectorColumns.appendChild(option);
 	}
 }
 
 function createValuesSelectorFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
-	var selectValues = document.createElement("select");
-	selectValues.setAttribute("id", "selectorValues_" + count);
-	optionsRow.appendChild(selectValues)
+	var selectorValuesTable = document.createElement("select");
+	selectorValuesTable.setAttribute("id", "selectorValuesTable_" + count);
+	optionsRow.appendChild(selectorValuesTable);
 	//select.setAttribute("onChange", "onchangeValuesSelect('" + count + "')");
 	fillValuesSelectorFilterRows(count, selectorInfo);
-
+	var inputValuesTable = document.createElement("input");
+	inputValuesTable.setAttribute("id", "inputValuesTable_" + count);
+	optionsRow.appendChild(inputValuesTable);
 }
 function obtainValuesFromSTAdataInCSV(column) {
 	var data = currentNode.STAdata;
@@ -214,25 +221,30 @@ function obtainValuesFromSTAdataInCSV(column) {
 	return valuesSorted;
 }
 
-function fillValuesSelectorFilterRows(count, selectorInfo) {
-	var selectValues = document.getElementById("selectorValues_" + count);
-	selectValues.innerHTML = "";
+function fillValuesSelectorFilterRows(count, selectorInfo) { //CSV
+	var selectorValuesTable = document.getElementById("selectorValuesTable_" + count);
+	selectorValuesTable.innerHTML = "";
 	var selectorColumns = document.getElementById("selectorColumns_" + count);
 	var selectorColumnsValue = selectorColumns.options[selectorColumns.selectedIndex].value;
-
 	var arrayValuesSorted= obtainValuesFromSTAdataInCSV(selectorColumnsValue);
+	//First option (-- choose a field--)
+	var option = document.createElement("option"); //First option
+	option.setAttribute("value", "-- choose a value--");
+	option.innerHTML = "-- choose a value--";
+	selectorValuesTable.appendChild(option);
+
 	for (var i = 0; i < arrayValuesSorted.length; i++) {
-		var option = document.createElement("option"); //First option
-		option.setAttribute("value", arrayValuesSorted[i]);
-		option.innerHTML = arrayValuesSorted[i];
+	var	option2 = document.createElement("option"); //First option
+		option2.setAttribute("value", arrayValuesSorted[i]);
+		option2.innerHTML = arrayValuesSorted[i];
 		if (typeof selectorInfo != "undefined") {
 			if (selectorInfo.length != 0) {
 				if (selectorInfo[0][2] == arrayValuesSorted[i]) {
-					option.setAttribute("selected", true);
+					option2.setAttribute("selected", true);
 				}
 			}
 		}
-		selectValues.appendChild(option);
+		selectorValuesTable.appendChild(option2);
 	}
 }
 
@@ -844,25 +856,25 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	divFilterContainer.setAttribute("id", "divFilterContainer_" + count);
 	divFilterContainer.setAttribute("style", "display: none;");
 	optionsRow.appendChild(divFilterContainer);
-	select.setAttribute("id", "selectorValue_" + count);
+	select.setAttribute("id", "selectorValueSTA_" + count);
 	select.setAttribute("onChange", "changeSelectValueRowFilter('" + currentNode.id + "','" + count + "')");
 	divFilterContainer.appendChild(select);
 	//Simple: inputText, buttons and displaySelects
-	var inputText = document.createElement("input");
-	inputText.setAttribute("id", "inputText_" + count);
-	inputText.setAttribute("type", "text");
-	inputText.setAttribute("placeholder", "introduce a value");
-	inputText.style.marginLeft = "10px";
-	inputText.addEventListener("input", function () {
+	var inputTextSTA = document.createElement("input");
+	inputTextSTA.setAttribute("id", "inputTextSTA_" + count);
+	inputTextSTA.setAttribute("type", "text");
+	inputTextSTA.setAttribute("placeholder", "introduce a value");
+	inputTextSTA.style.marginLeft = "10px";
+	inputTextSTA.addEventListener("input", function () {
 		changesInInputValueRowFilter("simple", count)
 	});
-	inputText.addEventListener("keypress", function (event) {
+	inputTextSTA.addEventListener("keypress", function (event) {
 		// If the user presses the "Enter" key on the keyboard
 		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	});
-	optionsRow.appendChild(inputText);
+	optionsRow.appendChild(inputTextSTA);
 	var okButton = document.createElement("button");
 	okButton.setAttribute("onclick", "closeModalSelectInValue('" + count + "','ok')");
 	okButton.setAttribute("id", "okButton_" + count);
@@ -885,38 +897,38 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	var divFilterContainer2 = document.createElement("div");
 	divFilterContainer2.setAttribute("id", "divFilterContainer2_" + count);
 	optionsRow.appendChild(divFilterContainer2);
-	var selectorValueInterval1 = document.createElement("select");
-	selectorValueInterval1.setAttribute("id", "selectorValueInterval1_" + count);
-	selectorValueInterval1.style.marginLeft = "10px";
-	var selectorValueInterval2 = document.createElement("select");
-	selectorValueInterval2.setAttribute("id", "selectorValueInterval2_" + count);
-	selectorValueInterval2.style.marginLeft = "5px";
-	divFilterContainer2.appendChild(selectorValueInterval1);
-	divFilterContainer2.appendChild(selectorValueInterval2);
-	var inputTextInterval1 = inputText.cloneNode(true);
-	inputTextInterval1.setAttribute("id", "inputTextInterval1_" + count);
-	inputTextInterval1.style.marginLeft = "10px";
-	var inputTextInterval2 = inputText.cloneNode(true);
-	inputTextInterval2.setAttribute("id", "inputTextInterval2_" + count);
-	inputTextInterval2.style.marginLeft = "5px";
-	inputTextInterval1.addEventListener("input", function () {
+	var selectorValueInterval1STA = document.createElement("select");
+	selectorValueInterval1STA.setAttribute("id", "selectorValueInterval1STA_" + count);
+	selectorValueInterval1STA.style.marginLeft = "10px";
+	var selectorValueInterval2STA = document.createElement("select");
+	selectorValueInterval2STA.setAttribute("id", "selectorValueInterval2STA_" + count);
+	selectorValueInterval2STA.style.marginLeft = "5px";
+	divFilterContainer2.appendChild(selectorValueInterval1STA);
+	divFilterContainer2.appendChild(selectorValueInterval2STA);
+	var inputTextInterval1STA = inputTextSTA.cloneNode(true);
+	inputTextInterval1STA.setAttribute("id", "inputTextInterval1STA_" + count);
+	inputTextInterval1STA.style.marginLeft = "10px";
+	var inputTextInterval2STA = inputTextSTA.cloneNode(true);
+	inputTextInterval2STA.setAttribute("id", "inputTextInterval2STA_" + count);
+	inputTextInterval2STA.style.marginLeft = "5px";
+	inputTextInterval1STA.addEventListener("input", function () {
 		changesInInputValueRowFilter("interval", count)
 	});
-	inputTextInterval2.addEventListener("input", function () {
+	inputTextInterval2STA.addEventListener("input", function () {
 		changesInInputValueRowFilter("interval", count)
 	});
-	inputTextInterval1.addEventListener("keypress", function (event) {
+	inputTextInterval1STA.addEventListener("keypress", function (event) {
 		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	});
-	inputTextInterval2.addEventListener("keypress", function (event) {
+	inputTextInterval2STA.addEventListener("keypress", function (event) {
 		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	});
-	optionsRow.appendChild(inputTextInterval1);
-	optionsRow.appendChild(inputTextInterval2);
+	optionsRow.appendChild(inputTextInterval1STA);
+	optionsRow.appendChild(inputTextInterval2STA);
 	var okButtonInterval = document.createElement("button");
 	okButtonInterval.setAttribute("onclick", "closeModalSelectInValue('" + count + "','ok')");
 	okButtonInterval.setAttribute("id", "okButtonInterval_" + count);
@@ -937,10 +949,10 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	//Put previous values in input Text( 
 	if (selectorInfo.length != 0) {
 		if (selectorInfo[0][3] == ' [a,b] ' || selectorInfo[0][3] == ' (a,b] ' || selectorInfo[0][3] == ' [a,b) ' || selectorInfo[0][3] == ' (a,b) ') {
-			inputTextInterval1.value = selectorInfo[0][4];
-			inputTextInterval2.value = selectorInfo[0][5];
+			inputTextInterval1STA.value = selectorInfo[0][4];
+			inputTextInterval2STA.value = selectorInfo[0][5];
 		} else { //simple
-			inputText.value = selectorInfo[0][4];
+			inputTextSTA.value = selectorInfo[0][4];
 		}
 	}
 	fillValueSelectorFilterRow(count);
@@ -970,13 +982,13 @@ async function fillValueSelectorFilterRow(count) {
 	}
 	//Fill Select
 	//Simple
-	var select = document.getElementById("selectorValue_" + count);
+	var select = document.getElementById("selectorValueSTA_" + count);
 	//Interval
-	var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + count);
-	var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + count);
+	var selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + count);
+	var selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + count);
 	select.innerHTML = "";
-	selectorValueInterval1.innerHTML = "";
-	selectorValueInterval2.innerHTML = "";
+	selectorValueInterval1STA.innerHTML = "";
+	selectorValueInterval2STA.innerHTML = "";
 	var valor;
 	var arrayValors = [];
 	var selectProperty = document.getElementById("selectorProperty_" + count);
@@ -1013,8 +1025,8 @@ async function fillValueSelectorFilterRow(count) {
 			option3.setAttribute("value", valueToinput);
 			option3.innerHTML = valueToinput;
 			select.appendChild(option);
-			selectorValueInterval1.appendChild(option2);
-			selectorValueInterval2.appendChild(option3);
+			selectorValueInterval1STA.appendChild(option2);
+			selectorValueInterval2STA.appendChild(option3);
 		}
 	}
 	showAndHiddeSelectorAndInputsFilterRow(count);
@@ -1054,15 +1066,15 @@ function sortValuesForSelect(arrayValues) {
 function changeWriteToSelect(number, selector) {  //To take the text in input
 	event.preventDefault();
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
-	var inputText = document.getElementById("inputText_" + number);
+	var inputTextSTA = document.getElementById("inputTextSTA_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
-	var selectorValue = document.getElementById("selectorValue_" + number);
+	var selectorValueSTA = document.getElementById("selectorValueSTA_" + number);
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
-	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
+	var inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + number);
+	var inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-	var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
-	var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
+	var selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + number);
+	var selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + number);
 	//disconnect arrow buttons
 	var buttonUp = document.getElementById("buttonUp_" + number);
 	var buttonDown = document.getElementById("buttonDown_" + number);
@@ -1070,17 +1082,17 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 	buttonUp.setAttribute("disabled", true);
 	//Wich text is open?
 	if (selector == "simple") {
-		inputText.style.display = "none";
+		inputTextSTA.style.display = "none";
 		displaySelect.style.display = "none";
 		divFilterContainer.style.display = "inline-block";
-		selectorValue.style.display = "inline-block";
+		selectorValueSTA.style.display = "inline-block";
 	} else { //interval
-		inputTextInterval1.style.display = "none";
-		inputTextInterval2.style.display = "none";
+		inputTextInterval1STA.style.display = "none";
+		inputTextInterval2STA.style.display = "none";
 		displaySelectInterval.style.display = "none";
 		divFilterContainer2.style.display = "inline-block";
-		selectorValueInterval1.style.display = "inline-block";
-		selectorValueInterval2.style.display = "inline-block";
+		selectorValueInterval1STA.style.display = "inline-block";
+		selectorValueInterval2STA.style.display = "inline-block";
 	}
 }
 function changeSelectValueRowFilter(nodeId, number) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1090,11 +1102,11 @@ function changeSelectValueRowFilter(nodeId, number) { //!!!!!!!!!!!!!!!!!!!!!!!!
 function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 	event.preventDefault();
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
-	var inputText = document.getElementById("inputText_" + number);
+	var inputTextSTA = document.getElementById("inputTextSTA_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
-	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
+	var inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + number);
+	var inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var interval;
 	var buttonUp = document.getElementById("buttonUp_" + number);
@@ -1104,36 +1116,36 @@ function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 	//If it comes from simple. Hidde container and show text and display
 	if (divFilterContainer.style.display != "none") {
 		divFilterContainer.style.display = "none";
-		inputText.style.display = "inline-block";
+		inputTextSTA.style.display = "inline-block";
 		displaySelect.style.display = "inline-block";
 		interval = false;
 	} else {//if it comes from interval. Hidde container and show texts and display
 		divFilterContainer2.style.display = "none";
-		inputTextInterval1.style.display = "inline-block";
-		inputTextInterval2.style.display = "inline-block";
+		inputTextInterval1STA.style.display = "inline-block";
+		inputTextInterval2STA.style.display = "inline-block";
 		displaySelectInterval.style.display = "inline-block";
 		interval = true;
 	}
 	if (button == "ok") {
 		if (interval == false) {
-			var selectorValue = document.getElementById("selectorValue_" + number);
-			inputText.value = selectorValue.options[selectorValue.selectedIndex].value;
+			var selectorValueSTA = document.getElementById("selectorValueSTA_" + number);
+			inputTextSTA.value = selectorValueSTA.options[selectorValueSTA.selectedIndex].value;
 			changesInInputValueRowFilter("simple", number);
 		} else {
-			var selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + number);
-			var selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + number);
-			inputTextInterval1.value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
-			inputTextInterval2.value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
+			var selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + number);
+			var selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + number);
+			inputTextInterval1STA.value = selectorValueInterval1STA.options[selectorValueInterval1STA.selectedIndex].value;
+			inputTextInterval2STA.value = selectorValueInterval2STA.options[selectorValueInterval2STA.selectedIndex].value;
 			changesInInputValueRowFilter("interval", number);
 		}
 	}
 }
 function changesInInputValueRowFilter(wichinputText, number) { //and refill conditionSelect (interval if it is a number or a date)
 	var inputText, textIputInterval1, textIputInterval2;
-	if (wichinputText == "simple") { inputText = document.getElementById("inputText_" + number); }
+	if (wichinputText == "simple") { inputTextSTA = document.getElementById("inputTextSTA_" + number); }
 	else {
-		textIputInterval1 = document.getElementById("inputTextInterval1_" + number);
-		textIputInterval2 = document.getElementById("inputTextInterval2_" + number);
+		textIputInterval1 = document.getElementById("inputTextInterval1STA_" + number);
+		textIputInterval2 = document.getElementById("inputTextInterval2STA_" + number);
 	}
 	var value1, valueInput1, valueInput2;
 	var valueLength, valueLengthInterval1, valueLengthInterval2;
@@ -1144,7 +1156,7 @@ function changesInInputValueRowFilter(wichinputText, number) { //and refill cond
 		valueInput2 = textIputInterval2.value;
 		valueLengthInterval2 = valueInput2.length;
 	} else {
-		value1 = inputText.value;
+		value1 = inputTextSTA.value;
 		valueLength = value1.length;
 	}
 	//Adjusting input length
@@ -1171,32 +1183,32 @@ function changesInInputValueRowFilter(wichinputText, number) { //and refill cond
 function showAndHiddeSelectorAndInputsFilterRow(number) {
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	var inputText = document.getElementById("inputText_" + number);
-	var inputTextInterval1 = document.getElementById("inputTextInterval1_" + number);
-	var inputTextInterval2 = document.getElementById("inputTextInterval2_" + number);
+	var inputTextSTA = document.getElementById("inputTextSTA_" + number);
+	var inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + number);
+	var inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var selectorConditionValue = document.getElementById("selectorCondition_" + number).value;
-	var selectorValue = document.getElementById("selectorValue_" + number);
+	var selectorValueSTA = document.getElementById("selectorValueSTA_" + number);
 	var selectorProperty = document.getElementById("selectorProperty_" + number);
 	var inputForProperty = document.getElementById("inputForProperty_" + number);
 	var selectorValueHasChildren;
-	if (selectorValue.hasChildNodes()) {
+	if (selectorValueSTA.hasChildNodes()) {
 		selectorValueHasChildren = true;
 	} else {
 		selectorValueHasChildren = false;
 	}
 	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") {
-		if (inputTextInterval1.style.display == "none" && inputText.style.display == "none") { //selectors are shown
+		if (inputTextInterval1STA.style.display == "none" && inputTextSTA.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
 				divFilterContainer2.style.display = "inline-block";
-				inputTextInterval1.style.display = "none";
-				inputTextInterval2.style.display = "none";
+				inputTextInterval1STA.style.display = "none";
+				inputTextInterval2STA.style.display = "none";
 			} else { // hidde selector things and show inputText
 				divFilterContainer2.style.display = "none";
 				displaySelectInterval.style.display = "none";
-				inputTextInterval1.style.display = "inline-block";
-				inputTextInterval2.style.display = "inline-block";
+				inputTextInterval1STA.style.display = "inline-block";
+				inputTextInterval2STA.style.display = "inline-block";
 			}
 		} else { //inputs are shown
 			if (selectorValueHasChildren) { //show display button
@@ -1204,25 +1216,25 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 			} else {
 				displaySelectInterval.style.display = "none";
 			}
-			inputTextInterval1.style.display = "inline-block";
-			inputTextInterval2.style.display = "inline-block";
+			inputTextInterval1STA.style.display = "inline-block";
+			inputTextInterval2STA.style.display = "inline-block";
 			divFilterContainer2.style.display = "none";
 		}
 		//simple : hide all
-		inputText.style.display = "none";
+		inputTextSTA.style.display = "none";
 		divFilterContainer.style.display = "none";
 		displaySelect.style.display = "none"
 	} else { //simple
-		if (inputText.style.display == "none" && inputTextInterval1.style.display == "none") { //selectors are shown
+		if (inputTextSTA.style.display == "none" && inputTextInterval1STA.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
 				divFilterContainer.style.display = "inline-block";
-				inputText.style.display = "none";
-				inputText.style.display = "none";
+				inputTextSTA.style.display = "none";
+				inputTextSTA.style.display = "none";
 			} else { // hidde selector things and show inputText
 				divFilterContainer.style.display = "none";
 				displaySelect.style.display = "none";
-				inputText.style.display = "inline-block";
-				inputText.style.display = "inline-block";
+				inputTextSTA.style.display = "inline-block";
+				inputTextSTA.style.display = "inline-block";
 			}
 		} else { //inputs are shown
 			if (selectorValueHasChildren) { //show display button
@@ -1230,13 +1242,13 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 			} else {
 				displaySelect.style.display = "none";
 			}
-			inputText.style.display = "inline-block";
-			inputText.style.display = "inline-block";
+			inputTextSTA.style.display = "inline-block";
+			inputTextSTA.style.display = "inline-block";
 			divFilterContainer.style.display = "none";
 		}
 		//Interval : hide all
-		inputTextInterval1.style.display = "none";
-		inputTextInterval2.style.display = "none";
+		inputTextInterval1STA.style.display = "none";
+		inputTextInterval2STA.style.display = "none";
 		divFilterContainer2.style.display = "none";
 		displaySelectInterval.style.display = "none";
 	}
@@ -1645,8 +1657,8 @@ function drawTableAgain() {
 
 function takeSelectInformationSTA() {
 	var optionsRow;
-	var inputForEntityFilterRow, selectorProperty, inputProperty, selectorCondition, inputText, inputTextInterval1, inputTextInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
-	var inputForEntityFilterRowValue, selectorPropertyValue = [], selectorConditionValue, inputTextValue, inputTextInterval1Value, inputTextInterval2Value;
+	var inputForEntityFilterRow, selectorProperty, inputProperty, selectorCondition, inputTextSTA, inputTextInterval1STA, inputTextInterval2STA, selectorValueSTA, selectorValueInterval1STA, selectorValueInterval2STA, divFilterContainer, divFilterContainer2;
+	var inputForEntityFilterRowValue, selectorPropertyValue = [], selectorConditionValue, inputTextValue, inputTextInterval1STAValue, inputTextInterval2STAValue;
 	var arrayInfo;
 	var infoFilter = [];
 	var counter = currentNode.STACounter;
@@ -1668,29 +1680,29 @@ function takeSelectInformationSTA() {
 			arrayInfo.push(counter[i]); //they are out of order, it is necessary to put each info in its place when painting the select
 			arrayInfo.push(inputForEntityFilterRowValue, selectorPropertyValue, selectorConditionValue);
 			if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
-				inputTextInterval1 = document.getElementById("inputTextInterval1_" + counter[i]);
-				inputTextInterval2 = document.getElementById("inputTextInterval2_" + counter[i]);
-				selectorValueInterval1 = document.getElementById("selectorValueInterval1_" + counter[i]);
-				selectorValueInterval2 = document.getElementById("selectorValueInterval2_" + counter[i]);
+				inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + counter[i]);
+				inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + counter[i]);
+				selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + counter[i]);
+				selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + counter[i]);
 				divFilterContainer2 = document.getElementById("divFilterContainer2_" + counter[i]);
 				if (divFilterContainer2.style.display == "inline-block") { //Select open
-					inputTextInterval1Value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
-					inputTextInterval2Value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
+					inputTextInterval1STAValue = selectorValueInterval1STA.options[selectorValueInterval1STA.selectedIndex].value;
+					inputTextInterval2STAValue = selectorValueInterval2STA.options[selectorValueInterval2STA.selectedIndex].value;
 				} else {
-					inputTextInterval1Value = inputTextInterval1.value;
-					inputTextInterval2Value = inputTextInterval2.value;
+					inputTextInterval1STAValue = inputTextInterval1STA.value;
+					inputTextInterval2STAValue = inputTextInterval2STA.value;
 				}
-				arrayInfo.push(inputTextInterval1Value);
-				arrayInfo.push(inputTextInterval2Value);
-				var typeOfValue = typeOfValueFromInput("interval", inputTextInterval1Value, inputTextInterval2Value)
+				arrayInfo.push(inputTextInterval1STAValue);
+				arrayInfo.push(inputTextInterval2STAValue);
+				var typeOfValue = typeOfValueFromInput("interval", inputTextInterval1STAValue, inputTextInterval2STAValue)
 			} else {
-				inputText = document.getElementById("inputText_" + counter[i]);
+				inputTextSTA = document.getElementById("inputTextSTA_" + counter[i]);
 				divFilterContainer = document.getElementById("divFilterContainer_" + counter[i]);
-				selectorValue = document.getElementById("selectorValue_" + counter[i]);
+				selectorValueSTA = document.getElementById("selectorValueSTA_" + counter[i]);
 				if (divFilterContainer.style.display == "inline-block") { //Select open
-					inputTextValue = selectorValue.options[selectorValue.selectedIndex].value;
+					inputTextValue = selectorValueSTA.options[selectorValueSTA.selectedIndex].value;
 				} else {
-					inputTextValue = inputText.value;
+					inputTextValue = inputTextSTA.value;
 				}
 				arrayInfo.push(inputTextValue);
 				var typeOfValue = typeOfValueFromInput("simple", inputTextValue)
@@ -1702,7 +1714,7 @@ function takeSelectInformationSTA() {
 	currentNode.STAinfoFilter = infoFilter;
 }
 function takeSelectInformationCSV() {
-	var selectorColumns, selectorValues;
+	var selectorColumns, selectorValuesTable;
 	var infoFilter = [];
 	var arrayInfo;
 
@@ -1710,10 +1722,10 @@ function takeSelectInformationCSV() {
 	for (var i = 0; i < counter.length; i++) {
 		arrayInfo = [];
 		var selectorColumns = document.getElementById("selectorColumns_" + counter[i]);
-		var selectorValues = document.getElementById("selectorValues_" + counter[i]);
+		var selectorValuesTable = document.getElementById("selectorValuesTable_" + counter[i]);
 		var selectorColumnsSelected = selectorColumns.options[selectorColumns.selectedIndex].value;
-		var selectorValuesSelected = selectorValues.options[selectorValues.selectedIndex].value;
-		arrayInfo.push(counter[i], selectorColumnsSelected, selectorValuesSelected);
+		var selectorValuesTableSelected = selectorValuesTable.options[selectorValuesTable.selectedIndex].value;
+		arrayInfo.push(counter[i], selectorColumnsSelected, selectorValuesTableSelected);
 		infoFilter.push(arrayInfo);
 	}
 	currentNode.STAinfoFilter = infoFilter;
