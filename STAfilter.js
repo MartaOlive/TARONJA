@@ -132,48 +132,42 @@ function createSelectorRowFilters(number) {
 		createEntitySelectorInFilterRows(selectorInfo, number);
 		createPropertySelectInFilterRows(selectorInfo, number);
 		createConditionSelectInFilterRows(selectorInfo, number);
-		createValueSelectInFilterRows(selectorInfo, number);
+		createValueSelectInFilterRows(selectorInfo, number, "STA");
 	} else { //CSV
 		createColumsSelectorFilterRows(selectorInfo, number);
 		createConditionSelectInFilterRows(selectorInfo, number);
-		createValuesSelectorFilterRows(selectorInfo, number);
+		createValueSelectInFilterRows(selectorInfo, number, "Table");
+
 	}
 }
 
-function createColumsSelectorFilterRows(selectorInfo, count) {
+function createColumsSelectorFilterRows(count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
-	
+
 	var selectColumns = document.createElement("select");
 	selectColumns.setAttribute("id", "selectorColumns_" + count);
-	selectColumns.setAttribute("onchange", "fillValuesSelectorFilterRows('" + count + "')");
+	selectColumns.setAttribute("onchange", "fillValueSelectorFilterRow('" + count + "')");
 
 	optionsRow.appendChild(selectColumns);
 	//select.setAttribute("onChange", "onchangeColumsSelect('" + count + "')");
 
-	fillColumsSelectorFilterRows(selectorInfo, count)
+	fillColumsSelectorFilterRows(count)
 
 
 }
 const columnes = ["columna1", "columna2", "columna3"]; //a borrar quan tingui els valors
 const valors = ["valor1", "valor2", "valor3"];
 
-//  var STAdataObject = {
-// 	dia :["a","b","..."],
-// 	estacio:["a","b","..."],
-// 	nivell_absolut :["a","b","..."],
-// 	percentatge_volum_embassat :["a","b","..."],
-// 	volum_embassat:["a","b","..."]
-//  }
 
-function fillColumsSelectorFilterRows(selectorInfo, count) {
+function fillColumsSelectorFilterRows(count) {
 	var selectorColumns = document.getElementById("selectorColumns_" + count);
 	var columns = currentNode.STAdata[0];
 
 	//First option (-- choose a field--)
-		var option = document.createElement("option"); //First option
-		option.setAttribute("value", "-- choose a field--");
-		option.innerHTML = "-- choose a field--";
-		selectorColumns.appendChild(option);
+	var option = document.createElement("option"); //First option
+	option.setAttribute("value", "-- choose a field--");
+	option.innerHTML = "-- choose a field--";
+	selectorColumns.appendChild(option);
 
 	//Real options 
 	for (var i = 0; i < columns.length; i++) {
@@ -186,23 +180,21 @@ function fillColumsSelectorFilterRows(selectorInfo, count) {
 				option.setAttribute("selected", true);
 			}
 		}
-
-
 		selectorColumns.appendChild(option);
 	}
 }
 
-function createValuesSelectorFilterRows(selectorInfo, count) {
-	var optionsRow = document.getElementById("optionsRow_" + count);
-	var selectorValuesTable = document.createElement("select");
-	selectorValuesTable.setAttribute("id", "selectorValuesTable_" + count);
-	optionsRow.appendChild(selectorValuesTable);
-	//select.setAttribute("onChange", "onchangeValuesSelect('" + count + "')");
-	fillValuesSelectorFilterRows(count, selectorInfo);
-	var inputValuesTable = document.createElement("input");
-	inputValuesTable.setAttribute("id", "inputValuesTable_" + count);
-	optionsRow.appendChild(inputValuesTable);
-}
+// function createValuesSelectorFilterRows(selectorInfo, count) {
+// 	var optionsRow = document.getElementById("optionsRow_" + count);
+// 	var selectorValuesTable = document.createElement("select");
+// 	selectorValuesTable.setAttribute("id", "selectorValuesTable_" + count);
+// 	optionsRow.appendChild(selectorValuesTable);
+// 	//select.setAttribute("onChange", "onchangeValuesSelect('" + count + "')");
+// 	fillValuesSelectorFilterRows(count, selectorInfo);
+// 	var inputValuesTable = document.createElement("input");
+// 	inputValuesTable.setAttribute("id", "inputValuesTable_" + count);
+// 	optionsRow.appendChild(inputValuesTable);
+// }
 function obtainValuesFromSTAdataInCSV(column) {
 	var data = currentNode.STAdata;
 	var index = data[0].indexOf(column);
@@ -215,38 +207,39 @@ function obtainValuesFromSTAdataInCSV(column) {
 			}
 		}
 	}
-	var valuesSorted= sortValuesForSelect(valuesArray);
+	var valuesSorted = sortValuesForSelect(valuesArray);
 
 	//console.log(valuesSorted);
 	return valuesSorted;
 }
 
-function fillValuesSelectorFilterRows(count, selectorInfo) { //CSV
-	var selectorValuesTable = document.getElementById("selectorValuesTable_" + count);
-	selectorValuesTable.innerHTML = "";
-	var selectorColumns = document.getElementById("selectorColumns_" + count);
-	var selectorColumnsValue = selectorColumns.options[selectorColumns.selectedIndex].value;
-	var arrayValuesSorted= obtainValuesFromSTAdataInCSV(selectorColumnsValue);
-	//First option (-- choose a field--)
-	var option = document.createElement("option"); //First option
-	option.setAttribute("value", "-- choose a value--");
-	option.innerHTML = "-- choose a value--";
-	selectorValuesTable.appendChild(option);
+// function fillValuesSelectorFilterRows(count, selectorInfo) { //CSV
+// 	var selectorValuesTable = document.getElementById("selectorValuesTable_" + count);
+// 	selectorValuesTable.innerHTML = "";
 
-	for (var i = 0; i < arrayValuesSorted.length; i++) {
-	var	option2 = document.createElement("option"); //First option
-		option2.setAttribute("value", arrayValuesSorted[i]);
-		option2.innerHTML = arrayValuesSorted[i];
-		if (typeof selectorInfo != "undefined") {
-			if (selectorInfo.length != 0) {
-				if (selectorInfo[0][2] == arrayValuesSorted[i]) {
-					option2.setAttribute("selected", true);
-				}
-			}
-		}
-		selectorValuesTable.appendChild(option2);
-	}
-}
+// 	var selectorColumns = document.getElementById("selectorColumns_" + count);
+// 	var selectorColumnsValue = selectorColumns.options[selectorColumns.selectedIndex].value;
+// 	var arrayValuesSorted = obtainValuesFromSTAdataInCSV(selectorColumnsValue);
+// 	//First option (-- choose a field--)
+// 	var option = document.createElement("option"); //First option
+// 	option.setAttribute("value", "-- choose a value--");
+// 	option.innerHTML = "-- choose a value--";
+// 	selectorValuesTable.appendChild(option);
+
+// 	for (var i = 0; i < arrayValuesSorted.length; i++) {
+// 		var option2 = document.createElement("option"); //First option
+// 		option2.setAttribute("value", arrayValuesSorted[i]);
+// 		option2.innerHTML = arrayValuesSorted[i];
+// 		if (typeof selectorInfo != "undefined") {
+// 			if (selectorInfo.length != 0) {
+// 				if (selectorInfo[0][2] == arrayValuesSorted[i]) {
+// 					option2.setAttribute("selected", true);
+// 				}
+// 			}
+// 		}
+// 		selectorValuesTable.appendChild(option2);
+// 	}
+// }
 
 
 //Obtain Data from API
@@ -837,44 +830,48 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 	return typeOfValues;
 }
 //Values select
-function createValueSelectInFilterRows(selectorInfo, count) {
+function createValueSelectInFilterRows(selectorInfo, count, informationOrigin) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
-	var select = document.createElement("select");
-	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + count);
-	var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
-	var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue), true);
-	var url = getURLWithoutQueryParams(currentNode.STAURL);
-	//Find the entity to search values
-	var parentLabel = searchParentLabel();
-	if (parentLabel != entity) {
-		var parentLabelLength = parentLabel.length;
-		url = url.slice(parentLabelLength); //Erase entity without "/"
-		url += entity;
+
+	if (informationOrigin == "STA") {
+		var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + count);
+		var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
+		var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue), true);
+		var url = getURLWithoutQueryParams(currentNode.STAURL);
+		//Find the entity to search values
+		var parentLabel = searchParentLabel();
+		if (parentLabel != entity) {
+			var parentLabelLength = parentLabel.length;
+			url = url.slice(parentLabelLength); //Erase entity without "/"
+			url += entity;
+		}
 	}
+
 	//Selects
 	var divFilterContainer = document.createElement("div");
 	divFilterContainer.setAttribute("id", "divFilterContainer_" + count);
 	divFilterContainer.setAttribute("style", "display: none;");
 	optionsRow.appendChild(divFilterContainer);
-	select.setAttribute("id", "selectorValueSTA_" + count);
+	var select = document.createElement("select");
+	select.setAttribute("id", "selectorValue" + informationOrigin + "_" + count);
 	select.setAttribute("onChange", "changeSelectValueRowFilter('" + currentNode.id + "','" + count + "')");
 	divFilterContainer.appendChild(select);
 	//Simple: inputText, buttons and displaySelects
-	var inputTextSTA = document.createElement("input");
-	inputTextSTA.setAttribute("id", "inputTextSTA_" + count);
-	inputTextSTA.setAttribute("type", "text");
-	inputTextSTA.setAttribute("placeholder", "introduce a value");
-	inputTextSTA.style.marginLeft = "10px";
-	inputTextSTA.addEventListener("input", function () {
+	var inputText = document.createElement("input");
+	inputText.setAttribute("id", "inputText" + informationOrigin + "_" + count);
+	inputText.setAttribute("type", "text");
+	inputText.setAttribute("placeholder", "introduce a value");
+	inputText.style.marginLeft = "10px";
+	inputText.addEventListener("input", function () {
 		changesInInputValueRowFilter("simple", count)
 	});
-	inputTextSTA.addEventListener("keypress", function (event) {
+	inputText.addEventListener("keypress", function (event) {
 		// If the user presses the "Enter" key on the keyboard
 		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	});
-	optionsRow.appendChild(inputTextSTA);
+	optionsRow.appendChild(inputText);
 	var okButton = document.createElement("button");
 	okButton.setAttribute("onclick", "closeModalSelectInValue('" + count + "','ok')");
 	okButton.setAttribute("id", "okButton_" + count);
@@ -897,38 +894,38 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	var divFilterContainer2 = document.createElement("div");
 	divFilterContainer2.setAttribute("id", "divFilterContainer2_" + count);
 	optionsRow.appendChild(divFilterContainer2);
-	var selectorValueInterval1STA = document.createElement("select");
-	selectorValueInterval1STA.setAttribute("id", "selectorValueInterval1STA_" + count);
-	selectorValueInterval1STA.style.marginLeft = "10px";
-	var selectorValueInterval2STA = document.createElement("select");
-	selectorValueInterval2STA.setAttribute("id", "selectorValueInterval2STA_" + count);
-	selectorValueInterval2STA.style.marginLeft = "5px";
-	divFilterContainer2.appendChild(selectorValueInterval1STA);
-	divFilterContainer2.appendChild(selectorValueInterval2STA);
-	var inputTextInterval1STA = inputTextSTA.cloneNode(true);
-	inputTextInterval1STA.setAttribute("id", "inputTextInterval1STA_" + count);
-	inputTextInterval1STA.style.marginLeft = "10px";
-	var inputTextInterval2STA = inputTextSTA.cloneNode(true);
-	inputTextInterval2STA.setAttribute("id", "inputTextInterval2STA_" + count);
-	inputTextInterval2STA.style.marginLeft = "5px";
-	inputTextInterval1STA.addEventListener("input", function () {
+	var selectorValueInterval1 = document.createElement("select");
+	selectorValueInterval1.setAttribute("id", "selectorValueInterval1" + informationOrigin + "_" + count);
+	selectorValueInterval1.style.marginLeft = "10px";
+	var selectorValueInterval2 = document.createElement("select");
+	selectorValueInterval2.setAttribute("id", "selectorValueInterval2" + informationOrigin + "_" + count);
+	selectorValueInterval2.style.marginLeft = "5px";
+	divFilterContainer2.appendChild(selectorValueInterval1);
+	divFilterContainer2.appendChild(selectorValueInterval2);
+	var inputTextInterval1 = inputText.cloneNode(true);
+	inputTextInterval1.setAttribute("id", "inputTextInterval1" + informationOrigin + "_" + count);
+	inputTextInterval1.style.marginLeft = "10px";
+	var inputTextInterval2 = inputText.cloneNode(true);
+	inputTextInterval2.setAttribute("id", "inputTextInterval2" + informationOrigin + "_" + count);
+	inputTextInterval2.style.marginLeft = "5px";
+	inputTextInterval1.addEventListener("input", function () {
 		changesInInputValueRowFilter("interval", count)
 	});
-	inputTextInterval2STA.addEventListener("input", function () {
+	inputTextInterval2.addEventListener("input", function () {
 		changesInInputValueRowFilter("interval", count)
 	});
-	inputTextInterval1STA.addEventListener("keypress", function (event) {
+	inputTextInterval1.addEventListener("keypress", function (event) {
 		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	});
-	inputTextInterval2STA.addEventListener("keypress", function (event) {
+	inputTextInterval2.addEventListener("keypress", function (event) {
 		if (event.key === "Enter") {
 			event.preventDefault();
 		}
 	});
-	optionsRow.appendChild(inputTextInterval1STA);
-	optionsRow.appendChild(inputTextInterval2STA);
+	optionsRow.appendChild(inputTextInterval1);
+	optionsRow.appendChild(inputTextInterval2);
 	var okButtonInterval = document.createElement("button");
 	okButtonInterval.setAttribute("onclick", "closeModalSelectInValue('" + count + "','ok')");
 	okButtonInterval.setAttribute("id", "okButtonInterval_" + count);
@@ -949,86 +946,113 @@ function createValueSelectInFilterRows(selectorInfo, count) {
 	//Put previous values in input Text( 
 	if (selectorInfo.length != 0) {
 		if (selectorInfo[0][3] == ' [a,b] ' || selectorInfo[0][3] == ' (a,b] ' || selectorInfo[0][3] == ' [a,b) ' || selectorInfo[0][3] == ' (a,b) ') {
-			inputTextInterval1STA.value = selectorInfo[0][4];
-			inputTextInterval2STA.value = selectorInfo[0][5];
+			inputTextInterval1.value = selectorInfo[0][4];
+			inputTextInterval2.value = selectorInfo[0][5];
 		} else { //simple
-			inputTextSTA.value = selectorInfo[0][4];
+			inputText.value = selectorInfo[0][4];
 		}
 	}
-	fillValueSelectorFilterRow(count);
+	if (informationOrigin == "STA") {
+		fillValueSelectorFilterRow(count);
+	} else { //"table"
+		fillValueSelectorFilterRow(count); //el selector info no serà necessari xq posarà ala info al input, el select quedarà tancat 
+		//createValuesSelectorFilterRows(selectorInfo, number);
+	}
+
 }
 async function fillValueSelectorFilterRow(count) {
-	var inputForEntityFilterRowValue = document.getElementById("inputForEntityFilterRow_" + count).value;
-	var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue, true));
-	var url = getURLWithoutQueryParams(currentNode.STAURL);
-	//Find the entity to search values
-	var parentLabel = searchParentLabel();
-	if (parentLabel != entity) {
-		url = url.replace(parentLabel, entity);
+	var valor, valueToinput, dataToFillSelect, arrayValors = [], valueUndefined, informationOrigin;
+
+	if (currentNode.label == "FilterRowsSTA") {
+		informationOrigin = "STA";
+	} else {
+		informationOrigin = "Table";
 	}
-	var dataToFillSelect;
-	if (typeof currentNode.STAentityValuesForSelect !== "undefined") {
-		if (entity != currentNode.STAentityValuesForSelect[0]) { //avoid to call to API for same entity
+
+	//Fill Select
+	//Simple
+	var selectorValue = document.getElementById("selectorValue" + informationOrigin + "_" + count);
+	//Interval
+	var selectorValueInterval1 = document.getElementById("selectorValueInterval1" + informationOrigin + "_" + count);
+	var selectorValueInterval2 = document.getElementById("selectorValueInterval2" + informationOrigin + "_" + count);
+	selectorValue.innerHTML = "";
+	selectorValueInterval1.innerHTML = "";
+	selectorValueInterval2.innerHTML = "";
+	var arrayValuesArranged;
+
+	if (informationOrigin == "STA") {
+		var inputForEntityFilterRowValue = document.getElementById("inputForEntityFilterRow_" + count).value;
+		var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue, true));
+		var url = getURLWithoutQueryParams(currentNode.STAURL);
+		//Find the entity to search values
+		var parentLabel = searchParentLabel();
+		if (parentLabel != entity) {
+			url = url.replace(parentLabel, entity);
+		}
+		if (typeof currentNode.STAentityValuesForSelect !== "undefined") {
+			if (entity != currentNode.STAentityValuesForSelect[0]) { //avoid to call to API for same entity
+				dataToFillSelect = await loadAPIDataToFillSelectInRowFilter(url);
+				currentNode.STAentityValuesForSelect = [entity, dataToFillSelect];
+				dataToFillSelect = currentNode.STAentityValuesForSelect[1];
+			} else {
+				dataToFillSelect = currentNode.STAentityValuesForSelect[1];
+			}
+		} else {
 			dataToFillSelect = await loadAPIDataToFillSelectInRowFilter(url);
 			currentNode.STAentityValuesForSelect = [entity, dataToFillSelect];
 			dataToFillSelect = currentNode.STAentityValuesForSelect[1];
-		} else {
-			dataToFillSelect = currentNode.STAentityValuesForSelect[1];
 		}
-	} else {
-		dataToFillSelect = await loadAPIDataToFillSelectInRowFilter(url);
-		currentNode.STAentityValuesForSelect = [entity, dataToFillSelect];
-		dataToFillSelect = currentNode.STAentityValuesForSelect[1];
-	}
-	//Fill Select
-	//Simple
-	var select = document.getElementById("selectorValueSTA_" + count);
-	//Interval
-	var selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + count);
-	var selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + count);
-	select.innerHTML = "";
-	selectorValueInterval1STA.innerHTML = "";
-	selectorValueInterval2STA.innerHTML = "";
-	var valor;
-	var arrayValors = [];
-	var selectProperty = document.getElementById("selectorProperty_" + count);
-	var selectPropertyValue = selectProperty.options[selectProperty.selectedIndex].value;
-	var valueUndefined = true;
-	if (selectPropertyValue.charAt(selectPropertyValue.length - 1) != "/") { //If property values can be charged. 
-		for (let index = 0; index < dataToFillSelect.length; index++) {
-			valor = dataToFillSelect[index][selectPropertyValue];
-			if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
-				valueUndefined = false;
-			}
-			if (typeof valor === "undefined" && selectPropertyValue.charAt(selectPropertyValue.length - 1) == "/") {
-				valor = dataToFillSelect[index];
-				var selectPropertyValueArray = selectPropertyValue.split("/");
-				for (var a = 0; a < selectPropertyValueArray.length; a++) {
-					valor = valor[selectPropertyValueArray[a]];
+		var selectProperty = document.getElementById("selectorProperty_" + count);
+		var selectPropertyValue = selectProperty.options[selectProperty.selectedIndex].value;
+		valueUndefined = true;
+		if (selectPropertyValue.charAt(selectPropertyValue.length - 1) != "/") { //If property values can be charged. 
+			for (let index = 0; index < dataToFillSelect.length; index++) {
+				valor = dataToFillSelect[index][selectPropertyValue];
+				if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
+					valueUndefined = false;
+				}
+				if (typeof valor === "undefined" && selectPropertyValue.charAt(selectPropertyValue.length - 1) == "/") { //!!!!!!!!!!!no necessari en csv  gestionar
+					valor = dataToFillSelect[index];
+					var selectPropertyValueArray = selectPropertyValue.split("/");
+					for (var a = 0; a < selectPropertyValueArray.length; a++) {
+						valor = valor[selectPropertyValueArray[a]];
+					}
+				}
+				if (!arrayValors.find(element => element == valor)) { //create array with not arranged values
+					arrayValors.push(valor);
 				}
 			}
-			if (!arrayValors.find(element => element == valor)) { //create array with not arranged values
-				arrayValors.push(valor);
-			}
+			arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
 		}
-		var arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
-		var valueToinput;
-		for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options
-			valueToinput = arrayValuesArranged[i];
-			var option = document.createElement("option");
-			option.setAttribute("value", valueToinput);
-			option.innerHTML = valueToinput;
-			var option2 = document.createElement("option");
-			option2.setAttribute("value", valueToinput);
-			option2.innerHTML = valueToinput;
-			var option3 = document.createElement("option");
-			option3.setAttribute("value", valueToinput);
-			option3.innerHTML = valueToinput;
-			select.appendChild(option);
-			selectorValueInterval1STA.appendChild(option2);
-			selectorValueInterval2STA.appendChild(option3);
+	} else { //CSV
+		var selectorColumns = document.getElementById("selectorColumns_" + count);
+		var selectorColumnsValue = selectorColumns.options[selectorColumns.selectedIndex].value;
+		arrayValuesArranged = obtainValuesFromSTAdataInCSV(selectorColumnsValue);
+
+		if (arrayValuesArranged.length != 0) {
+			valueUndefined = false;
+		} else {
+			valueUndefined = true;
 		}
 	}
+
+	for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options and fill selector
+		valueToinput = arrayValuesArranged[i];
+		var option = document.createElement("option");
+		option.setAttribute("value", valueToinput);
+		option.innerHTML = valueToinput;
+		var option2 = document.createElement("option");
+		option2.setAttribute("value", valueToinput);
+		option2.innerHTML = valueToinput;
+		var option3 = document.createElement("option");
+		option3.setAttribute("value", valueToinput);
+		option3.innerHTML = valueToinput;
+		selectorValue.appendChild(option);
+		selectorValueInterval1.appendChild(option2);
+		selectorValueInterval2.appendChild(option3);
+	}
+
+
 	showAndHiddeSelectorAndInputsFilterRow(count);
 }
 function sortValuesForSelect(arrayValues) {
@@ -1039,15 +1063,15 @@ function sortValuesForSelect(arrayValues) {
 	for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
 		if (typeof arrayValues[i] !== "undefined") {
 			isNumber = true;
-			punctuationMark=false;
+			punctuationMark = false;
 			for (var a = 0; a < arrayValues[i].length; a++) { //check each character
-				if (isNumber == true && arrayValues[i] !=","  && arrayValues[i] !="." && punctuationMark!=true) {
+				if (isNumber == true && arrayValues[i] != "," && arrayValues[i] != "." && punctuationMark != true) {
 					if (isNaN(arrayValues[i][a])) {//is not a number 
 						isNumber = false;
-						
+
 					}
-					if (arrayValues[i] !=","  || arrayValues[i] !="."){
-						punctuationMark=true;
+					if (arrayValues[i] != "," || arrayValues[i] != ".") {
+						punctuationMark = true;
 					}
 				}
 			}
@@ -1065,16 +1089,22 @@ function sortValuesForSelect(arrayValues) {
 }
 function changeWriteToSelect(number, selector) {  //To take the text in input
 	event.preventDefault();
+	var informationOrigin;
+	if (currentNode.label == "FilterRowsSTA") {
+		informationOrigin = "STA";
+	} else {
+		informationOrigin = "Table"
+	}
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
-	var inputTextSTA = document.getElementById("inputTextSTA_" + number);
+	var inputText = document.getElementById("inputText" + informationOrigin + "_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
-	var selectorValueSTA = document.getElementById("selectorValueSTA_" + number);
+	var selectorValueSTA = document.getElementById("selectorValue" + informationOrigin + "_" + number);
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	var inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + number);
-	var inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + number);
+	var inputTextInterval1STA = document.getElementById("inputTextInterval1" + informationOrigin + "_" + number);
+	var inputTextInterval2STA = document.getElementById("inputTextInterval2" + informationOrigin + "_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
-	var selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + number);
-	var selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + number);
+	var selectorValueInterval1STA = document.getElementById("selectorValueInterval1" + informationOrigin + "_" + number);
+	var selectorValueInterval2STA = document.getElementById("selectorValueInterval2" + informationOrigin + "_" + number);
 	//disconnect arrow buttons
 	var buttonUp = document.getElementById("buttonUp_" + number);
 	var buttonDown = document.getElementById("buttonDown_" + number);
@@ -1082,7 +1112,7 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 	buttonUp.setAttribute("disabled", true);
 	//Wich text is open?
 	if (selector == "simple") {
-		inputTextSTA.style.display = "none";
+		inputText.style.display = "none";
 		displaySelect.style.display = "none";
 		divFilterContainer.style.display = "inline-block";
 		selectorValueSTA.style.display = "inline-block";
@@ -1101,12 +1131,18 @@ function changeSelectValueRowFilter(nodeId, number) { //!!!!!!!!!!!!!!!!!!!!!!!!
 }
 function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 	event.preventDefault();
+	var informationOrigin;
+	if (currentNode.label == "FilterRowsSTA") {
+		informationOrigin = "STA";
+	} else {
+		informationOrigin = "Table"
+	}
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
-	var inputTextSTA = document.getElementById("inputTextSTA_" + number);
+	var inputText = document.getElementById("inputText" + informationOrigin + "_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	var inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + number);
-	var inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + number);
+	var inputTextInterval1STA = document.getElementById("inputTextInterval1" + informationOrigin + "_" + number);
+	var inputTextInterval2STA = document.getElementById("inputTextInterval2" + informationOrigin + "_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var interval;
 	var buttonUp = document.getElementById("buttonUp_" + number);
@@ -1116,7 +1152,7 @@ function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 	//If it comes from simple. Hidde container and show text and display
 	if (divFilterContainer.style.display != "none") {
 		divFilterContainer.style.display = "none";
-		inputTextSTA.style.display = "inline-block";
+		inputText.style.display = "inline-block";
 		displaySelect.style.display = "inline-block";
 		interval = false;
 	} else {//if it comes from interval. Hidde container and show texts and display
@@ -1128,12 +1164,12 @@ function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 	}
 	if (button == "ok") {
 		if (interval == false) {
-			var selectorValueSTA = document.getElementById("selectorValueSTA_" + number);
-			inputTextSTA.value = selectorValueSTA.options[selectorValueSTA.selectedIndex].value;
+			var selectorValueSTA = document.getElementById("selectorValue" + informationOrigin + "_" + number);
+			inputText.value = selectorValueSTA.options[selectorValueSTA.selectedIndex].value;
 			changesInInputValueRowFilter("simple", number);
 		} else {
-			var selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + number);
-			var selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + number);
+			var selectorValueInterval1STA = document.getElementById("selectorValueInterval1" + informationOrigin + "_" + number);
+			var selectorValueInterval2STA = document.getElementById("selectorValueInterval2" + informationOrigin + "_" + number);
 			inputTextInterval1STA.value = selectorValueInterval1STA.options[selectorValueInterval1STA.selectedIndex].value;
 			inputTextInterval2STA.value = selectorValueInterval2STA.options[selectorValueInterval2STA.selectedIndex].value;
 			changesInInputValueRowFilter("interval", number);
@@ -1141,11 +1177,16 @@ function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 	}
 }
 function changesInInputValueRowFilter(wichinputText, number) { //and refill conditionSelect (interval if it is a number or a date)
-	var inputText, textIputInterval1, textIputInterval2;
-	if (wichinputText == "simple") { inputTextSTA = document.getElementById("inputTextSTA_" + number); }
+	var inputText, textIputInterval1, textIputInterval2, informationOrigin;
+	if (currentNode.label == "FilterRowsSTA") {
+		informationOrigin = "STA";
+	} else {
+		informationOrigin = "Table"
+	}
+	if (wichinputText == "simple") { inputText = document.getElementById("inputText" + informationOrigin + "_" + number); }
 	else {
-		textIputInterval1 = document.getElementById("inputTextInterval1STA_" + number);
-		textIputInterval2 = document.getElementById("inputTextInterval2STA_" + number);
+		textIputInterval1 = document.getElementById("inputTextInterval1" + informationOrigin + "_" + number);
+		textIputInterval2 = document.getElementById("inputTextInterval2" + informationOrigin + "_" + number);
 	}
 	var value1, valueInput1, valueInput2;
 	var valueLength, valueLengthInterval1, valueLengthInterval2;
@@ -1156,7 +1197,7 @@ function changesInInputValueRowFilter(wichinputText, number) { //and refill cond
 		valueInput2 = textIputInterval2.value;
 		valueLengthInterval2 = valueInput2.length;
 	} else {
-		value1 = inputTextSTA.value;
+		value1 = inputText.value;
 		valueLength = value1.length;
 	}
 	//Adjusting input length
@@ -1172,8 +1213,8 @@ function changesInInputValueRowFilter(wichinputText, number) { //and refill cond
 	} else if (valueLength <= 15) {
 		inputText.style.width = "100px";
 		if (wichinputText == "interval") {
-			inputText1.style.width = "100px";
-			inputText2.style.width = "100px";
+			textIputInterval1.style.width = "100px";
+			textIputInterval2.style.width = "100px";
 		}
 	}
 	//Change options in selector depending of type of value selector
@@ -1181,15 +1222,21 @@ function changesInInputValueRowFilter(wichinputText, number) { //and refill cond
 }
 //General selects in FilterRow
 function showAndHiddeSelectorAndInputsFilterRow(number) {
+	var informationOrigin;
+	if (currentNode.label == "FilterRowsSTA") {
+		informationOrigin = "STA";
+	} else {
+		informationOrigin = "Table"
+	}
 	var divFilterContainer = document.getElementById("divFilterContainer_" + number);
 	var divFilterContainer2 = document.getElementById("divFilterContainer2_" + number);
-	var inputTextSTA = document.getElementById("inputTextSTA_" + number);
-	var inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + number);
-	var inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + number);
+	var inputText = document.getElementById("inputText" + informationOrigin + "_" + number);
+	var inputTextInterval1STA = document.getElementById("inputTextInterval1" + informationOrigin + "_" + number);
+	var inputTextInterval2STA = document.getElementById("inputTextInterval2" + informationOrigin + "_" + number);
 	var displaySelect = document.getElementById("displaySelect_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var selectorConditionValue = document.getElementById("selectorCondition_" + number).value;
-	var selectorValueSTA = document.getElementById("selectorValueSTA_" + number);
+	var selectorValueSTA = document.getElementById("selectorValue" + informationOrigin + "_" + number);
 	var selectorProperty = document.getElementById("selectorProperty_" + number);
 	var inputForProperty = document.getElementById("inputForProperty_" + number);
 	var selectorValueHasChildren;
@@ -1199,7 +1246,7 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 		selectorValueHasChildren = false;
 	}
 	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") {
-		if (inputTextInterval1STA.style.display == "none" && inputTextSTA.style.display == "none") { //selectors are shown
+		if (inputTextInterval1STA.style.display == "none" && inputText.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
 				divFilterContainer2.style.display = "inline-block";
 				inputTextInterval1STA.style.display = "none";
@@ -1221,20 +1268,20 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 			divFilterContainer2.style.display = "none";
 		}
 		//simple : hide all
-		inputTextSTA.style.display = "none";
+		inputText.style.display = "none";
 		divFilterContainer.style.display = "none";
 		displaySelect.style.display = "none"
 	} else { //simple
-		if (inputTextSTA.style.display == "none" && inputTextInterval1STA.style.display == "none") { //selectors are shown
+		if (inputText.style.display == "none" && inputTextInterval1STA.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
 				divFilterContainer.style.display = "inline-block";
-				inputTextSTA.style.display = "none";
-				inputTextSTA.style.display = "none";
+				inputText.style.display = "none";
+				inputText.style.display = "none";
 			} else { // hidde selector things and show inputText
 				divFilterContainer.style.display = "none";
 				displaySelect.style.display = "none";
-				inputTextSTA.style.display = "inline-block";
-				inputTextSTA.style.display = "inline-block";
+				inputText.style.display = "inline-block";
+				inputText.style.display = "inline-block";
 			}
 		} else { //inputs are shown
 			if (selectorValueHasChildren) { //show display button
@@ -1242,8 +1289,8 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 			} else {
 				displaySelect.style.display = "none";
 			}
-			inputTextSTA.style.display = "inline-block";
-			inputTextSTA.style.display = "inline-block";
+			inputText.style.display = "inline-block";
+			inputText.style.display = "inline-block";
 			divFilterContainer.style.display = "none";
 		}
 		//Interval : hide all
@@ -1252,12 +1299,17 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 		divFilterContainer2.style.display = "none";
 		displaySelectInterval.style.display = "none";
 	}
-	var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
-	if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
-		inputForProperty.style.display = "inline-block";
-	} else {
-		inputForProperty.style.display = "none";
+
+
+	if (currentNode.label == "FilterRowsSTA") {
+		var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
+		if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
+			inputForProperty.style.display = "inline-block";
+		} else {
+			inputForProperty.style.display = "none";
+		}
 	}
+
 }
 var stopSearchparentLabel = false;
 function searchParentLabel() {
@@ -1634,8 +1686,8 @@ function DeleteGroupInElemFilter(elem, fatherElem) {
 			var copyFather = Object.assign(fatherElem.elems);
 			currentNode.STAelementFilter = copyFather[0];
 		}
-		var boxNames = currentNode.STAboxNames;
-		boxNames = actualizeBoxNames(currentNode.STAelementFilter, arrayBoxNumbers);
+		//var boxNames = currentNode.STAboxNames;
+		var boxNames = actualizeBoxNames(currentNode.STAelementFilter, arrayBoxNumbers);
 	}
 }
 function actualizeBoxNames(elem, arrayBoxNumbers) {
@@ -1655,54 +1707,72 @@ function drawTableAgain() {
 
 
 
-function takeSelectInformationSTA() {
+function takeSelectInformation() {
 	var optionsRow;
-	var inputForEntityFilterRow, selectorProperty, inputProperty, selectorCondition, inputTextSTA, inputTextInterval1STA, inputTextInterval2STA, selectorValueSTA, selectorValueInterval1STA, selectorValueInterval2STA, divFilterContainer, divFilterContainer2;
-	var inputForEntityFilterRowValue, selectorPropertyValue = [], selectorConditionValue, inputTextValue, inputTextInterval1STAValue, inputTextInterval2STAValue;
-	var arrayInfo;
+	var inputForEntityFilterRow, selectorProperty, inputProperty, selectorCondition, inputText, inputTextInterval1, inputTextInterval2, selectorValue, selectorValueInterval1, selectorValueInterval2, divFilterContainer, divFilterContainer2;
+	var inputForEntityFilterRowValue, selectorPropertyValue = [], selectorConditionValue, inputTextValue, inputTextInterval1Value, inputTextInterval2Value;
+	var arrayInfo, informationOrigin;
 	var infoFilter = [];
 	var counter = currentNode.STACounter;
+
+	if (currentNode.label == "FilterRowsSTA") {
+		informationOrigin = "STA";
+	} else {
+		informationOrigin = "Table";
+	}
+
 	for (var i = 0; i < counter.length; i++) {
 		optionsRow = document.getElementById("optionsRow_" + counter[i]);
 		arrayInfo = [];
+		arrayInfo.push(counter[i]); //they are out of order, it is necessary to put each info in its place when painting the select
 		if (optionsRow != null) {
-			inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + counter[i]);
-			inputForEntityFilterRowValue = inputForEntityFilterRow.value;
-			selectorProperty = document.getElementById("selectorProperty_" + counter[i]);
-			inputProperty = document.getElementById("inputForProperty_" + counter[i]);
-			selectorPropertyValue = [];
-			selectorPropertyValue.push(selectorProperty.options[selectorProperty.selectedIndex].value);
-			if (inputProperty.style.display == "inline-block") {
-				selectorPropertyValue.push(inputProperty.value);
+			if (currentNode.label == "FilterRowsSTA") {
+				inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + counter[i]);
+				inputForEntityFilterRowValue = inputForEntityFilterRow.value;
+				selectorProperty = document.getElementById("selectorProperty_" + counter[i]);
+				inputProperty = document.getElementById("inputForProperty_" + counter[i]);
+				selectorPropertyValue = [];
+				selectorPropertyValue.push(selectorProperty.options[selectorProperty.selectedIndex].value);
+				if (inputProperty.style.display == "inline-block") {
+					selectorPropertyValue.push(inputProperty.value);
+				}
+				arrayInfo.push(inputForEntityFilterRowValue, selectorPropertyValue);
+
+			} else { //CSV
+				var selectorColumns = document.getElementById("selectorColumns_" + counter[i]);
+				var selectorColumnsSelected = selectorColumns.options[selectorColumns.selectedIndex].value;
+				arrayInfo.push(selectorColumnsSelected, "no");
+
 			}
 			selectorCondition = document.getElementById("selectorCondition_" + counter[i]);
 			selectorConditionValue = selectorCondition.options[selectorCondition.selectedIndex].value;
-			arrayInfo.push(counter[i]); //they are out of order, it is necessary to put each info in its place when painting the select
-			arrayInfo.push(inputForEntityFilterRowValue, selectorPropertyValue, selectorConditionValue);
+			arrayInfo.push(selectorConditionValue);
+
+
 			if (selectorConditionValue == ' [a,b] ' || selectorConditionValue == ' (a,b] ' || selectorConditionValue == ' [a,b) ' || selectorConditionValue == ' (a,b) ') {
-				inputTextInterval1STA = document.getElementById("inputTextInterval1STA_" + counter[i]);
-				inputTextInterval2STA = document.getElementById("inputTextInterval2STA_" + counter[i]);
-				selectorValueInterval1STA = document.getElementById("selectorValueInterval1STA_" + counter[i]);
-				selectorValueInterval2STA = document.getElementById("selectorValueInterval2STA_" + counter[i]);
+				inputTextInterval1 = document.getElementById("inputTextInterval1" + informationOrigin + "_" + counter[i]);
+				inputTextInterval2 = document.getElementById("inputTextInterval2" + informationOrigin + "_" + counter[i]);
+				selectorValueInterval1 = document.getElementById("selectorValueInterval1" + informationOrigin + "_" + counter[i]);
+				selectorValueInterval2 = document.getElementById("selectorValueInterval2" + informationOrigin + "_" + counter[i]);
 				divFilterContainer2 = document.getElementById("divFilterContainer2_" + counter[i]);
 				if (divFilterContainer2.style.display == "inline-block") { //Select open
-					inputTextInterval1STAValue = selectorValueInterval1STA.options[selectorValueInterval1STA.selectedIndex].value;
-					inputTextInterval2STAValue = selectorValueInterval2STA.options[selectorValueInterval2STA.selectedIndex].value;
+					inputTextInterval1Value = selectorValueInterval1.options[selectorValueInterval1.selectedIndex].value;
+					inputTextInterval2Value = selectorValueInterval2.options[selectorValueInterval2.selectedIndex].value;
 				} else {
-					inputTextInterval1STAValue = inputTextInterval1STA.value;
-					inputTextInterval2STAValue = inputTextInterval2STA.value;
+					inputTextInterval1Value = inputTextInterval1.value;
+					inputTextInterval2Value = inputTextInterval2.value;
 				}
-				arrayInfo.push(inputTextInterval1STAValue);
-				arrayInfo.push(inputTextInterval2STAValue);
-				var typeOfValue = typeOfValueFromInput("interval", inputTextInterval1STAValue, inputTextInterval2STAValue)
+				arrayInfo.push(inputTextInterval1Value);
+				arrayInfo.push(inputTextInterval2Value);
+				var typeOfValue = typeOfValueFromInput("interval", inputTextInterval1Value, inputTextInterval2Value)
 			} else {
-				inputTextSTA = document.getElementById("inputTextSTA_" + counter[i]);
+				inputText = document.getElementById("inputText" + informationOrigin + "_" + counter[i]);
 				divFilterContainer = document.getElementById("divFilterContainer_" + counter[i]);
-				selectorValueSTA = document.getElementById("selectorValueSTA_" + counter[i]);
+				selectorValue = document.getElementById("selectorValue" + informationOrigin + "_" + counter[i]);
 				if (divFilterContainer.style.display == "inline-block") { //Select open
-					inputTextValue = selectorValueSTA.options[selectorValueSTA.selectedIndex].value;
+					inputTextValue = selectorValue.options[selectorValue.selectedIndex].value;
 				} else {
-					inputTextValue = inputTextSTA.value;
+					inputTextValue = inputText.value;
 				}
 				arrayInfo.push(inputTextValue);
 				var typeOfValue = typeOfValueFromInput("simple", inputTextValue)
@@ -1713,32 +1783,32 @@ function takeSelectInformationSTA() {
 	}
 	currentNode.STAinfoFilter = infoFilter;
 }
-function takeSelectInformationCSV() {
-	var selectorColumns, selectorValuesTable;
-	var infoFilter = [];
-	var arrayInfo;
+// function takeSelectInformationCSV() {
+// 	var selectorColumns, selectorValuesTable;
+// 	var infoFilter = [];
+// 	var arrayInfo;
 
-	var counter = currentNode.STACounter;
-	for (var i = 0; i < counter.length; i++) {
-		arrayInfo = [];
-		var selectorColumns = document.getElementById("selectorColumns_" + counter[i]);
-		var selectorValuesTable = document.getElementById("selectorValuesTable_" + counter[i]);
-		var selectorColumnsSelected = selectorColumns.options[selectorColumns.selectedIndex].value;
-		var selectorValuesTableSelected = selectorValuesTable.options[selectorValuesTable.selectedIndex].value;
-		arrayInfo.push(counter[i], selectorColumnsSelected, selectorValuesTableSelected);
-		infoFilter.push(arrayInfo);
-	}
-	currentNode.STAinfoFilter = infoFilter;
-}
+// 	var counter = currentNode.STACounter;
+// 	for (var i = 0; i < counter.length; i++) {
+// 		arrayInfo = [];
+// 		//var selectorColumns = document.getElementById("selectorColumns_" + counter[i]);
+// 		var selectorValuesTable = document.getElementById("selectorValuesTable_" + counter[i]);
+// 		//var selectorColumnsSelected = selectorColumns.options[selectorColumns.selectedIndex].value;
+// 		var selectorValuesTableSelected = selectorValuesTable.options[selectorValuesTable.selectedIndex].value;
+// 		arrayInfo.push(counter[i], selectorColumnsSelected, selectorValuesTableSelected);
+// 		infoFilter.push(arrayInfo);
+// 	}
+// 	currentNode.STAinfoFilter = infoFilter;
+// }
 
-function takeSelectInformation() {
-	var currentNodeLabel = currentNode.label;
-	if (currentNodeLabel == "FilterRowsSTA") {
-		takeSelectInformationSTA();
-	} else {
-		takeSelectInformationCSV();
-	}
-}
+// function takeSelectInformation() {
+// 	var currentNodeLabel = currentNode.label;
+// 	if (currentNodeLabel == "FilterRowsSTA") {
+// 		takeSelectInformationSTA();
+// 	} else {
+// 		takeSelectInformationCSV();
+// 	}
+// }
 //Add bigger Level
 function biggestLevelButton(boxName) {
 	event.preventDefault();
