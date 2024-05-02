@@ -155,7 +155,7 @@ const valors = ["valor1", "valor2", "valor3"];
 
 function fillColumsSelectorFilterRows(selectorInfo, count) {
 	var selectorColumns = document.getElementById("selectorColumns_" + count);
-	var columns = currentNode.STAdata[0];
+	var columns = Object.keys(currentNode.STAdata[0]);
 
 	//First option (-- choose a field--)
 	var option = document.createElement("option"); //First option
@@ -191,13 +191,13 @@ function fillColumsSelectorFilterRows(selectorInfo, count) {
 // }
 function obtainValuesFromSTAdataInCSV(column) {
 	var data = currentNode.STAdata;
-	var index = data[0].indexOf(column);
+	//var index = data[0].indexOf(column);
 	var valuesArray = []
 	for (var i = 0; i < data.length; i++) {
 		if (i != 0) {
 			//valuesArray.push(data[i][index]);
-			if (!valuesArray.find(element => element == data[i][index])) { //create array with not arranged values
-				valuesArray.push(data[i][index]);
+			if (!valuesArray.find(element => element == data[i][column])) { //create array with not arranged values
+				valuesArray.push(data[i][column]);
 			}
 		}
 	}
@@ -849,6 +849,7 @@ function createValueSelectInFilterRows(selectorInfo, count, informationOrigin) {
 	var select = document.createElement("select");
 	select.setAttribute("id", "selectorValue" + informationOrigin + "_" + count);
 	select.setAttribute("onChange", "changeSelectValueRowFilter('" + currentNode.id + "','" + count + "')");
+	select.style.marginLeft = "10px";
 	divFilterContainer.appendChild(select);
 	//Simple: inputText, buttons and displaySelects
 	var inputText = document.createElement("input");
