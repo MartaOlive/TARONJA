@@ -1005,7 +1005,7 @@ async function fillValueSelectorFilterRow(count) {
 				if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
 					valueUndefined = false;
 				}
-				if (typeof valor === "undefined" && selectPropertyValue.charAt(selectPropertyValue.length - 1) == "/") { //!!!!!!!!!!!no necessari en csv  gestionar
+				if (typeof valor === "undefined" && selectPropertyValue.includes( "/")) { //!!!!!!!!!!!no necessari en csv  gestionar
 					valor = dataToFillSelect[index];
 					var selectPropertyValueArray = selectPropertyValue.split("/");
 					for (var a = 0; a < selectPropertyValueArray.length; a++) {
@@ -1230,15 +1230,28 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 	var displaySelect = document.getElementById("displaySelect_" + number);
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var selectorConditionValue = document.getElementById("selectorCondition_" + number).value;
-	var selectorValueSTA = document.getElementById("selectorValue" + informationOrigin + "_" + number);
+	var selectorValue = document.getElementById("selectorValue" + informationOrigin + "_" + number);
+	var selectorValueInterval1 = document.getElementById("selectorValueInterval1" + informationOrigin + "_" + number);
+	var selectorValueInterval2 = document.getElementById("selectorValueInterval2" + informationOrigin + "_" + number);
 	var selectorProperty = document.getElementById("selectorProperty_" + number);
 	var inputForProperty = document.getElementById("inputForProperty_" + number);
 	var selectorValueHasChildren;
-	if (selectorValueSTA.hasChildNodes()) {
+	if (selectorValue.hasChildNodes()) {
 		selectorValueHasChildren = true;
 	} else {
 		selectorValueHasChildren = false;
 	}
+
+	if (currentNode.label == "FilterRowsSTA") {
+		var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
+		if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
+			inputForProperty.style.display = "inline-block";
+		} else {
+			inputForProperty.style.display = "none";
+		}
+	}
+
+
 	if (selectorConditionValue == " [a,b] " || selectorConditionValue == " (a,b] " || selectorConditionValue == " [a,b) " || selectorConditionValue == " (a,b) ") {
 		if (inputTextInterval1STA.style.display == "none" && inputText.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
@@ -1250,6 +1263,13 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 				displaySelectInterval.style.display = "none";
 				inputTextInterval1STA.style.display = "inline-block";
 				inputTextInterval2STA.style.display = "inline-block";
+			}
+			//PropertySelect finals with "/" . Selector for value has to be hidden
+			if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
+				inputTextInterval1STA.style.display = "inline-block";
+				inputTextInterval2STA.style.display = "inline-block";
+				selectorValueInterval1.style.display = "none";
+				selectorValueInterval2.style.display = "none";
 			}
 		} else { //inputs are shown
 			if (selectorValueHasChildren) { //show display button
@@ -1264,7 +1284,8 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 		//simple : hide all
 		inputText.style.display = "none";
 		divFilterContainer.style.display = "none";
-		displaySelect.style.display = "none"
+		displaySelect.style.display = "none";
+
 	} else { //simple
 		if (inputText.style.display == "none" && inputTextInterval1STA.style.display == "none") { //selectors are shown
 			if (selectorValueHasChildren) { //show display button, hidde inputTexts
@@ -1276,6 +1297,12 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 				displaySelect.style.display = "none";
 				inputText.style.display = "inline-block";
 				inputText.style.display = "inline-block";
+
+			}
+			//PropertySelect finals with "/" . Selector for value has to be hidden
+			if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
+				inputText.style.display = "inline-block";
+				selectorValue.style.display = "none"
 			}
 		} else { //inputs are shown
 			if (selectorValueHasChildren) { //show display button
@@ -1292,17 +1319,15 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 		inputTextInterval2STA.style.display = "none";
 		divFilterContainer2.style.display = "none";
 		displaySelectInterval.style.display = "none";
+
+
+
+
+
 	}
 
 
-	if (currentNode.label == "FilterRowsSTA") {
-		var selectorPropertyValue = selectorProperty.options[selectorProperty.selectedIndex].value;
-		if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
-			inputForProperty.style.display = "inline-block";
-		} else {
-			inputForProperty.style.display = "none";
-		}
-	}
+
 
 }
 var stopSearchparentLabel = false;
