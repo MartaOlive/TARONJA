@@ -117,14 +117,8 @@ function createSelectorRowFilters(number) {
 	if (infoFilter.length != 0) {
 
 		for (var i = 0; i < infoFilter.length; i++) {
-			if (currentNodeLabel == "FilterRowsSTA") {
-				if (infoFilter[i][0] == number) {
-					selectorInfo.push(infoFilter[i]);
-				}
-			} else {
-				if (infoFilter[i][0] == number) {
-					selectorInfo.push(infoFilter[i]);
-				}
+			if (infoFilter[i][0] == number) {
+				selectorInfo.push(infoFilter[i]);
 			}
 		}
 	}
@@ -141,7 +135,7 @@ function createSelectorRowFilters(number) {
 	}
 }
 
-function createColumsSelectorFilterRows(count) {
+function createColumsSelectorFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
 
 	var selectColumns = document.createElement("select");
@@ -151,7 +145,7 @@ function createColumsSelectorFilterRows(count) {
 	optionsRow.appendChild(selectColumns);
 	//select.setAttribute("onChange", "onchangeColumsSelect('" + count + "')");
 
-	fillColumsSelectorFilterRows(count)
+	fillColumsSelectorFilterRows(selectorInfo, count)
 
 
 }
@@ -159,7 +153,7 @@ const columnes = ["columna1", "columna2", "columna3"]; //a borrar quan tingui el
 const valors = ["valor1", "valor2", "valor3"];
 
 
-function fillColumsSelectorFilterRows(count) {
+function fillColumsSelectorFilterRows(selectorInfo, count) {
 	var selectorColumns = document.getElementById("selectorColumns_" + count);
 	var columns = currentNode.STAdata[0];
 

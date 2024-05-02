@@ -2552,17 +2552,6 @@
 			}
 
 			function GetFilterRowsSTA(){
-
-			}
-			function GetFilterRowsTable(){
-				
-			}
-			function GetFilterRows(event) {
-				event.preventDefault(); // We don't want to submit this form
-				document.getElementById("DialogFilterRows").close();
-				//updateinfoFilter
-				takeSelectInformation(currentNode.id);
-
 				var previousSTAURL = currentNode.STAURL;
 				var parentNode = GetFirstParentNode(currentNode);
 				if (parentNode) {
@@ -2599,10 +2588,26 @@
 				currentNode.STAURL = currentNode.STAUrlAPI;
 
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
-				networkNodes.update(currentNode);
-				showInfoMessage("Filtering STA rows...");
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
-				LoadJSONNodeSTAData(currentNode);
+			}
+			function GetFilterRowsTable(){
+
+			}
+			function GetFilterRows(event) {
+				event.preventDefault(); // We don't want to submit this form
+				document.getElementById("DialogFilterRows").close();
+				//updateinfoFilter
+				takeSelectInformation(currentNode.id);
+
+				if (currentNode.label=="FilterRowsSTA"){
+					GetFilterRowsSTA()
+				}else{
+					GetFilterRowsTable()
+				}
+			
+				showInfoMessage("Filtering STA rows...");
+				networkNodes.update(currentNode);
+				//LoadJSONNodeSTAData(currentNode); //Els dos???
 			}
 
 			function getGeospatialFilter(node, parentNode) {
