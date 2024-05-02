@@ -1005,7 +1005,7 @@ async function fillValueSelectorFilterRow(count) {
 				if (valueUndefined == true && typeof valor !== "undefined") { //All values are undefined? Don't show select
 					valueUndefined = false;
 				}
-				if (typeof valor === "undefined" && selectPropertyValue.includes( "/")) { //!!!!!!!!!!!no necessari en csv  gestionar
+				if (typeof valor === "undefined" && selectPropertyValue.includes("/")) { //!!!!!!!!!!!no necessari en csv  gestionar
 					valor = dataToFillSelect[index];
 					var selectPropertyValueArray = selectPropertyValue.split("/");
 					for (var a = 0; a < selectPropertyValueArray.length; a++) {
@@ -1030,21 +1030,24 @@ async function fillValueSelectorFilterRow(count) {
 		}
 	}
 
-	for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options and fill selector
-		valueToinput = arrayValuesArranged[i];
-		var option = document.createElement("option");
-		option.setAttribute("value", valueToinput);
-		option.innerHTML = valueToinput;
-		var option2 = document.createElement("option");
-		option2.setAttribute("value", valueToinput);
-		option2.innerHTML = valueToinput;
-		var option3 = document.createElement("option");
-		option3.setAttribute("value", valueToinput);
-		option3.innerHTML = valueToinput;
-		selectorValue.appendChild(option);
-		selectorValueInterval1.appendChild(option2);
-		selectorValueInterval2.appendChild(option3);
+	if (typeof arrayValuesArranged !== "undefined") {
+		for (var i = 0; i < arrayValuesArranged.length; i++) { //create select options and fill selector
+			valueToinput = arrayValuesArranged[i];
+			var option = document.createElement("option");
+			option.setAttribute("value", valueToinput);
+			option.innerHTML = valueToinput;
+			var option2 = document.createElement("option");
+			option2.setAttribute("value", valueToinput);
+			option2.innerHTML = valueToinput;
+			var option3 = document.createElement("option");
+			option3.setAttribute("value", valueToinput);
+			option3.innerHTML = valueToinput;
+			selectorValue.appendChild(option);
+			selectorValueInterval1.appendChild(option2);
+			selectorValueInterval2.appendChild(option3);
+		}
 	}
+
 
 
 	showAndHiddeSelectorAndInputsFilterRow(count);
