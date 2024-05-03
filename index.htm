@@ -2551,7 +2551,7 @@
 				}
 			}
 
-			function GetFilterRowsSTA(){
+			function GetFilterRowsSTA() {
 				var previousSTAURL = currentNode.STAURL;
 				var parentNode = GetFirstParentNode(currentNode);
 				if (parentNode) {
@@ -2590,7 +2590,21 @@
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			}
-			function GetFilterRowsTable(){
+			function GetFilterRowsTable() {
+				var sortedBoxNames = currentNode.STAboxNames.sort(); 
+				var fatherElement, summaryArray=[], temporalArray=[];
+				for (var i =0;i< sortedBoxNames.length;i++){
+					temporalArray=[];
+					if (sortedBoxNames[i].startsWith("0")){ //boxNames 0_X ... 
+						fatherElement= searchElementInBoxname(currentNode.STAelementFilter, sortedBoxNames[i], "no", "no", "getFilterRowsTable");
+						temporalArray.push(sortedBoxNames[i], fatherElement.nexus);
+						for (var a;a>fatherElement.elems.length;a++){
+							temporalArray.push(fatherElement.elems[a])
+						}
+						summaryArray.push(temporalArray)
+					}
+				}
+				console.log(summaryArray);
 
 			}
 			function GetFilterRows(event) {
@@ -2599,12 +2613,12 @@
 				//updateinfoFilter
 				takeSelectInformation(currentNode.id);
 
-				if (currentNode.label=="FilterRowsSTA"){
+				if (currentNode.label == "FilterRowsSTA") {
 					GetFilterRowsSTA()
-				}else{
+				} else {
 					GetFilterRowsTable()
 				}
-			
+
 				showInfoMessage("Filtering STA rows...");
 				networkNodes.update(currentNode);
 				//LoadJSONNodeSTAData(currentNode); //Els dos???

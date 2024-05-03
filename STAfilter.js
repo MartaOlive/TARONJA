@@ -1436,22 +1436,24 @@ function MoveDownFilterCondition(currentNumber) {
 	event.preventDefault();
 	var nextElement = GiveNextConditionNextBoxFilterTable(currentNode.STAelementFilter, currentNumber);
 	if (nextElement != -1) {
-		searchBoxName(currentNode.STAelementFilter, currentNumber, "no", nextElement);
+		searchElementInBoxname(currentNode.STAelementFilter, currentNumber, "no", nextElement);
 		stopMoveDownFilterCondition = false;
 	}
 }
-function searchBoxName(elem, iCon, fatherElement, nextElement) {
+function searchElementInBoxname(elem, iCon, fatherElement, nextElement) {
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
-			searchBoxName(elem.elems[i], iCon, elem, nextElement);
+			searchElementInBoxname(elem.elems[i], iCon, elem, nextElement);
 		}
 	}
 	else {
 		if (elem == iCon && stopMoveDownFilterCondition == false) {
-			changeElements(fatherElement, nextElement, iCon);
-			takeSelectInformation();
-			drawTableAgain();
-			resizeBottomPartSelectAndOrNot();
+				changeElements(fatherElement, nextElement, iCon);
+				takeSelectInformation();
+				drawTableAgain();
+				resizeBottomPartSelectAndOrNot();
+
+			
 			stopMoveDownFilterCondition = true;
 		}
 	}
@@ -1467,7 +1469,7 @@ function changeElements(currentElement, nextElement, iCon) {
 	currentElement.elems = arrayElements;
 	nextElement.elems.push(iCon);
 	if (currentElement.elems.length == 0) {
-		searchGroupToDelete(currentElement.boxName, currentNode.STAelementFilter, nodeId, "no");
+		searchBoxNameGroup(currentElement.boxName, currentNode.STAelementFilter, nodeId, "no"); //Search Group to delete it
 	}
 }
 function GiveNextConditionNextBoxFilterTable(elem, iCon) {
@@ -1523,7 +1525,7 @@ function MoveUpFilterCondition(iCon) {
 	event.preventDefault();
 	var previousElement = GivePreviousConditionFilterTable(currentNode.STAelementFilter, iCon);
 	if (previousElement != -1) {
-		searchBoxName(currentNode.STAelementFilter, iCon, "no", previousElement);
+		searchElementInBoxname(currentNode.STAelementFilter, iCon, "no", previousElement);
 		stopMoveDownFilterCondition = false;
 	}
 }
@@ -1678,15 +1680,15 @@ function DeleteElementInElemFilter(elem, numberOfElement) {
 //Delete group (necesary when it is the last condition in the group)
 function deleteGroup(numberOfElement, nodeId) {
 	event.preventDefault();
-	searchGroupToDelete(numberOfElement, currentNode.STAelementFilter, nodeId, "no");
+	searchBoxNameGroup(numberOfElement, currentNode.STAelementFilter, nodeId, "no");
 	takeSelectInformation();//get selector values and update an external variable 
 	drawTableAgain();//repaint the selects
 }
-function searchGroupToDelete(numberOfElement, elem, nodeId, fatherElem) { //elem has boxes ...
+function searchBoxNameGroup(numberOfElement, elem, nodeId, fatherElem) { //elem has boxes ...
 	var element;
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
-			element = searchGroupToDelete(numberOfElement, elem.elems[i], nodeId, elem);
+			element = searchBoxNameGroup(numberOfElement, elem.elems[i], nodeId, elem);
 		}
 		if (elem.boxName == numberOfElement) { //add to elems => elems[0,1...]
 			DeleteGroupInElemFilter(elem, fatherElem);
