@@ -1448,12 +1448,12 @@ function searchElementInBoxname(elem, iCon, fatherElement, nextElement) {
 	}
 	else {
 		if (elem == iCon && stopMoveDownFilterCondition == false) {
-				changeElements(fatherElement, nextElement, iCon);
-				takeSelectInformation();
-				drawTableAgain();
-				resizeBottomPartSelectAndOrNot();
+			changeElements(fatherElement, nextElement, iCon);
+			takeSelectInformation();
+			drawTableAgain();
+			resizeBottomPartSelectAndOrNot();
 
-			
+
 			stopMoveDownFilterCondition = true;
 		}
 	}
@@ -1469,7 +1469,7 @@ function changeElements(currentElement, nextElement, iCon) {
 	currentElement.elems = arrayElements;
 	nextElement.elems.push(iCon);
 	if (currentElement.elems.length == 0) {
-		searchBoxNameGroup(currentElement.boxName, currentNode.STAelementFilter, nodeId, "no"); //Search Group to delete it
+		searchBoxNameGroup(currentElement.boxName, currentNode.STAelementFilter, "no", "fromDeleteGrup"); //Search Group to delete it
 	}
 }
 function GiveNextConditionNextBoxFilterTable(elem, iCon) {
@@ -1680,21 +1680,60 @@ function DeleteElementInElemFilter(elem, numberOfElement) {
 //Delete group (necesary when it is the last condition in the group)
 function deleteGroup(numberOfElement, nodeId) {
 	event.preventDefault();
-	searchBoxNameGroup(numberOfElement, currentNode.STAelementFilter, nodeId, "no");
+	searchBoxNameGroup(numberOfElement, currentNode.STAelementFilter, "no", "fromDeleteGrup");
 	takeSelectInformation();//get selector values and update an external variable 
 	drawTableAgain();//repaint the selects
 }
-function searchBoxNameGroup(numberOfElement, elem, nodeId, fatherElem) { //elem has boxes ...
-	var element;
+function builtSummaryToFilterTable(elem) {
+
+	var summary = currentNode.STAsummaryToFilterTable;
+	var arrayToSummary = [];
+	arrayToSummary.push(elem.boxName,elem.nexus)
+	//console.log (elem)
+	if (elem.boxName.startsWith("0")) {
+		for (var i = 0; i < elem.elems.length; i++) {
+			arrayToSummary.push(elem.elems[i])
+		}
+	}else{
+		for (var i = 0; i < elem.elems.length; i++) {
+			arrayToSummary.push(elem.elems[i].boxName);
+			//console.log (elem.elems[i].boxName)
+		}
+	}
+
+	currentNode.STAsummaryToFilterTable.push(arrayToSummary);
+	console.log(currentNode.STAsummaryToFilterTable)
+}
+function searchBoxNameGroupForGetFilterRowsTable(numberOfElement, elem, fatherElem, originFunction) { //elem has boxes ...
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
-			element = searchBoxNameGroup(numberOfElement, elem.elems[i], nodeId, elem);
+			searchBoxNameGroupForGetFilterRowsTable(numberOfElement, elem.elems[i], elem, originFunction);
 		}
 		if (elem.boxName == numberOfElement) { //add to elems => elems[0,1...]
-			DeleteGroupInElemFilter(elem, fatherElem);
+			builtSummaryToFilterTable(elem);
+
 		}
 	}
 }
+function searchBoxNameGroup(numberOfElement, elem, fatherElem, originFunction) { //elem has boxes ...
+
+	if (typeof elem === "object") {
+		for (var i = 0; i < elem.elems.length; i++) {
+			searchBoxNameGroup(numberOfElement, elem.elems[i], elem, originFunction);
+		}
+		if (elem.boxName == numberOfElement) { //add to elems => elems[0,1...]
+			if (originFunction == "fromDeleteGrup") {
+				DeleteGroupInElemFilter(elem, fatherElem);
+			} else if (originFunction == "getFilterRowsTable") {
+
+				return elem;
+
+
+			}
+		}
+	}
+}
+
 function DeleteGroupInElemFilter(elem, fatherElem) {
 	var newArray = [];
 	if (fatherElem != "no") {

@@ -2579,8 +2579,6 @@
 				var entity;
 				if (getSTAURLLastEntity(currentNode.STAURL)) {
 					entity = getSTAURLLastEntity(currentNode.STAURL);
-				} else {
-					entity = "STAPlus"  //JM: Això no te ni solta ni volta. ·$·
 				}
 
 				readInformationRowFilter(currentNode.STAelementFilter, entity, "no", "no"); //And apply filter
@@ -2591,20 +2589,22 @@
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			}
 			function GetFilterRowsTable() {
-				var sortedBoxNames = currentNode.STAboxNames.sort(); 
-				var fatherElement, summaryArray=[], temporalArray=[];
-				for (var i =0;i< sortedBoxNames.length;i++){
-					temporalArray=[];
-					if (sortedBoxNames[i].startsWith("0")){ //boxNames 0_X ... 
-						fatherElement= searchElementInBoxname(currentNode.STAelementFilter, sortedBoxNames[i], "no", "no", "getFilterRowsTable");
-						temporalArray.push(sortedBoxNames[i], fatherElement.nexus);
-						for (var a;a>fatherElement.elems.length;a++){
-							temporalArray.push(fatherElement.elems[a])
-						}
-						summaryArray.push(temporalArray)
-					}
+				var sortedBoxNames = currentNode.STAboxNames.sort();
+				// var fatherElement, summaryArray = [], temporalArray = [];
+				currentNode.STAsummaryToFilterTable=[];
+				for (var i = 0; i < sortedBoxNames.length; i++) {
+					// temporalArray = [];
+					//if (sortedBoxNames[i].startsWith("0")) { //boxNames 0_X ... 
+
+						searchBoxNameGroupForGetFilterRowsTable(sortedBoxNames[i], currentNode.STAelementFilter, "no", "getFilterRowsTable");
+						// temporalArray.push(sortedBoxNames[i], fatherElement.nexus);
+						// for (var a;a>fatherElement.elems.length;a++){
+						// 	temporalArray.push(fatherElement.elems[a])
+						// }
+						// summaryArray.push(temporalArray)
+					//}
 				}
-				console.log(summaryArray);
+				
 
 			}
 			function GetFilterRows(event) {
