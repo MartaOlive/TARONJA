@@ -2590,21 +2590,13 @@
 			}
 			function GetFilterRowsTable() {
 				var sortedBoxNames = currentNode.STAboxNames.sort();
-				// var fatherElement, summaryArray = [], temporalArray = [];
-				currentNode.STAsummaryToFilterTable=[];
+				currentNode.STAsummaryToFilterTable = [];
 				for (var i = 0; i < sortedBoxNames.length; i++) {
-					// temporalArray = [];
-					//if (sortedBoxNames[i].startsWith("0")) { //boxNames 0_X ... 
-
-						searchBoxNameGroupForGetFilterRowsTable(sortedBoxNames[i], currentNode.STAelementFilter, "no", "getFilterRowsTable");
-						// temporalArray.push(sortedBoxNames[i], fatherElement.nexus);
-						// for (var a;a>fatherElement.elems.length;a++){
-						// 	temporalArray.push(fatherElement.elems[a])
-						// }
-						// summaryArray.push(temporalArray)
-					//}
+					searchBoxNameGroupForGetFilterRowsTable(sortedBoxNames[i], currentNode.STAelementFilter, "no", "getFilterRowsTable");
 				}
-				
+
+				applyFilterToTable();
+
 
 			}
 			function GetFilterRows(event) {

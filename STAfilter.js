@@ -1124,7 +1124,7 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 	}
 }
 function changeSelectValueRowFilter(nodeId, number) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	isAnObject(nodeId, number);
+	//isAnObject(nodeId, number);
 	//...for more functions
 }
 function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
@@ -1684,26 +1684,9 @@ function deleteGroup(numberOfElement, nodeId) {
 	takeSelectInformation();//get selector values and update an external variable 
 	drawTableAgain();//repaint the selects
 }
-function builtSummaryToFilterTable(elem) {
 
-	var summary = currentNode.STAsummaryToFilterTable;
-	var arrayToSummary = [];
-	arrayToSummary.push(elem.boxName,elem.nexus)
-	//console.log (elem)
-	if (elem.boxName.startsWith("0")) {
-		for (var i = 0; i < elem.elems.length; i++) {
-			arrayToSummary.push(elem.elems[i])
-		}
-	}else{
-		for (var i = 0; i < elem.elems.length; i++) {
-			arrayToSummary.push(elem.elems[i].boxName);
-			//console.log (elem.elems[i].boxName)
-		}
-	}
 
-	currentNode.STAsummaryToFilterTable.push(arrayToSummary);
-	console.log(currentNode.STAsummaryToFilterTable)
-}
+
 function searchBoxNameGroupForGetFilterRowsTable(numberOfElement, elem, fatherElem, originFunction) { //elem has boxes ...
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
@@ -1895,7 +1878,7 @@ function biggestLevelButton(boxName) {
 //Applying the filter
 var stopReadInformationRowFilter = false;
 
-function readInformationRowFilter(elem, entity, nexus, parent) {
+function readInformationRowFilter(elem, entity, nexus, parent) {  //STA
 	var infoFilter = currentNode.STAinfoFilter;
 	if (stopReadInformationRowFilter == false) {
 		if (typeof elem === "object") {
@@ -2054,4 +2037,243 @@ function readInformationRowFilter(elem, entity, nexus, parent) {
 			stopReadInformationRowFilter = true;
 		}
 	}
+}
+function builtSummaryToFilterTable(elem) { //CSV
+
+	var arrayToSummary = [];
+	arrayToSummary.push(elem.boxName, elem.nexus)
+	if (elem.boxName.startsWith("0")) {
+		for (var i = 0; i < elem.elems.length; i++) {
+			arrayToSummary.push(elem.elems[i])
+		}
+	} else {
+		for (var i = 0; i < elem.elems.length; i++) {
+			arrayToSummary.push(elem.elems[i].boxName);
+		}
+	}
+	currentNode.STAsummaryToFilterTable.push(arrayToSummary);
+
+}
+function joinResults(resulFiltered) {
+
+}
+function filterResultsSeparately(elements) {
+	var resultsArray; //[result1, result2, result3...]
+	//[0, 'dia', 'no', ' = ', '2024-05-05T00:00:00.000', 'text'] -> Interessa 1,3,4
+	//{dia: '2024-05-05T00:00:00.000', estaci: 'Embassament de Foix (Castellet i la Gornal)', nivell_absolut: '98.23', percentatge_volum_embassat: '65.4', volum_embassat: '2.45'}
+	//['---Choose operator ---', ' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date'];
+	var resultsArray = currentNode.STAdata;
+	var resultsArray2 = resultsArray;
+	var arrayFiltered, typeOfValue, value;
+	for (var i = 0; i < elements.length; i++) {
+		switch (elements[i][3]) {
+			case ' = ':
+
+				resultsArray = resultsArray2.filter(element => element[elements[i][1]] == elements[i][4]);
+				console.log(resultsArray);
+				break;
+			case ' &ne; ':
+				resultsArray = resultsArray2.filter(element => element[elements[i][1]] != elements[i][4]);
+				console.log(resultsArray);
+
+				break;
+			case ' &ge; ':
+				if (elements[i][5] == "number") { //More than in Filter doesn't work with string, you have to  convert to number
+					resultsArray = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) >= parseFloat(elements[i][4]));
+				}
+				console.log(resultsArray);
+
+				break;
+			case ' > ':
+				if (elements[i][5] == "number") {
+					resultsArray = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) > parseFloat(elements[i][4]));
+				}
+				console.log(resultsArray);
+				break;
+			case ' &le; ':
+				if (elements[i][5] == "number") {
+					resultsArray = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) <= parseFloat(elements[i][4]));
+				}
+				console.log(resultsArray);
+				break;
+			case ' < ':
+				if (elements[i][5] == "number") {
+					resultsArray = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) < parseFloat(elements[i][4]));
+				}
+				console.log(resultsArray);
+				break;
+			case ' [a,b] ':
+				if (elements[i][6] == "number") {
+					var interval;
+					interval = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) >= parseFloat(elements[i][4]));
+					resultsArray = interval.filter(element => parseFloat(element[elements[i][1]]) <= parseFloat(elements[i][5]));
+				}
+				console.log(resultsArray);
+
+				break;
+			case ' (a,b] ':
+				if (elements[i][6] == "number") {
+					var interval;
+					interval = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) > parseFloat(elements[i][4]));
+					resultsArray = interval.filter(element => parseFloat(element[elements[i][1]]) <= parseFloat(elements[i][5]));
+				}
+				console.log(resultsArray);
+				break;
+			case ' [a,b) ':
+				if (elements[i][6] == "number") {
+					var interval;
+					interval = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) >= parseFloat(elements[i][4]));
+					resultsArray = interval.filter(element => parseFloat(element[elements[i][1]]) < parseFloat(elements[i][5]));
+				}
+				console.log(resultsArray);
+				break;
+			case ' (a,b) ':
+				if (elements[i][6] == "number") {
+					var interval;
+					interval = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) > parseFloat(elements[i][4]));
+					resultsArray = interval.filter(element => parseFloat(element[elements[i][1]]) < parseFloat(elements[i][5]));
+				}
+				console.log(resultsArray);
+				break;
+			case 'contains':
+				var textToCompare = elements[i][4].toLowerCase();
+				var textInData;
+				resultsArray = [];
+				//console.log(resultsArray2);
+				for (var e = 0; e < resultsArray2.length; e++) {
+					textInData = resultsArray2[e][elements[i][1]].toLowerCase();
+					// console.log(textToCompare+" : "+textInData);
+
+					if (textInData.includes(textToCompare)) {
+						resultsArray.push(resultsArray2[e]);
+					}
+				}
+
+				console.log(resultsArray);
+				break;
+			case 'no contains':
+				var textToCompare = elements[i][4].toLowerCase();
+				var textInData;
+				resultsArray = [];
+				for (var e = 0; e < resultsArray2.length; e++) {
+					textInData = resultsArray2[e][elements[i][1]].toLowerCase();
+					// console.log(textToCompare+" : "+textInData);
+
+					if (!textInData.includes(textToCompare)) {
+						resultsArray.push(resultsArray2[e]);
+					}
+				}
+
+				console.log(resultsArray);
+				break;
+			case 'starts with':
+				var textToCompare = elements[i][4].toLowerCase();
+				var textInData;
+				resultsArray = [];
+				for (var e = 0; e < resultsArray2.length; e++) {
+					textInData = resultsArray2[e][elements[i][1]].toLowerCase();
+					// console.log(textToCompare+" : "+textInData);
+
+					if (textInData.startsWith(textToCompare)) {
+						resultsArray.push(resultsArray2[e]);
+					}
+				}
+				console.log(resultsArray);
+
+				break;
+			case 'ends with':
+				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+				var textToCompare = elements[i][4].toLowerCase();
+				var textInData;
+				resultsArray = [];
+				for (var e = 0; e < resultsArray2.length; e++) {
+					textInData = resultsArray2[e][elements[i][1]].toLowerCase();
+					// console.log(textToCompare+" : "+textInData);
+
+					if (textInData.endsWith(textToCompare)) {
+						resultsArray.push(resultsArray2[e]);
+					}
+				}
+				console.log(resultsArray);
+				break;
+			case 'year':
+				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+				break;
+			case 'month':
+				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+				break;
+			case 'day':
+				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+				break;
+			case 'hour':
+				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+				break;
+			case 'minute':
+				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+				break;
+			case 'date':
+				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+				break;
+			case 'time':
+				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+				break;
+		}
+
+		if (i != 0) {
+			//joinResults(resulFiltered);
+		}
+	}
+
+
+
+
+
+}
+
+function applyFilterToTable() {
+	console.log(currentNode.STAsummaryToFilterTable);
+	//STAinfoFilter Primer element correspon amb elements
+	var firstFilter = [], resulFiltered, elements = [], element;
+	var summaryArray = currentNode.STAsummaryToFilterTable;
+	for (var i = 0; i < summaryArray.length; i++) {
+		for (var a = 2; a < summaryArray[i].length; a++) { //obtain elements. Starts with 1 because is where elements begin. Example: ['0_0', 'and', 0, 1]
+
+			element = currentNode.STAinfoFilter.find((element) => element[0] == summaryArray[i][a]); //Find info in .STAinfoFilter	
+			elements.push(element);
+		}
+		//resulFiltered = 
+		filterResultsSeparately(elements);
+
+
+		//joinResults(resulFiltered);
+		//firstFilter=
+
+		// [['0_0', resultat],
+		// ['0_1', resultat],
+		// ['0_2', resultat],
+		// ['0_3', resultat],
+		// ['0_4', resultat]]
+	}
+	// [['0_0', 'and', 0, 1],
+	// ['0_1', 'and', 2, 3, 4],
+	// ['0_2', 'and', 6, 7],
+	// ['0_3', 'and', 10, 11],
+	// ['0_4', 'and', 14, 15],
+
+	// ['1_0', 'and', '0_0', '0_1'],
+	// ['1_1', null, '0_2'],
+	// ['1_2', null, '0_3'],
+	// ['1_3', null, '0_4'],
+	// ['2_0', 'and', '1_0', '1_1'],
+	// ['2_1', null, '1_2'],
+	// ['2_2', null, '1_3'],
+	// ['3_0', 'and', '2_0', '2_1', '2_2']]
+
+	// [[0, 'dia', 'no', ' = ', '3', 'number'],
+	// [1, 'dia', 'no', ' &ne; ', '5', 'number'],
+	// [2, 'estaci', 'no', ' > ', '5', 'number'],
+	// [3, 'nivell_absolut', 'no', ' < ', '10', 'number'],
+	// [6, 'percentatge_volum_embassat', 'no', ' &ge; ', '3', 'number'],
+	// [5, 'dia', 'no', 'contains', '5', 'number']]
+
 }
