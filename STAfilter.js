@@ -1269,11 +1269,13 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 				inputTextInterval2STA.style.display = "inline-block";
 			}
 			//PropertySelect finals with "/" . Selector for value has to be hidden
-			if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
-				inputTextInterval1STA.style.display = "inline-block";
-				inputTextInterval2STA.style.display = "inline-block";
-				selectorValueInterval1.style.display = "none";
-				selectorValueInterval2.style.display = "none";
+			if (currentNode.label == "FilterRowsSTA") {
+				if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
+					inputTextInterval1STA.style.display = "inline-block";
+					inputTextInterval2STA.style.display = "inline-block";
+					selectorValueInterval1.style.display = "none";
+					selectorValueInterval2.style.display = "none";
+				}
 			}
 		} else { //inputs are shown
 			if (selectorValueHasChildren) { //show display button
@@ -1304,9 +1306,12 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 
 			}
 			//PropertySelect finals with "/" . Selector for value has to be hidden
-			if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
-				inputText.style.display = "inline-block";
-				selectorValue.style.display = "none"
+
+			if (currentNode.label == "FilterRowsSTA") {
+				if (selectorPropertyValue.charAt(selectorPropertyValue.length - 1) == "/") {
+					inputText.style.display = "inline-block";
+					selectorValue.style.display = "none"
+				}
 			}
 		} else { //inputs are shown
 			if (selectorValueHasChildren) { //show display button
@@ -1329,10 +1334,6 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 
 
 	}
-
-
-
-
 }
 var stopSearchparentLabel = false;
 function searchParentLabel() {
@@ -2064,7 +2065,7 @@ function filterResultsSeparately(elements) {
 	//['---Choose operator ---', ' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date'];
 	var resultsArray = currentNode.STAdata;
 	var resultsArray2 = resultsArray;
-	var arrayFiltered, typeOfValue, value;
+	var arraysValueSet = [], typeOfValue, value;
 	for (var i = 0; i < elements.length; i++) {
 		switch (elements[i][3]) {
 			case ' = ':
@@ -2218,10 +2219,11 @@ function filterResultsSeparately(elements) {
 				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 				break;
 		}
-
-		if (i != 0) {
-			//joinResults(resulFiltered);
-		}
+		arraysValueSet.push(resultsArray);
+	}
+	console.log(arraysValueSet)
+	if (arraysValueSet.length != 1) {
+		//joinResults(resulFiltered);
 	}
 
 
