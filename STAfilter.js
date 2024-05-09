@@ -1877,14 +1877,14 @@ function biggestLevelButton(boxName) {
 	resizeBottomPartSelectAndOrNot();//correct size to select(AndOrNot) div
 }
 //Applying the filter
-var stopReadInformationRowFilter = false;
+var stopreadInformationRowFilterSTA = false;
 
-function readInformationRowFilter(elem, entity, nexus, parent) {  //STA
+function readInformationRowFilterSTA(elem, entity, nexus, parent) {  //STA
 	var infoFilter = currentNode.STAinfoFilter;
-	if (stopReadInformationRowFilter == false) {
+	if (stopreadInformationRowFilterSTA == false) {
 		if (typeof elem === "object") {
 			for (var i = 0; i < elem.elems.length; i++) {
-				readInformationRowFilter(elem.elems[i], entity, elem.nexus, elem);
+				readInformationRowFilterSTA(elem.elems[i], entity, elem.nexus, elem);
 			}
 			if (currentNode.STAUrlAPICounter.length != infoFilter.length && currentNode.STAUrlAPICounter.length != 0 && nexus != "no" && parent != "no") {
 				currentNode.STAUrlAPI += " " + nexus + " ";
@@ -2035,7 +2035,7 @@ function readInformationRowFilter(elem, entity, nexus, parent) {  //STA
 		if (currentNode.STAUrlAPICounter.length == infoFilter.length) {
 			currentNode.STAUrlAPI.slice(0, "(");
 			currentNode.STAUrlAPI.slice(currentNode.STAUrlAPI.length + 1, ")");
-			stopReadInformationRowFilter = true;
+			stopreadInformationRowFilterSTA = true;
 		}
 	}
 }
@@ -2055,10 +2055,26 @@ function builtSummaryToFilterTable(elem) { //CSV
 	currentNode.STAsummaryToFilterTable.push(arrayToSummary);
 
 }
-function joinResults(resulFiltered) {
+function joinResults(resulFiltered, condition) { //different arrays to be joined according to the condition (sense el not)
+console.log(resulFiltered[0]);
+var joinedArray=resulFiltered[0]; //Add first array to join with others se
+
+
+//and: quedar-se amb el els comuns
+//or : borrar els comuns
+// for (var i=1;i<resultsFiltered.length;i++){
+
+// }
+ //Quyedar-se amb els duplicats!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+temporalArray.push(...resultsFiltered);dgrgre
+var arrayWithDuplicates = temporalArray.filter((elemento, index) => {
+	return temporalArray.indexOf(elemento) != index;
+})
+resultsFiltered = arrayWithDuplicates //actualitzem resultsFiltered sense repetits
+
 
 }
-function filterResultsSeparately(elements) {
+function filterResultsSeparately(elements, condition) {
 	var resultsArray; //[result1, result2, result3...]
 	//[0, 'dia', 'no', ' = ', '2024-05-05T00:00:00.000', 'text'] -> Interessa 1,3,4
 	//{dia: '2024-05-05T00:00:00.000', estaci: 'Embassament de Foix (Castellet i la Gornal)', nivell_absolut: '98.23', percentatge_volum_embassat: '65.4', volum_embassat: '2.45'}
@@ -2223,7 +2239,7 @@ function filterResultsSeparately(elements) {
 	}
 	console.log(arraysValueSet)
 	if (arraysValueSet.length != 1) {
-		//joinResults(resulFiltered);
+		joinResults(arraysValueSet, condition);
 	}
 
 
@@ -2244,7 +2260,7 @@ function applyFilterToTable() {
 			elements.push(element);
 		}
 		//resulFiltered = 
-		filterResultsSeparately(elements);
+		filterResultsSeparately(elements, summaryArray[i][1]); //Tindrà un return amb els resultats filtrats i agreegats per grups
 
 
 		//joinResults(resulFiltered);

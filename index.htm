@@ -2575,13 +2575,13 @@
 				else
 					currentNode.STAUrlAPI = AddQueryParamsToURL(parentNode.STAURL, "$filter=");
 
-				stopReadInformationRowFilter = false;
+				stopreadInformationRowFilterSTA = false;
 				var entity;
 				if (getSTAURLLastEntity(currentNode.STAURL)) {
 					entity = getSTAURLLastEntity(currentNode.STAURL);
 				}
 
-				readInformationRowFilter(currentNode.STAelementFilter, entity, "no", "no"); //And apply filter
+				readInformationRowFilterSTA(currentNode.STAelementFilter, entity, "no", "no"); //And apply filter
 				//console.log(currentNode.STAUrlAPI);
 				currentNode.STAURL = currentNode.STAUrlAPI;
 
@@ -2589,13 +2589,14 @@
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			}
 			function GetFilterRowsTable() {
-				var sortedBoxNames = currentNode.STAboxNames.sort();
-				currentNode.STAsummaryToFilterTable = [];
-				for (var i = 0; i < sortedBoxNames.length; i++) {
-					searchBoxNameGroupForGetFilterRowsTable(sortedBoxNames[i], currentNode.STAelementFilter, "no", "getFilterRowsTable");
-				}
+				
+				// var sortedBoxNames = currentNode.STAboxNames.sort();
+				// currentNode.STAsummaryToFilterTable = [];
+				// for (var i = 0; i < sortedBoxNames.length; i++) {
+				// 	searchBoxNameGroupForGetFilterRowsTable(sortedBoxNames[i], currentNode.STAelementFilter, "no", "getFilterRowsTable");
+				// }
 
-				applyFilterToTable();
+				//applyFilterToTable();
 
 
 			}
