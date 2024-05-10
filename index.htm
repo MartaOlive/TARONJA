@@ -2589,7 +2589,9 @@
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			}
 			function GetFilterRowsTable() {
-				
+				stopreadInformationRowFilterTable = false;
+				currentNode.STAevalCounter = [];
+				readInformationRowFilterTable(currentNode.STAelementFilter, "no", "no"); //And apply filter
 				// var sortedBoxNames = currentNode.STAboxNames.sort();
 				// currentNode.STAsummaryToFilterTable = [];
 				// for (var i = 0; i < sortedBoxNames.length; i++) {
