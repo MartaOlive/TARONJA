@@ -2076,11 +2076,13 @@ function readInformationRowFilterTable(elem, nexus, parent) {
 			var data = "";
 			var resultsArray = [], condition;
 			var result = currentNode.STAdata;
+			var infoForFilterArray
 			for (var a = 0; a < result.length; a++) {
-
+				infoForFilterArray = [];
 				for (var i = 0; i < infoFilter.length; i++) {
 					var parentLenght = parent.elems.length;
 					var indexOf = parent.elems.indexOf(elem);
+
 					if (indexOf == 0) {
 						data += "(";
 					}
@@ -2106,28 +2108,54 @@ function readInformationRowFilterTable(elem, nexus, parent) {
 								break;
 						}
 
-						data +="'"+ result[a][infoFilter[i][1]] +"'"+  condition +"'"+  infoFilter[i][4]+"'" + ")"
+						//construir el STAresultsInstructions
 
+						data += "'" + result[a][infoFilter[i][1]] + "'" + condition + "'" + infoFilter[i][4] + "'"
+						if (i == infoFilter[infoFilter.length - 1]) { //laston in this level
+							data += + ")";
+						}
+
+						infoForFilterArray.push(data);
 
 
 					}
-					console.log (typeof data)
-					console.log (data)
-					console.log(eval(data))
-					if (eval(data)){
-						resultsArray.push(result[a]);
-					}
-					data="";
+					// console.log (typeof data)
+					// console.log (data)
+					// console.log(eval(data))
+
+					data = "";
 					//  {
 					// 	
 					//  }
-					
-					console.log(resultsArray)
+
+
 					// else if (a){
 
 					// }
 				}
-				
+				//console.log(resultsArray);
+				//console.log(infoForFilterArray);
+
+				//if (i != 0) {
+				//data += nexus;
+				//}
+				//Anar filtrant cada registre amb els STAResultsFilter (serà un arrrai). Al eval s'ha de construir la sentència amb aquest arrai
+				//He de fer un for per crear la sentènca, recorrent tot larrai
+				//Amb la sentència sencera fer el eval. 
+				var evalSentence="";
+				for (var e = 0; e < infoForFilterArray.length; e++) {
+					if (e != 0) {
+						evalSentence += nexus
+					}
+					evalSentence += infoForFilterArray[e];
+
+				}
+
+				console.log(evalSentence);
+
+				// if (eval(data)) {
+				// 	resultsArray.push(result[a]);
+				// }
 
 				//  const message = [
 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Riudecanyes', nivell_absolut: '386.8', percentatge_volum_embassat: '14.4', volum_embassat: '23.74' },
@@ -2140,7 +2168,7 @@ function readInformationRowFilterTable(elem, nexus, parent) {
 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Susqueda (Osor)', nivell_absolut: '135.63', percentatge_volum_embassat: '26.4', volum_embassat: '61.49' },
 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de la Baells (Cercs)', nivell_absolut: '605.26', percentatge_volum_embassat: '38.4', volum_embassat: '42.07' }]
 				//    // Try edit me
-				  
+
 				//    // Update header text
 				//    document.querySelector('#header').innerHTML = message
 				//    var array = []
