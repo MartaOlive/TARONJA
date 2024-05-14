@@ -2590,7 +2590,8 @@
 			}
 			function GetFilterRowsTable() {
 				stopreadInformationRowFilterTable = false;
-				currentNode.STAevalCounter = [];
+				currentNode.STAtableCounter = [];
+				currentNode.STAtable="";
 				readInformationRowFilterTable(currentNode.STAelementFilter, "no", "no"); //And apply filter
 				// var sortedBoxNames = currentNode.STAboxNames.sort();
 				// currentNode.STAsummaryToFilterTable = [];

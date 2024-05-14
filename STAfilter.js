@@ -2042,297 +2042,369 @@ function readInformationRowFilterSTA(elem, entity, nexus, parent) {  //STA
 
 
 var stopreadInformationRowFilterTable = false;
-function readInformationRowFilterTable(elem, nexus, parent) {
+
+function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 	var infoFilter = currentNode.STAinfoFilter;
+	switch (nexus) {
+		case "and":
+		 	nexus = "&&"
+		 		break;
+		case "or":
+		 	nexus == "||"
+		 	break;
+		case "not":
+		 	nexus = "!="
+		 	break;
+	}
+
 	if (stopreadInformationRowFilterTable == false) {
 		if (typeof elem === "object") {
 			for (var i = 0; i < elem.elems.length; i++) {
-				readInformationRowFilterTable(elem.elems[i], elem.nexus, elem);
+				readInformationRowFilterTable(elem.elems[i], entity, elem.nexus, elem);
 			}
-			switch (nexus) {
-				case "and":
-					nexus = "&&"
-					break;
-				case "or":
-					nexus == "||"
-					break;
-				case "not":
-					nexus = "!="
-					break;
-
-			}
-			if (currentNode.STAevalCounter.length != infoFilter.length && currentNode.STAevalCounter.length != 0 && nexus != "no" && parent != "no") {
-				currentNode.STAevalString += " " + nexus + " ";
+			if (currentNode.STAtableCounter.length != infoFilter.length && currentNode.STAtableCounter.length != 0 && nexus != "no" && parent != "no") {
+				currentNode.STAtable += " " + nexus + " ";
 			}
 		}
-		// var array = []
-		// for (var i = 0; i < message.length; i++) {
-		// 	if (eval(r = message[i]["nivell_absolut"] == '135.63' && message[i]["estaci"] != "Embassament de Riudecanyes")) {
-		// 		array.push(message[i])
-		// 	}
-		// }
-		else { //Build eval string
+		else { //Build URL
+			
+				
 			//Last Array, which contains the filters 
-			var data = "";
-			var resultsArray = [], condition;
-			var result = currentNode.STAdata;
-			var infoForFilterArray
-			for (var a = 0; a < result.length; a++) {
-				infoForFilterArray = [];
-				for (var i = 0; i < infoFilter.length; i++) {
+				var data = "", condition;
+			for (var i = 0; i < infoFilter.length; i++) {
+				switch (infoFilter[i][3]) {
+					case ' = ':
+						condition = " == ";
+						break;
+					case ' &ne; ':
+						condition = " != ";
+						break;
+					case ' &ge; ':
+						condition = " >= ";
+						break;
+					case ' > ':
+						condition = " > ";
+						break;
+					case ' &le; ':
+						condition = " <= ";
+						break;
+					case ' < ':
+						condition = " < ";
+						break;
+				}
+				if (infoFilter[i][0] == elem) { //To search the array that contains the info that we want
 					var parentLenght = parent.elems.length;
 					var indexOf = parent.elems.indexOf(elem);
-
 					if (indexOf == 0) {
 						data += "(";
 					}
-					if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') {
-						switch (infoFilter[i][3]) {
-							case ' = ':
-								condition = " == ";
-								break;
-							case ' &ne; ':
-								condition = " != ";
-								break;
-							case ' &ge; ':
-								condition = " >= ";
-								break;
-							case ' > ':
-								condition = " > ";
-								break;
-							case ' &le; ':
-								condition = " <= ";
-								break;
-							case ' < ':
-								condition = " < ";
-								break;
-						}
-
-						//construir el STAresultsInstructions
-
-						data += "'" + result[a][infoFilter[i][1]] + "'" + condition + "'" + infoFilter[i][4] + "'"
-						if (i == infoFilter[infoFilter.length - 1]) { //laston in this level
-							data += + ")";
-						}
-
-						infoForFilterArray.push(data);
-
-
-					}
-					// console.log (typeof data)
-					// console.log (data)
-					// console.log(eval(data))
-
-					data = "";
-					//  {
-					// 	
-					//  }
-
-
-					// else if (a){
-
+					// var valueOfEntity = infoFilter[i][1];
+					// var lengthEntity = valueOfEntity.indexOf("/")
+					// if (-1 != lengthEntity) { //Erase first entity name in the path
+					// 	valueOfEntity = valueOfEntity.slice(lengthEntity + 1); //Erase entity and "/"
 					// }
-				}
-				//console.log(resultsArray);
-				//console.log(infoForFilterArray);
 
-				//if (i != 0) {
-				//data += nexus;
-				//}
-				//Anar filtrant cada registre amb els STAResultsFilter (serà un arrrai). Al eval s'ha de construir la sentència amb aquest arrai
-				//He de fer un for per crear la sentènca, recorrent tot larrai
-				//Amb la sentència sencera fer el eval. 
-				var evalSentence="";
-				for (var e = 0; e < infoForFilterArray.length; e++) {
-					if (e != 0) {
-						evalSentence += nexus
+					///Apply filter depending on Select Condition
+					if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') { //passarho a com Table+
+						data += "(";
+						
+						// if (entity != valueOfEntity) { //If it's not the entity of the node and it is a connected box need "node entity name "
+						// 	data += valueOfEntity + "/";
+						// }
+
+						data+= "'column_"+infoFilter[i][1] +"'"+ condition + "'"+infoFilter[i][4] + "')";
+
+						// data += infoFilter[i][2][0];
+						// if (infoFilter[i][2].length == 2) {
+						// 	data += infoFilter[i][2][1];
+						// }
+						// var typeOfValue = infoFilter[i][5];
+						// var apostropheOrSpace;
+						// (typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = "";
+						// switch (infoFilter[i][3]) {
+						// 	case ' = ':
+						// 		data += " eq " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+						// 		break;
+						// 	case ' &ne; ':
+						// 		data += " ne " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+						// 		break;
+						// 	case ' &ge; ':
+						// 		data += " ge " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+						// 		break;
+						// 	case ' > ':
+						// 		data += " gt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+						// 		break;
+						// 	case ' &le; ':
+						// 		data += " le " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+						// 		break;
+						// 	case ' < ':
+						// 		data += " lt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+						// 		break;
+						// 	default:
+						// }
 					}
-					evalSentence += infoForFilterArray[e];
-
+					else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
+						if (entity != valueOfEntity) {
+							valueOfEntity = valueOfEntity + "/" + infoFilter[i][2];
+						} else {
+							valueOfEntity = infoFilter[i][2];
+						}
+						if (infoFilter[i][2].length == 2) {
+							valueOfEntity += infoFilter[i][2][1];
+						}
+						data += "( " + valueOfEntity;
+						switch (infoFilter[i][3]) {
+							case ' [a,b] ':
+								data += " ge " + infoFilter[i][4] + " and " + valueOfEntity + " le " + infoFilter[i][5] + ")";
+								break;
+							case ' (a,b] ':
+								data += " gt " + infoFilter[i][4] + " and " + valueOfEntity + " le " + infoFilter[i][5] + ")";
+								break;
+							case ' [a,b) ':
+								data += " ge " + infoFilter[i][4] + " and " + valueOfEntity + " lt " + infoFilter[i][5] + ")";
+								break;
+							case ' (a,b) ':
+								data += " gt " + infoFilter[i][4] + " and " + valueOfEntity + " lt " + infoFilter[i][5] + ")";
+								break;
+							default:
+						}
+					}
+					else if (infoFilter[i][3] == 'contains' || infoFilter[i][3] == 'no contains' || infoFilter[i][3] == 'starts with' || infoFilter[i][3] == 'ends with') {
+						if (entity != valueOfEntity) {
+							valueOfEntity = valueOfEntity + "/" + infoFilter[i][2];
+						} else {
+							valueOfEntity = infoFilter[i][2];
+						}
+						if (infoFilter[i][2].length == 2) {
+							valueOfEntity += infoFilter[i][2][1];
+						}
+						switch (infoFilter[i][3]) {
+							case 'contains':
+								data += "substringof('" + infoFilter[i][4] + "'," + valueOfEntity + ")";
+								break;
+							case 'no contains':
+								data += "not substringof('" + infoFilter[i][4] + "'," + valueOfEntity + ")";
+								break;
+							case 'starts with':
+								data += "startswith(" + valueOfEntity + ",'" + infoFilter[i][4] + "')";
+								break;
+							case 'ends with':
+								data += "endswith(" + valueOfEntity + ",'" + infoFilter[i][4] + "')";
+								break;
+							default:
+						}
+					}
+					else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date') {
+						var newValue = "";
+						for (var a = 0; a < infoFilter[i][4].length; a++) {//erase 0 if starts with 0. 
+							if (infoFilter[i][4].charAt(a) != 0) {
+								newValue += infoFilter[i][4].charAt(a)
+							}
+						}
+						infoFilter[i][4] = newValue;
+						switch (infoFilter[i][3]) {
+							case 'year':
+								data += "year(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'month':
+								data += "month(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'day':
+								data += "day(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'hour':
+								data += "hour(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'minute':
+								data += "minute(resultTime) eq " + infoFilter[i][4];
+								break;
+							case 'date':
+								data += "date(resultTime) eq date('" + infoFilter[i][4] + "')";
+								break;
+							default:
+						}
+					}
+					if ((indexOf + 1) != parentLenght) {
+						data += nexus
+					}
+					if ((indexOf + 1) == parentLenght) {
+						data += ")";
+					}
+					currentNode.STAtable += data
+					currentNode.STAtableCounter.push(infoFilter[i][0]);
 				}
-
-				console.log(evalSentence);
-
-				// if (eval(data)) {
-				// 	resultsArray.push(result[a]);
-				// }
-
-				//  const message = [
-				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Riudecanyes', nivell_absolut: '386.8', percentatge_volum_embassat: '14.4', volum_embassat: '23.74' },
-				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Riudecanyes', nivell_absolut: '135.63', percentatge_volum_embassat: '2.6', volum_embassat: '0.14' },
-				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Darnius Boadella (Darnius)', nivell_absolut: '135.63', percentatge_volum_embassat: '16.5', volum_embassat: '10.06' },
-				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de la Llosa del Cavall (Navès)', nivell_absolut: '772.85', percentatge_volum_embassat: '24.2', volum_embassat: '19.39' },
-				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Sant Ponç (Clariana de Cardener)', nivell_absolut: '135.63', percentatge_volum_embassat: '32.6', volum_embassat: '7.94' },
-				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Siurana (Cornudella de Montsant)', nivell_absolut: '453.1', percentatge_volum_embassat: '2.7', volum_embassat: '0.33' },
-				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Foix (Castellet i la Gornal)', nivell_absolut: '98.18', percentatge_volum_embassat: '64.9', volum_embassat: '2.43' },
-				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Susqueda (Osor)', nivell_absolut: '135.63', percentatge_volum_embassat: '26.4', volum_embassat: '61.49' },
-				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de la Baells (Cercs)', nivell_absolut: '605.26', percentatge_volum_embassat: '38.4', volum_embassat: '42.07' }]
-				//    // Try edit me
-
-				//    // Update header text
-				//    document.querySelector('#header').innerHTML = message
-				//    var array = []
-				//    for (var i = 0; i < message.length; i++) {
-				//  	if (eval(message[i]["nivell_absolut"] == '135.63' && message[i]["estaci"]  != "Embassament de Riudecanyes")) {
-				//  	  array.push(message[i])
-				//  	}
-				//    }
-				//    // Log to console
-				//    console.log(array)
-
-
-
-				// for (var i = 0; i < infoFilter.length; i++) {
-				// 	if (infoFilter[i][0] == elem) { //To search the array that contains the info that we want
-				// 		var parentLenght = parent.elems.length;
-				// 		var indexOf = parent.elems.indexOf(elem);
-				// 		if (indexOf == 0) {
-				// 			data += "(";
-				// 		}
-
-
-				// 		///Apply filter depending on Select Condition
-
-				// 		(infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') { //passarho a com STA+
-				// 			data += "(";
-
-				// 			switch (infoFilter[i][3]) {
-				// 				case ' = ':
-				// 					data +=
-				// 						resultsArray = resultsArray2.filter(element => element[elements[i][1]] == elements[i][4]);
-				// 					console.log(resultsArray);
-				// 					break;
-				// 			}
-
-				// 			data += infoFilter[i][2][0];
-				// 			if (infoFilter[i][2].length == 2) {
-				// 				data += infoFilter[i][2][1];
-				// 			}
-				// 			var typeOfValue = infoFilter[i][5];
-				// 			var apostropheOrSpace;
-				// 			(typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = "";
-				// 			switch (infoFilter[i][3]) {
-				// 				case ' = ':
-				// 					data += " eq " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-				// 					break;
-				// 				case ' &ne; ':
-				// 					data += " ne " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-				// 					break;
-				// 				case ' &ge; ':
-				// 					data += " ge " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-				// 					break;
-				// 				case ' > ':
-				// 					data += " gt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-				// 					break;
-				// 				case ' &le; ':
-				// 					data += " le " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-				// 					break;
-				// 				case ' < ':
-				// 					data += " lt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-				// 					break;
-				// 				default:
-				// 			}
-				// 		}
-				// else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
-				// 			if (entity != valueOfEntity) {
-				// 				valueOfEntity = valueOfEntity + "/" + infoFilter[i][2];
-				// 			} else {
-				// 				valueOfEntity = infoFilter[i][2];
-				// 			}
-				// 			if (infoFilter[i][2].length == 2) {
-				// 				valueOfEntity += infoFilter[i][2][1];
-				// 			}
-				// 			data += "( " + valueOfEntity;
-				// 			switch (infoFilter[i][3]) {
-				// 				case ' [a,b] ':
-				// 					data += " ge " + infoFilter[i][4] + " and " + valueOfEntity + " le " + infoFilter[i][5] + ")";
-				// 					break;
-				// 				case ' (a,b] ':
-				// 					data += " gt " + infoFilter[i][4] + " and " + valueOfEntity + " le " + infoFilter[i][5] + ")";
-				// 					break;
-				// 				case ' [a,b) ':
-				// 					data += " ge " + infoFilter[i][4] + " and " + valueOfEntity + " lt " + infoFilter[i][5] + ")";
-				// 					break;
-				// 				case ' (a,b) ':
-				// 					data += " gt " + infoFilter[i][4] + " and " + valueOfEntity + " lt " + infoFilter[i][5] + ")";
-				// 					break;
-				// 				default:
-				// 			}
-				// 		}
-				// 		else if (infoFilter[i][3] == 'contains' || infoFilter[i][3] == 'no contains' || infoFilter[i][3] == 'starts with' || infoFilter[i][3] == 'ends with') {
-				// 			if (entity != valueOfEntity) {
-				// 				valueOfEntity = valueOfEntity + "/" + infoFilter[i][2];
-				// 			} else {
-				// 				valueOfEntity = infoFilter[i][2];
-				// 			}
-				// 			if (infoFilter[i][2].length == 2) {
-				// 				valueOfEntity += infoFilter[i][2][1];
-				// 			}
-				// 			switch (infoFilter[i][3]) {
-				// 				case 'contains':
-				// 					data += "substringof('" + infoFilter[i][4] + "'," + valueOfEntity + ")";
-				// 					break;
-				// 				case 'no contains':
-				// 					data += "not substringof('" + infoFilter[i][4] + "'," + valueOfEntity + ")";
-				// 					break;
-				// 				case 'starts with':
-				// 					data += "startswith(" + valueOfEntity + ",'" + infoFilter[i][4] + "')";
-				// 					break;
-				// 				case 'ends with':
-				// 					data += "endswith(" + valueOfEntity + ",'" + infoFilter[i][4] + "')";
-				// 					break;
-				// 				default:
-				// 			}
-				// 		}
-				// 		else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date') {
-				// 			var newValue = "";
-				// 			for (var a = 0; a < infoFilter[i][4].length; a++) {//erase 0 if starts with 0. 
-				// 				if (infoFilter[i][4].charAt(a) != 0) {
-				// 					newValue += infoFilter[i][4].charAt(a)
-				// 				}
-				// 			}
-				// 			infoFilter[i][4] = newValue;
-				// 			switch (infoFilter[i][3]) {
-				// 				case 'year':
-				// 					data += "year(resultTime) eq " + infoFilter[i][4];
-				// 					break;
-				// 				case 'month':
-				// 					data += "month(resultTime) eq " + infoFilter[i][4];
-				// 					break;
-				// 				case 'day':
-				// 					data += "day(resultTime) eq " + infoFilter[i][4];
-				// 					break;
-				// 				case 'hour':
-				// 					data += "hour(resultTime) eq " + infoFilter[i][4];
-				// 					break;
-				// 				case 'minute':
-				// 					data += "minute(resultTime) eq " + infoFilter[i][4];
-				// 					break;
-				// 				case 'date':
-				// 					data += "date(resultTime) eq date('" + infoFilter[i][4] + "')";
-				// 					break;
-				// 				default:
-				// 			}
-				// 		}
-				// 		if ((indexOf + 1) != parentLenght) {
-				// 			data += nexus
-				// 		}
-				// 		if ((indexOf + 1) == parentLenght) {
-				// 			data += ")";
-				// 		}
-				// 		currentNode.STAevalString += data
-				// 		currentNode.STAevalCounter.push(infoFilter[i][0]);
-				// 	}
-				// }
 			}
-			// if (currentNode.STAevalCounter.length == infoFilter.length) {
-			// 	currentNode.STAevalString.slice(0, "(");
-			// 	currentNode.STAevalString.slice(currentNode.STAevalString.length + 1, ")");
-			// 	stopreadInformationRowFilterTable = true;
-			// }
+		}
+		if (currentNode.STAtableCounter.length == infoFilter.length) {
+			// currentNode.STAtable.slice(0, "(");
+			// currentNode.STAtable.slice(currentNode.STAtable.length + 1, ")");
+			stopreadInformationRowFilterTable = true;
 		}
 	}
 }
+// function readInformationRowFilterTable(elem, nexus, parent) {
+// 	var infoFilter = currentNode.STAinfoFilter;
+// 	if (stopreadInformationRowFilterTable == false) {
+// 		if (typeof elem === "object") {
+// 			for (var i = 0; i < elem.elems.length; i++) {
+// 				readInformationRowFilterTable(elem.elems[i], elem.nexus, elem);
+// 			}
+
+
+
+// 			if (currentNode.STAevalCounter.length != infoFilter.length && currentNode.STAevalCounter.length != 0 && nexus != "no" && parent != "no") { //Will add this when it is not firstone 
+// 				currentNode.STAevalString += " " + nexus + " ";
+// 			}
+// 		}
+// 		// var array = []
+// 		// for (var i = 0; i < message.length; i++) {
+// 		// 	if (eval(r = message[i]["nivell_absolut"] == '135.63' && message[i]["estaci"] != "Embassament de Riudecanyes")) {
+// 		// 		array.push(message[i])
+// 		// 	}
+// 		// }
+// 		else { //Build eval string
+// 			//Last Array, which contains the filters 
+// 			switch (nexus) {
+// 				case "and":
+// 					nexus = "&&"
+// 					break;
+// 				case "or":
+// 					nexus == "||"
+// 					break;
+// 				case "not":
+// 					nexus = "!="
+// 					break;
+// 			}
+// 			var data = "";
+// 			var resultsArray = [], condition;
+// 			var result = currentNode.STAdata;
+// 			var infoForFilterArray
+// 			for (var a = 0; a < result.length; a++) {
+// 				infoForFilterArray = [];
+// 				for (var i = 0; i < infoFilter.length; i++) {
+// 					if (infoFilter[i][0] == elem) {
+// 						var parentLenght = parent.elems.length;
+// 						var indexOf = parent.elems.indexOf(elem);
+// 						if (indexOf == 0) {
+// 							data += "(";
+// 						}
+// 						if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') {
+// 							data += "(";
+
+// 							switch (infoFilter[i][3]) {
+// 								case ' = ':
+// 									condition = " == ";
+// 									break;
+// 								case ' &ne; ':
+// 									condition = " != ";
+// 									break;
+// 								case ' &ge; ':
+// 									condition = " >= ";
+// 									break;
+// 								case ' > ':
+// 									condition = " > ";
+// 									break;
+// 								case ' &le; ':
+// 									condition = " <= ";
+// 									break;
+// 								case ' < ':
+// 									condition = " < ";
+// 									break;
+// 							}
+
+// 							//construir el STAresultsInstructions
+
+// 							data += "'" + result[a][infoFilter[i][1]] + "'" + condition + "'" + infoFilter[i][4] + "'"
+
+// 							// if (i == infoFilter.length - 1) { //last in this level
+// 							// 	data += ")";
+// 							// }
+// 							if ((indexOf + 1) != parentLenght) {
+// 								data += nexus
+// 							}
+// 							if ((indexOf + 1) == parentLenght) {
+// 								data += ")";
+// 							}
+// 							currentNode.STAevalString += data
+							
+// 							if (a == 0){ //only one time 
+// 								currentNode.STAevalCounter.push(infoFilter[i][0]);
+// 							}
+								
+// 							//infoForFilterArray.push(data);
+
+
+// 						}
+// 						// console.log (typeof data)
+// 						// console.log (data)
+// 						// console.log(eval(data))
+
+// 						//data = "";
+// 					}
+// 				}
+// 				//console.log(resultsArray);
+// 				//console.log(infoForFilterArray);
+
+// 				//if (i != 0) {
+// 				//data += nexus;
+// 				//}
+// 				//Anar filtrant cada registre amb els STAResultsFilter (serà un arrrai). Al eval s'ha de construir la sentència amb aquest arrai
+// 				//He de fer un for per crear la sentènca, recorrent tot larrai
+// 				//Amb la sentència sencera fer el eval. 
+// 				// var evalSentence = "";
+// 				// for (var e = 0; e < infoForFilterArray.length; e++) {
+// 				// 	if (e != 0) {
+// 				// 		evalSentence += nexus
+// 				// 	}
+// 				// 	evalSentence += infoForFilterArray[e];
+
+// 				// }
+// 				// console.log(evalSentence);
+// 				// if (eval(evalSentence)) {
+// 				// 	resultsArray.push(result[a]);
+// 				// }
+// 				// console.log(resultsArray);
+// 				//console.log(eval(evalSentence));
+
+// 				// if (eval(data)) {
+// 				// 	resultsArray.push(result[a]);
+// 				// }
+
+// 				//  const message = [
+// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Riudecanyes', nivell_absolut: '386.8', percentatge_volum_embassat: '14.4', volum_embassat: '23.74' },
+// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Riudecanyes', nivell_absolut: '135.63', percentatge_volum_embassat: '2.6', volum_embassat: '0.14' },
+// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Darnius Boadella (Darnius)', nivell_absolut: '135.63', percentatge_volum_embassat: '16.5', volum_embassat: '10.06' },
+// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de la Llosa del Cavall (Navès)', nivell_absolut: '772.85', percentatge_volum_embassat: '24.2', volum_embassat: '19.39' },
+// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Sant Ponç (Clariana de Cardener)', nivell_absolut: '135.63', percentatge_volum_embassat: '32.6', volum_embassat: '7.94' },
+// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Siurana (Cornudella de Montsant)', nivell_absolut: '453.1', percentatge_volum_embassat: '2.7', volum_embassat: '0.33' },
+// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Foix (Castellet i la Gornal)', nivell_absolut: '98.18', percentatge_volum_embassat: '64.9', volum_embassat: '2.43' },
+// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Susqueda (Osor)', nivell_absolut: '135.63', percentatge_volum_embassat: '26.4', volum_embassat: '61.49' },
+// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de la Baells (Cercs)', nivell_absolut: '605.26', percentatge_volum_embassat: '38.4', volum_embassat: '42.07' }]
+// 				//    // Try edit me
+
+// 				//    // Update header text
+// 				//    document.querySelector('#header').innerHTML = message
+// 				//    var array = []
+// 				//    for (var i = 0; i < message.length; i++) {
+// 				//  	if (eval(message[i]["nivell_absolut"] == '135.63' && message[i]["estaci"]  != "Embassament de Riudecanyes")) {
+// 				//  	  array.push(message[i])
+// 				//  	}
+// 				//    }
+// 				//    // Log to console
+// 				//    console.log(array)
+// 			}
+
+// 		//	EVAL""""""""potser fer evals per cada cop 
+// 		}
+// 		if (currentNode.STAevalCounter.length == infoFilter.length) {
+// 			currentNode.STAevalString.slice(0, "(");
+// 			//currentNode.STAevalString.slice(currentNode.STAUrlAPI.length + 1, ")");
+// 			stopreadInformationRowFilterTable = true;
+// 		}
+// 	}else{
+// 		console.log(currentNode.STAevalString);
+// 	}
+// }
 
 // function builtSummaryToFilterTable(elem) { //CSV
 
