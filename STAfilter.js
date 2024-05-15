@@ -2106,98 +2106,45 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 					if (indexOf == 0) {
 						data += "(";
 					}
-					// var valueOfEntity = infoFilter[i][1];
-					// var lengthEntity = valueOfEntity.indexOf("/")
-					// if (-1 != lengthEntity) { //Erase first entity name in the path
-					// 	valueOfEntity = valueOfEntity.slice(lengthEntity + 1); //Erase entity and "/"
-					// }
 
 					///Apply filter depending on Select Condition
 					if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') { //passarho a com Table+
-						data += "(";
 						
-						// if (entity != valueOfEntity) { //If it's not the entity of the node and it is a connected box need "node entity name "
-						// 	data += valueOfEntity + "/";
-						// }
+						data+= "("+apostropheOrSpace+infoFilter[i][1] +apostropheOrSpace+ condition + apostropheOrSpace+infoFilter[i][4] + apostropheOrSpace+")";
 
-						data+= apostropheOrSpace+infoFilter[i][1] +apostropheOrSpace+ condition + apostropheOrSpace+infoFilter[i][4] + apostropheOrSpace+")";
-
-						// data += infoFilter[i][2][0];
-						// if (infoFilter[i][2].length == 2) {
-						// 	data += infoFilter[i][2][1];
-						// }
-						// var typeOfValue = infoFilter[i][5];
-						// var apostropheOrSpace;
-						// (typeOfValue == "text") ? apostropheOrSpace = "'" : apostropheOrSpace = "";
-						// switch (infoFilter[i][3]) {
-						// 	case ' = ':
-						// 		data += " eq " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-						// 		break;
-						// 	case ' &ne; ':
-						// 		data += " ne " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-						// 		break;
-						// 	case ' &ge; ':
-						// 		data += " ge " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-						// 		break;
-						// 	case ' > ':
-						// 		data += " gt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-						// 		break;
-						// 	case ' &le; ':
-						// 		data += " le " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-						// 		break;
-						// 	case ' < ':
-						// 		data += " lt " + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
-						// 		break;
-						// 	default:
-						// }
 					}
 					else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
-						if (entity != valueOfEntity) {
-							valueOfEntity = valueOfEntity + "/" + infoFilter[i][2];
-						} else {
-							valueOfEntity = infoFilter[i][2];
-						}
-						if (infoFilter[i][2].length == 2) {
-							valueOfEntity += infoFilter[i][2][1];
-						}
-						data += "( " + valueOfEntity;
+
 						switch (infoFilter[i][3]) {
 							case ' [a,b] ':
-								data += " ge " + infoFilter[i][4] + " and " + valueOfEntity + " le " + infoFilter[i][5] + ")";
+								data+="( " + infoFilter[i][1] + " >= " +infoFilter[i][4] + " && "+ infoFilter[i][1]+ " <= " +infoFilter[i][5] + ")";
 								break;
 							case ' (a,b] ':
-								data += " gt " + infoFilter[i][4] + " and " + valueOfEntity + " le " + infoFilter[i][5] + ")";
+								data+="( " + infoFilter[i][1] + " > " +infoFilter[i][4] + " && "+ infoFilter[i][1]+ " <= " +infoFilter[i][5] + ")";
 								break;
 							case ' [a,b) ':
-								data += " ge " + infoFilter[i][4] + " and " + valueOfEntity + " lt " + infoFilter[i][5] + ")";
+								data+="( " + infoFilter[i][1] + " >= " +infoFilter[i][4] + " && "+ infoFilter[i][1]+ " < " +infoFilter[i][5] + ")";
 								break;
 							case ' (a,b) ':
-								data += " gt " + infoFilter[i][4] + " and " + valueOfEntity + " lt " + infoFilter[i][5] + ")";
+								data+="( " + infoFilter[i][1] + " > " +infoFilter[i][4] + " && "+ infoFilter[i][1]+ " < " +infoFilter[i][5] + ")";
 								break;
 							default:
 						}
 					}
 					else if (infoFilter[i][3] == 'contains' || infoFilter[i][3] == 'no contains' || infoFilter[i][3] == 'starts with' || infoFilter[i][3] == 'ends with') {
-						if (entity != valueOfEntity) {
-							valueOfEntity = valueOfEntity + "/" + infoFilter[i][2];
-						} else {
-							valueOfEntity = infoFilter[i][2];
-						}
-						if (infoFilter[i][2].length == 2) {
-							valueOfEntity += infoFilter[i][2][1];
-						}
+			
 						switch (infoFilter[i][3]) {
-							case 'contains':
-								data += "substringof('" + infoFilter[i][4] + "'," + valueOfEntity + ")";
+							case 'contains': //includes()
+								data += "('"+infoFilter[i][1] +"'.includes('"+infoFilter[i][4]+"'))";
 								break;
-							case 'no contains':
-								data += "not substringof('" + infoFilter[i][4] + "'," + valueOfEntity + ")";
+							case 'no contains': //no includes()
+								data += "(!'"+infoFilter[i][1] +"'.includes('"+infoFilter[i][4]+"'))";
 								break;
-							case 'starts with':
-								data += "startswith(" + valueOfEntity + ",'" + infoFilter[i][4] + "')";
+							case 'starts with': //.startsWith()
+								data += "('"+infoFilter[i][1] +"'.startsWith('"+infoFilter[i][4]+"'))";
 								break;
-							case 'ends with':
-								data += "endswith(" + valueOfEntity + ",'" + infoFilter[i][4] + "')";
+							case 'ends with': //endsWith()
+								data += "('"+infoFilter[i][1] +"'.endsWith('"+infoFilter[i][4]+"'))";
 								break;
 							default:
 						}
@@ -2277,7 +2224,7 @@ function applyEvalAndFilterData(){
 			
 			sentenceToEvalInSTAtable= sentenceToEvalInSTAtable.replaceAll(columnsUsedArray[i],data[e][columnsUsedArray[i]]);
  		}
-		if (e<100){
+		if (e<10){
 			console.log(sentenceToEvalInSTAtable);
 			console.log(eval(sentenceToEvalInSTAtable))
 		}
