@@ -2045,14 +2045,18 @@ var stopreadInformationRowFilterTable = false;
 
 function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 	var infoFilter = currentNode.STAinfoFilter;
+
 	switch (nexus) {
 		case "and":
+			console.log (nexus);
 		 	nexus = "&&"
 		 		break;
-		case "or":
-		 	nexus == "||"
+		case " or ":
+			console.log (nexus);
+		 	nexus = "||"
 		 	break;
-		case "not":
+		case " not ":
+			console.log (nexus);
 		 	nexus = "!="
 		 	break;
 	}
@@ -2070,7 +2074,8 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 			
 				
 			//Last Array, which contains the filters 
-				var data = "", condition;
+			var data = "", condition;
+
 			for (var i = 0; i < infoFilter.length; i++) {
 				switch (infoFilter[i][3]) {
 					case ' = ':
@@ -2095,6 +2100,9 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 				if (infoFilter[i][0] == elem) { //To search the array that contains the info that we want
 					var parentLenght = parent.elems.length;
 					var indexOf = parent.elems.indexOf(elem);
+					var typeOfValue = infoFilter[i][5];
+					var apostropheOrSpace;
+					(typeOfValue == "number") ? apostropheOrSpace = "" : apostropheOrSpace = "'";
 					if (indexOf == 0) {
 						data += "(";
 					}
@@ -2112,7 +2120,7 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 						// 	data += valueOfEntity + "/";
 						// }
 
-						data+= "'column_"+infoFilter[i][1] +"'"+ condition + "'"+infoFilter[i][4] + "')";
+						data+= apostropheOrSpace+infoFilter[i][1] +apostropheOrSpace+ condition + apostropheOrSpace+infoFilter[i][4] + apostropheOrSpace+")";
 
 						// data += infoFilter[i][2][0];
 						// if (infoFilter[i][2].length == 2) {
@@ -2236,11 +2244,60 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 			}
 		}
 		if (currentNode.STAtableCounter.length == infoFilter.length) {
+			console.log(currentNode.STAtable)
 			// currentNode.STAtable.slice(0, "(");
 			// currentNode.STAtable.slice(currentNode.STAtable.length + 1, ")");
 			stopreadInformationRowFilterTable = true;
 		}
 	}
+}
+function applyEvalAndFilterData(){
+	var infoFilter = currentNode.STAinfoFilter;
+	var data =currentNode.STAdata;
+	var sentenceToEvalInSTAtable=currentNode.STAtable; 
+	var columnsUsedArray=[], resultsFiltered=[];
+
+	for( var i=0;i<infoFilter.length;i++){
+		//Array of columns used to replace in eval sentence
+			if (!columnsUsedArray.find(element => element == infoFilter[i][1])) { 
+				columnsUsedArray.push(infoFilter[i][1]);
+			}
+		
+	}
+	console.log(columnsUsedArray)
+
+	// sentenceToEvalInSTAtable=sentenceToEvalInSTAtable.replaceAll("and", "&&");
+	// sentenceToEvalInSTAtable=sentenceToEvalInSTAtable.replaceAll("or", "||");
+	//sentenceToEvalInSTAtable=sentenceToEvalInSTAtable.replace("not", "");!!!!!!
+
+	var sentence=currentNode.STAtable;
+
+	for (var e=0;e< data.length;e++){
+ 		for (var i=0;i<columnsUsedArray.length;i++){
+			
+			sentenceToEvalInSTAtable= sentenceToEvalInSTAtable.replaceAll(columnsUsedArray[i],data[e][columnsUsedArray[i]]);
+ 		}
+		if (e<100){
+			console.log(sentenceToEvalInSTAtable);
+			console.log(eval(sentenceToEvalInSTAtable))
+		}
+		
+		if (eval(sentenceToEvalInSTAtable)) {
+			resultsFiltered.push(data[e]);
+ 		}
+		 sentenceToEvalInSTAtable=sentence; //restart sentence to replace colums for values
+	}
+	console.log(resultsFiltered);
+
+
+
+	//console.log(currentNode.STAtable);
+	//Array with colums used infofilter [i][1]
+
+	//currentNode.STAtable
+	// 				// if (eval(evalSentence)) {
+// 				// 	resultsArray.push(result[a]);
+// 				// }
 }
 // function readInformationRowFilterTable(elem, nexus, parent) {
 // 	var infoFilter = currentNode.STAinfoFilter;
