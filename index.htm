@@ -2594,16 +2594,6 @@
 				currentNode.STAtable="";
 				readInformationRowFilterTable(currentNode.STAelementFilter, "no", "no"); //And apply filter
 				applyEvalAndFilterData();
-				//console.log(currentNode.STAtable);
-				// var sortedBoxNames = currentNode.STAboxNames.sort();
-				// currentNode.STAsummaryToFilterTable = [];
-				// for (var i = 0; i < sortedBoxNames.length; i++) {
-				// 	searchBoxNameGroupForGetFilterRowsTable(sortedBoxNames[i], currentNode.STAelementFilter, "no", "getFilterRowsTable");
-				// }
-
-				//applyFilterToTable();
-
-
 			}
 			function GetFilterRows(event) {
 				event.preventDefault(); // We don't want to submit this form
@@ -2619,7 +2609,6 @@
 
 				showInfoMessage("Filtering STA rows...");
 				networkNodes.update(currentNode);
-				//LoadJSONNodeSTAData(currentNode); //Els dos???
 			}
 
 			function getGeospatialFilter(node, parentNode) {

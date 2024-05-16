@@ -108,9 +108,6 @@ function addTitleInRowFilterDialog(divName) {
 
 //Build selectors
 function createSelectorRowFilters(number) {
-	//update STAdata from node
-	//var divFilterBox = document.getElementById("optionsRow_" + number);
-
 	var selectorInfo = [];
 	var infoFilter = currentNode.STAinfoFilter;
 	var currentNodeLabel = currentNode.label;
@@ -143,15 +140,10 @@ function createColumsSelectorFilterRows(selectorInfo, count) {
 	selectColumns.setAttribute("onchange", "fillValueSelectorFilterRow('" + count + "')");
 
 	optionsRow.appendChild(selectColumns);
-	//select.setAttribute("onChange", "onchangeColumsSelect('" + count + "')");
-
 	fillColumsSelectorFilterRows(selectorInfo, count)
 
 
 }
-const columnes = ["columna1", "columna2", "columna3"]; //a borrar quan tingui els valors
-const valors = ["valor1", "valor2", "valor3"];
-
 
 function fillColumsSelectorFilterRows(selectorInfo, count) {
 	var selectorColumns = document.getElementById("selectorColumns_" + count);
@@ -178,65 +170,19 @@ function fillColumsSelectorFilterRows(selectorInfo, count) {
 	}
 }
 
-// function createValuesSelectorFilterRows(selectorInfo, count) {
-// 	var optionsRow = document.getElementById("optionsRow_" + count);
-// 	var selectorValuesTable = document.createElement("select");
-// 	selectorValuesTable.setAttribute("id", "selectorValuesTable_" + count);
-// 	optionsRow.appendChild(selectorValuesTable);
-// 	//select.setAttribute("onChange", "onchangeValuesSelect('" + count + "')");
-// 	fillValuesSelectorFilterRows(count, selectorInfo);
-// 	var inputValuesTable = document.createElement("input");
-// 	inputValuesTable.setAttribute("id", "inputValuesTable_" + count);
-// 	optionsRow.appendChild(inputValuesTable);
-// }
 function obtainValuesFromSTAdataInCSV(column) {
 	var data = currentNode.STAdata;
-	//var index = data[0].indexOf(column);
 	var valuesArray = []
 	for (var i = 0; i < data.length; i++) {
 		if (i != 0) {
-			//valuesArray.push(data[i][index]);
 			if (!valuesArray.find(element => element == data[i][column])) { //create array with not arranged values
 				valuesArray.push(data[i][column]);
 			}
 		}
 	}
 	var valuesSorted = sortValuesForSelect(valuesArray);
-
-	//console.log(valuesSorted);
 	return valuesSorted;
 }
-
-// function fillValuesSelectorFilterRows(count, selectorInfo) { //CSV
-// 	var selectorValuesTable = document.getElementById("selectorValuesTable_" + count);
-// 	selectorValuesTable.innerHTML = "";
-
-// 	var selectorColumns = document.getElementById("selectorColumns_" + count);
-// 	var selectorColumnsValue = selectorColumns.options[selectorColumns.selectedIndex].value;
-// 	var arrayValuesSorted = obtainValuesFromSTAdataInCSV(selectorColumnsValue);
-// 	//First option (-- choose a field--)
-// 	var option = document.createElement("option"); //First option
-// 	option.setAttribute("value", "-- choose a value--");
-// 	option.innerHTML = "-- choose a value--";
-// 	selectorValuesTable.appendChild(option);
-
-// 	for (var i = 0; i < arrayValuesSorted.length; i++) {
-// 		var option2 = document.createElement("option"); //First option
-// 		option2.setAttribute("value", arrayValuesSorted[i]);
-// 		option2.innerHTML = arrayValuesSorted[i];
-// 		if (typeof selectorInfo != "undefined") {
-// 			if (selectorInfo.length != 0) {
-// 				if (selectorInfo[0][2] == arrayValuesSorted[i]) {
-// 					option2.setAttribute("selected", true);
-// 				}
-// 			}
-// 		}
-// 		selectorValuesTable.appendChild(option2);
-// 	}
-// }
-
-
-//Obtain Data from API
 async function loadAPIDataToFillSelectInRowFilter(url) {
 	var response, options = {}, STAdata;
 	try {
@@ -284,14 +230,6 @@ function createEntitySelectorInFilterRows(selectorInfo, count) {
 	//Label
 	optionsRow.innerHTML += "<label style='font-size: 15px;'>Choose the Entity:</label>";
 	optionsRow.innerHTML += `<input type="text" READONLY id="inputForEntityFilterRow_${count}" onclick="openModalRowFilterEntities('${count}')" style="background-color:#D8DFD6; margin-left:5px"></input>`;
-
-
-	//INPUT
-	// var inputForEntityFilterRow = document.createElement("input");
-	// inputForEntityFilterRow.setAttribute("type", "text");
-	// inputForEntityFilterRow.setAttribute("READONLY", true);
-	// inputForEntityFilterRow.setAttribute("id", "inputForEntityFilterRow_" + count);
-	// inputForEntityFilterRow.setAttribute("onclick", "openModalRowFilterEntities('" + count + "')");
 	var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + count);
 
 	inputForEntityFilterRow.addEventListener('mouseover', () => {
@@ -302,12 +240,6 @@ function createEntitySelectorInFilterRows(selectorInfo, count) {
 		inputForEntityFilterRow.style.cursor = "auto";
 		inputForEntityFilterRow.style.background = "#d8dfd6";
 	});
-	// inputForEntityFilterRow.style.backgroundColor = "#D8DFD6"; //grey
-	// inputForEntityFilterRow.style.marginLeft = "5px";
-
-
-
-
 	var entityToInput;
 	if (currentNode.STAFilterRowEntities["optionsRow" + count].length == 1) {//only entity from parent Node
 		entityToInput = currentNode.STAURL ? getSTAURLLastEntity(currentNode.STAURL) : "";
@@ -317,8 +249,6 @@ function createEntitySelectorInFilterRows(selectorInfo, count) {
 	inputForEntityFilterRow.value = entityToInput;
 	inputForEntityFilterRow.style.width = entityToInput.length * 7 + "px"; //Adjust width of the input to fit all content
 
-	//optionsRow.appendChild(labelForEntityFilterRow);
-	//optionsRow.appendChild(inputForEntityFilterRow);
 }
 function openModalRowFilterEntities(number) { //To open Modat to see and select entities
 	event.preventDefault();
@@ -330,8 +260,6 @@ function openModalRowFilterEntities(number) { //To open Modat to see and select 
 
 function updateSTAFilterRowEntities(number, counter, entitySelected) { //Modify or erase what is necessary
 	var filterRowEntities = currentNode.STAFilterRowEntities;
-	//var entity = searchParentLabel();
-
 
 	if (filterRowEntities["optionsRow" + number].length + 1 == counter) {
 		filterRowEntities["optionsRow" + number].push(entitySelected); //If there is no entity in this position, just add it
@@ -402,19 +330,14 @@ function AddEntitiesSelectedBelowInFilterRow(number) {
 		} else {
 			nextEntity = "";
 		}
-
 		var placeToPutChilds;
-		// if (i == 0) {
-		// 	placeToPutChilds = document.getElementById("DialogFilterRowEntitiesCheckBoxes");
-		// } else {
+
 		if (i == 0) {
 			placeToPutChilds = document.getElementById("Group" + i + "_" + entity);
 		} else {
 			placeToPutChilds = document.getElementById("Group" + i + "_" + filterRowEntities[i]); //previous entity (previous group)
 
 		}
-		//}
-
 
 		for (var e = 0; e < entitiesFiltered.length; e++) {	//Create radiobuttons
 			var div2 = document.createElement("div");
@@ -436,7 +359,6 @@ function AddEntitiesSelectedBelowInFilterRow(number) {
 			label.innerHTML = entitiesFiltered[e];
 			div2.appendChild(input2);
 			div2.appendChild(label);
-
 
 			div2.style.marginLeft = 20 + "px"; //position children "visually inside" father. 
 
@@ -489,7 +411,6 @@ function okButtonInRowFilterEntities(event) { //Ok in DialogFilterRowEntities
 //PropertySelect
 function createPropertySelectInFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
-	//optionsRow.innerHTML += `<select id="selectorProperty_${count}" onchange="fillValueSelectorFilterRow('${count}')" style="margin-left:10px"></select>`; //If I use this , the value of the entity disappears
 	var select = document.createElement("select");
 	select.setAttribute("id", "selectorProperty_" + count);
 	select.setAttribute("onChange", "onchangePropertySelect('" + count + "')");
@@ -500,7 +421,6 @@ function createPropertySelectInFilterRows(selectorInfo, count) {
 		var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(selectorInfo[0][1]), true);
 	}
 	//Input for properties/parameters
-	//optionsRow.innerHTML += `<input type="text" id="inputForProperty_${count}" placeholder="Example: /type" style="margin-left:5px"></input>`;
 	var inputForProperty = document.createElement("input");
 	inputForProperty.setAttribute("type", "text");
 	inputForProperty.setAttribute("id", "inputForProperty_" + count);
@@ -515,7 +435,6 @@ function onchangePropertySelect(count) {
 	fillValueSelectorFilterRow(count);
 	//Dins el fillValue s'ha de mirar si la property acaba en "/", si es així, deixar el select buit i potser aixo ja farà q s'amagui al ser undefined
 	showInputProperty(count);
-	//
 }
 function showInputProperty(count) {
 	var selectorProperty = document.getElementById("selectorProperty_" + count);
@@ -544,7 +463,6 @@ const locationExtension = ["location/", "location/type", "location/properties/",
 
 function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: Entity obtained in input
 	var selectProperty = document.getElementById("selectorProperty_" + number);
-	//var inputForProperty = document.getElementById("inputForProperty_" + number);
 	selectProperty.innerHTML = "";
 
 	var properties = STAEntities[getSTAEntityPlural(lastEntity, true)]["properties"];
@@ -572,7 +490,7 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 				option.innerHTML = featureExtension[a];
 				selectProperty.appendChild(option);
 				if (selectorInfo && selectorInfo.length != 0) {
-					if (featureExtension[a] == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
+					if (featureExtension[a] == selectorInfo[0][2][0]) { 
 						option.setAttribute("selected", true);
 					}
 				}
@@ -585,7 +503,7 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 				option.innerHTML = locationExtension[a];
 				selectProperty.appendChild(option);
 				if (selectorInfo && selectorInfo.length != 0) {
-					if (locationExtension[a] == selectorInfo[0][2][0]) { //!!!!!!!!!!!!!!!!!!!
+					if (locationExtension[a] == selectorInfo[0][2][0]) { 
 						option.setAttribute("selected", true);
 					}
 				}
@@ -951,10 +869,9 @@ function createValueSelectInFilterRows(selectorInfo, count, informationOrigin) {
 		fillValueSelectorFilterRow(count);
 	} else { //"table"
 		fillValueSelectorFilterRow(count); //el selector info no serà necessari xq posarà ala info al input, el select quedarà tancat 
-		//createValuesSelectorFilterRows(selectorInfo, number);
 	}
-
 }
+
 async function fillValueSelectorFilterRow(count) {
 	var valor, valueToinput, dataToFillSelect, arrayValors = [], valueUndefined, informationOrigin;
 
@@ -963,7 +880,6 @@ async function fillValueSelectorFilterRow(count) {
 	} else {
 		informationOrigin = "Table";
 	}
-
 	//Fill Select
 	//Simple
 	var selectorValue = document.getElementById("selectorValue" + informationOrigin + "_" + count);
@@ -1049,8 +965,6 @@ async function fillValueSelectorFilterRow(count) {
 		}
 	}
 
-
-
 	showAndHiddeSelectorAndInputsFilterRow(count);
 }
 function sortValuesForSelect(arrayValues) {
@@ -1123,10 +1037,7 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 		selectorValueInterval2STA.style.display = "inline-block";
 	}
 }
-function changeSelectValueRowFilter(nodeId, number) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	//isAnObject(nodeId, number);
-	//...for more functions
-}
+
 function closeModalSelectInValue(number, button) { //Ok and Cancel Buttons
 	event.preventDefault();
 	var informationOrigin;
@@ -1328,11 +1239,6 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 		inputTextInterval2STA.style.display = "none";
 		divFilterContainer2.style.display = "none";
 		displaySelectInterval.style.display = "none";
-
-
-
-
-
 	}
 }
 var stopSearchparentLabel = false;
@@ -1466,7 +1372,6 @@ function changeElements(currentElement, nextElement, iCon) {
 			arrayElements.push(currentElement.elems[i]);
 		}
 	}
-	var nodeId = currentNode.id;
 	currentElement.elems = arrayElements;
 	nextElement.elems.push(iCon);
 	if (currentElement.elems.length == 0) {
@@ -1631,7 +1536,6 @@ function addNewElement(elem, fromBiggest) {
 	}
 
 	if (currentNode.label == "FilterRowsSTA") {
-		//update currentNode.STAFilterRowEntities
 		var entity = getSTAURLLastEntity(currentNode.STAURL);
 		currentNode.STAFilterRowEntities["optionsRow" + nextNumber] = [entity];
 
@@ -1672,14 +1576,14 @@ function DeleteElementInElemFilter(elem, numberOfElement) {
 		elem.nexus = null;
 	}
 	if (elem.elems.length == 0) {
-		deleteGroup(elem.boxName, currentNode.id)
+		deleteGroup(elem.boxName)
 	}
 	takeSelectInformation();//get selector values and update an external variable 
 	drawTableAgain();//repaint selects
 	resizeBottomPartSelectAndOrNot();
 }
 //Delete group (necesary when it is the last condition in the group)
-function deleteGroup(numberOfElement, nodeId) {
+function deleteGroup(numberOfElement) {
 	event.preventDefault();
 	searchBoxNameGroup(numberOfElement, currentNode.STAelementFilter, "no", "fromDeleteGrup");
 	takeSelectInformation();//get selector values and update an external variable 
@@ -1688,10 +1592,10 @@ function deleteGroup(numberOfElement, nodeId) {
 
 
 
-function searchBoxNameGroupForGetFilterRowsTable(numberOfElement, elem, fatherElem, originFunction) { //elem has boxes ...
+function searchBoxNameGroupForGetFilterRowsTable(numberOfElement, elem, originFunction) { //elem has boxes ...
 	if (typeof elem === "object") {
 		for (var i = 0; i < elem.elems.length; i++) {
-			searchBoxNameGroupForGetFilterRowsTable(numberOfElement, elem.elems[i], elem, originFunction);
+			searchBoxNameGroupForGetFilterRowsTable(numberOfElement, elem.elems[i],originFunction);
 		}
 		if (elem.boxName == numberOfElement) { //add to elems => elems[0,1...]
 			builtSummaryToFilterTable(elem);
@@ -1735,7 +1639,7 @@ function DeleteGroupInElemFilter(elem, fatherElem) {
 			currentNode.STAelementFilter = copyFather[0];
 		}
 		//var boxNames = currentNode.STAboxNames;
-		var boxNames = actualizeBoxNames(currentNode.STAelementFilter, arrayBoxNumbers);
+		var boxNames = actualizeBoxNames(currentNode.STAelementFilter, arrayBoxNumbers);  //It is necesary?
 	}
 }
 function actualizeBoxNames(elem, arrayBoxNumbers) {
@@ -1831,33 +1735,7 @@ function takeSelectInformation() {
 	}
 	currentNode.STAinfoFilter = infoFilter;
 }
-// function takeSelectInformationCSV() {
-// 	var selectorColumns, selectorValuesTable;
-// 	var infoFilter = [];
-// 	var arrayInfo;
 
-// 	var counter = currentNode.STACounter;
-// 	for (var i = 0; i < counter.length; i++) {
-// 		arrayInfo = [];
-// 		//var selectorColumns = document.getElementById("selectorColumns_" + counter[i]);
-// 		var selectorValuesTable = document.getElementById("selectorValuesTable_" + counter[i]);
-// 		//var selectorColumnsSelected = selectorColumns.options[selectorColumns.selectedIndex].value;
-// 		var selectorValuesTableSelected = selectorValuesTable.options[selectorValuesTable.selectedIndex].value;
-// 		arrayInfo.push(counter[i], selectorColumnsSelected, selectorValuesTableSelected);
-// 		infoFilter.push(arrayInfo);
-// 	}
-// 	currentNode.STAinfoFilter = infoFilter;
-// }
-
-// function takeSelectInformation() {
-// 	var currentNodeLabel = currentNode.label;
-// 	if (currentNodeLabel == "FilterRowsSTA") {
-// 		takeSelectInformationSTA();
-// 	} else {
-// 		takeSelectInformationCSV();
-// 	}
-// }
-//Add bigger Level
 function biggestLevelButton(boxName) {
 	event.preventDefault();
 	var newBoxName = (parseInt(boxName.charAt(0)) + 1) + "_0";
@@ -2048,15 +1926,12 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 
 	switch (nexus) {
 		case "and":
-			console.log (nexus);
 		 	nexus = "&&"
 		 		break;
 		case " or ":
-			console.log (nexus);
 		 	nexus = "||"
 		 	break;
 		case " not ":
-			console.log (nexus);
 		 	nexus = "!="
 		 	break;
 	}
@@ -2071,8 +1946,7 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 			}
 		}
 		else { //Build URL
-			
-				
+					
 			//Last Array, which contains the filters 
 			var data = "", condition;
 
@@ -2150,11 +2024,6 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 						}
 					}
 					else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date') {
-						// const data = new Date('05 October 2011 14:48 UTC');
-						// const data2 = new Date("2024-02-21T09:19:45.848841+01:00");
-						// console.log(data2.getMonth()) //1
-						// console.log(data.getMonth()) //9
-
 						switch (infoFilter[i][3]) {
 							case 'year':
 								data += "("+"new Date('"+infoFilter[i][1]+"').getFullYear()=="+infoFilter[i][4]+")";
@@ -2207,7 +2076,6 @@ function applyEvalAndFilterData(){
 			}
 		
 	}
-	console.log(columnsUsedArray)
 	var sentence=currentNode.STAtable;
 	var dataValue, dataValueWithoutZ;
 	for (var e=0;e< data.length;e++){
@@ -2217,12 +2085,8 @@ function applyEvalAndFilterData(){
 			dataValue=data[e][columnsUsedArray[i]];
 
 		}
-		// if (e<10){
-		// 	console.log(sentenceToEvalInSTAtable);
-		// 	console.log(eval(sentenceToEvalInSTAtable));
-		// }
+
 		//it is a date?
-		
 		if (eval(new Date(dataValue))){
 			if (dataValue.charAt(dataValue.length - 1)=="Z" && sentenceToEvalInSTAtable.includes ("getHours")){ //Erase Z in date to obtain the correct hour
 				console.log ("z");
@@ -2236,437 +2100,4 @@ function applyEvalAndFilterData(){
  		}
 		sentenceToEvalInSTAtable=sentence; //restart sentence to replace colums for values
 	}
-	console.log(resultsFiltered);
-
-
-
-	//console.log(currentNode.STAtable);
-	//Array with colums used infofilter [i][1]
-
-	//currentNode.STAtable
-	// 				// if (eval(evalSentence)) {
-// 				// 	resultsArray.push(result[a]);
-// 				// }
 }
-// function readInformationRowFilterTable(elem, nexus, parent) {
-// 	var infoFilter = currentNode.STAinfoFilter;
-// 	if (stopreadInformationRowFilterTable == false) {
-// 		if (typeof elem === "object") {
-// 			for (var i = 0; i < elem.elems.length; i++) {
-// 				readInformationRowFilterTable(elem.elems[i], elem.nexus, elem);
-// 			}
-
-
-
-// 			if (currentNode.STAevalCounter.length != infoFilter.length && currentNode.STAevalCounter.length != 0 && nexus != "no" && parent != "no") { //Will add this when it is not firstone 
-// 				currentNode.STAevalString += " " + nexus + " ";
-// 			}
-// 		}
-// 		// var array = []
-// 		// for (var i = 0; i < message.length; i++) {
-// 		// 	if (eval(r = message[i]["nivell_absolut"] == '135.63' && message[i]["estaci"] != "Embassament de Riudecanyes")) {
-// 		// 		array.push(message[i])
-// 		// 	}
-// 		// }
-// 		else { //Build eval string
-// 			//Last Array, which contains the filters 
-// 			switch (nexus) {
-// 				case "and":
-// 					nexus = "&&"
-// 					break;
-// 				case "or":
-// 					nexus == "||"
-// 					break;
-// 				case "not":
-// 					nexus = "!="
-// 					break;
-// 			}
-// 			var data = "";
-// 			var resultsArray = [], condition;
-// 			var result = currentNode.STAdata;
-// 			var infoForFilterArray
-// 			for (var a = 0; a < result.length; a++) {
-// 				infoForFilterArray = [];
-// 				for (var i = 0; i < infoFilter.length; i++) {
-// 					if (infoFilter[i][0] == elem) {
-// 						var parentLenght = parent.elems.length;
-// 						var indexOf = parent.elems.indexOf(elem);
-// 						if (indexOf == 0) {
-// 							data += "(";
-// 						}
-// 						if (infoFilter[i][3] == ' = ' || infoFilter[i][3] == ' &ne; ' || infoFilter[i][3] == ' &ge; ' || infoFilter[i][3] == ' > ' || infoFilter[i][3] == ' &le; ' || infoFilter[i][3] == ' < ') {
-// 							data += "(";
-
-// 							switch (infoFilter[i][3]) {
-// 								case ' = ':
-// 									condition = " == ";
-// 									break;
-// 								case ' &ne; ':
-// 									condition = " != ";
-// 									break;
-// 								case ' &ge; ':
-// 									condition = " >= ";
-// 									break;
-// 								case ' > ':
-// 									condition = " > ";
-// 									break;
-// 								case ' &le; ':
-// 									condition = " <= ";
-// 									break;
-// 								case ' < ':
-// 									condition = " < ";
-// 									break;
-// 							}
-
-// 							//construir el STAresultsInstructions
-
-// 							data += "'" + result[a][infoFilter[i][1]] + "'" + condition + "'" + infoFilter[i][4] + "'"
-
-// 							// if (i == infoFilter.length - 1) { //last in this level
-// 							// 	data += ")";
-// 							// }
-// 							if ((indexOf + 1) != parentLenght) {
-// 								data += nexus
-// 							}
-// 							if ((indexOf + 1) == parentLenght) {
-// 								data += ")";
-// 							}
-// 							currentNode.STAevalString += data
-							
-// 							if (a == 0){ //only one time 
-// 								currentNode.STAevalCounter.push(infoFilter[i][0]);
-// 							}
-								
-// 							//infoForFilterArray.push(data);
-
-
-// 						}
-// 						// console.log (typeof data)
-// 						// console.log (data)
-// 						// console.log(eval(data))
-
-// 						//data = "";
-// 					}
-// 				}
-// 				//console.log(resultsArray);
-// 				//console.log(infoForFilterArray);
-
-// 				//if (i != 0) {
-// 				//data += nexus;
-// 				//}
-// 				//Anar filtrant cada registre amb els STAResultsFilter (serà un arrrai). Al eval s'ha de construir la sentència amb aquest arrai
-// 				//He de fer un for per crear la sentènca, recorrent tot larrai
-// 				//Amb la sentència sencera fer el eval. 
-// 				// var evalSentence = "";
-// 				// for (var e = 0; e < infoForFilterArray.length; e++) {
-// 				// 	if (e != 0) {
-// 				// 		evalSentence += nexus
-// 				// 	}
-// 				// 	evalSentence += infoForFilterArray[e];
-
-// 				// }
-// 				// console.log(evalSentence);
-// 				// if (eval(evalSentence)) {
-// 				// 	resultsArray.push(result[a]);
-// 				// }
-// 				// console.log(resultsArray);
-// 				//console.log(eval(evalSentence));
-
-// 				// if (eval(data)) {
-// 				// 	resultsArray.push(result[a]);
-// 				// }
-
-// 				//  const message = [
-// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Riudecanyes', nivell_absolut: '386.8', percentatge_volum_embassat: '14.4', volum_embassat: '23.74' },
-// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Riudecanyes', nivell_absolut: '135.63', percentatge_volum_embassat: '2.6', volum_embassat: '0.14' },
-// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Darnius Boadella (Darnius)', nivell_absolut: '135.63', percentatge_volum_embassat: '16.5', volum_embassat: '10.06' },
-// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de la Llosa del Cavall (Navès)', nivell_absolut: '772.85', percentatge_volum_embassat: '24.2', volum_embassat: '19.39' },
-// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Sant Ponç (Clariana de Cardener)', nivell_absolut: '135.63', percentatge_volum_embassat: '32.6', volum_embassat: '7.94' },
-// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Siurana (Cornudella de Montsant)', nivell_absolut: '453.1', percentatge_volum_embassat: '2.7', volum_embassat: '0.33' },
-// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Foix (Castellet i la Gornal)', nivell_absolut: '98.18', percentatge_volum_embassat: '64.9', volum_embassat: '2.43' },
-// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de Susqueda (Osor)', nivell_absolut: '135.63', percentatge_volum_embassat: '26.4', volum_embassat: '61.49' },
-// 				//  	{ dia: '2024-05-07T00:00:00.000', estaci: 'Embassament de la Baells (Cercs)', nivell_absolut: '605.26', percentatge_volum_embassat: '38.4', volum_embassat: '42.07' }]
-// 				//    // Try edit me
-
-// 				//    // Update header text
-// 				//    document.querySelector('#header').innerHTML = message
-// 				//    var array = []
-// 				//    for (var i = 0; i < message.length; i++) {
-// 				//  	if (eval(message[i]["nivell_absolut"] == '135.63' && message[i]["estaci"]  != "Embassament de Riudecanyes")) {
-// 				//  	  array.push(message[i])
-// 				//  	}
-// 				//    }
-// 				//    // Log to console
-// 				//    console.log(array)
-// 			}
-
-// 		//	EVAL""""""""potser fer evals per cada cop 
-// 		}
-// 		if (currentNode.STAevalCounter.length == infoFilter.length) {
-// 			currentNode.STAevalString.slice(0, "(");
-// 			//currentNode.STAevalString.slice(currentNode.STAUrlAPI.length + 1, ")");
-// 			stopreadInformationRowFilterTable = true;
-// 		}
-// 	}else{
-// 		console.log(currentNode.STAevalString);
-// 	}
-// }
-
-// function builtSummaryToFilterTable(elem) { //CSV
-
-// 	var arrayToSummary = [];
-// 	arrayToSummary.push(elem.boxName, elem.nexus)
-// 	if (elem.boxName.startsWith("0")) {
-// 		for (var i = 0; i < elem.elems.length; i++) {
-// 			arrayToSummary.push(elem.elems[i])
-// 		}
-// 	} else {
-// 		for (var i = 0; i < elem.elems.length; i++) {
-// 			arrayToSummary.push(elem.elems[i].boxName);
-// 		}
-// 	}
-// 	currentNode.STAsummaryToFilterTable.push(arrayToSummary);
-
-// }
-// function joinResults(resulFiltered, condition) { //different arrays to be joined according to the condition (sense el not)
-// console.log(resulFiltered[0]);
-// var joinedArray=resulFiltered[0]; //Add first array to join with others se
-
-
-// //and: quedar-se amb el els comuns
-// //or : borrar els comuns
-// // for (var i=1;i<resultsFiltered.length;i++){
-
-// // }
-//  //Quyedar-se amb els duplicats!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// temporalArray.push(...resultsFiltered);dgrgre
-// var arrayWithDuplicates = temporalArray.filter((elemento, index) => {
-// 	return temporalArray.indexOf(elemento) != index;
-// })
-// resultsFiltered = arrayWithDuplicates //actualitzem resultsFiltered sense repetits
-
-
-// }
-// function filterResultsSeparately(elements, condition) {
-// 	var resultsArray; //[result1, result2, result3...]
-// 	//[0, 'dia', 'no', ' = ', '2024-05-05T00:00:00.000', 'text'] -> Interessa 1,3,4
-// 	//{dia: '2024-05-05T00:00:00.000', estaci: 'Embassament de Foix (Castellet i la Gornal)', nivell_absolut: '98.23', percentatge_volum_embassat: '65.4', volum_embassat: '2.45'}
-// 	//['---Choose operator ---', ' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date'];
-// 	var resultsArray = currentNode.STAdata;
-// 	var resultsArray2 = resultsArray;
-// 	var arraysValueSet = [], typeOfValue, value;
-// 	for (var i = 0; i < elements.length; i++) {
-// 		switch (elements[i][3]) {
-// 			case ' = ':
-
-// 				resultsArray = resultsArray2.filter(element => element[elements[i][1]] == elements[i][4]);
-// 				console.log(resultsArray);
-// 				break;
-// 			case ' &ne; ':
-// 				resultsArray = resultsArray2.filter(element => element[elements[i][1]] != elements[i][4]);
-// 				console.log(resultsArray);
-
-// 				break;
-// 			case ' &ge; ':
-// 				if (elements[i][5] == "number") { //More than in Filter doesn't work with string, you have to  convert to number
-// 					resultsArray = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) >= parseFloat(elements[i][4]));
-// 				}
-// 				console.log(resultsArray);
-
-// 				break;
-// 			case ' > ':
-// 				if (elements[i][5] == "number") {
-// 					resultsArray = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) > parseFloat(elements[i][4]));
-// 				}
-// 				console.log(resultsArray);
-// 				break;
-// 			case ' &le; ':
-// 				if (elements[i][5] == "number") {
-// 					resultsArray = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) <= parseFloat(elements[i][4]));
-// 				}
-// 				console.log(resultsArray);
-// 				break;
-// 			case ' < ':
-// 				if (elements[i][5] == "number") {
-// 					resultsArray = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) < parseFloat(elements[i][4]));
-// 				}
-// 				console.log(resultsArray);
-// 				break;
-// 			
-
-//case ' [a,b] ':
-// 				if (elements[i][6] == "number") {
-// 					var interval;
-// 					interval = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) >= parseFloat(elements[i][4]));
-// 					resultsArray = interval.filter(element => parseFloat(element[elements[i][1]]) <= parseFloat(elements[i][5]));
-// 				}
-// 				console.log(resultsArray);
-
-// 				break;
-// 			case ' (a,b] ':
-// 				if (elements[i][6] == "number") {
-// 					var interval;
-// 					interval = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) > parseFloat(elements[i][4]));
-// 					resultsArray = interval.filter(element => parseFloat(element[elements[i][1]]) <= parseFloat(elements[i][5]));
-// 				}
-// 				console.log(resultsArray);
-// 				break;
-// 			case ' [a,b) ':
-// 				if (elements[i][6] == "number") {
-// 					var interval;
-// 					interval = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) >= parseFloat(elements[i][4]));
-// 					resultsArray = interval.filter(element => parseFloat(element[elements[i][1]]) < parseFloat(elements[i][5]));
-// 				}
-// 				console.log(resultsArray);
-// 				break;
-// 			case ' (a,b) ':
-// 				if (elements[i][6] == "number") {
-// 					var interval;
-// 					interval = resultsArray2.filter(element => parseFloat(element[elements[i][1]]) > parseFloat(elements[i][4]));
-// 					resultsArray = interval.filter(element => parseFloat(element[elements[i][1]]) < parseFloat(elements[i][5]));
-// 				}
-// 				console.log(resultsArray);
-// 				break;
-// 			case 'contains':
-// 				var textToCompare = elements[i][4].toLowerCase();
-// 				var textInData;
-// 				resultsArray = [];
-// 				//console.log(resultsArray2);
-// 				for (var e = 0; e < resultsArray2.length; e++) {
-// 					textInData = resultsArray2[e][elements[i][1]].toLowerCase();
-// 					// console.log(textToCompare+" : "+textInData);
-
-// 					if (textInData.includes(textToCompare)) {
-// 						resultsArray.push(resultsArray2[e]);
-// 					}
-// 				}
-
-// 				console.log(resultsArray);
-// 				break;
-// 			case 'no contains':
-// 				var textToCompare = elements[i][4].toLowerCase();
-// 				var textInData;
-// 				resultsArray = [];
-// 				for (var e = 0; e < resultsArray2.length; e++) {
-// 					textInData = resultsArray2[e][elements[i][1]].toLowerCase();
-// 					// console.log(textToCompare+" : "+textInData);
-
-// 					if (!textInData.includes(textToCompare)) {
-// 						resultsArray.push(resultsArray2[e]);
-// 					}
-// 				}
-
-// 				console.log(resultsArray);
-// 				break;
-// 			case 'starts with':
-// 				var textToCompare = elements[i][4].toLowerCase();
-// 				var textInData;
-// 				resultsArray = [];
-// 				for (var e = 0; e < resultsArray2.length; e++) {
-// 					textInData = resultsArray2[e][elements[i][1]].toLowerCase();
-// 					// console.log(textToCompare+" : "+textInData);
-
-// 					if (textInData.startsWith(textToCompare)) {
-// 						resultsArray.push(resultsArray2[e]);
-// 					}
-// 				}
-// 				console.log(resultsArray);
-
-// 				break;
-// 			case 'ends with':
-// 				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-// 				var textToCompare = elements[i][4].toLowerCase();
-// 				var textInData;
-// 				resultsArray = [];
-// 				for (var e = 0; e < resultsArray2.length; e++) {
-// 					textInData = resultsArray2[e][elements[i][1]].toLowerCase();
-// 					// console.log(textToCompare+" : "+textInData);
-
-// 					if (textInData.endsWith(textToCompare)) {
-// 						resultsArray.push(resultsArray2[e]);
-// 					}
-// 				}
-// 				console.log(resultsArray);
-// 				break;
-// 			case 'year':
-// 				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-// 				break;
-// 			case 'month':
-// 				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-// 				break;
-// 			case 'day':
-// 				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-// 				break;
-// 			case 'hour':
-// 				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-// 				break;
-// 			case 'minute':
-// 				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-// 				break;
-// 			case 'date':
-// 				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-// 				break;
-// 			case 'time':
-// 				//Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-// 				break;
-// 		}
-// 		arraysValueSet.push(resultsArray);
-// 	}
-// 	console.log(arraysValueSet)
-// 	if (arraysValueSet.length != 1) {
-// 		joinResults(arraysValueSet, condition);
-// 	}
-
-
-
-
-
-// }
-
-// function applyFilterToTable() {
-// 	console.log(currentNode.STAsummaryToFilterTable);
-// 	//STAinfoFilter Primer element correspon amb elements
-// 	var firstFilter = [], resulFiltered, elements = [], element;
-// 	var summaryArray = currentNode.STAsummaryToFilterTable;
-// 	for (var i = 0; i < summaryArray.length; i++) {
-// 		for (var a = 2; a < summaryArray[i].length; a++) { //obtain elements. Starts with 1 because is where elements begin. Example: ['0_0', 'and', 0, 1]
-
-// 			element = currentNode.STAinfoFilter.find((element) => element[0] == summaryArray[i][a]); //Find info in .STAinfoFilter	
-// 			elements.push(element);
-// 		}
-// 		//resulFiltered = 
-// 		filterResultsSeparately(elements, summaryArray[i][1]); //Tindrà un return amb els resultats filtrats i agreegats per grups
-
-
-// 		//joinResults(resulFiltered);
-// 		//firstFilter=
-
-// 		// [['0_0', resultat],
-// 		// ['0_1', resultat],
-// 		// ['0_2', resultat],
-// 		// ['0_3', resultat],
-// 		// ['0_4', resultat]]
-// 	}
-// 	// [['0_0', 'and', 0, 1],
-// 	// ['0_1', 'and', 2, 3, 4],
-// 	// ['0_2', 'and', 6, 7],
-// 	// ['0_3', 'and', 10, 11],
-// 	// ['0_4', 'and', 14, 15],
-
-// 	// ['1_0', 'and', '0_0', '0_1'],
-// 	// ['1_1', null, '0_2'],
-// 	// ['1_2', null, '0_3'],
-// 	// ['1_3', null, '0_4'],
-// 	// ['2_0', 'and', '1_0', '1_1'],
-// 	// ['2_1', null, '1_2'],
-// 	// ['2_2', null, '1_3'],
-// 	// ['3_0', 'and', '2_0', '2_1', '2_2']]
-
-// 	// [[0, 'dia', 'no', ' = ', '3', 'number'],
-// 	// [1, 'dia', 'no', ' &ne; ', '5', 'number'],
-// 	// [2, 'estaci', 'no', ' > ', '5', 'number'],
-// 	// [3, 'nivell_absolut', 'no', ' < ', '10', 'number'],
-// 	// [6, 'percentatge_volum_embassat', 'no', ' &ge; ', '3', 'number'],
-// 	// [5, 'dia', 'no', 'contains', '5', 'number']]
-
-// }
