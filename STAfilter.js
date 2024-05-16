@@ -2150,35 +2150,57 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 						}
 					}
 					else if (infoFilter[i][3] == 'year' || infoFilter[i][3] == 'month' || infoFilter[i][3] == 'day' || infoFilter[i][3] == 'hour' || infoFilter[i][3] == 'minute' || infoFilter[i][3] == 'date') {
-						var newValue = "";
-						for (var a = 0; a < infoFilter[i][4].length; a++) {//erase 0 if starts with 0. 
-							if (infoFilter[i][4].charAt(a) != 0) {
-								newValue += infoFilter[i][4].charAt(a)
-							}
-						}
-						infoFilter[i][4] = newValue;
+						// const data = new Date('05 October 2011 14:48 UTC');
+						// const data2 = new Date("2024-02-21T09:19:45.848841+01:00");
+						// console.log(data2.getMonth()) //1
+						// console.log(data.getMonth()) //9
+
 						switch (infoFilter[i][3]) {
 							case 'year':
-								data += "year(resultTime) eq " + infoFilter[i][4];
+								data += "("+"new Date('"+infoFilter[i][1]+"').getFullYear()=="+infoFilter[i][4]+")";
+
 								break;
 							case 'month':
-								data += "month(resultTime) eq " + infoFilter[i][4];
+								//TENIR EN COMPTE SI EL MES INTRODUIT TE UN 0
+								data += "("+"new Date('"+infoFilter[i][1]+"').getMonth()=="+((parseInt(infoFilter[i][4]))-1)+")";
 								break;
 							case 'day':
-								data += "day(resultTime) eq " + infoFilter[i][4];
+
+								data += "("+"new Date('"+infoFilter[i][1]+"').getDate()=="+infoFilter[i][4]+")"; //getDay returns de day of the week
 								break;
-							case 'hour':
-								data += "hour(resultTime) eq " + infoFilter[i][4];
-								break;
-							case 'minute':
-								data += "minute(resultTime) eq " + infoFilter[i][4];
-								break;
-							case 'date':
-								data += "date(resultTime) eq date('" + infoFilter[i][4] + "')";
-								break;
-							default:
+
 						}
-					}
+
+						
+						// 	var newValue = "";
+					// 	for (var a = 0; a < infoFilter[i][4].length; a++) {//erase 0 if starts with 0. 
+					// 		if (infoFilter[i][4].charAt(a) != 0) {
+					// 			newValue += infoFilter[i][4].charAt(a)
+					// 		}
+					// 	}
+					// 	infoFilter[i][4] = newValue;
+					// 	switch (infoFilter[i][3]) {
+					// 		case 'year':
+					// 			data += "year(resultTime) eq " + infoFilter[i][4];
+					// 			break;
+					// 		case 'month':
+					// 			data += "month(resultTime) eq " + infoFilter[i][4];
+					// 			break;
+					// 		case 'day':
+					// 			data += "day(resultTime) eq " + infoFilter[i][4];
+					// 			break;
+					// 		case 'hour':
+					// 			data += "hour(resultTime) eq " + infoFilter[i][4];
+					// 			break;
+					// 		case 'minute':
+					// 			data += "minute(resultTime) eq " + infoFilter[i][4];
+					// 			break;
+					// 		case 'date':
+					// 			data += "date(resultTime) eq date('" + infoFilter[i][4] + "')";
+					// 			break;
+					// 		default:
+					// 	}
+					 }
 					if ((indexOf + 1) != parentLenght) {
 						data += nexus
 					}
@@ -2220,10 +2242,12 @@ function applyEvalAndFilterData(){
 	var sentence=currentNode.STAtable;
 
 	for (var e=0;e< data.length;e++){
- 		for (var i=0;i<columnsUsedArray.length;i++){
-			
+		//all but date
+
+ 		for (var i=0;i<columnsUsedArray.length;i++){	
 			sentenceToEvalInSTAtable= sentenceToEvalInSTAtable.replaceAll(columnsUsedArray[i],data[e][columnsUsedArray[i]]);
  		}
+		//Date
 		if (e<10){
 			console.log(sentenceToEvalInSTAtable);
 			console.log(eval(sentenceToEvalInSTAtable))
