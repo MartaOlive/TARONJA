@@ -2161,45 +2161,22 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 
 								break;
 							case 'month':
-								//TENIR EN COMPTE SI EL MES INTRODUIT TE UN 0
-								data += "("+"new Date('"+infoFilter[i][1]+"').getMonth()=="+((parseInt(infoFilter[i][4]))-1)+")";
+								var value= infoFilter[i][4];
+								if (value.length==2 && value[0] =="0"){
+									value = value.slice(1);
+								}
+								data += "("+"new Date('"+infoFilter[i][1]+"').getMonth()=="+((parseInt(value))-1)+")"; //month function give you one number less
 								break;
 							case 'day':
-
 								data += "("+"new Date('"+infoFilter[i][1]+"').getDate()=="+infoFilter[i][4]+")"; //getDay returns de day of the week
 								break;
-
+							case 'hour':
+								data += "("+"new Date('"+infoFilter[i][1]+"').getHours()=="+infoFilter[i][4]+")"; //Problems if date ends with Z () (give hour +2)
+								break;
+							case 'minute':
+								data += "("+"new Date('"+infoFilter[i][1]+"').getMinutes()=="+infoFilter[i][4]+")"; 
+								break;
 						}
-
-						
-						// 	var newValue = "";
-					// 	for (var a = 0; a < infoFilter[i][4].length; a++) {//erase 0 if starts with 0. 
-					// 		if (infoFilter[i][4].charAt(a) != 0) {
-					// 			newValue += infoFilter[i][4].charAt(a)
-					// 		}
-					// 	}
-					// 	infoFilter[i][4] = newValue;
-					// 	switch (infoFilter[i][3]) {
-					// 		case 'year':
-					// 			data += "year(resultTime) eq " + infoFilter[i][4];
-					// 			break;
-					// 		case 'month':
-					// 			data += "month(resultTime) eq " + infoFilter[i][4];
-					// 			break;
-					// 		case 'day':
-					// 			data += "day(resultTime) eq " + infoFilter[i][4];
-					// 			break;
-					// 		case 'hour':
-					// 			data += "hour(resultTime) eq " + infoFilter[i][4];
-					// 			break;
-					// 		case 'minute':
-					// 			data += "minute(resultTime) eq " + infoFilter[i][4];
-					// 			break;
-					// 		case 'date':
-					// 			data += "date(resultTime) eq date('" + infoFilter[i][4] + "')";
-					// 			break;
-					// 		default:
-					// 	}
 					 }
 					if ((indexOf + 1) != parentLenght) {
 						data += nexus
@@ -2213,9 +2190,6 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 			}
 		}
 		if (currentNode.STAtableCounter.length == infoFilter.length) {
-			console.log(currentNode.STAtable)
-			// currentNode.STAtable.slice(0, "(");
-			// currentNode.STAtable.slice(currentNode.STAtable.length + 1, ")");
 			stopreadInformationRowFilterTable = true;
 		}
 	}
@@ -2234,29 +2208,33 @@ function applyEvalAndFilterData(){
 		
 	}
 	console.log(columnsUsedArray)
-
-	// sentenceToEvalInSTAtable=sentenceToEvalInSTAtable.replaceAll("and", "&&");
-	// sentenceToEvalInSTAtable=sentenceToEvalInSTAtable.replaceAll("or", "||");
-	//sentenceToEvalInSTAtable=sentenceToEvalInSTAtable.replace("not", "");!!!!!!
-
 	var sentence=currentNode.STAtable;
-
+	var dataValue, dataValueWithoutZ;
 	for (var e=0;e< data.length;e++){
-		//all but date
 
  		for (var i=0;i<columnsUsedArray.length;i++){	
 			sentenceToEvalInSTAtable= sentenceToEvalInSTAtable.replaceAll(columnsUsedArray[i],data[e][columnsUsedArray[i]]);
- 		}
-		//Date
-		if (e<10){
-			console.log(sentenceToEvalInSTAtable);
-			console.log(eval(sentenceToEvalInSTAtable))
+			dataValue=data[e][columnsUsedArray[i]];
+
 		}
+		// if (e<10){
+		// 	console.log(sentenceToEvalInSTAtable);
+		// 	console.log(eval(sentenceToEvalInSTAtable));
+		// }
+		//it is a date?
 		
+		if (eval(new Date(dataValue))){
+			if (dataValue.charAt(dataValue.length - 1)=="Z" && sentenceToEvalInSTAtable.includes ("getHours")){ //Erase Z in date to obtain the correct hour
+				console.log ("z");
+				dataValueWithoutZ=dataValue.slice(0,-1);
+				sentenceToEvalInSTAtable= sentenceToEvalInSTAtable.replaceAll(dataValue,dataValueWithoutZ.toString());
+			}
+		}
+
 		if (eval(sentenceToEvalInSTAtable)) {
 			resultsFiltered.push(data[e]);
  		}
-		 sentenceToEvalInSTAtable=sentence; //restart sentence to replace colums for values
+		sentenceToEvalInSTAtable=sentence; //restart sentence to replace colums for values
 	}
 	console.log(resultsFiltered);
 
