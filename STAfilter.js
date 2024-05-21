@@ -766,7 +766,6 @@ function createValueSelectInFilterRows(selectorInfo, count, informationOrigin) {
 	optionsRow.appendChild(divFilterContainer);
 	var select = document.createElement("select");
 	select.setAttribute("id", "selectorValue" + informationOrigin + "_" + count);
-	select.setAttribute("onChange", "changeSelectValueRowFilter('" + currentNode.id + "','" + count + "')");
 	select.style.marginLeft = "10px";
 	divFilterContainer.appendChild(select);
 	//Simple: inputText, buttons and displaySelects
