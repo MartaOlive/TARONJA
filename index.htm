@@ -552,6 +552,35 @@
 		</div>
 		</form>
 	</dialog>
+	<dialog id="DialogCountResults">
+		<span id="DialogCountResultsTitle"></span>
+		<form>
+		<fieldset>
+			<label>Variable:
+				<span id="DialogCountResultsVariable"></span>
+			</label>
+			<br>
+			<label>Observation time:
+				<span id="DialogCountResultsTime"></span>
+			</label>
+			<br>
+			<label>Refresh time:
+				<input type="text" id="DialogCountResultsRefreshPeriod" size="3" value="20"></input> seconds
+			</label>
+		</fieldset>
+		<br>
+		<div class="center">
+			<button value="ok" >Ok</button>
+			<button value="ok" >Stop refresh</button>
+			<button value="cancel" formmethod="dialog">Close</button>
+			
+			
+			<!-- <button value="ok" onClick="PrepareRefreshOneValue(event)">Ok</button>
+			<button value="ok" onClick="StopRefreshOneValue(event)">Stop refresh</button>
+			<button value="cancel" onClick="CloseDialogCountResults(event)" formmethod="dialog">Close</button>  -->
+		</div>
+		</form>
+	</dialog>
 
 	<dialog id="DialogUploadObservations">
 		<div id="DialogUploadObservationsLoginFirst" style="display: none;">
@@ -697,6 +726,7 @@
 				SeparateColumns: { description: "Separate Columns" },
 				ScatterPlot: { description: "Scatter Plot", leafNode: true },
 				OneValue: { description: "One Value", leafNode: true },
+				countResults: { description: "Count results", leafNode: true },
 				SaveTable: { description: "Save Table", leafNode: true },
 				SaveLayer: { description: "Save Layer", leafNode: true },
 				OpenMap: { description: "Open Map", leafNode: true }
@@ -4230,6 +4260,12 @@
 				SeparateColumns(nodeTo, nodeFrom);
 				return true;
 			}
+			if (nodeTo.image == "CountResults.png") {
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				// Funció que s'executarà
+				 return true;
+			}
 
 			return false;
 		}
@@ -4359,6 +4395,10 @@
 				else if (currentNode.image == "OneValue.png") {
 					ShowOneValueDialog(currentNode);
 					document.getElementById("DialogOneValue").showModal();
+				}
+				else if (currentNode.image == "countResults.png") {
+					//Funció
+					document.getElementById("DialogCountResults").showModal();
 				}
 				else if (currentNode.image == "SaveLayer.png") {
 					ShowSaveLayerDialog(currentNode);
