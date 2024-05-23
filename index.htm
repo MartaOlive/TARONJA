@@ -556,28 +556,15 @@
 		<span id="DialogCountResultsTitle"></span>
 		<form>
 		<fieldset>
-			<label>Variable:
-				<span id="DialogCountResultsVariable"></span>
-			</label>
-			<br>
-			<label>Observation time:
-				<span id="DialogCountResultsTime"></span>
-			</label>
-			<br>
 			<label>Refresh time:
 				<input type="text" id="DialogCountResultsRefreshPeriod" size="3" value="20"></input> seconds
 			</label>
 		</fieldset>
 		<br>
 		<div class="center">
-			<button value="ok" >Ok</button>
-			<button value="ok" >Stop refresh</button>
-			<button value="cancel" formmethod="dialog">Close</button>
-			
-			
-			<!-- <button value="ok" onClick="PrepareRefreshOneValue(event)">Ok</button>
-			<button value="ok" onClick="StopRefreshOneValue(event)">Stop refresh</button>
-			<button value="cancel" onClick="CloseDialogCountResults(event)" formmethod="dialog">Close</button>  -->
+			<button value="ok" onClick="prepareRefreshCountResults(event)" >Ok</button>
+			<button value="ok"  onClick="stopRefreshOneValue(event)" >Stop refresh</button>
+			<button value="cancel" onClick="closeDialogCountResults(event)" formmethod="dialog">Close</button>
 		</div>
 		</form>
 	</dialog>
@@ -2082,6 +2069,9 @@
 			document.getElementById("DialogScatterPlot").close();
 		}
 
+		function ShowOneValueDialog(currentNode){
+			fgfgj
+		}
 
 		function ShowOneValueDialog(currentNode) {
 			var parentNode=GetFirstParentNode(currentNode);
@@ -2137,6 +2127,59 @@
 			}
 		}
 
+		function prepareRefreshCountResults(event) {
+    event.preventDefault(); // We don't want to submit this form
+    document.getElementById("DialogCountResults").close();
+
+    var node = networkNodes.get(startingNodeContextId);
+    if (!node)
+        return;
+    startingNodeContextId = null;
+    if (node.STAtimeOut) {
+        clearTimeout(node.STAtimeOut);
+        node.STAtimeOut = null;
+    }
+    node.STAredrawPeriod = document.getElementById("DialogCountResultsRefreshPeriod").value;
+    networkNodes.update(currentNode);
+
+    requestLastObservationAndRefreshCountResults(currentNode, node.STAredrawPeriod);
+}
+async function requestLastObservationAndRefreshCountResults(currentNode, period) {
+    var parentNode = GetFirstParentNode(currentNode);
+    if (!parentNode)
+        return;
+    currentNode.STAURL = AddQueryParamsToURL(parentNode.STAURL, "$count=true&$top=0");
+    currentNode.STAExpectedLength = 1;
+    networkNodes.update(currentNode);
+    showInfoMessage("Getting number of results");
+    var numberOfResults = await loadAPIDataWithReturn(currentNode.STAURL, "countResults");
+
+    //Redraw the label
+
+    currentNode.label = " (" + numberOfResults + " results )";
+
+    //Redraw
+    showInfoMessage(currentNode.label + ". Waiting " + period + " seconds ...");
+    currentNode.STAtimeOut = setTimeout(requestLastObservationAndRefreshCountResults, period * 1000, currentNode, period);
+    networkNodes.update(currentNode);
+}
+
+function stopRefreshOneValue(event) {
+    event.preventDefault(); // We don't want to submit this form
+    document.getElementById("DialogCountResults").close();
+
+    var node = networkNodes.get(startingNodeContextId);
+    if (!node)
+        return;
+    if (node.STAtimeOut) {
+        clearTimeout(node.STAtimeOut);
+        showInfoMessage("Refresh cancelled.");
+    }
+}
+function closeDialogCountResults(event) {
+    event.preventDefault(); // We don't want to submit this form
+    document.getElementById("DialogCountResults").close();
+}
 
 		function getTimeISOTime(isodatetime) {
 			var d=new Date(isodatetime);
@@ -4397,7 +4440,7 @@
 					document.getElementById("DialogOneValue").showModal();
 				}
 				else if (currentNode.image == "countResults.png") {
-					//Funció
+					//ShowCountResultsDialog(currentNode);
 					document.getElementById("DialogCountResults").showModal();
 				}
 				else if (currentNode.image == "SaveLayer.png") {
