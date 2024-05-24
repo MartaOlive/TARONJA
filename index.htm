@@ -2127,6 +2127,7 @@
 			}
 		}
 
+
 	function prepareRefreshCountResults(event) {
 		event.preventDefault(); // We don't want to submit this form
 		document.getElementById("DialogCountResults").close();
@@ -2138,13 +2139,12 @@
 
 		
 		if (currentNode.STAtimeOut) {
-			clearTimeout(currentNode.STAtimeOut);
+			clearInterval(currentNode.STAtimeOut);
 			currentNode.STAtimeOut = null;
 		}
 		currentNode.STAredrawPeriod = document.getElementById("DialogCountResultsRefreshPeriod").value;
 		networkNodes.update(currentNode);
-
-		requestLastObservationAndRefreshCountResults(currentNode, currentNode.STAredrawPeriod);
+		currentNode.STAtimeOut = setInterval(requestLastObservationAndRefreshCountResults, currentNode.STAredrawPeriod  * 1000, currentNode, currentNode.STAredrawPeriod );
 }
 async function requestLastObservationAndRefreshCountResults(currentNode, period) {
     var parentNode = GetFirstParentNode(currentNode);
@@ -2162,8 +2162,8 @@ async function requestLastObservationAndRefreshCountResults(currentNode, period)
 
     //Redraw
     showInfoMessage(currentNode.label + ". Waiting " + period + " seconds ...");
-    currentNode.STAtimeOut = setTimeout(requestLastObservationAndRefreshCountResults, period * 1000, currentNode, period);
-    networkNodes.update(currentNode);
+    //currentNode.STAtimeOut = setTimeout(requestLastObservationAndRefreshCountResults, period * 1000, currentNode, period);
+    //networkNodes.update(currentNode);
 }
 
 var contador;
@@ -2175,7 +2175,7 @@ function stopRefreshCountResults(event) {
     if (!currentNode)
         return;
     if (currentNode.STAtimeOut) {
-        clearTimeout(currentNode.STAtimeOut);
+        clearInterval(currentNode.STAtimeOut);
         showInfoMessage("Refresh cancelled.");
     }
 }
