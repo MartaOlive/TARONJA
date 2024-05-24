@@ -2132,12 +2132,6 @@
 		event.preventDefault(); // We don't want to submit this form
 		document.getElementById("DialogCountResults").close();
 
-		//var node = networkNodes.get(startingNodeContextId);
-		// if (!currentNode)
-		// 	return;
-		//startingNodeContextId = null;
-
-		
 		if (currentNode.STAtimeOut) {
 			clearInterval(currentNode.STAtimeOut);
 			currentNode.STAtimeOut = null;
@@ -2157,13 +2151,11 @@ async function requestLastObservationAndRefreshCountResults(currentNode, period)
     var numberOfResults = await loadAPIDataWithReturn(currentNode.STAURL, "countResults");
 
     //Redraw the label
-
     currentNode.label = " (Items: " + numberOfResults + ")";
 
     //Redraw
     showInfoMessage(currentNode.label + ". Waiting " + period + " seconds ...");
-    //currentNode.STAtimeOut = setTimeout(requestLastObservationAndRefreshCountResults, period * 1000, currentNode, period);
-    //networkNodes.update(currentNode);
+
 }
 
 var contador;
@@ -2171,7 +2163,6 @@ function stopRefreshCountResults(event) {
     event.preventDefault(); // We don't want to submit this form
     document.getElementById("DialogCountResults").close();
 
-    //var node = networkNodes.get(startingNodeContextId);
     if (!currentNode)
         return;
     if (currentNode.STAtimeOut) {
