@@ -831,7 +831,12 @@
 						}
 					}
 					if (node.image == "FilterRowsSTA.png" && isPlural == false) {
-						return "Your result is already one value, you can not filter it more"
+						if (parentNode.OGCType){
+							if (parentNode.OGCType!= "OGCAPIitems"){ //Allow to conect SelectRow originating from OGC API
+								return "Your result is already one value, you can not filter it more"
+							}
+						}
+						
 					} else {
 						return null;
 					}
