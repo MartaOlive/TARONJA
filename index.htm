@@ -2707,15 +2707,17 @@ function closeDialogCountResults(event) {
 				currentNode.STAURL = currentNode.STAUrlAPI;
 
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
+				LoadJSONNodeSTAData(currentNode);
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			}
+
 		function GetFilterRowsTable() {
 			stopreadInformationRowFilterTable = false;
 			currentNode.STAtableCounter = [];
 			currentNode.STAtable = "";
 			readInformationRowFilterTable(currentNode.STAelementFilter, "no", "no"); //And apply filter
 			applyEvalAndFilterData();
-				
+			UpdateChildenTable(currentNode);
 				
 		}
 		function GetFilterRows(event) {
@@ -2723,7 +2725,7 @@ function closeDialogCountResults(event) {
 			document.getElementById("DialogFilterRows").close();
 			//updateinfoFilter
 			takeSelectInformation(currentNode.id);
-
+			var previousURL= currentNode.STAURL;
 			if (currentNode.image == "FilterRowsSTA.png") {
 				GetFilterRowsSTA()
 			} else {
@@ -2732,13 +2734,7 @@ function closeDialogCountResults(event) {
 
 			showInfoMessage("Filtering STA rows...");
 			networkNodes.update(currentNode);
-
-			if (currentNode.image == "FilterRowsSTA.png"){ //STA
-				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
-			}else{
-				UpdateChildenTable(currentNode);
-			}
-			
+		
 
 		}
 

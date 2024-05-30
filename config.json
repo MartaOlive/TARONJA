@@ -102,7 +102,12 @@
 			{
 				"desc": "CubeWerx Foundation demo service",
 				"url": "https://test.cubewerx.com/cubewerx/cubeserv/demo/ogcapi/Foundation"
-			}]
+			},
+			{
+				"desc": "GeoE3 Buildings",
+				"url": "https://geoe3platform.eu/geoe3/buildings/"
+			}
+		]
 		}
 	],
 	"suggestedCSVurls": [
