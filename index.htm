@@ -841,7 +841,7 @@
 						return null;
 					}
 				}
-				if (node.image == "FilterRowsSTA.png") {
+				if (node.image == "FilterRowsSTA.png" && !parentNode.OGCType) {
 					var getCon = getConnectionSTAEntity(parentNode, node)
 					if (getCon.error)
 						return getCon.error;
@@ -4251,7 +4251,14 @@ function closeDialogCountResults(event) {
 				networkNodes.update(nodeTo);
 				if (calUnir)
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
-				//showInfoMessage("Selecting " + (nodeTo.image == "SelectColumnsSTA.png" ? "columns" : "rows") + " to STA...");
+
+				if (nodeFrom.OGCType){
+					if (nodeTo.image == "FilterRowsSTA.png"&& nodeFrom.OGCType=="OGCAPIitems"){
+						askForConformanceInOGCAPIFeatures()
+					}
+				}	
+				
+					//showInfoMessage("Selecting " + (nodeTo.image == "SelectColumnsSTA.png" ? "columns" : "rows") + " to STA...");
 				//LoadJSONNodeSTAData(nodeTo);
 				return true;
 			}
@@ -4308,6 +4315,8 @@ function closeDialogCountResults(event) {
 
 			return false;
 		}
+		
+
 
 		function KeySTAPage(event) {
 			//if (event.keyCode == 113)  //F2

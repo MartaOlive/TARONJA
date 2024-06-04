@@ -220,7 +220,10 @@ async function loadAPIDataWithReturn(url, reasonForData) { // Ask API to , "FIll
 		data = await response.json();
 		if (reasonForData == "EntitiesFilterRow") {
 			data = (typeof data.value !== "undefined") ? data.value : [data];
-		} else {
+		} else if (reasonForData == "OGCAPIFeatures") {
+			data = (typeof data !== "undefined") ? data["conformsTo"] : [data];
+		}
+		else {
 			data = (typeof data.value !== "undefined") ? data["@iot.count"] : [data];
 		}
 
@@ -228,6 +231,8 @@ async function loadAPIDataWithReturn(url, reasonForData) { // Ask API to , "FIll
 	catch (error) {
 		data = null;
 	}
+
+
 	return data;
 
 
@@ -1966,5 +1971,28 @@ function applyEvalAndFilterData() {
 
 	//update STAdata
 	currentNode.STAdata = resultsFiltered;
-	//updateChildrenData
 }
+async function askForConformanceInOGCAPIFeatures() {
+	const filterInConformance = ["filter", "features-filter", "simple-cql", "cql-text", "cql-json"];//What I need for filter
+	var url = currentNode.STAURL;
+	var index = url.indexOf("/collection");
+	url = url.slice(0, index);
+	url += "/conformance?f=json";
+	console.log(url);
+	var conformanceInformation = await loadAPIDataWithReturn(url, "OGCAPIFeatures"); //ask for conformance (what can I do with this API)
+	var conformanceArray = []
+	for (var i = 0; i < conformanceInformation.length; i++) {
+		for (var a=0; a < filterInConformance.length; a++) {
+			if (conformanceInformation[i].includes(filterInConformance[a])) {
+				if (!conformanceArray.includes(filterInConformance[a])){
+					conformanceArray.push(filterInConformance[a])
+				}
+				
+			}
+		}
+
+	}
+	currentNode.STAOGCAPIconformance = conformanceArray; //Only keeps what I need for filter
+
+}
+
