@@ -141,7 +141,6 @@ function createSelectorRowFilters(number) {
 	}
 }
 
-
 function createColumsSelectorFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
 
@@ -154,7 +153,6 @@ function createColumsSelectorFilterRows(selectorInfo, count) {
 
 
 }
-
 
 function fillColumsSelectorFilterRows(selectorInfo, count) {
 	var selectorColumns = document.getElementById("selectorColumns_" + count);
@@ -231,8 +229,6 @@ async function loadAPIDataWithReturn(url, reasonForData) { // Ask API to , "FIll
 	catch (error) {
 		data = null;
 	}
-
-
 	return data;
 
 
@@ -758,10 +754,6 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 //Values select
 function createValueSelectInFilterRows(selectorInfo, count, informationOrigin) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
-	var informationOrigin = "Table";
-	if (currentNode.image == "FilterRowsSTA") {
-		informationOrigin = "STA";
-	}
 
 	if (informationOrigin == "STA") {
 		var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + count);
@@ -883,10 +875,8 @@ function createValueSelectInFilterRows(selectorInfo, count, informationOrigin) {
 		}
 	}
 
-
-	fillValueSelectorFilterRow(count); //el selector info no serà necessari xq posarà ala info al input, el select quedarà tancat 
+	fillValueSelectorFilterRow(count);
 }
-
 
 async function fillValueSelectorFilterRow(count) {
 	var valor, valueToinput, dataToFillSelect, arrayValors = [], valueUndefined;
@@ -894,7 +884,6 @@ async function fillValueSelectorFilterRow(count) {
 	if (currentNode.image == "FilterRowsSTA") {
 		informationOrigin = "STA";
 	}
-
 	//Fill Select
 	//Simple
 	var selectorValue = document.getElementById("selectorValue" + "_" + count);
@@ -906,7 +895,6 @@ async function fillValueSelectorFilterRow(count) {
 	selectorValueInterval1.innerHTML = "";
 	selectorValueInterval2.innerHTML = "";
 	var arrayValuesArranged;
-
 
 	// if (informationOrigin == "STA") {
 	if (selectProperty) {
@@ -1030,7 +1018,6 @@ function changeWriteToSelect(number, selector) {  //To take the text in input
 	var displaySelectInterval = document.getElementById("displaySelectInterval_" + number);
 	var selectorValueInterval1STA = document.getElementById("selectorValueInterval1" + "_" + number);
 	var selectorValueInterval2STA = document.getElementById("selectorValueInterval2" + "_" + number);
-
 	//Wich text is open?
 	if (selector == "simple") {
 		inputText.style.display = "none";
@@ -1158,7 +1145,6 @@ function showAndHiddeSelectorAndInputsFilterRow(number) {
 				inputForProperty.style.display = "none";
 			}
 		}
-
 	}
 
 
@@ -1982,12 +1968,12 @@ async function askForConformanceInOGCAPIFeatures() {
 	var conformanceInformation = await loadAPIDataWithReturn(url, "OGCAPIFeatures"); //ask for conformance (what can I do with this API)
 	var conformanceArray = []
 	for (var i = 0; i < conformanceInformation.length; i++) {
-		for (var a=0; a < filterInConformance.length; a++) {
+		for (var a = 0; a < filterInConformance.length; a++) {
 			if (conformanceInformation[i].includes(filterInConformance[a])) {
-				if (!conformanceArray.includes(filterInConformance[a])){
+				if (!conformanceArray.includes(filterInConformance[a])) {
 					conformanceArray.push(filterInConformance[a])
 				}
-				
+
 			}
 		}
 
@@ -1995,4 +1981,3 @@ async function askForConformanceInOGCAPIFeatures() {
 	currentNode.STAOGCAPIconformance = conformanceArray; //Only keeps what I need for filter
 	networkNodes.update(currentNode);
 }
-
