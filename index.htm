@@ -4106,7 +4106,11 @@ function closeDialogCountResults(event) {
 			}
 			addNecessaryVariablesToFilterRowsSTANode(node);
 
-			ShowFilterTable();
+			if (!currentNode.STAOGCAPIconformance){ //Not OGCAPIFeatures
+				ShowFilterTable();
+			}
+
+			
 		}
 
 		function SeparatePropertyIfNeeded(record, property, baseName)
@@ -4494,15 +4498,15 @@ function closeDialogCountResults(event) {
 				else if (currentNode.image == "FilterRowsSTA.png" || currentNode.image == "FilterRowsTable.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode) {
-							if (parentNode.STAURL) {
-								if (currentNode.image == "FilterRowsSTA.png" && parentNode.STAURL) {
+							//if (parentNode.STAURL) {
+								// if (currentNode.image == "FilterRowsSTA.png" && parentNode.STAURL) {
 									ShowTableFilterRowsDialog(parentNode, currentNode);
-								}
-							} else {
-								if (currentNode.image == "FilterRowsTable.png") { //It comes from CSV, it hasn't got STAURL
-									ShowTableFilterRowsDialog(parentNode, currentNode);
-								}
-							}
+								//}
+							//} else {
+								//if (currentNode.image == "FilterRowsTable.png") { //It comes from CSV, it hasn't got STAURL
+									//ShowTableFilterRowsDialog(parentNode, currentNode);
+								//}
+							//}
 
 
 							document.getElementById("DialogFilterRows").showModal();

@@ -1993,6 +1993,6 @@ async function askForConformanceInOGCAPIFeatures() {
 
 	}
 	currentNode.STAOGCAPIconformance = conformanceArray; //Only keeps what I need for filter
-
+	networkNodes.update(currentNode);
 }
 
