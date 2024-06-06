@@ -4124,7 +4124,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 			addNecessaryVariablesToFilterRowsSTANode(node);
 
-			if (!currentNode.STAOGCAPIconformance){ //Not OGCAPIFeatures
+			if (currentNode.STAOGCAPIconformance.length>0){ //Create Filters if the API allows to filter its information
 				ShowFilterTable();
 			}
 		}
@@ -4274,7 +4274,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 					if (nodeFrom.OGCType){
 					if (nodeTo.image == "FilterRowsSTA.png"&& nodeFrom.OGCType=="OGCAPIitems"){
-						askForConformanceInOGCAPIFeatures()
+						askForConformanceInOGCAPIFeatures();//OCGAPICconformande will be in select node
 					}
 				}
 				//showInfoMessage("Selecting " + (nodeTo.image == "SelectColumnsSTA.png" ? "columns" : "rows") + " to STA...");
@@ -4505,18 +4505,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else if (currentNode.image == "FilterRowsSTA.png" || currentNode.image == "FilterRowsTable.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode) {
-							// if (parentNode.STAURL) {
-							// 	if (currentNode.image == "FilterRowsSTA.png" && parentNode.STAURL) {
-							// 		ShowTableFilterRowsDialog(parentNode, currentNode);
-							// 	}
-							// } else {
-							// 	if (currentNode.image == "FilterRowsTable.png") { //It comes from CSV, it hasn't got STAURL
-									ShowTableFilterRowsDialog(parentNode, currentNode);
-							// 	}
-							// }
-
-
-							document.getElementById("DialogFilterRows").showModal();
+						if (parentNode.STAOGCAPIconformance){
+							currentNode.STAOGCAPIconformance=parentNode.STAOGCAPIconformance;
+						}
+						ShowTableFilterRowsDialog(parentNode, currentNode);
+						document.getElementById("DialogFilterRows").showModal();
 						}
 				}
 				else if (currentNode.image == "SortBySTA.png") {
@@ -4679,6 +4672,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					{
 						networkNodes.add(node);
 						networkEdges.add([{ from: startingNodeContextId, to: newId, arrows: "from" }]);
+
 					}
 				}
 			}
