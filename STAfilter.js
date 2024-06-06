@@ -1291,6 +1291,10 @@ function ShowFilterTable() //This is who iniciates the table
 		createSelectorRowFilters(currentNode.STACounter[i]);
 	}
 }
+function showFilterTableWithoutFilters(){
+	document.getElementById("divSelectorRowsFilter").innerHTML = "<div>This collection doesn't allow to filter its data. You can filter the data preloaded by clickng the button below. Choose how many registers you want to filter in the previous SelectRow node. </div><button onclick='ShowFilterTable()'>See filtering box</button>";
+}
+
 //Select Nexus (And, or, not)
 function actualizeSelectChoice(boxName) { //When select nexus changes (put selected option in STAelementFilter)
 	var select = document.getElementById("selectAndOrNot_" + boxName);

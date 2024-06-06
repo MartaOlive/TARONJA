@@ -241,6 +241,9 @@
 			Select an element:
 			<span id="DialogSelectRowsTable">
 			</span>
+			<label id="SelectNumberOfRecordsSelectRowLabel">Number records to request:
+				<input type="text" id="SelectNumberOfRecordsSelectRow" size="6" maxlength="6" value="100"></input>
+			</label>
 			<div class="center">
 				<button value="default" onClick="GetSelectRow(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
@@ -2634,7 +2637,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		function GetSelectRow(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectRow").close();
-
+		
 			if (currentNode.STAURL)
 				var previousSTAURL=currentNode.STAURL;
 
@@ -2673,8 +2676,13 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					}
 				}
 			}
-			if (currentNode.STAURL)
-				currentNode.STAExpectedLength = parentNode.STAExpectedLength;
+			if (currentNode.STAURL){
+				// currentNode.STAExpectedLength = parentNode.STAExpectedLength;
+				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsSelectRow").value;
+				
+			}
+				
+
 			networkNodes.update(currentNode);
 			if (currentNode.STAURL)
 			{
@@ -2736,10 +2744,12 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			//updateinfoFilter
 			takeSelectInformation(currentNode.id);
 
-			if (currentNode.image == "FilterRowsSTA.png") {
-				GetFilterRowsSTA()
-			} else {
-				GetFilterRowsTable()
+			if (currentNode.image == "FilterRowsTable.png" ) { //import CSV
+				GetFilterRowsTable();
+			} else if (currentNode.STAOGCAPIconformance.includes("filter")) { //OGCAPIFeatures
+				GetFilterRowsTable();
+			}else if (currentNode.image == "FilterRowsTable.png"){ //STA
+				GetFilterRowsSTA();
 			}
 
 			showInfoMessage("Filtering STA rows...");
@@ -4124,8 +4134,10 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 			addNecessaryVariablesToFilterRowsSTANode(node);
 
-			if (currentNode.STAOGCAPIconformance.length>0){ //Create Filters if the API allows to filter its information
+			if (currentNode.STAOGCAPIconformance.includes("filter")){ //Create Filters if the API allows to filter its information
 				ShowFilterTable();
+			}else{
+				showFilterTableWithoutFilters();
 			}
 		}
 
