@@ -377,7 +377,7 @@
 				<label><input type="radio" id="DialogImportMeaningCSVSourceFile" name="DialogImportMeaningCSVSource" value="file" checked="checked" onClick="SelectImportMeaningCSVSource(event)">
 				Local CSVW file: <input type="file" id="DialogImportMeaningCSVSourceFileText" accept=".csvw,.json" onChange="ReadFileImportCSVW(event)"></input></label><br>
 				<label><input type="radio" id="DialogImportMeaningCSVSourceURL" name="DialogImportMeaningCSVSource" value="url" onClick='SelectImportMeaningFileSource(event, "CSV")'>
-				CSVW URL: <input type="text" size="70" id="DialogImportMeaningCSVSourceURLText" onChange="ReadURLImportCSVW(event)" disabled="disabled"></input> <button type="button" id="DialogImportMeaningCSVSourceURLButton" onClick="ReadURLImportCSVW(event)" disabled="disabled">Load</button></label><br>
+				CSVW URL: <input type="text" size="70" id="DialogImportMeaningCSVSourceURLInput" onChange="ReadURLImportCSVW(event)" disabled="disabled"></input> <button type="button" id="DialogImportMeaningCSVSourceURLButton" onClick="ReadURLImportCSVW(event)" disabled="disabled">Load</button></label><br>
 				<label><input type="radio" id="DialogImportMeaningCSVSourceAuto" name="DialogImportMeaningCSVSource" value="auto" onClick='SelectImportMeaningFileSource(event, "CSV")'>
 				Automatic retrieve of shared meaning</label><br>
 			</fieldset>
@@ -444,7 +444,7 @@
 				<label><input type="radio" id="DialogImportMeaningGeoJSONSourceFile" name="DialogImportMeaningGeoJSONSource" value="file" checked="checked" onClick='SelectImportMeaningFileSource(event, "GeoJSON");'>
 				Local GeoJSON schema file: <input type="file" id="DialogImportMeaningGeoJSONSourceFileText" accept=".json" onChange="ReadFileImportGeoJSONSchema(event)"></input></label><br>
 				<label><input type="radio" id="DialogImportMeaningGeoJSONSourceURL" name="DialogImportMeaningGeoJSONSource" value="url" onClick='SelectImportMeaningFileSource(event, "GeoJSON")'>
-				GeoJSON schema URL: <input type="text" size="70" id="DialogImportMeaningGeoJSONSourceURLText" onChange="ReadURLImportGeoJSONSchema(event)" disabled="disabled"></input> <button type="button" id="DialogImportMeaningGeoJSONSourceURLButton" onClick="ReadURLImportGeoJSONSchema(event)" disabled="disabled">Load</button></label><br>
+				GeoJSON schema URL: <input type="text" size="70" id="DialogImportMeaningGeoJSONSourceURLInput" onChange="ReadURLImportGeoJSONSchema(event)" disabled="disabled"></input> <button type="button" id="DialogImportMeaningGeoJSONSourceURLButton" onClick="ReadURLImportGeoJSONSchema(event)" disabled="disabled">Load</button></label><br>
 				<label><input type="radio" id="DialogImportMeaningGeoJSONSourceAuto" name="DialogImportMeaningGeoJSONSource" value="auto" onClick='SelectImportMeaningFileSource(event, "GeoJSON");'>
 				Automatic retrieve of shared meaning</label><br>
 			</fieldset>
@@ -1416,15 +1416,15 @@
 		function SelectImportMeaningFileSource(event, type) {
 			if (document.getElementById("DialogImportMeaning"+type+"SourceFile").checked) {
 				document.getElementById("DialogImportMeaning"+type+"SourceFileText").disabled=false;
-				document.getElementById("DialogImportMeaning"+type+"SourceURLText").disabled=true;
+				document.getElementById("DialogImportMeaning"+type+"SourceURLInput").disabled=true;
 				document.getElementById("DialogImportMeaning"+type+"SourceURLButton").disabled=true;
 			} else if (document.getElementById("DialogImportMeaning"+type+"SourceURL").checked) {
 				document.getElementById("DialogImportMeaning"+type+"SourceFileText").disabled=true;
-				document.getElementById("DialogImportMeaning"+type+"SourceURLText").disabled=false;
+				document.getElementById("DialogImportMeaning"+type+"SourceURLInput").disabled=false;
 				document.getElementById("DialogImportMeaning"+type+"SourceURLButton").disabled=false;
 			} else /*if (document.getElementById("DialogImportMeaning"+type+"SourceAuto").checked)*/ {
 				document.getElementById("DialogImportMeaning"+type+"SourceFileText").disabled=true;
-				document.getElementById("DialogImportMeaning"+type+"SourceURLText").disabled=true;
+				document.getElementById("DialogImportMeaning"+type+"SourceURLInput").disabled=true;
 				document.getElementById("DialogImportMeaning"+type+"SourceURLButton").disabled=true;
 			}
 		}
@@ -1440,8 +1440,8 @@
 			event.preventDefault(); // We don't want to submit this form
 			if (document.getElementById("DialogImportMeaning"+type+"SourceAuto").checked && 
 				document.getElementById("DialogImport"+type+"SourceURL").checked &&
-				document.getElementById("DialogImport"+type+"SourceURLText").value) {
-				var urlCSV=document.getElementById("DialogImport"+type+"SourceURLText").value
+				document.getElementById("DialogImport"+type+"SourceURLInput").value) {
+				var urlCSV=document.getElementById("DialogImport"+type+"SourceURLInput").value
 				GUFLoadLastPreviousReproducibleUsageCode(getFileName(urlCSV),
 					getAddressPath(getAbsoluteURL(urlCSV)), 
 					{ru_platform: "https://github.com/joanma747/TAPIS", 
@@ -1488,7 +1488,7 @@
 		}
 
 		function ReadURLImportCSVW() {
-			HTTPJSONData(document.getElementById("DialogImportMeaningCSVSourceURLText").value).then(
+			HTTPJSONData(document.getElementById("DialogImportMeaningCSVSourceURLInput").value).then(
 						function(value) { 
 							showInfoMessage('Download CSVW completed.'); 
 							TransformTextCSVWToDataAttributes(value.text);
@@ -1530,7 +1530,7 @@
 		}
 
 		function ReadURLImportGeoJSONSchema() {
-			HTTPJSONData(document.getElementById("DialogImportMeaningGeoJSONSourceURLText").value).then(
+			HTTPJSONData(document.getElementById("DialogImportMeaningGeoJSONSourceURLInput").value).then(
 						function(value) { 
 							showInfoMessage('Download GeoJSON schema completed.'); 
 							currentNode.STAdataAttributes=TransformTextGeoJSONSchemaToDataAttributes(value.text);
@@ -2746,10 +2746,12 @@ async function requestAndRefreshCountResults(currentNode, period) {
 
 			if (currentNode.image == "FilterRowsTable.png" ) { //import CSV
 				GetFilterRowsTable();
-			} else if (currentNode.STAOGCAPIconformance.includes("filter")) { //OGCAPIFeatures
+			} else if (!currentNode.STAOGCAPIconformance.includes("filter")) { //OGCAPIFeatures
 				GetFilterRowsTable();
 			}else if (currentNode.image == "FilterRowsTable.png"){ //STA
 				GetFilterRowsSTA();
+			}else if (currentNode.STAOGCAPIconformance.includes("filter")){
+				//GetFilterRowsOGCAPIFeatures -> Mirar el tipus de filtre i tal
 			}
 
 			showInfoMessage("Filtering STA rows...");
