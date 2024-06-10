@@ -1793,6 +1793,7 @@
 
 			networkNodes.update(currentNode);	//https://visjs.github.io/vis-data/data/dataset.html#Data_Manipulation
 
+			askForConformanceInOGCAPIFeatures();//OCGAPICconformande
 			//if childen nodes have also STAURL
 			UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			LoadJSONNodeSTAData(currentNode);
@@ -2690,6 +2691,9 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 				LoadJSONNodeSTAData(currentNode);
 			}
+			// if (currentNode.OGCType =="OGCAPIitems"){
+			// 	askForConformanceInOGCAPIFeatures();//OCGAPICconformande
+			// }
 		}
 		function GetFilterRowsSTA() {
 				var previousSTAURL = currentNode.STAURL;
@@ -2756,8 +2760,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 
 			showInfoMessage("Filtering STA rows...");
 			networkNodes.update(currentNode);
-
-
 		}
 
 		function getGeospatialFilter(node, parentNode){
@@ -4134,6 +4136,10 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				SelectNumberOfRecordsFilterRows.style.display="inline-block";
 				SelectNumberOfRecordsFilterRowsLabel.style.display="inline-block";
 			}
+			if (currentNode.STAExpectedLength){ //"write" number of data required previously 
+				document.getElementById('SelectNumberOfRecordsFilterRows').value= currentNode.STAExpectedLength
+			}
+			
 			addNecessaryVariablesToFilterRowsSTANode(node);
 
 			
@@ -4293,7 +4299,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 					if (nodeFrom.OGCType){
 					if (nodeTo.image == "FilterRowsSTA.png"&& nodeFrom.OGCType=="OGCAPIitems"){
-						askForConformanceInOGCAPIFeatures();//OCGAPICconformande will be in select node
+						//askForConformanceInOGCAPIFeatures();//OCGAPICconformande will be in select node
 					}
 				}
 				//showInfoMessage("Selecting " + (nodeTo.image == "SelectColumnsSTA.png" ? "columns" : "rows") + " to STA...");
