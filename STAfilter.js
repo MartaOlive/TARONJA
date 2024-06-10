@@ -1292,7 +1292,7 @@ function ShowFilterTable() //This is who iniciates the table
 	}
 }
 function showFilterTableWithoutFilters(){
-	document.getElementById("divSelectorRowsFilter").innerHTML = "<div>This collection doesn't allow to filter its data. You can filter the data preloaded by clickng the button below. Choose how many registers you want to filter in the previous SelectRow node. </div><button onclick='ShowFilterTable()'>See filtering box</button>";
+	document.getElementById("divSelectorRowsFilter").innerHTML = "<div>This collection doesn't allow to filter its data. You can filter the data preloaded by clickng the button below. Choose how many registers you want to filter in the box below. </div><button onclick='ShowFilterTable()'>See filtering box</button>";
 }
 
 //Select Nexus (And, or, not)
@@ -1536,7 +1536,7 @@ function takeSelectInformation() {
 		arrayInfo = [];
 		arrayInfo.push(counter[i]); //they are out of order, it is necessary to put each info in its place when painting the select
 		if (optionsRow != null) {
-			if (currentNode.image == "FilterRowsSTA.png") {
+			if (currentNode.image == "FilterRowsSTA.png" && currentNode.STAOGCAPIconformance.length!=0) {
 				inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + counter[i]);
 				inputForEntityFilterRowValue = inputForEntityFilterRow.value;
 				selectorProperty = document.getElementById("selectorProperty_" + counter[i]);
@@ -1945,9 +1945,9 @@ function applyEvalAndFilterData() {
 		}
 
 		//it is a date?
-		if (eval(new Date(dataValue))) {
-			if (dataValue.charAt(dataValue.length - 1) == "Z" && sentenceToEvalInSTAtable.includes("getHours")) { //Erase Z in date to obtain the correct hour
-				console.log("z");
+		var ItIsADate=new Date(dataValue);
+		if (eval(ItIsADate)) {
+			if (dataValue[dataValue.length - 1] == "Z" && sentenceToEvalInSTAtable.includes("getHours")) { //Erase Z in date to obtain the correct hour
 				dataValueWithoutZ = dataValue.slice(0, -1);
 				sentenceToEvalInSTAtable = sentenceToEvalInSTAtable.replaceAll(dataValue, dataValueWithoutZ.toString());
 			}

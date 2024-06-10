@@ -204,7 +204,7 @@
 
 	<dialog id="DialogSelectNRecords">
 		<form>
-			<label>Number records to request (>100):
+			<label>Number records to request:
 				<input type="text" id="SelectNumberOfRecords" size="6" maxlength="6" value="100"></input>
 			</label>
 			<div class="center">
@@ -241,9 +241,6 @@
 			Select an element:
 			<span id="DialogSelectRowsTable">
 			</span>
-			<label id="SelectNumberOfRecordsSelectRowLabel">Number records to request:
-				<input type="text" id="SelectNumberOfRecordsSelectRow" size="6" maxlength="6" value="100"></input>
-			</label>
 			<div class="center">
 				<button value="default" onClick="GetSelectRow(event)">OK</button>
 				<button value="cancel" formmethod="dialog">Cancel</button>
@@ -298,7 +295,6 @@
 				<span id="ButtonsContextMenuObjects"></span><br>
 				<button onclick='removeCircularImage(event, "DialogContextMenu")'>Remove</button>
 				<button onclick='renameCircularImage(event, "DialogContextMenu")'>Rename</button><br>
-				<button onclick='giveMeNetworkInformation(event, "DialogContextMenu")'>Network Info</button><br><br>
 			</p>
 			<div class="center">
 				<button value="cancel" onClick="startingNodeContextId=null;" formmethod="dialog">Cancel</button>
@@ -827,34 +823,6 @@
 			if (getCon.error)
 				return getCon.error;
 			return null;
-
-
-			// if (idNode < 0 && node.image != "FilterRowsTable.png" && parentNode.image != "FilterRowsTable.png" && node.image != "SelectRowTable.png" && parentNode.image != "SelectRowTable.png" ) { //If you add a view table after "FilterRowsTable" too
-			// 		var entity = getSTAURLLastEntity(parentNode.STAURL);
-			// 		var staEntitiesList = Object.keys(STAEntities);
-			// 		var isPlural = false;
-			// 		for (var i = 0; i < staEntitiesList.length; i++) {
-			// 			if (staEntitiesList[i] == entity) {
-			// 				isPlural = true;
-			// 				break;
-			// 			}
-			// 		}
-			// 		if (node.image == "FilterRowsSTA.png" && isPlural == false) {
-			// 			if (parentNode.OGCType){
-			// 				if (parentNode.OGCType!= "OGCAPIitems"){ //Allow to conect SelectRow originating from OGC API
-			// 					return "Your result is already one value, you can not filter it more"
-			// 				}
-			// 			}
-						
-			// 		} else {
-			// 			return null;
-			// 		}
-			// 	}
-			// 	if (node.image == "FilterRowsSTA.png" && !parentNode.OGCType) {
-			// 		var getCon = getConnectionSTAEntity(parentNode, node)
-			// 		if (getCon.error)
-			// 			return getCon.error;
-			// 	}
 		}
 
 
@@ -2637,7 +2605,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		function GetSelectRow(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectRow").close();
-		
+
 			if (currentNode.STAURL)
 				var previousSTAURL=currentNode.STAURL;
 
@@ -2676,13 +2644,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					}
 				}
 			}
-			if (currentNode.STAURL){
-				// currentNode.STAExpectedLength = parentNode.STAExpectedLength;
-				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsSelectRow").value;
-				
-			}
-				
-
+			if (currentNode.STAURL)
+				currentNode.STAExpectedLength = parentNode.STAExpectedLength;
 			networkNodes.update(currentNode);
 			if (currentNode.STAURL)
 			{
@@ -2726,7 +2689,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				currentNode.STAURL = currentNode.STAUrlAPI;
 
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
-				LoadJSONNodeSTAData(currentNode);
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 			}
 		function GetFilterRowsTable() {
@@ -2735,7 +2697,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			currentNode.STAtable = "";
 			readInformationRowFilterTable(currentNode.STAelementFilter, "no", "no"); //And apply filter
 			applyEvalAndFilterData();
-			UpdateChildenTable(currentNode);
+				
 				
 		}
 		function GetFilterRows(event) {
@@ -2744,19 +2706,21 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			//updateinfoFilter
 			takeSelectInformation(currentNode.id);
 
-			if (currentNode.image == "FilterRowsTable.png" ) { //import CSV
-				GetFilterRowsTable();
-			} else if (!currentNode.STAOGCAPIconformance.includes("filter")) { //OGCAPIFeatures
-				GetFilterRowsTable();
-			}else if (currentNode.image == "FilterRowsTable.png"){ //STA
-				GetFilterRowsSTA();
-			}else if (currentNode.STAOGCAPIconformance.includes("filter")){
-				//GetFilterRowsOGCAPIFeatures -> Mirar el tipus de filtre i tal
+			if (currentNode.image == "FilterRowsSTA.png") {
+				GetFilterRowsSTA()
+			} else {
+				GetFilterRowsTable()
 			}
 
 			showInfoMessage("Filtering STA rows...");
 			networkNodes.update(currentNode);
 
+			if (currentNode.image == "FilterRowsSTA.png"){ //STA
+				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
+			}else{
+				UpdateChildenTable(currentNode);
+			}
+			
 
 		}
 
@@ -4136,16 +4100,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 			addNecessaryVariablesToFilterRowsSTANode(node);
 
-			
-			if (currentNode.image=="FilterRowsSTA.png" && currentNode.STAOGCAPIconformance){
-				if (currentNode.STAOGCAPIconformance.includes("filter")){ //Create Filters if the API allows to filter its information
-					ShowFilterTable();
-				}else{
-				showFilterTableWithoutFilters(); //OGCAPIFeatures without filter option		
-				}
-			}else{
-				ShowFilterTable(); //STA and CSV 
-			}
+			ShowFilterTable();
 		}
 
 		function SeparatePropertyIfNeeded(record, property, baseName)
@@ -4254,7 +4209,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			{
 				alert("Incompatible node. " + errorText + ". It has not been added.");
 				return null;
-				//return false?? Crec que amb el null no impedeix que uneixi el node que no volem que uneixi
 			}
 			if (nodeFrom.STAURL && IdOfSTAEntity(nodeTo) != -1) {
 				if (nodeFrom.image=="ogc.png")
@@ -4291,11 +4245,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				networkNodes.update(nodeTo);
 				if (calUnir)
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
-					if (nodeFrom.OGCType){
-					if (nodeTo.image == "FilterRowsSTA.png"&& nodeFrom.OGCType=="OGCAPIitems"){
-						askForConformanceInOGCAPIFeatures();//OCGAPICconformande will be in select node
-					}
-				}
 				//showInfoMessage("Selecting " + (nodeTo.image == "SelectColumnsSTA.png" ? "columns" : "rows") + " to STA...");
 				//LoadJSONNodeSTAData(nodeTo);
 				return true;
@@ -4524,11 +4473,18 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else if (currentNode.image == "FilterRowsSTA.png" || currentNode.image == "FilterRowsTable.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode) {
-						if (parentNode.STAOGCAPIconformance){
-							currentNode.STAOGCAPIconformance=parentNode.STAOGCAPIconformance;
-						}
-						ShowTableFilterRowsDialog(parentNode, currentNode);
-						document.getElementById("DialogFilterRows").showModal();
+							if (parentNode.STAURL) {
+								if (currentNode.image == "FilterRowsSTA.png" && parentNode.STAURL) {
+									ShowTableFilterRowsDialog(parentNode, currentNode);
+								}
+							} else {
+								if (currentNode.image == "FilterRowsTable.png") { //It comes from CSV, it hasn't got STAURL
+									ShowTableFilterRowsDialog(parentNode, currentNode);
+								}
+							}
+
+
+							document.getElementById("DialogFilterRows").showModal();
 						}
 				}
 				else if (currentNode.image == "SortBySTA.png") {
@@ -4691,7 +4647,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					{
 						networkNodes.add(node);
 						networkEdges.add([{ from: startingNodeContextId, to: newId, arrows: "from" }]);
-
 					}
 				}
 			}
@@ -4851,12 +4806,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					});
 				}
 			}
-		}
-		function giveMeNetworkInformation(event) {
-				if (event)
-					event.preventDefault(); // We don't want to submit this form
-				document.getElementById("DialogSelectColumns").close();
-				console.log(networkNodes);
 		}
 	</script>
 
