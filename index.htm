@@ -2683,7 +2683,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				
 			}
 				
-
+			askForCollectionQueryables();
 			networkNodes.update(currentNode);
 			if (currentNode.STAURL)
 			{
@@ -2691,9 +2691,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
 				LoadJSONNodeSTAData(currentNode);
 			}
-			// if (currentNode.OGCType =="OGCAPIitems"){
-			// 	askForConformanceInOGCAPIFeatures();//OCGAPICconformande
-			// }
 		}
 		function GetFilterRowsSTA() {
 				var previousSTAURL = currentNode.STAURL;
@@ -4520,6 +4517,9 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else if (currentNode.image == "SelectRowSTA.png" || currentNode.image == "SelectRowTable.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode) {
+						if (parentNode.STAOGCAPIconformance){
+							currentNode.STAOGCAPIconformance=parentNode.STAOGCAPIconformance;
+						}
 						if ((currentNode.image == "SelectRowSTA.png" && parentNode.STAURL) ||
 						    currentNode.image == "SelectRowTable.png") {
 							ShowTableSelectRowDialog(parentNode, currentNode);

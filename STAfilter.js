@@ -218,8 +218,11 @@ async function loadAPIDataWithReturn(url, reasonForData) { // Ask API to , "FIll
 		data = await response.json();
 		if (reasonForData == "EntitiesFilterRow") {
 			data = (typeof data.value !== "undefined") ? data.value : [data];
-		} else if (reasonForData == "OGCAPIFeatures") {
+		} else if (reasonForData == "OGCAPIConformance") {
 			data = (typeof data !== "undefined") ? data["conformsTo"] : [data];
+		}else if (reasonForData == "OGCAPIqueryables"){
+			//data = (typeof data !== "undefined") ? data["conformsTo"] : [data];
+		console.log(data["properties"])
 		}
 		else {
 			data = (typeof data.value !== "undefined") ? data["@iot.count"] : [data];
@@ -1924,8 +1927,7 @@ async function askForConformanceInOGCAPIFeatures() {
 	var index = url.indexOf("/collection");
 	url = url.slice(0, index);
 	url += "/conformance?f=json";
-	console.log(url);
-	var conformanceInformation = await loadAPIDataWithReturn(url, "OGCAPIFeatures"); //ask for conformance (what can I do with this API)
+	var conformanceInformation = await loadAPIDataWithReturn(url, "OGCAPIConformance"); //ask for conformance (what can I do with this API)
 	var conformanceArray = []
 	for (var i = 0; i < conformanceInformation.length; i++) {
 		for (var a = 0; a < filterInConformance.length; a++) {
@@ -1939,5 +1941,15 @@ async function askForConformanceInOGCAPIFeatures() {
 
 	}
 	currentNode.STAOGCAPIconformance = conformanceArray; //Only keeps what I need for filter
+	networkNodes.update(currentNode);
+}
+
+async function askForCollectionQueryables(){
+	var url = currentNode.STAURL;
+	var index = url.indexOf("/items");
+	url = url.slice(0, index);
+	url += "/queryables?f=json";
+	var queryablesInformation = await loadAPIDataWithReturn(url, "OGCAPIqueryables");
+	currentNode.STAOGCAPIqueryable = queryablesInformation;
 	networkNodes.update(currentNode);
 }
