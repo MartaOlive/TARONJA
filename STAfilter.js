@@ -622,23 +622,9 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 		}
 	}
 	if (wichinputText == "simple") {
-		if (value1.includes("-") == true) {//inputText1
-			var value1Array = value1.split("-");
-			if (value1.includes("/")) {
-				if (value1Array.length == 5) {
-					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
-						typeOfValues = "date";
-					}
-				}
-			} else {
-				if (value1Array.length == 3) {
-					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
-						typeOfValues = "date";
-					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
-						typeOfValues = "date";
-					}
-				}
-			}
+
+		if (eval(new Date (value1))){
+			typeOfValues = "date"
 		}
 		if (typeOfValues != "date") {
 			if (Number.isNaN(parseInt(value1)) != true) {
@@ -666,41 +652,11 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 		var inputText1 = "no";
 		var inputText2 = "no";
 		//is date
-		if (value1.includes("-") == true) {//inputText1
-			var value1Array = value1.split("-");
-			if (value1.includes("/")) {
-				if (value1Array.length == 5) {
-					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
-						inputText1 = "date";
-					}
-				}
-			} else {
-				if (value1Array.length == 3) {
-					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
-						inputText1 = "date";
-					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
-						typeOfValues = "date";
-					}
-				}
-			}
-		}
-		if (value2.includes("-") == true) {//inputText1
-			var value2Array = value2.split("-");
-			if (value2.includes("/")) {
-				if (value2Array.length == 5) {
-					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
-						inputText2 = "date";
-					}
-				}
-			} else {
-				if (value2Array.length == 3) {
-					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
-						inputText2 = "date";
-					} else if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2].length == 2 && !isNaN(parseInt(value2Array[0])) && !isNaN(parseInt(value2Array[1])) && !isNaN(parseInt(value2Array[2]))) { //only date without Time
-						typeOfValues = "date";
-					}
-				}
-			}
+
+		if (eval(new Date (value1))){
+			if (eval(new Date (value2))){
+				typeOfValues = "date"
+			}		
 		}
 		if (inputText1 != "date") {
 			if (Number.isNaN(parseInt(value1)) != true) { //numero
