@@ -220,9 +220,8 @@ async function loadAPIDataWithReturn(url, reasonForData) { // Ask API to , "FIll
 			data = (typeof data.value !== "undefined") ? data.value : [data];
 		} else if (reasonForData == "OGCAPIConformance") {
 			data = (typeof data !== "undefined") ? data["conformsTo"] : [data];
-		}else if (reasonForData == "OGCAPIqueryables"){
-			//data = (typeof data !== "undefined") ? data["conformsTo"] : [data];
-		console.log(data["properties"])
+		} else if (reasonForData == "OGCAPIqueryables") {
+			data = (typeof data !== "undefined") ? data["properties"] : [data];
 		}
 		else {
 			data = (typeof data.value !== "undefined") ? data["@iot.count"] : [data];
@@ -474,7 +473,15 @@ const unitOfMeasurementExtension = ["unitOfMeasurement/name", "unitOfMeasurement
 const featureExtension = ["feature/", "feature/type", "feature/coordinates/0", "feature/coordinates/1", "feature/type", "feature/geometry/type", "feature/geometry/coordinates/0", "feature/geometry/coordinates/1", "feature/properties/"] //featureOfInterest
 const locationExtension = ["location/", "location/type", "location/properties/", "location/geometry/type", "location/geometry/coordinates", "location/coordinates"]
 
+
 function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: Entity obtained in input
+	if (currentNode.STAOGCAPIconformance) {
+		fillPropertySelectorOGCAPIFeatures(); //OGCAPIFeatures data with filter properties 
+	} else {
+		fillProperySelectorSTA(number, lastEntity, selectorInfo); //STA data
+	}
+}
+function fillProperySelectorSTA(number, lastEntity, selectorInfo) {
 	var selectProperty = document.getElementById("selectorProperty_" + number);
 	selectProperty.innerHTML = "";
 
@@ -551,9 +558,12 @@ function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: 
 		selectProperty.appendChild(option);
 	}
 	if (selectorInfo && selectorInfo.length != 0 && selectorInfo[0][2].length == 2) {//selectorInfo[0][2] : If inputForPropery is open, the element 0 in the array is the select and the second is the input
-		inputForProperty.value = selectorInfo[0][2][1];
+		document.getElementById("inputForProperty_" + number).value = selectorInfo[0][2][1];
 	}
 }
+
+
+
 //condition select
 function createConditionSelectInFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
@@ -626,7 +636,7 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 	}
 	if (wichinputText == "simple") {
 
-		if (eval(new Date (value1))){
+		if (eval(new Date(value1))) {
 			typeOfValues = "date"
 		}
 		if (typeOfValues != "date") {
@@ -656,10 +666,10 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 		var inputText2 = "no";
 		//is date
 
-		if (eval(new Date (value1))){
-			if (eval(new Date (value2))){
+		if (eval(new Date(value1))) {
+			if (eval(new Date(value2))) {
 				typeOfValues = "date"
-			}		
+			}
 		}
 		if (inputText1 != "date") {
 			if (Number.isNaN(parseInt(value1)) != true) { //numero
@@ -1250,7 +1260,7 @@ function ShowFilterTable() //This is who iniciates the table
 		createSelectorRowFilters(currentNode.STACounter[i]);
 	}
 }
-function showFilterTableWithoutFilters(){
+function showFilterTableWithoutFilters() {
 	document.getElementById("divSelectorRowsFilter").innerHTML = "<div>This collection doesn't allow to filter its data. You can filter the data preloaded by clickng the button below. Choose how many registers you want to filter in the box below. </div><button onclick='ShowFilterTable()'>See filtering box</button>";
 }
 
@@ -1494,8 +1504,10 @@ function takeSelectInformation() {
 		optionsRow = document.getElementById("optionsRow_" + counter[i]);
 		arrayInfo = [];
 		arrayInfo.push(counter[i]); //they are out of order, it is necessary to put each info in its place when painting the select
+	
 		if (optionsRow != null) {
-			if (currentNode.image == "FilterRowsSTA.png" && currentNode.STAOGCAPIconformance.length!=0) {
+			if (currentNode.image == "FilterRowsSTA.png" && !currentNode.STAOGCAPIconformance) {
+
 				inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + counter[i]);
 				inputForEntityFilterRowValue = inputForEntityFilterRow.value;
 				selectorProperty = document.getElementById("selectorProperty_" + counter[i]);
@@ -1506,7 +1518,6 @@ function takeSelectInformation() {
 					selectorPropertyValue.push(inputProperty.value);
 				}
 				arrayInfo.push(inputForEntityFilterRowValue, selectorPropertyValue);
-
 			} else { //CSV
 				var selectorColumns = document.getElementById("selectorColumns_" + counter[i]);
 				var selectorColumnsSelected = selectorColumns.options[selectorColumns.selectedIndex].value;
@@ -1904,7 +1915,7 @@ function applyEvalAndFilterData() {
 		}
 
 		//it is a date?
-		var ItIsADate=new Date(dataValue);
+		var ItIsADate = new Date(dataValue);
 		if (eval(ItIsADate)) {
 			if (dataValue[dataValue.length - 1] == "Z" && sentenceToEvalInSTAtable.includes("getHours")) { //Erase Z in date to obtain the correct hour
 				dataValueWithoutZ = dataValue.slice(0, -1);
@@ -1944,7 +1955,7 @@ async function askForConformanceInOGCAPIFeatures() {
 	networkNodes.update(currentNode);
 }
 
-async function askForCollectionQueryables(){
+async function askForCollectionQueryables() {
 	var url = currentNode.STAURL;
 	var index = url.indexOf("/items");
 	url = url.slice(0, index);
