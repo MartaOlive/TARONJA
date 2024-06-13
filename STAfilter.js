@@ -160,7 +160,7 @@ function createColumsSelectorFilterRows(selectorInfo, count) {
 function fillColumsSelectorFilterRows(selectorInfo, count) { //2 selectors
 
 	var selectorColumns = document.getElementById("selectorColumns_" + count);
-	var columns = Object.keys(currentNode.STAdata[0]);
+
 
 	//First option (-- choose a field--)
 	var option = document.createElement("option"); //First option
@@ -168,23 +168,36 @@ function fillColumsSelectorFilterRows(selectorInfo, count) { //2 selectors
 	option.innerHTML = "-- choose a field--";
 	selectorColumns.appendChild(option);
 	//Real options 
-
-	//Depen si es CSV o OGCAPIFEATURES
+	//Which is the origin of the information to fill the selector
+	var queryableOrDataAlreadyCharged;
 	if (currentNode.STAOGCAPIqueryable) {
-		var queryables=Object.keys(currentNode.STAOGCAPIqueryable);
-		for (var i = 0; i < queryables.length; i++) {
-			var option = document.createElement("option");
-			option.setAttribute("value", queryables[i]);
-			option.innerHTML = queryables[i];
-			if (selectorInfo.length != 0) {
-				if (selectorInfo[0][1] == queryables[i]) {
-					option.setAttribute("selected", true);
-				}
-			}
-			selectorColumns.appendChild(option);
+		if (currentNode.STAOGCAPIqueryable="no") {
+			queryableOrDataAlreadyCharged = "dataCharged"; //OGCAPIFeatures not queryable
+		} else {
+			queryableOrDataAlreadyCharged = "queryableData"; // OGCAPIFeatures queryable
 		}
 	} else {
+		queryableOrDataAlreadyCharged = "dataCharged"; //CSV
+	}
 
+	if (queryableOrDataAlreadyCharged == "queryableData") {
+		if (currentNode.STAOGCAPIqueryable.length != 0) {
+			var queryables = Object.keys(currentNode.STAOGCAPIqueryable);
+			for (var i = 0; i < queryables.length; i++) {
+				var option = document.createElement("option");
+				option.setAttribute("value", queryables[i]);
+				option.innerHTML = queryables[i];
+				if (selectorInfo.length != 0) {
+					if (selectorInfo[0][1] == queryables[i]) {
+						option.setAttribute("selected", true);
+					}
+				}
+				selectorColumns.appendChild(option);
+			}
+		}
+
+	} else { //data charged (currentNode.STAdata)
+		var columns = Object.keys(currentNode.STAdata[0]);
 		for (var i = 0; i < columns.length; i++) {
 			option = document.createElement("option"); //First option
 			option.setAttribute("value", columns[i]);
@@ -198,8 +211,6 @@ function fillColumsSelectorFilterRows(selectorInfo, count) { //2 selectors
 			selectorColumns.appendChild(option);
 		}
 	}
-
-
 }
 
 function obtainValuesFromSTAdataInCSV(column) {
@@ -1965,6 +1976,12 @@ async function askForCollectionQueryables() {
 	url = url.slice(0, index);
 	url += "/queryables?f=json";
 	var queryablesInformation = await loadAPIDataWithReturn(url, "OGCAPIqueryables");
-	currentNode.STAOGCAPIqueryable = queryablesInformation;
+	if (queryablesInformation.length!=undefined){
+			currentNode.STAOGCAPIqueryable = queryablesInformation;
+	}else{
+		currentNode.STAOGCAPIqueryable="no";
+	}
+
+
 	networkNodes.update(currentNode);
 }
