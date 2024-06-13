@@ -4520,6 +4520,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						if (parentNode.STAOGCAPIconformance){
 							currentNode.STAOGCAPIconformance=parentNode.STAOGCAPIconformance;
 						}
+						
 						if ((currentNode.image == "SelectRowSTA.png" && parentNode.STAURL) ||
 						    currentNode.image == "SelectRowTable.png") {
 							ShowTableSelectRowDialog(parentNode, currentNode);
@@ -4532,6 +4533,9 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					if (parentNode) {
 						if (parentNode.STAOGCAPIconformance){
 							currentNode.STAOGCAPIconformance=parentNode.STAOGCAPIconformance;
+						}
+						if (parentNode.STAOGCAPIqueryable){
+							currentNode.STAOGCAPIqueryable=parentNode.STAOGCAPIqueryable;
 						}
 						ShowTableFilterRowsDialog(parentNode, currentNode);
 						document.getElementById("DialogFilterRows").showModal();

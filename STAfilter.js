@@ -120,25 +120,28 @@ function createSelectorRowFilters(number) {
 		}
 	}
 	var parentNode = networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
+	var dialogType;
+
 	if (currentNodeLabel == "FilterRowsSTA.png") {
-		if (parentNode[0]["OGCType"]) {
+		if (parentNode[0]["OGCType"]) { //OGCAPIFeatures
 			if (parentNode[0]["OGCType"] == "OGCAPIitems") {
-				createColumsSelectorFilterRows(selectorInfo, number);
-				createConditionSelectInFilterRows(selectorInfo, number);
-				createValueSelectInFilterRows(selectorInfo, number, "Table");
+				dialogType = "withoutEntities_3selectors"; //columns, condition, values
 			}
 		} else { //FilterRowSTA from STA API
-			createEntitySelectorInFilterRows(selectorInfo, number);
-			createPropertySelectInFilterRows(selectorInfo, number);
-			createConditionSelectInFilterRows(selectorInfo, number);
-			createValueSelectInFilterRows(selectorInfo, number, "STA");
+			dialogType = "withEntities_4selectors"; //entities, properties,condition,values
 		}
 	} else { //CSV
-		createColumsSelectorFilterRows(selectorInfo, number);
-		createConditionSelectInFilterRows(selectorInfo, number);
-		createValueSelectInFilterRows(selectorInfo, number, "Table");
-
+		dialogType = "withoutEntities_3selectors"; //columns, condition, values
 	}
+
+	if (dialogType == "withEntities_4selectors") {
+		createEntitySelectorInFilterRows(selectorInfo, number);
+		createPropertySelectInFilterRows(selectorInfo, number);
+	} else {
+		createColumsSelectorFilterRows(selectorInfo, number);
+	}
+	createConditionSelectInFilterRows(selectorInfo, number);
+	createValueSelectInFilterRows(selectorInfo, number);
 }
 
 function createColumsSelectorFilterRows(selectorInfo, count) {
@@ -154,7 +157,8 @@ function createColumsSelectorFilterRows(selectorInfo, count) {
 
 }
 
-function fillColumsSelectorFilterRows(selectorInfo, count) {
+function fillColumsSelectorFilterRows(selectorInfo, count) { //2 selectors
+
 	var selectorColumns = document.getElementById("selectorColumns_" + count);
 	var columns = Object.keys(currentNode.STAdata[0]);
 
@@ -163,20 +167,39 @@ function fillColumsSelectorFilterRows(selectorInfo, count) {
 	option.setAttribute("value", "-- choose a field--");
 	option.innerHTML = "-- choose a field--";
 	selectorColumns.appendChild(option);
-
 	//Real options 
-	for (var i = 0; i < columns.length; i++) {
-		option = document.createElement("option"); //First option
-		option.setAttribute("value", columns[i]);
-		option.innerHTML = columns[i];
 
-		if (selectorInfo.length != 0) {
-			if (selectorInfo[0][1] == columns[i]) {
-				option.setAttribute("selected", true);
+	//Depen si es CSV o OGCAPIFEATURES
+	if (currentNode.STAOGCAPIqueryable) {
+		var queryables=Object.keys(currentNode.STAOGCAPIqueryable);
+		for (var i = 0; i < queryables.length; i++) {
+			var option = document.createElement("option");
+			option.setAttribute("value", queryables[i]);
+			option.innerHTML = queryables[i];
+			if (selectorInfo.length != 0) {
+				if (selectorInfo[0][1] == queryables[i]) {
+					option.setAttribute("selected", true);
+				}
 			}
+			selectorColumns.appendChild(option);
 		}
-		selectorColumns.appendChild(option);
+	} else {
+
+		for (var i = 0; i < columns.length; i++) {
+			option = document.createElement("option"); //First option
+			option.setAttribute("value", columns[i]);
+			option.innerHTML = columns[i];
+
+			if (selectorInfo.length != 0) {
+				if (selectorInfo[0][1] == columns[i]) {
+					option.setAttribute("selected", true);
+				}
+			}
+			selectorColumns.appendChild(option);
+		}
 	}
+
+
 }
 
 function obtainValuesFromSTAdataInCSV(column) {
@@ -475,13 +498,6 @@ const locationExtension = ["location/", "location/type", "location/properties/",
 
 
 function fillPropertySelector(number, lastEntity, selectorInfo) { //lastEntity: Entity obtained in input
-	if (currentNode.STAOGCAPIconformance) {
-		fillPropertySelectorOGCAPIFeatures(); //OGCAPIFeatures data with filter properties 
-	} else {
-		fillProperySelectorSTA(number, lastEntity, selectorInfo); //STA data
-	}
-}
-function fillProperySelectorSTA(number, lastEntity, selectorInfo) {
 	var selectProperty = document.getElementById("selectorProperty_" + number);
 	selectProperty.innerHTML = "";
 
@@ -540,10 +556,6 @@ function fillProperySelectorSTA(number, lastEntity, selectorInfo) {
 				property = properties[i] + "/";
 				option.setAttribute("value", property);
 				option.innerHTML = property;
-
-
-
-
 			} else {
 				option.setAttribute("value", properties[i]);
 				property = properties[i]
@@ -562,6 +574,17 @@ function fillProperySelectorSTA(number, lastEntity, selectorInfo) {
 	}
 }
 
+function fillColumsSelectorFilterRowsOGCAPIFeatures(number, selectorInfo) {
+	var selectProperty = document.getElementById("selectorProperty_" + number);
+	selectProperty.innerHTML = "";
+
+	var option = document.createElement("option"); //First option
+	option.setAttribute("value", " ");
+	option.innerHTML = "--- choose Property ---";
+	selectProperty.appendChild(option);
+
+
+}
 
 
 //condition select
@@ -721,22 +744,8 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 	return typeOfValues;
 }
 //Values select
-function createValueSelectInFilterRows(selectorInfo, count, informationOrigin) {
+function createValueSelectInFilterRows(selectorInfo, count) {
 	var optionsRow = document.getElementById("optionsRow_" + count);
-
-	if (informationOrigin == "STA") {
-		var inputForEntityFilterRow = document.getElementById("inputForEntityFilterRow_" + count);
-		var inputForEntityFilterRowValue = inputForEntityFilterRow.value;
-		var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue), true);
-		var url = getURLWithoutQueryParams(currentNode.STAURL);
-		//Find the entity to search values
-		var parentLabel = searchParentLabel();
-		if (parentLabel != entity) {
-			var parentLabelLength = parentLabel.length;
-			url = url.slice(parentLabelLength); //Erase entity without "/"
-			url += entity;
-		}
-	}
 
 	//Selects
 	var divFilterContainer = document.createElement("div");
@@ -843,16 +852,12 @@ function createValueSelectInFilterRows(selectorInfo, count, informationOrigin) {
 			inputText.value = selectorInfo[0][4];
 		}
 	}
-
 	fillValueSelectorFilterRow(count);
 }
 
 async function fillValueSelectorFilterRow(count) {
 	var valor, valueToinput, dataToFillSelect, arrayValors = [], valueUndefined;
-	var informationOrigin = "Table";
-	if (currentNode.image == "FilterRowsSTA") {
-		informationOrigin = "STA";
-	}
+
 	//Fill Select
 	//Simple
 	var selectorValue = document.getElementById("selectorValue" + "_" + count);
@@ -865,8 +870,7 @@ async function fillValueSelectorFilterRow(count) {
 	selectorValueInterval2.innerHTML = "";
 	var arrayValuesArranged;
 
-	// if (informationOrigin == "STA") {
-	if (selectProperty) {
+	if (selectProperty) { //It is STA data? (4selectors)
 		var inputForEntityFilterRowValue = document.getElementById("inputForEntityFilterRow_" + count).value;
 		var entity = getSTAEntityPlural(extractLastEntityFromTextFromInputInFilterRow(inputForEntityFilterRowValue, true));
 		var url = getURLWithoutQueryParams(currentNode.STAURL);
@@ -910,7 +914,7 @@ async function fillValueSelectorFilterRow(count) {
 			}
 			arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
 		}
-	} else { //CSV
+	} else { //CSV, OGCAPIFeature (3selectors)
 		var selectorColumns = document.getElementById("selectorColumns_" + count);
 		var selectorColumnsValue = selectorColumns.options[selectorColumns.selectedIndex].value;
 		arrayValuesArranged = obtainValuesFromSTAdataInCSV(selectorColumnsValue);
@@ -1504,7 +1508,7 @@ function takeSelectInformation() {
 		optionsRow = document.getElementById("optionsRow_" + counter[i]);
 		arrayInfo = [];
 		arrayInfo.push(counter[i]); //they are out of order, it is necessary to put each info in its place when painting the select
-	
+
 		if (optionsRow != null) {
 			if (currentNode.image == "FilterRowsSTA.png" && !currentNode.STAOGCAPIconformance) {
 
