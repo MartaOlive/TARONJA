@@ -2693,7 +2693,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 		}
 		function GetFilterRowsSTA() {
-				var previousSTAURL = currentNode.STAURL;
+				//var previousSTAURL = currentNode.STAURL;
 				var parentNode = GetFirstParentNode(currentNode);
 				if (parentNode) {
 					if (parentNode.STAURL)
@@ -2739,6 +2739,36 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			UpdateChildenTable(currentNode);
 				
 		}
+		function GetFilterRowsOGCAPIFeatures(){
+			var previousNode=networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
+			var previousURL = previousNode[0].STAURL;//put URL ready to add things 
+			if (currentNode.STAOGCAPIconformance.includes("cql-text")){
+				currentNode.STAUrlAPICounter = []; // I need to restart it 
+				stopreadInformationRowFilterOGCAPIFeatures = false;
+				currentNode.STAURL = currentNode.STAURL  +"?filter="; //mirar si ho ha actualitzat
+				if (currentNode.STAUrlAPI){
+					currentNode.STAUrlAPI="";
+				}
+				readInformationRowFilterOGCAPIFeatures(currentNode.STAelementFilter, "no", "no"); //And apply filter
+				currentNode.STAURL = currentNode.STAURL+currentNode.STAUrlAPI+"&f=json";
+				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
+				var data = loadAPIDataWithReturn(currentNode.STAURL, "reloadOGCAPIFeaturesData");
+				currentNode.STAdata=data;
+				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousURL);
+
+			}
+
+
+
+
+
+
+
+
+
+
+
+		}
 		function GetFilterRows(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogFilterRows").close();
@@ -2752,7 +2782,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}else if (currentNode.image == "FilterRowsTable.png"){ //STA
 				GetFilterRowsSTA();
 			}else if (currentNode.STAOGCAPIconformance.includes("filter")){
-				//GetFilterRowsOGCAPIFeatures -> Mirar el tipus de filtre i tal
+				GetFilterRowsOGCAPIFeatures()// -> Mirar el tipus de filtre i tal
 			}
 
 			showInfoMessage("Filtering STA rows...");
@@ -4108,9 +4138,10 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		}
 
 		function ShowTableFilterRowsDialog(parentNode, node) {
-			var data = parentNode.STAdata;
+			var data=parentNode.STAdata
 			currentNode.STAdata=data; //Put all data from parent in this node 
 			networkNodes.update(currentNode);
+
 			var dataAttributes = getDataAttributes(data);
 
 			if (parentNode.image != "FilterRowsTable.png") {
@@ -4143,6 +4174,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			if (currentNode.image=="FilterRowsSTA.png" && currentNode.STAOGCAPIconformance){
 				if (currentNode.STAOGCAPIconformance.includes("filter")){ //Create Filters if the API allows to filter its information
 					ShowFilterTable();
+
 				}else{
 				showFilterTableWithoutFilters(); //OGCAPIFeatures without filter option		
 				}
@@ -4539,7 +4571,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						}
 						ShowTableFilterRowsDialog(parentNode, currentNode);
 						document.getElementById("DialogFilterRows").showModal();
-						}
+				
+					}
 				}
 				else if (currentNode.image == "SortBySTA.png") {
 					var parentNode=GetFirstParentNode(currentNode);

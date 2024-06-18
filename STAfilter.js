@@ -133,7 +133,6 @@ function createSelectorRowFilters(number) {
 	} else { //CSV
 		dialogType = "withoutEntities_3selectors"; //columns, condition, values
 	}
-
 	if (dialogType == "withEntities_4selectors") {
 		createEntitySelectorInFilterRows(selectorInfo, number);
 		createPropertySelectInFilterRows(selectorInfo, number);
@@ -142,6 +141,7 @@ function createSelectorRowFilters(number) {
 	}
 	createConditionSelectInFilterRows(selectorInfo, number);
 	createValueSelectInFilterRows(selectorInfo, number);
+
 }
 
 function createColumsSelectorFilterRows(selectorInfo, count) {
@@ -153,7 +153,6 @@ function createColumsSelectorFilterRows(selectorInfo, count) {
 
 	optionsRow.appendChild(selectColumns);
 	fillColumsSelectorFilterRows(selectorInfo, count);
-
 
 }
 
@@ -171,7 +170,7 @@ function fillColumsSelectorFilterRows(selectorInfo, count) { //2 selectors
 	//Which is the origin of the information to fill the selector
 	var queryableOrDataAlreadyCharged;
 	if (currentNode.STAOGCAPIqueryable) {
-		if (currentNode.STAOGCAPIqueryable="no") {
+		if (currentNode.STAOGCAPIqueryable == "no") {
 			queryableOrDataAlreadyCharged = "dataCharged"; //OGCAPIFeatures not queryable
 		} else {
 			queryableOrDataAlreadyCharged = "queryableData"; // OGCAPIFeatures queryable
@@ -256,6 +255,8 @@ async function loadAPIDataWithReturn(url, reasonForData) { // Ask API to , "FIll
 			data = (typeof data !== "undefined") ? data["conformsTo"] : [data];
 		} else if (reasonForData == "OGCAPIqueryables") {
 			data = (typeof data !== "undefined") ? data["properties"] : [data];
+		} else if (reasonForData == reloadOGCAPIFeaturesData) {
+			data = (typeof data.value !== "undefined") ? data.value : [data];
 		}
 		else {
 			data = (typeof data.value !== "undefined") ? data["@iot.count"] : [data];
@@ -1274,6 +1275,7 @@ function ShowFilterTable() //This is who iniciates the table
 	for (var i = 0; i < currentNode.STACounter.length; i++) {//Adding Selectors
 		createSelectorRowFilters(currentNode.STACounter[i]);
 	}
+
 }
 function showFilterTableWithoutFilters() {
 	document.getElementById("divSelectorRowsFilter").innerHTML = "<div>This collection doesn't allow to filter its data. You can filter the data preloaded by clickng the button below. Choose how many registers you want to filter in the box below. </div><button onclick='ShowFilterTable()'>See filtering box</button>";
@@ -1764,7 +1766,7 @@ function readInformationRowFilterSTA(elem, entity, nexus, parent) {  //STA
 
 var stopreadInformationRowFilterTable = false;
 
-function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
+function readInformationRowFilterTable(elem, nexus, parent) {  //Table
 	var infoFilter = currentNode.STAinfoFilter;
 
 	switch (nexus) {
@@ -1782,7 +1784,7 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 	if (stopreadInformationRowFilterTable == false) {
 		if (typeof elem === "object") {
 			for (var i = 0; i < elem.elems.length; i++) {
-				readInformationRowFilterTable(elem.elems[i], entity, elem.nexus, elem);
+				readInformationRowFilterTable(elem.elems[i], elem.nexus, elem);
 			}
 			if (currentNode.STAtableCounter.length != infoFilter.length && currentNode.STAtableCounter.length != 0 && nexus != "no" && parent != "no") {
 				currentNode.STAtable += " " + nexus + " ";
@@ -1906,6 +1908,78 @@ function readInformationRowFilterTable(elem, entity, nexus, parent) {  //Table
 		}
 	}
 }
+
+var stopreadInformationRowFilterOGCAPIFeatures = false;
+function readInformationRowFilterOGCAPIFeatures(elem, entity, nexus, parent) { //OGCAPIFeatures
+	var infoFilter = currentNode.STAinfoFilter;
+	if (stopreadInformationRowFilterOGCAPIFeatures == false) {
+		if (typeof elem === "object") {
+			for (var i = 0; i < elem.elems.length; i++) {
+				readInformationRowFilterOGCAPIFeatures(elem.elems[i], entity, elem.nexus, elem);
+			}
+			if (currentNode.STAUrlAPICounter.length != infoFilter.length && currentNode.STAUrlAPICounter.length != 0 && nexus != "no" && parent != "no") {
+				currentNode.STAUrlAPI += " " + nexus + " ";
+			}
+		}
+		else { //Build URL
+			//Last Array, which contains the filters 
+			var data = "", condition;;
+			for (var i = 0; i < infoFilter.length; i++) {
+				switch (infoFilter[i][3]) {
+					case ' = ':
+						condition = " = ";
+						break;
+					case ' &ne; ':
+						condition = " != ";
+						break;
+					case ' &ge; ':
+						condition = " >= ";
+						break;
+					case ' > ':
+						condition = " > ";
+						break;
+					case ' &le; ':
+						condition = " <= ";
+						break;
+					case ' < ':
+						condition = " < ";
+						break;
+				}
+				if (infoFilter[i][0] == elem) { //To search the array that contains the info that we want
+					var parentLenght = parent.elems.length;
+					var indexOf = parent.elems.indexOf(elem);
+					var apostropheOrSpace;
+					var typeOfValue = infoFilter[i][5];//it is not posible to take the information of data type because every API calls it diferent (type, data type...)		
+					(typeOfValue == "number") ? apostropheOrSpace = "" : apostropheOrSpace = "'"; //Canviar segons el tipus que posi a la queryable
+
+					if (indexOf == 0) {
+						data += "(";
+					}
+					if (condition == ' = ' || condition == ' &ne; ' || condition == ' &ge; ' || condition == ' > ' || condition == ' &le; ' || condition == ' < ') { //passarho a com Table+
+
+						data += "(" + infoFilter[i][1] + condition + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
+
+					}
+					//by the moment, only this can be filtered
+					if ((indexOf + 1) != parentLenght) {
+						data += nexus
+					}
+					if ((indexOf + 1) == parentLenght) {
+						data += ")";
+					}
+					currentNode.STAUrlAPI += data
+					currentNode.STAUrlAPICounter.push(infoFilter[i][0]);
+				}
+			}
+		}
+		if (currentNode.STAUrlAPICounter.length == infoFilter.length) {
+			currentNode.STAUrlAPI.slice(0, "(");
+			currentNode.STAUrlAPI.slice(currentNode.STAUrlAPI.length + 1, ")");
+			stopreadInformationRowFilterSTA = true;
+		}
+	}
+}
+
 function applyEvalAndFilterData() {
 	var infoFilter = currentNode.STAinfoFilter;
 	var data = currentNode.STAdata;
@@ -1976,12 +2050,12 @@ async function askForCollectionQueryables() {
 	url = url.slice(0, index);
 	url += "/queryables?f=json";
 	var queryablesInformation = await loadAPIDataWithReturn(url, "OGCAPIqueryables");
-	if (queryablesInformation.length!=undefined){
-			currentNode.STAOGCAPIqueryable = queryablesInformation;
-	}else{
-		currentNode.STAOGCAPIqueryable="no";
+	if (Object.keys(queryablesInformation).length != 0) {
+		currentNode.STAOGCAPIqueryable = queryablesInformation;
+	} else {
+		currentNode.STAOGCAPIqueryable = "no";
 	}
 
 
-	networkNodes.update(currentNode);
+	//networkNodes.update(currentNode);
 }
