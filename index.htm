@@ -2739,7 +2739,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			UpdateChildenTable(currentNode);
 				
 		}
-		function GetFilterRowsOGCAPIFeatures(){
+		async function GetFilterRowsOGCAPIFeatures(){
 			var previousNode=networkNodes.get(network.getConnectedNodes(currentNode.id, "from"));
 			var previousURL = previousNode[0].STAURL;//put URL ready to add things 
 			if (currentNode.STAOGCAPIconformance.includes("cql-text")){
@@ -2752,7 +2752,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				readInformationRowFilterOGCAPIFeatures(currentNode.STAelementFilter, "no", "no"); //And apply filter
 				currentNode.STAURL = currentNode.STAURL+currentNode.STAUrlAPI+"&f=json";
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
-				var data = loadAPIDataWithReturn(currentNode.STAURL, "reloadOGCAPIFeaturesData");
+				var data = await loadAPIDataWithReturn(currentNode.STAURL, "reloadOGCAPIFeaturesData");
 				currentNode.STAdata=data;
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousURL);
 
