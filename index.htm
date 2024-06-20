@@ -2745,7 +2745,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			if (currentNode.STAOGCAPIconformance.includes("cql-text")){
 				currentNode.STAUrlAPICounter = []; // I need to restart it 
 				stopreadInformationRowFilterOGCAPIFeatures = false;
-				currentNode.STAURL = currentNode.STAURL  +"?filter="; //mirar si ho ha actualitzat
+				currentNode.STAURL = previousURL  +"?filter="; //mirar si ho ha actualitzat
 				if (currentNode.STAUrlAPI){
 					currentNode.STAUrlAPI="";
 				}
@@ -2753,20 +2753,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				currentNode.STAURL = currentNode.STAURL+currentNode.STAUrlAPI+"&f=json";
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
 				var data = await loadAPIDataWithReturn(currentNode.STAURL, "reloadOGCAPIFeaturesData");
-				currentNode.STAdata=data;
+				console.log(currentNode.STAdata)
+				
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousURL);
 
 			}
-
-
-
-
-
-
-
-
-
-
 
 		}
 		function GetFilterRows(event) {

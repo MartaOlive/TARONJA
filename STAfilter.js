@@ -255,8 +255,9 @@ async function loadAPIDataWithReturn(url, reasonForData) { // Ask API to , "FIll
 			data = (typeof data !== "undefined") ? data["conformsTo"] : [data];
 		} else if (reasonForData == "OGCAPIqueryables") {
 			data = (typeof data !== "undefined") ? data["properties"] : [data];
-		} else if (reasonForData == reloadOGCAPIFeaturesData) {
+		} else if (reasonForData == "reloadOGCAPIFeaturesData") {
 			data = (typeof data.value !== "undefined") ? data.value : [data];
+			currentNode.STAdata=data;
 		}
 		else {
 			data = (typeof data.value !== "undefined") ? data["@iot.count"] : [data];
@@ -1952,9 +1953,9 @@ function readInformationRowFilterOGCAPIFeatures(elem, entity, nexus, parent) { /
 					var typeOfValue = infoFilter[i][5];//it is not posible to take the information of data type because every API calls it diferent (type, data type...)		
 					(typeOfValue == "number") ? apostropheOrSpace = "" : apostropheOrSpace = "'"; //Canviar segons el tipus que posi a la queryable
 
-					if (indexOf == 0) {
-						data += "(";
-					}
+					// if (indexOf == 0) {
+					// 	data += "(";
+					// }
 					if (condition == ' = ' || condition == ' &ne; ' || condition == ' &ge; ' || condition == ' > ' || condition == ' &le; ' || condition == ' < ') { //passarho a com Table+
 
 						data += "(" + infoFilter[i][1] + condition + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
@@ -1964,9 +1965,9 @@ function readInformationRowFilterOGCAPIFeatures(elem, entity, nexus, parent) { /
 					if ((indexOf + 1) != parentLenght) {
 						data += nexus
 					}
-					if ((indexOf + 1) == parentLenght) {
-						data += ")";
-					}
+					// if ((indexOf + 1) == parentLenght) {
+					// 	data += ")";
+					// }
 					currentNode.STAUrlAPI += data
 					currentNode.STAUrlAPICounter.push(infoFilter[i][0]);
 				}
