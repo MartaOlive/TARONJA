@@ -1351,7 +1351,11 @@
 				} else if (node.OGCType=="OGCAPIitems") {
 					node.STAdata = (jsonData.type=="FeatureCollection") ? TransformGeoJSONToTable(jsonData) : [jsonData];
 					nextLink = getLinkRelInLinks(jsonData["links"], "next", "application/geo+json");
-				} else {
+				} else if(node.OGCType=="OGCAPIitem") {
+					node.STAdata = (jsonData.type=="FeatureCollection") ? TransformGeoJSONToTable(jsonData) : [jsonData];
+					//nextLink?
+				}
+				else {
 					node.STAdata = (typeof jsonData.value!=="undefined") ? jsonData.value : [jsonData];
 					nextLink = jsonData["@iot.nextLink"];
 				}
@@ -1601,6 +1605,7 @@
 			}
 			return data;
 		}
+
 
 		function TransformTextGeoJSONToTable(jsonText, url) {
 			try
@@ -2751,13 +2756,19 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
 				readInformationRowFilterOGCAPIFeatures(currentNode.STAelementFilter, "no", "no"); //And apply filter
 				currentNode.STAURL = currentNode.STAURL+currentNode.STAUrlAPI+"&f=json";
+				//Always work ask for X results? If not, it can fail
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
-				var data = await loadAPIDataWithReturn(currentNode.STAURL, "reloadOGCAPIFeaturesData");
+
+
+				//var data = await loadAPIDataWithReturn(currentNode.STAURL, "reloadOGCAPIFeaturesData");
 				console.log(currentNode.STAdata)
-				// networknode.update
+				//currentNode.STAdata = data;
+				LoadJSONNodeSTAData(currentNode);
+				networkNodes.update(currentNode);
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousURL);
 
 			}
+			
 
 		}
 		function GetFilterRows(event) {
@@ -2769,8 +2780,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			if (currentNode.image == "FilterRowsTable.png" ) { //import CSV
 				GetFilterRowsTable();
 			}else if (currentNode.STAOGCAPIconformance){//OGCAPIFeatures
-				if (!currentNode.STAOGCAPIconformance?.includes("filter")){
-					GetFilterRowsOGCAPIFeatures()// -> Mirar el tipus de filtre i tal
+				if (currentNode.STAOGCAPIconformance?.includes("filter")){
+					GetFilterRowsOGCAPIFeatures()// we can apply filter from API
 				}else{
 					GetFilterRowsTable(); //No filter, use table filter
 				}
@@ -4562,6 +4573,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						if (parentNode.STAOGCAPIqueryable){
 							currentNode.STAOGCAPIqueryable=parentNode.STAOGCAPIqueryable;
 						}
+						if (parentNode.OGCType){
+							currentNode.OGCType="OGCAPIitem";
+						}
+
+
 						ShowTableFilterRowsDialog(parentNode, currentNode);
 						document.getElementById("DialogFilterRows").showModal();
 				
