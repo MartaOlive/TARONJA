@@ -1992,6 +1992,27 @@ function readInformationRowFilterOGCAPIFeatures(elem, entity, nexus, parent) { /
 						data += "(" + infoFilter[i][1] + condition + apostropheOrSpace + infoFilter[i][4] + apostropheOrSpace + ")";
 
 					}
+					else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
+
+						data += "( " 
+						switch (infoFilter[i][3]) {
+							case ' [a,b] ':
+								data +=  infoFilter[i][1]+" >= " + infoFilter[i][4] + " and " +  infoFilter[i][1]+" <= " + infoFilter[i][5] + ")";
+								break;
+							case ' (a,b] ':
+								data += infoFilter[i][1]+ " > " + infoFilter[i][4] + " and " +  infoFilter[i][1]+" <= " + infoFilter[i][5] + ")";
+								break;
+							case ' [a,b) ':
+								data +=  infoFilter[i][1]+" >= " + infoFilter[i][4] + " and " + infoFilter[i][1]+ " < " + infoFilter[i][5] + ")";
+								break;
+							case ' (a,b) ':
+								data += infoFilter[i][1]+ " > " + infoFilter[i][4] + " and " + infoFilter[i][1]+ " < " + infoFilter[i][5] + ")";
+								break;
+							default:
+						}
+					}
+
+
 					//by the moment, only this can be filtered
 					if ((indexOf + 1) != parentLenght) {
 						data += nexus
