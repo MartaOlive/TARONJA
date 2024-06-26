@@ -828,33 +828,6 @@
 				return getCon.error;
 			return null;
 
-
-			// if (idNode < 0 && node.image != "FilterRowsTable.png" && parentNode.image != "FilterRowsTable.png" && node.image != "SelectRowTable.png" && parentNode.image != "SelectRowTable.png" ) { //If you add a view table after "FilterRowsTable" too
-			// 		var entity = getSTAURLLastEntity(parentNode.STAURL);
-			// 		var staEntitiesList = Object.keys(STAEntities);
-			// 		var isPlural = false;
-			// 		for (var i = 0; i < staEntitiesList.length; i++) {
-			// 			if (staEntitiesList[i] == entity) {
-			// 				isPlural = true;
-			// 				break;
-			// 			}
-			// 		}
-			// 		if (node.image == "FilterRowsSTA.png" && isPlural == false) {
-			// 			if (parentNode.OGCType){
-			// 				if (parentNode.OGCType!= "OGCAPIitems"){ //Allow to conect SelectRow originating from OGC API
-			// 					return "Your result is already one value, you can not filter it more"
-			// 				}
-			// 			}
-						
-			// 		} else {
-			// 			return null;
-			// 		}
-			// 	}
-			// 	if (node.image == "FilterRowsSTA.png" && !parentNode.OGCType) {
-			// 		var getCon = getConnectionSTAEntity(parentNode, node)
-			// 		if (getCon.error)
-			// 			return getCon.error;
-			// 	}
 		}
 
 
@@ -2697,6 +2670,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				LoadJSONNodeSTAData(currentNode);
 			}
 		}
+		
 		function GetFilterRowsSTA() {
 				var previousSTAURL = currentNode.STAURL;
 				var parentNode = GetFirstParentNode(currentNode);
@@ -2710,8 +2684,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					return;
 
 				currentNode.STAUrlAPICounter = []; // I need to restart it 
-				//put URL ready to add things
-				var previousURL = parentNode.STAURL;
+				
+				var previousURL = parentNode.STAURL;//put URL ready to add things
 
 				var prevFilter = GetQueryParamFromURL(parentNode.STAURL, "$filter");
 				if (prevFilter) {
@@ -2727,8 +2701,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					entity = getSTAURLLastEntity(currentNode.STAURL);
 				}
 
-				readInformationRowFilterSTA(currentNode.STAelementFilter, entity, "no", "no"); //And apply filter
-				//console.log(currentNode.STAUrlAPI);
+				readInformationRowFilterSTA(currentNode.STAelementFilter, entity, "no", "no"); //apply filter
 				currentNode.STAURL = currentNode.STAUrlAPI;
 
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
@@ -2739,7 +2712,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			stopreadInformationRowFilterTable = false;
 			currentNode.STAtableCounter = [];
 			currentNode.STAtable = "";
-			readInformationRowFilterTable(currentNode.STAelementFilter, "no", "no"); //And apply filter
+			readInformationRowFilterTable(currentNode.STAelementFilter, "no", "no"); //apply filter
 			applyEvalAndFilterData();
 			UpdateChildenTable(currentNode);
 				
@@ -2750,19 +2723,15 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			if (currentNode.STAOGCAPIconformance.includes("cql-text")){
 				currentNode.STAUrlAPICounter = []; // I need to restart it 
 				stopreadInformationRowFilterOGCAPIFeatures = false;
-				currentNode.STAURL = previousURL  +"?filter="; //mirar si ho ha actualitzat
+				currentNode.STAURL = previousURL  +"?filter="; 
 				if (currentNode.STAUrlAPI){
 					currentNode.STAUrlAPI="";
 				}
-				readInformationRowFilterOGCAPIFeatures(currentNode.STAelementFilter, "no", "no"); //And apply filter
+				readInformationRowFilterOGCAPIFeatures(currentNode.STAelementFilter, "no", "no"); //apply filter
 				currentNode.STAURL = currentNode.STAURL+currentNode.STAUrlAPI+"&f=json";
 				//Always work ask for X results? If not, it can fail
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
 
-
-				//var data = await loadAPIDataWithReturn(currentNode.STAURL, "reloadOGCAPIFeaturesData");
-				console.log(currentNode.STAdata)
-				//currentNode.STAdata = data;
 				LoadJSONNodeSTAData(currentNode);
 				networkNodes.update(currentNode);
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousURL);
