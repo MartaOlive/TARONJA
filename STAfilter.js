@@ -47,6 +47,7 @@
 
 const selectConditionContent = ['---Choose operator ---', ' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) ', 'contains', 'no contains', 'starts with', 'ends with', 'year', 'month', 'day', 'hour', 'minute', 'date'];
 const selectConditionContentText = ['---Choose operator ---', ' = ', ' &ne; ', 'contains', 'no contains', 'starts with', 'ends with'];
+const selectConditionContentOGCAPIFeatures = ['---Choose operator ---', ' = ', ' &ne; ', ' &ge; ', ' > ', ' &le; ', ' < ', ' [a,b] ', ' (a,b] ', ' [a,b) ', ' (a,b) '];
 
 
 function addNecessaryVariablesToFilterRowsSTANode(actualNode) {
@@ -640,6 +641,11 @@ function createConditionSelectInFilterRows(selectorInfo, count) {
 		}
 	} else {
 		selectConditionContent2 = selectConditionContent;
+	}
+
+
+	if (currentNode.OGCType="OGCAPIitem"){
+		selectConditionContent2=selectConditionContentOGCAPIFeatures;
 	}
 	for (var i = 0; i < selectConditionContent2.length; i++) { //create options in condition Select
 		var opcioCondicio = document.createElement("option");
