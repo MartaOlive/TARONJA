@@ -644,9 +644,11 @@ function createConditionSelectInFilterRows(selectorInfo, count) {
 	}
 
 
-	if (currentNode.OGCType="OGCAPIitem"){
-		selectConditionContent2=selectConditionContentOGCAPIFeatures;
+	if (currentNode.OGCType = "OGCAPIitem") {
+		selectConditionContent2 = selectConditionContentOGCAPIFeatures;
 	}
+
+
 	for (var i = 0; i < selectConditionContent2.length; i++) { //create options in condition Select
 		var opcioCondicio = document.createElement("option");
 		opcioCondicio.setAttribute("value", selectConditionContent2[i]);
@@ -1333,6 +1335,9 @@ function GetFilterCondition(elem) {
 }
 function ShowFilterTable() //This is who iniciates the table
 {
+	var SelectNumberOfRecordsFilterRowsLabel = document.getElementById("SelectNumberOfRecordsFilterRowsLabel");
+	SelectNumberOfRecordsFilterRowsLabel.style.display = "none";
+
 	currentNode.STACounter = []; //To not acumulate
 	document.getElementById("divSelectorRowsFilter").innerHTML = GetFilterTable(currentNode.STAelementFilter, currentNode.id, true); //I need to pass currentNode.elemFilter because it is a recursive function an need to start in this point
 	for (var i = 0; i < currentNode.STACounter.length; i++) {//Adding Selectors
@@ -1341,7 +1346,9 @@ function ShowFilterTable() //This is who iniciates the table
 
 }
 function showFilterTableWithoutFilters() {
-	document.getElementById("divSelectorRowsFilter").innerHTML = "<div>This collection doesn't allow to filter its data. You can filter the data preloaded by clickng the button below. Choose how many registers you want to filter in the box below. </div><button onclick='ShowFilterTable()'>See filtering box</button>";
+	document.getElementById("divSelectorRowsFilter").innerHTML = "<div>This collection doesn't allow to filter its data. You can filter the data preloaded by clickng the button below. Choose how many registers you want to filter in the previous node. </div><button onclick='ShowFilterTable()'>See filtering box</button>";
+	var SelectNumberOfRecordsFilterRowsLabel = document.getElementById("SelectNumberOfRecordsFilterRowsLabel");
+	SelectNumberOfRecordsFilterRowsLabel.style.display = "none";
 }
 
 //Select Nexus (And, or, not)
@@ -2006,7 +2013,7 @@ function readInformationRowFilterOGCAPIFeatures(elem, entity, nexus, parent) { /
 					var indexOf = parent.elems.indexOf(elem);
 					var apostropheOrSpace;
 					var typeOfValue = infoFilter[i][5];//it is not posible to take the information of data type because every API calls it diferent (type, data type...)		
-					(typeOfValue == "number") ? apostropheOrSpace = "" : apostropheOrSpace = "'"; 
+					(typeOfValue == "number") ? apostropheOrSpace = "" : apostropheOrSpace = "'";
 
 					// if (indexOf == 0) {
 					// 	data += "(";
@@ -2018,19 +2025,19 @@ function readInformationRowFilterOGCAPIFeatures(elem, entity, nexus, parent) { /
 					}
 					else if (infoFilter[i][3] == ' [a,b] ' || infoFilter[i][3] == ' (a,b] ' || infoFilter[i][3] == ' [a,b) ' || infoFilter[i][3] == ' (a,b) ') {
 
-						data += "( " 
+						data += "( "
 						switch (infoFilter[i][3]) {
 							case ' [a,b] ':
-								data +=  infoFilter[i][1]+" >= " + infoFilter[i][4] + " and " +  infoFilter[i][1]+" <= " + infoFilter[i][5] + ")";
+								data += infoFilter[i][1] + " >= " + infoFilter[i][4] + " and " + infoFilter[i][1] + " <= " + infoFilter[i][5] + ")";
 								break;
 							case ' (a,b] ':
-								data += infoFilter[i][1]+ " > " + infoFilter[i][4] + " and " +  infoFilter[i][1]+" <= " + infoFilter[i][5] + ")";
+								data += infoFilter[i][1] + " > " + infoFilter[i][4] + " and " + infoFilter[i][1] + " <= " + infoFilter[i][5] + ")";
 								break;
 							case ' [a,b) ':
-								data +=  infoFilter[i][1]+" >= " + infoFilter[i][4] + " and " + infoFilter[i][1]+ " < " + infoFilter[i][5] + ")";
+								data += infoFilter[i][1] + " >= " + infoFilter[i][4] + " and " + infoFilter[i][1] + " < " + infoFilter[i][5] + ")";
 								break;
 							case ' (a,b) ':
-								data += infoFilter[i][1]+ " > " + infoFilter[i][4] + " and " + infoFilter[i][1]+ " < " + infoFilter[i][5] + ")";
+								data += infoFilter[i][1] + " > " + infoFilter[i][4] + " and " + infoFilter[i][1] + " < " + infoFilter[i][5] + ")";
 								break;
 							default:
 						}
