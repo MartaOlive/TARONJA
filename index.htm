@@ -213,6 +213,42 @@
 		</form>
 	</dialog>
 
+	<dialog id="DialogCreateColumns">
+		<form>
+			Create columns:
+			<span id="DialogCreateColumnsHTML">
+			</span>
+			<div class="center">
+				<button value="default" onClick="GetCreateColumns(event)">OK</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
+	<dialog id="DialogAggregateColumns">
+		<form>
+			Aggregate columns:
+			<span id="DialogAggregateColumnsHTML">
+			</span>
+			<div class="center">
+				<button value="default" onClick="GetAggregateColumns(event)">OK</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
+	<dialog id="DialogColumnsCalculator">
+		<form>
+			Columns Calculator:
+			<span id="DialogColumnsCalculatorHTML">
+			</span>
+			<div class="center">
+				<button value="default" onClick="GetColumnsCalculator(event)">OK</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
+			</div>
+		</form>
+	</dialog>
+
 	<dialog id="DialogSelectExpands">
 		<form>
 			<fieldset id="DialogSelectExpandsHTML">
@@ -756,6 +792,9 @@
 					JoinTables: {description: "Join Tables"},
 					FilterRowsTable: {description: "Filter Rows"},
 					GroupBy: {description: "GroupBy"},
+					AggregateColumns:{description: "Aggregate Columns"},
+					CreateColumns:{description: "Create Columns"},
+					ColumnsCalculator:{description: "Columns calculator"},
 					SeparateColumns: {description: "Separate Columns"},
 					ScatterPlot: {description: "Scatter Plot", leafNode: true},
 					OneValueSTA: {description: "One Value", leafNode: true},
@@ -2623,6 +2662,20 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			return groupByParams;
 		}
 
+		function GetCreateColumns(event){
+
+		}
+
+		function GetAggregateColumns(event){
+
+		}
+
+		function GetColumnsCalculator(event){
+
+		}
+
+
+
 		function GetSelectNRecords(event) {
 			event.preventDefault(); // We don't want to submit this form
 			document.getElementById("DialogSelectNRecords").close();
@@ -4312,6 +4365,15 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			CheckSelectedAggrGroupBy(null, node.id);
 			return;
 		}
+		function ShowAggregateColumns() {
+
+		}
+		function ShowCreateColumns() {
+
+		}
+		function ShowColumnsCalculator() {
+
+		}
 
 		function ShowTableSelectRowDialog(parentNode, node) {
 			var data = parentNode.STAdata;
@@ -4779,6 +4841,27 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					if (parentNode) {
 						ShowGroupByDialog(parentNode, currentNode);
 						document.getElementById("DialogGroupBy").showModal();
+					}
+				}
+				else if (currentNode.image == "AggregateColumns.png") {
+					var parentNode=GetFirstParentNode(currentNode);
+					if (parentNode) {
+						//ShowAggregateColumnsDialog();
+						document.getElementById("DialogAggregateColumns").showModal();
+					}
+				}
+				else if (currentNode.image == "CreateColumns.png") {
+					var parentNode=GetFirstParentNode(currentNode);
+					if (parentNode) {
+						//ShowCreateColumnsDialog();
+						document.getElementById("DialogCreateColumns").showModal();
+					}
+				}
+				else if (currentNode.image == "ColumnsCalculator.png") {
+					var parentNode=GetFirstParentNode(currentNode);
+					if (parentNode) {
+						//ShowColumnsCalculatorsDialog();
+						document.getElementById("DialogColumnsCalculator").showModal();
 					}
 				}
 				else if (currentNode.image == "SeparateColumns.png") {
