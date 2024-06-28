@@ -134,7 +134,6 @@ function createSelectorRowFilters(number) {
 	} else { //CSV
 		dialogType = "withoutEntities_3selectors"; //columns, condition, values
 	}
-
 	if (dialogType == "withEntities_4selectors") {
 		createEntitySelectorInFilterRows(selectorInfo, number);
 		createPropertySelectInFilterRows(selectorInfo, number);
@@ -642,13 +641,10 @@ function createConditionSelectInFilterRows(selectorInfo, count) {
 	} else {
 		selectConditionContent2 = selectConditionContent;
 	}
-
-
 	if (currentNode.OGCType = "OGCAPIitem") {
 		selectConditionContent2 = selectConditionContentOGCAPIFeatures;
 	}
-
-
+	
 	for (var i = 0; i < selectConditionContent2.length; i++) { //create options in condition Select
 		var opcioCondicio = document.createElement("option");
 		opcioCondicio.setAttribute("value", selectConditionContent2[i]);
@@ -750,26 +746,26 @@ function typeOfValueFromInput(wichinputText, value1, value2) {
 		//is date
 		if (value1.includes("-") == true) {//inputText1
 			var value1Array = value1.split("-");
-			if (value1Array.length == 3) {
-				if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
-					inputText1 = "date";
-				} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
-					typeOfValues = "date";
+				if (value1Array.length == 3) {
+					if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2][2] == "T" && value1.endsWith("Z")) {
+						inputText1 = "date";
+					} else if (value1Array[0].length == 4 && value1Array[1].length == 2 && value1Array[2].length == 2 && !isNaN(parseInt(value1Array[0])) && !isNaN(parseInt(value1Array[1])) && !isNaN(parseInt(value1Array[2]))) { //only date without Time
+						typeOfValues = "date";
+					}
 				}
-			}
-
+			
 		}
 		if (value2.includes("-") == true) {//inputText1
 			var value2Array = value2.split("-");
 
-			if (value2Array.length == 3) {
-				if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
-					inputText2 = "date";
-				} else if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2].length == 2 && !isNaN(parseInt(value2Array[0])) && !isNaN(parseInt(value2Array[1])) && !isNaN(parseInt(value2Array[2]))) { //only date without Time
-					typeOfValues = "date";
+				if (value2Array.length == 3) {
+					if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2][2] == "T" && value2.endsWith("Z")) {
+						inputText2 = "date";
+					} else if (value2Array[0].length == 4 && value2Array[1].length == 2 && value2Array[2].length == 2 && !isNaN(parseInt(value2Array[0])) && !isNaN(parseInt(value2Array[1])) && !isNaN(parseInt(value2Array[2]))) { //only date without Time
+						typeOfValues = "date";
+					}
 				}
-			}
-
+			
 		}
 		if (inputText1 != "date") {
 			if (Number.isNaN(parseInt(value1)) != true) { //numero
@@ -1555,7 +1551,7 @@ function DeleteGroupInElemFilter(elem, fatherElem) {
 			var copyFather = Object.assign(fatherElem.elems);
 			currentNode.STAelementFilter = copyFather[0];
 		}
-		//var boxNames = currentNode.STAboxNames;
+	
 		actualizeBoxNames(currentNode.STAelementFilter, arrayBoxNumbers);  //It is necesary?
 	}
 }
