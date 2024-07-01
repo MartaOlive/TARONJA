@@ -217,12 +217,34 @@
 		<form>
 			Create columns:
 			<span id="DialogCreateColumnsHTML">
+			 <br>
+			  <label for="columnName">Column Name </label>
+			  <input id="columnName" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
+			  <br>
+			  <div>
+				<fieldset>
+					<input type="radio" id="constantValue" name="TypeOfValues" value="constantValue"> 
+					<label for="constantValue">Constant value</label><input id="inputText_ConstantValue" type="text" style="margin-left:10px" ><br>
+					<input type="radio" id="autoincementalValue" name="TypeOfValues" value="autoincementalValue">
+					<label for="autoincementalValue">Autoincemental value</label><input id="inputText_autoincementalValue" type="text" style="margin-left:10px"  placeholder="Initial value" ><br>
+					<input type="radio" id="empty" name="TypeOfValues" value="empty">
+					<label for="empty">Empty column</label><br>
+				</fieldset>
+				<button value="add" onClick="addColumnToList(event)"style="margin-bottom:10px">Add column </button>
+				<div style="width:auto;border:solid black 1px " >
+					<label>Columns to add</label>
+					<div id="columnsBox"style="width:100px; height:100px;border:solid black 1px">
+					</div>
+				</div>
+			  </div>
+			  
+		
 			</span>
 			<div class="center">
-				<button value="default" onClick="GetCreateColumns(event)">OK</button>
-				<button value="cancel" formmethod="dialog">Cancel</button>
+			  <button value="default" onClick="GetCreateColumns(event)">OK</button>
+			  <button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
-		</form>
+		  </form>
 	</dialog>
 
 	<dialog id="DialogAggregateColumns">
