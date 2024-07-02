@@ -310,11 +310,11 @@ function GetHTMLTable(data, dataAttributesInput, rowNumbers, prefix_selectedEnti
 }
 
 function addNewEmptyColumn(data,columnName){
-
+	console.log("empty")
 }
 function addNewColumnWithUniqueValue(data, columnName, uniqueValue){
-
+	console.log("unique")
 }
 function addNewColumnWithAutoincrementalValues(data,columnName,firstValue){
-
+	console.log("autoincremental")
 }

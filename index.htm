@@ -242,7 +242,7 @@
 		
 			</span>
 			<div class="center">
-			  <button value="default" onClick="">Add columns to your table</button>
+			  <button value="default" onClick="addColumnsToTableInCreateColumns()">Add columns to your table</button>
 			  <button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		  </form>
@@ -5203,6 +5203,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
 			}
 		}
+
+		//Create Columns
 		function addColumnToList(event){
 			event.preventDefault();
 			
@@ -5211,7 +5213,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
                 if (TypeOfValuesRadiobuttons[i].checked){
 					var columnName= document.getElementById("columnName").value;
 					var number= document.getElementById("inputText_"+TypeOfValuesRadiobuttons[i].value)?.value;
-					currentNode.STAnewColumnsToAdd.push([columnName,TypeOfValuesRadiobuttons[i].value,number]);
+					currentNode.STAnewColumnsToAdd.push([TypeOfValuesRadiobuttons[i].value,columnName,number]);
 				}
                  
             }  
@@ -5227,7 +5229,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
    
  
 			for (var a=0;a<currentNode.STAnewColumnsToAdd.length;a++){
-				switch (currentNode.STAnewColumnsToAdd[a][1]){
+				switch (currentNode.STAnewColumnsToAdd[a][0]){
 					case  "constantValue": 
 						columnsBox.innerHTML+="<tr> <td>Constant Value</td><td>"+currentNode.STAnewColumnsToAdd[a][0]+"</td> <td>Constant value: " +currentNode.STAnewColumnsToAdd[a][2]+"</td><td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></td></tr>";
 						
@@ -5244,7 +5246,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 			columnsBox.innerHTML+="</table>";
 		}
-
 		function deleteRowInColumnsBoxTable(number){
 			event.preventDefault(); 
 			var copyWithoutNumber=[];
@@ -5257,6 +5258,31 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			currentNode.STAnewColumnsToAdd=copyWithoutNumber;
 			drawTableInColumnBoxTable();
 		}
+
+		function addColumnsToTableInCreateColumns(){
+			event.preventDefault();
+			for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
+	
+						switch(currentNode.STAnewColumnsToAdd[i][0]) {
+						case  "constantValue":
+							addNewColumnWithUniqueValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1], currentNode.STAnewColumnsToAdd[i][1])
+							break;
+						case  "autoincrementalValue":
+							addNewColumnWithAutoincrementalValues(currentNode.STAdata,currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][1])
+							break;
+						case  "empty":
+							addNewEmptyColumn(currentNode.STAdata,currentNode.STAnewColumnsToAdd[i][1]);
+							break;
+						}
+	
+			
+					
+			}
+		}
+		
+		
+
+		/////
 		function giveMeNetworkInformation(event) {
 				if (event)
 					event.preventDefault(); // We don't want to submit this form
