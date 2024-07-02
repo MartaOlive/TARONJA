@@ -223,17 +223,18 @@
 			  <br>
 			  <div>
 				<fieldset>
-					<input type="radio" id="constantValue" name="TypeOfValues" value="constantValue"> 
-					<label for="constantValue">Constant value</label><input id="inputText_ConstantValue" type="text" style="margin-left:10px" ><br>
-					<input type="radio" id="autoincementalValue" name="TypeOfValues" value="autoincementalValue">
-					<label for="autoincementalValue">Autoincemental value</label><input id="inputText_autoincementalValue" type="text" style="margin-left:10px"  placeholder="Initial value" ><br>
+					<input type="radio" id="constantValue" name="TypeOfValues" value="constantValue" checked> 
+					<label for="constantValue">Constant value</label><input id="inputText_constantValue" type="text" style="margin-left:10px" ><br>
+					<input type="radio" id="autoincrementalValue" name="TypeOfValues" value="autoincrementalValue">
+					<label for="autoincrementalValue">Autoincemental value</label><input id="inputText_autoincrementalValue" type="text" style="margin-left:10px"  placeholder="Initial value" ><br>
 					<input type="radio" id="empty" name="TypeOfValues" value="empty">
 					<label for="empty">Empty column</label><br>
 				</fieldset>
-				<button value="add" onClick="addColumnToList(event)"style="margin-bottom:10px">Add column </button>
+				<button value="add" onClick="addColumnToList(event)"style="margin-bottom:10px">Add column to list </button>
 				<div style="width:auto;border:solid black 1px " >
 					<label>Columns to add</label>
-					<div id="columnsBox"style="width:100px; height:100px;border:solid black 1px">
+					<div id="columnsBox"style="border:solid black 1px">
+						<table class="tableInCreateColumns" id="columnsBoxTable"><tr> <th>Column type</th><th>Column Name</th> <th>Value</th><th></th> </tr></table> 
 					</div>
 				</div>
 			  </div>
@@ -241,7 +242,7 @@
 		
 			</span>
 			<div class="center">
-			  <button value="default" onClick="GetCreateColumns(event)">OK</button>
+			  <button value="default" onClick="">Add columns to your table</button>
 			  <button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		  </form>
@@ -4868,6 +4869,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else if (currentNode.image == "AggregateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode) {
+
 						//ShowAggregateColumnsDialog();
 						document.getElementById("DialogAggregateColumns").showModal();
 					}
@@ -4875,6 +4877,9 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else if (currentNode.image == "CreateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode) {
+						if (!currentNode.STAnewColumnsToAdd){
+							currentNode.STAnewColumnsToAdd=[];
+						}
 						//ShowCreateColumnsDialog();
 						document.getElementById("DialogCreateColumns").showModal();
 					}
@@ -5197,6 +5202,60 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					});
 				}
 			}
+		}
+		function addColumnToList(event){
+			event.preventDefault();
+			
+			var TypeOfValuesRadiobuttons= document.getElementsByName("TypeOfValues");
+			for (var i = 0; i < TypeOfValuesRadiobuttons.length; i++) {
+                if (TypeOfValuesRadiobuttons[i].checked){
+					var columnName= document.getElementById("columnName").value;
+					var number= document.getElementById("inputText_"+TypeOfValuesRadiobuttons[i].value)?.value;
+					currentNode.STAnewColumnsToAdd.push([columnName,TypeOfValuesRadiobuttons[i].value,number]);
+				}
+                 
+            }  
+			drawTableInColumnBoxTable();
+			
+
+
+		}
+		function drawTableInColumnBoxTable(){
+			var columnsBox=document.getElementById("columnsBoxTable");
+			columnsBox.innerHTML="<table class='tableInCreateColumns'> <tr> <th>Column type</th><th>Column Name</th> <th>Value</th><th></th> </tr>";
+				//columnsBox.innerHTML=""
+   
+ 
+			for (var a=0;a<currentNode.STAnewColumnsToAdd.length;a++){
+				switch (currentNode.STAnewColumnsToAdd[a][1]){
+					case  "constantValue": 
+						columnsBox.innerHTML+="<tr> <td>Constant Value</td><td>"+currentNode.STAnewColumnsToAdd[a][0]+"</td> <td>Constant value: " +currentNode.STAnewColumnsToAdd[a][2]+"</td><td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></td></tr>";
+						
+						break;
+					case  "autoincrementalValue": 
+						columnsBox.innerHTML+="<tr> <td>Autoincremental Value</td><td>"+currentNode.STAnewColumnsToAdd[a][0]+"</td> <td>Initial value: " +currentNode.STAnewColumnsToAdd[a][2]+"</td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></tr>";
+						
+						break;
+					case  "empty": 
+						columnsBox.innerHTML+="<tr> <td>Empty</td><td>"+currentNode.STAnewColumnsToAdd[a][0]+"</td> <td></td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></tr>";
+						break;
+				}
+			
+			}
+			columnsBox.innerHTML+="</table>";
+		}
+
+		function deleteRowInColumnsBoxTable(number){
+			event.preventDefault(); 
+			var copyWithoutNumber=[];
+			for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
+				if (i!=number){
+					copyWithoutNumber.push(currentNode.STAnewColumnsToAdd[i])
+				}
+			}
+
+			currentNode.STAnewColumnsToAdd=copyWithoutNumber;
+			drawTableInColumnBoxTable();
 		}
 		function giveMeNetworkInformation(event) {
 				if (event)
