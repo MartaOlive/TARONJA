@@ -5233,11 +5233,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						
 						break;
 					case  "autoincrementalValue": 
-						columnsBox.innerHTML+="<tr> <td>Autoincremental Value</td><td>"+currentNode.STAnewColumnsToAdd[a][0]+"</td> <td>Initial value: " +currentNode.STAnewColumnsToAdd[a][2]+"</td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></tr>";
+						columnsBox.innerHTML+="<tr> <td>Autoincremental Value</td><td>"+currentNode.STAnewColumnsToAdd[a][0]+"</td> <td>Initial value: " +currentNode.STAnewColumnsToAdd[a][2]+"</td><td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></td></tr>";
 						
 						break;
 					case  "empty": 
-						columnsBox.innerHTML+="<tr> <td>Empty</td><td>"+currentNode.STAnewColumnsToAdd[a][0]+"</td> <td></td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></tr>";
+						columnsBox.innerHTML+="<tr> <td>Empty</td><td>"+currentNode.STAnewColumnsToAdd[a][0]+"</td> <td> - </td><td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></td></tr>";
 						break;
 				}
 			
