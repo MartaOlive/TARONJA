@@ -310,8 +310,13 @@ function GetHTMLTable(data, dataAttributesInput, rowNumbers, prefix_selectedEnti
 }
 
 function addNewEmptyColumn(data,columnName){
-	console.log("empty")
+	console.log("empty");
+	for (var i=0;i<data.length;i++){
+		data[i][columnName]="";
+	}
+	return data;
 }
+
 function addNewColumnWithUniqueValue(data, columnName, uniqueValue){
 	console.log("unique")
 }
