@@ -4889,9 +4889,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					var columnsBox=document.getElementById("columnsBoxTable");
 					columnsBox.innerHTML=""; //Erase old content
 					if (parentNode) {
-							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values
-
-						
+							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
 						document.getElementById("DialogCreateColumns").showModal();
 					}
 				}
@@ -5277,10 +5275,10 @@ async function requestAndRefreshCountResults(currentNode, period) {
 	
 				switch(currentNode.STAnewColumnsToAdd[i][0]) {
 				case  "constantValue":
-					data=addNewColumnWithUniqueValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1], currentNode.STAnewColumnsToAdd[i][1])
+					data=addNewColumnWithUniqueValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1], currentNode.STAnewColumnsToAdd[i][2])
 					break;
 				case  "autoincrementalValue":
-					data=addNewColumnWithAutoincrementalValues(currentNode.STAdata,currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][1])
+					data=addNewColumnWithAutoincrementalValues(currentNode.STAdata,currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2])
 					break;
 				case  "empty":
 					data= addNewEmptyColumn(currentNode.STAdata,currentNode.STAnewColumnsToAdd[i][1]);

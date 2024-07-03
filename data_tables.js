@@ -310,7 +310,6 @@ function GetHTMLTable(data, dataAttributesInput, rowNumbers, prefix_selectedEnti
 }
 
 function addNewEmptyColumn(data,columnName){
-	console.log("empty");
 	for (var i=0;i<data.length;i++){
 		data[i][columnName]="";
 	}
@@ -318,8 +317,15 @@ function addNewEmptyColumn(data,columnName){
 }
 
 function addNewColumnWithUniqueValue(data, columnName, uniqueValue){
-	console.log("unique")
+	for (var i=0;i<data.length;i++){
+		data[i][columnName]=uniqueValue;
+	}
+	return data;
 }
 function addNewColumnWithAutoincrementalValues(data,columnName,firstValue){
-	console.log("autoincremental")
+
+	for (var i=0;i<data.length;i++){
+		data[i][columnName]=parseInt(firstValue)+i;
+	}
+	return data;
 }
