@@ -4,38 +4,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../tapis.css">
 </head>
 
 <body>
 
   <form>
-    Create columns:
-    <span id="DialogCreateColumnsHTML">
-     <br>
+    Aggregate columns:
+    <span id="DialogAggregateColumnsHTML">
+      <br>
       <label for="columnName">Column Name </label>
       <input id="columnName" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
       <br>
-      <div>
-        <fieldset>
-            <input type="radio" id="constantValue" name="TypeOfValues" value="constantValue"> 
-            <label for="constantValue">Constant value</label><input id="inputText_constantValue" type="text" style="margin-left:10px" ><br>
-            <input type="radio" id="autoincrementalValue" name="TypeOfValues" value="autoincrementalValue">
-            <label for="autoincrementalValue">Autoincremental value</label><input id="inputText_autoincrementalValue" type="text" style="margin-left:10px"  placeholder="Initial value" ><br>
-            <input type="radio" id="empty" name="TypeOfValues" value="empty">
-            <label for="empty">Empty column</label><br>
+      <div >
+        <fieldset id="columnsFielset" style="display:inline-block">
+          <legend>Select your variables/columns:</legend>
+        
+          
+            <input type="checkbox" id="scales" name="scales" checked />
+            <label for="scales">Scales</label>
+          <br>
+        
+          
+            <input type="checkbox" id="horns" name="horns" />
+            <label for="horns">Horns</label>
+         
         </fieldset>
-        <button value="add" onClick="addColumnToList(event)"style="margin-bottom:10px">Add column </button>
-        <div style="width:auto;border:solid black 1px " >
-            <label>Columns to add</label>
-            <div id="columnsBox"style="border:solid black 1px">
-            </div>
+      <fieldset id="operationsFieldSet" style="display:inline-block">
+        <legend>Select your operation:</legend>
+        <input type="radio" id="sum" name="TypeOfValues" value="sum" checked> 
+        <label for="sum">Sum</label><br>
+        <input type="radio" id="product" name="TypeOfValues" value="product">
+        <label for="product">Product</label><br>
+        <input type="radio" id="minimalValue" name="TypeOfValues" value="minimalValue">
+        <label for="minimalValue">Minimal Value</label><br>
+        <input type="radio" id="maximalValue" name="TypeOfValues" value="maximalValue">
+        <label for="maximalValue">Maximal Value</label><br>
+        <input type="radio" id="meanValue" name="TypeOfValues" value="meanValue">
+        <label for="meanValue">Mean Value</label><br>
+        <input type="radio" id="variance" name="TypeOfValues" value="variance">
+        <label for="variance">Variance</label><br>
+        <input type="radio" id="median" name="TypeOfValues" value="median">
+        <label for="median">Median</label><br>
+      </fieldset>
+      <br>
+      <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
+      <div style="width:auto;border:solid black 1px " >
+        <label>Columns to add</label>
+        <div id="columnsBox"style="border:solid black 1px">
+          <table class="tableInCreateColumns" id="columnsBoxTable"><tr> <th>Operation</th><th>Column name</th> <th>Columns</th><th></th> </tr></table> 
         </div>
       </div>
-      
-
-	</span>
+      </div>
+    </span>
     <div class="center">
-      <button value="default" onClick="GetCreateColumns(event)">OK</button>
+      <button value="default" onClick="GetAggregateColumns(event)">OK</button>
       <button value="cancel" formmethod="dialog">Cancel</button>
     </div>
   </form>

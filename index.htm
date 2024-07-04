@@ -223,6 +223,7 @@
 			  <br>
 			  <div>
 				<fieldset>
+					<legend>Select your operation:</legend>
 					<input type="radio" id="constantValue" name="TypeOfValues" value="constantValue" checked> 
 					<label for="constantValue">Constant value</label><input id="inputText_constantValue" type="text" style="margin-left:10px" ><br>
 					<input type="radio" id="autoincrementalValue" name="TypeOfValues" value="autoincrementalValue">
@@ -230,10 +231,10 @@
 					<input type="radio" id="empty" name="TypeOfValues" value="empty">
 					<label for="empty">Empty column</label><br>
 				</fieldset>
-				<button value="add" onClick="addColumnToList(event)"style="margin-bottom:10px">Add column to list </button>
-				<div style="width:auto;border:solid black 1px " >
+				<button value="add" onClick="addColumnToListCreateColumn(event)"style="margin-bottom:10px">Add column to list </button>
+				<div style="width:auto;" >
 					<label>Columns to add</label>
-					<div id="columnsBox"style="border:solid black 1px">
+					<div id="columnsBox">
 						<table class="tableInCreateColumns" id="columnsBoxTable"><tr> <th>Column type</th><th>Column Name</th> <th>Value</th><th></th> </tr></table> 
 					</div>
 				</div>
@@ -241,7 +242,7 @@
 			  
 		
 			</span>
-			<div class="center">
+			<div class="center" style="margin-top: 10px">
 			  <button value="default" onClick="addColumnsToTableInCreateColumns()">Add columns to your table</button>
 			  <button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
@@ -252,12 +253,47 @@
 		<form>
 			Aggregate columns:
 			<span id="DialogAggregateColumnsHTML">
+			  <br>
+			  <label for="columnName">Column Name </label>
+			  <input id="columnName" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
+			  <br>
+			  <div >
+				<fieldset id="columnsFielset" style="display:inline-block">
+				  
+						 
+				</fieldset>
+			  <fieldset id="operationsFieldSet" style="display:inline-block">
+				<legend>Select your operation:</legend>
+				<input type="radio" id="sum" name="TypeOfValues" value="sum" checked> 
+				<label for="sum">Sum</label><br>
+				<input type="radio" id="product" name="TypeOfValues" value="product">
+				<label for="product">Product</label><br>
+				<input type="radio" id="minimalValue" name="TypeOfValues" value="minimalValue">
+				<label for="minimalValue">Minimal Value</label><br>
+				<input type="radio" id="maximalValue" name="TypeOfValues" value="maximalValue">
+				<label for="maximalValue">Maximal Value</label><br>
+				<input type="radio" id="meanValue" name="TypeOfValues" value="meanValue">
+				<label for="meanValue">Mean Value</label><br>
+				<input type="radio" id="variance" name="TypeOfValues" value="variance">
+				<label for="variance">Variance</label><br>
+				<input type="radio" id="median" name="TypeOfValues" value="median">
+				<label for="median">Median</label><br>
+			  </fieldset>
+			  <br>
+			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
+			  <div style="width:auto;" >
+				<label>Columns to add</label>
+				<div id="columnsBox">
+				  <table class="tableInCreateColumns" id="columnsBoxTable"><tr> <th>Operation</th><th>Column name</th> <th>Columns</th><th></th> </tr></table> 
+				</div>
+			  </div>
+			  </div>
 			</span>
-			<div class="center">
-				<button value="default" onClick="GetAggregateColumns(event)">OK</button>
-				<button value="cancel" formmethod="dialog">Cancel</button>
+			<div class="center" style="margin-top: 10px">
+			  <button value="default" onClick="GetAggregateColumns(event)">OK</button>
+			  <button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
-		</form>
+		  </form>
 	</dialog>
 
 	<dialog id="DialogColumnsCalculator">
@@ -2685,19 +2721,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			return groupByParams;
 		}
 
-		function GetCreateColumns(event){
-
-		}
-
-		function GetAggregateColumns(event){
-
-		}
-
-		function GetColumnsCalculator(event){
-
-		}
-
-
 
 		function GetSelectNRecords(event) {
 			event.preventDefault(); // We don't want to submit this form
@@ -4388,15 +4411,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			CheckSelectedAggrGroupBy(null, node.id);
 			return;
 		}
-		function ShowAggregateColumns() {
 
-		}
-		function ShowCreateColumns() {
-
-		}
-		function ShowColumnsCalculator() {
-
-		}
+		
 
 		function ShowTableSelectRowDialog(parentNode, node) {
 			var data = parentNode.STAdata;
@@ -4661,6 +4677,15 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				return true;
 			}
+			if (nodeTo.image == "AggregateColumns.png") {
+				if (nodeFrom.STAdata){
+					nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
+					networkNodes.update(nodeTo);
+				}
+				if (calUnir)
+					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
+				return true;
+			}
 
 
 			return false;
@@ -4878,9 +4903,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
 				else if (currentNode.image == "AggregateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
+					var columnsBox=document.getElementById("columnsBoxTable");
+					columnsBox.innerHTML=""; //Erase old content
 					if (parentNode) {
-
-						//ShowAggregateColumnsDialog();
+						currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values
+						fillAggregateColumVariablesList();					
 						document.getElementById("DialogAggregateColumns").showModal();
 					}
 				}
@@ -4889,7 +4916,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					var columnsBox=document.getElementById("columnsBoxTable");
 					columnsBox.innerHTML=""; //Erase old content
 					if (parentNode) {
-							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
+						currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
 						document.getElementById("DialogCreateColumns").showModal();
 					}
 				}
@@ -5214,7 +5241,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		}
 
 		//Create Columns
-		function addColumnToList(event){
+		function addColumnToListCreateColumn(event){
 			event.preventDefault();
 			
 			var TypeOfValuesRadiobuttons= document.getElementsByName("TypeOfValues");
@@ -5294,7 +5321,17 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			showInfoMessage("New columns have been added");
 		}
 		
-		
+		//Aggregate columns
+
+
+		function fillAggregateColumVariablesList(){
+			var columnsFielset= document.getElementById("columnsFielset");
+			columnsFielset.innerHTML="<legend>Select your variables/columns:</legend>";
+			var dataKeys= Object.keys(currentNode.STAdata[0]);
+			for (var i=0;i<dataKeys.length;i++){
+				columnsFielset.innerHTML+=' <input type="checkbox" id="'+dataKeys[i]+'" value="'+dataKeys[i]+'"/><label for="'+dataKeys[i]+'">'+dataKeys[i]+'</label><br>'
+			}
+		}
 
 		/////
 		function giveMeNetworkInformation(event) {
