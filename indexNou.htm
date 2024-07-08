@@ -4685,8 +4685,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				return true;
 			}
-
-
 			return false;
 		}
 
@@ -4902,8 +4900,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
 				else if (currentNode.image == "AggregateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
-					//var columnsBox=document.getElementById("columnsBoxAggregateColumntable");
-					//columnsBox.innerHTML=""; //Erase old content
 					if (parentNode) {
 						currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values
 						fillAggregateColumVariablesList();					
@@ -5356,8 +5352,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		}
 		function drawTableInColumnBoxTableInAggregateColumns(){
 			var columnsBox=document.getElementById("columnsBoxAggregateColumn");
-			columnsBox.innerHTML='<table class="tableInAddColumns" id="columnsBoxAggregateColumntable"><tr><th>Operation</th><th>Column name</th><th>Columns</th><th></th></tr>';
-			
+			columnsBox.innerHTML=""			
 				for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
 					columnsBox.innerHTML+='<tr><td>'+currentNode.STAnewColumnsToAdd[i][0]+'</td><td>'+currentNode.STAnewColumnsToAdd[i][1]+'</td><td>';
 					for(var a=0;a<currentNode.STAnewColumnsToAdd[i][2].length;a++){
