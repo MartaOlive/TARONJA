@@ -256,6 +256,8 @@
 			  <label for="columnNameAggregateColumns">Column Name </label>
 			  <input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
 			  <br>
+			  <label for="decimalNumberAggregateColumns">Choose how many decimal numbers you want to round up (if you prefer): </label>
+			  <input id="decimalNumberAggregateColumns" type="number" style="margin-top: 10px; margin-bottom: 10px; "  max="10" min="0"> 
 			  <div >
 				<fieldset id="columnsFielset" style="display:inline-block">
 				  
@@ -4885,11 +4887,12 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
 				else if (currentNode.image == "AggregateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
-					fillAggregateColumVariablesList();	
+						
 					if (parentNode.STAdata){
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent
 						
 					}
+					fillAggregateColumVariablesList();
 					if (parentNode) {
 						if (!currentNode.STAnewColumnsToAdd){
 							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
@@ -5355,37 +5358,45 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		function addColumnsToTableInAggregateColumns(event){
 			event.preventDefault();
 			var data;
+			var decimalNumber= document.getElementById("decimalNumberAggregateColumns")?.value;
 			for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
 	
 				switch(currentNode.STAnewColumnsToAdd[i][0]) {
-				case  "sum":
-					data= addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
+					case  "sum":
+						if (decimalNumber!=""){
+							data= addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
+
+						}else{
+							data= addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
+
+						}
+						break;
+					case  "product":
+						
+						break;
+					case  "minimalValue":
+						
 					break;
-				case  "product":
-					
-					break;
-				case  "minimalValue":
-					
-				break;
-				case  "maximalValue":
-					
-					break;
-				case  "meanValue":
-					
-					break;
-				case  "variance":
-					
-					break;
-				case  "median":
-					
-					break;
-				case  "concatenate":
-					
-					break;
+					case  "maximalValue":
+						
+						break;
+					case  "meanValue":
+						
+						break;
+					case  "variance":
+						
+						break;
+					case  "median":
+						
+						break;
+					case  "concatenate":
+						
+						break;
 				}
 
+			}
+			document.getElementById("DialogAggregateColumns").close();
 		}
-	}
 		/////
 		function giveMeNetworkInformation(event) {
 				if (event)

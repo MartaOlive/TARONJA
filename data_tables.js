@@ -629,7 +629,7 @@ function addNewColumnWithAutoincrementalValues(data,columnName,firstValue){
 	return data;
 }
 
-function addnewColumnSummingColumns(data, columnName,columnsToSum){
+function addnewColumnSummingColumns(data, columnName,columnsToSum, decimalNumber){
 	var sum; 
 	//numWithComa, value, num;
 	for (var i=0;i<data.length;i++){
@@ -652,8 +652,12 @@ function addnewColumnSummingColumns(data, columnName,columnsToSum){
 			// }
 			//sum+=num;
 		}
-		data[i][columnName]= sum;
-
+		
+		if (decimalNumber){
+			data[i][columnName]= sum.toFixed(decimalNumber);
+		}else{
+			data[i][columnName]= sum;
+		}
 	}
 	return data;
 }
