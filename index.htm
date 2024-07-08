@@ -5269,7 +5269,12 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 
 			currentNode.STAnewColumnsToAdd=copyWithoutNumber;
-			drawTColumnsInformaionInColumnBoxTableInCreateColumns();
+			if (currentNode.image=="CreateColumns.png"){ //createColumn
+				drawTColumnsInformaionInColumnBoxTableInCreateColumns();
+			}else{ //aggregateTable
+				drawTableInColumnBoxTableInAggregateColumns();
+			} 
+			
 		}
 		function addColumnsToTableInCreateColumns(){
 			event.preventDefault();
@@ -5343,7 +5348,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						}
 						columns+=currentNode.STAnewColumnsToAdd[i][2][a];
 					}
-					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Variables/columns: </b>${columns} <button onclick="deleteRowInColumnsBoxTable('+a+')">Delete</button>`;
+					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Variables/columns: </b>${columns} <button onclick="deleteRowInColumnsBoxTable(${i})">Delete</button>`;
 				}
 		}
 

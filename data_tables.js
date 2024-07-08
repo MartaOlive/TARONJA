@@ -634,7 +634,6 @@ function addnewColumnSummingColumns(data, columnName,columnsToSum){
 	//numWithComa, value, num;
 	for (var i=0;i<data.length;i++){
 		sum=0;
-
 		for (var a=0;a<columnsToSum.length;a++){
 			if (typeof data[i][columnsToSum[a]] =="string"){
 				sum+=parseFloat(data[i][columnsToSum[a]]);
