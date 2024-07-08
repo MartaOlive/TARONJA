@@ -157,7 +157,6 @@
 		</form>
 	</dialog>
 
-
 	<dialog id="DialogSelectColumns">
 		<form>
 			Select columns:
@@ -232,10 +231,10 @@
 					<label for="empty">Empty column</label><br>
 				</fieldset>
 				<button value="add" onClick="addColumnToListCreateColumn(event)"style="margin-bottom:10px">Add column to list </button>
-				<div style="width:auto;" >
+				<div  style="width:auto;">
 					<label>Columns to add</label>
-					<div id="columnsBoxCreateColumn">
-						<table class="tableInAddColumns" id="columnsBoxCreateColumnTable"><tr> <th>Column type</th><th>Column Name</th> <th>Value</th><th></th> </tr></table> 
+					<div >
+						<ol id="columnsBoxCreateColumns"></ol>
 					</div>
 				</div>
 			  </div>
@@ -283,8 +282,8 @@
 			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
 			  <div style="width:auto;" >
 				<label>Columns to add</label>
-				<div id="columnsBoxAggregateColumn">
-					<table class="tableInAddColumns" id="columnsBoxAggregateColumntable"><tr> <th>Operation</th><th>Column name</th> <th>Variables/columns</th><th></th> </tr></table> 
+				<div >
+					<ol id="columnsBoxAggregateColumn"></ol>
 				</div>
 			  </div>
 			</span>
@@ -371,6 +370,7 @@
 			</div>
 		</form>
 	</dialog>
+
 
 	<dialog id="DialogSelectRow">
 		<div id="divTitleSelectRow" class="center" style="font-size: large;"></div>
@@ -471,7 +471,7 @@
 			<br>
 			<fieldset style="display: inline;">
 				<legend>Delimiter</legend>
-				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked></input><input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=";"></input></label> &ensp;
+				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked></input><input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=","></input></label> &ensp;
 				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterTab"></input> Tab</label>
 			</fieldset>
 			Encoding: <select id="DialogImportCSVEncoding">
@@ -2853,8 +2853,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else
 					return;
 
-				currentNode.STAUrlAPICounter = []; // I need to restart it 
-				
+				currentNode.STAUrlAPICounter = []; // I need to restart it 				
 				var previousURL = parentNode.STAURL;//put URL ready to add things
 
 				var prevFilter = GetQueryParamFromURL(parentNode.STAURL, "$filter");
@@ -2899,9 +2898,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
 				readInformationRowFilterOGCAPIFeatures(currentNode.STAelementFilter, "no", "no"); //apply filter
 				currentNode.STAURL = currentNode.STAURL+currentNode.STAUrlAPI+"&f=json";
-				//Always work ask for X results? If not, it can fail
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
-
 				LoadJSONNodeSTAData(currentNode);
 				networkNodes.update(currentNode);
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousURL);
@@ -4411,8 +4408,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			return;
 		}
 
-		
-
 		function ShowTableSelectRowDialog(parentNode, node) {
 			var data = parentNode.STAdata;
 			
@@ -4668,17 +4663,17 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				return true;
 			}
 			if (nodeTo.image == "CreateColumns.png") {
-				if (nodeFrom.STAdata){
-					nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
+				 if (nodeFrom.STAdata){
+				 	nodeTo.STAdata = deapCopy(nodeFrom.STAdata); //necessary first time
 					networkNodes.update(nodeTo);
-				}
+				 }
 				if (calUnir)
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				return true;
 			}
 			if (nodeTo.image == "AggregateColumns.png") {
 				if (nodeFrom.STAdata){
-					nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
+					nodeTo.STAdata = deapCopy(nodeFrom.STAdata); //necessary first time
 					networkNodes.update(nodeTo);
 				}
 				if (calUnir)
@@ -4877,10 +4872,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						if (parentNode.OGCType){
 							currentNode.OGCType="OGCAPIitem";
 						}
-
 						ShowTableFilterRowsDialog(parentNode, currentNode);
 						document.getElementById("DialogFilterRows").showModal();
-				
 					}
 				}
 				else if (currentNode.image == "SortBySTA.png") {
@@ -4898,21 +4891,33 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						document.getElementById("DialogGroupBy").showModal();
 					}
 				}
-				else if (currentNode.image == "AggregateColumns.png") {
-					var parentNode=GetFirstParentNode(currentNode);
-					if (parentNode) {
-						currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values
-						fillAggregateColumVariablesList();					
-						document.getElementById("DialogAggregateColumns").showModal();
-					}
-				}
 				else if (currentNode.image == "CreateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
-					var columnsBox=document.getElementById("columnsBoxCreateColumnTable");
-					columnsBox.innerHTML=""; //Erase old content
-					if (parentNode) {
-						currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
+					if (parentNode.STAdata){
+						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent	
+					}
+					 if (parentNode) {
+						if (!currentNode.STAnewColumnsToAdd){
+							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
+						}
+						networkNodes.update(currentNode);
 						document.getElementById("DialogCreateColumns").showModal();
+					 }		
+				}
+				else if (currentNode.image == "AggregateColumns.png") {
+					var parentNode=GetFirstParentNode(currentNode);
+					fillAggregateColumVariablesList();	
+					if (parentNode.STAdata){
+						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent
+						
+					}
+					if (parentNode) {
+						if (!currentNode.STAnewColumnsToAdd){
+							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
+						}
+						networkNodes.update(currentNode);
+						//drawTableInColumnBoxTableInAggregateColumns()
+						document.getElementById("DialogAggregateColumns").showModal();
 					}
 				}
 				else if (currentNode.image == "ColumnsCalculator.png") {
@@ -4932,6 +4937,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
 			}
 		}
+		
 		function networkContext(params) {
 			params.event.preventDefault();  //https://stackoverflow.com/questions/38258940/open-an-extension-popup-html-list-on-right-click-of-node-contextmenu-in-visj
 
@@ -5244,39 +5250,36 @@ async function requestAndRefreshCountResults(currentNode, period) {
                 if (TypeOfValuesRadiobuttons[i].checked){
 					var columnName= document.getElementById("columnNameCreateColumns").value;
 					var number= document.getElementById("inputText_"+TypeOfValuesRadiobuttons[i].value)?.value;
+					if (number=="") //to avoid undefined in column list and problems afeter
+						number=0;
 					currentNode.STAnewColumnsToAdd.push([TypeOfValuesRadiobuttons[i].value,columnName,number]);
 				}
                  
             }  
-			drawTableInColumnBoxTableInCreateColumns();
+			drawTColumnsInformaionInColumnBoxTableInCreateColumns();
 			
 
 
 		}
-		function drawTableInColumnBoxTableInCreateColumns(){
-			var columnsBox=document.getElementById("columnsBoxCreateColumn");
-			columnsBox.innerHTML="<table class='tableInAddColumns'id ='columnsBoxCreateColumnTable'> <tr> <th>Column type</th><th>Column Name</th> <th>Value</th><th></th> </tr>";
-			//columnsBox.innerHTML=""
+		function drawTColumnsInformaionInColumnBoxTableInCreateColumns(){
+			var columnsBox=document.getElementById("columnsBoxCreateColumns");
+			columnsBox.innerHTML=""
    
  
 			for (var a=0;a<currentNode.STAnewColumnsToAdd.length;a++){
-				switch (currentNode.STAnewColumnsToAdd[a][0]){
-					case  "constantValue": 
-						columnsBox.innerHTML+="<tr> <td>Constant Value</td><td>"+currentNode.STAnewColumnsToAdd[a][1]+"</td> <td>Constant value: " +currentNode.STAnewColumnsToAdd[a][2]+"</td><td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></td></tr>";
-						
-						break;
-					case  "autoincrementalValue": 
-						columnsBox.innerHTML+="<tr> <td>Autoincremental Value</td><td>"+currentNode.STAnewColumnsToAdd[a][1]+"</td> <td>Initial value: " +currentNode.STAnewColumnsToAdd[a][2]+"</td><td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></td></tr>";
-						
-						break;
-					case  "empty": 
-						columnsBox.innerHTML+="<tr> <td>Empty</td><td>"+currentNode.STAnewColumnsToAdd[a][1]+"</td> <td> - </td><td><button onclick='deleteRowInColumnsBoxTable("+a+")'>Delete</button></td></tr>";
-						break;
+	
+				if (currentNode.STAnewColumnsToAdd[a][0]=="constantValue" ){
+					columnsBox.innerHTML+= `<li><b>Column type:</b> Constant value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'>Delete</button></li>`;
+				}else if (currentNode.STAnewColumnsToAdd[a][0]=="autoincrementalValue" ){
+					columnsBox.innerHTML+= `<li><b>Column type:</b> Autoincremental value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>Initial value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'>Delete</button></li>`
+				}else{
+					columnsBox.innerHTML+= `<li><b>Column type:</b> Empty column, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]} <button onclick='deleteRowInColumnsBoxTable(${a})'>Delete</button></li>`
 				}
+
 			
 			}
-			columnsBox.innerHTML+="</table>";
 		}
+
 		function deleteRowInColumnsBoxTable(number){
 			event.preventDefault(); 
 			var copyWithoutNumber=[];
@@ -5287,9 +5290,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 
 			currentNode.STAnewColumnsToAdd=copyWithoutNumber;
-			drawTableInColumnBoxTableInCreateColumns();
+			drawTColumnsInformaionInColumnBoxTableInCreateColumns();
 		}
-
 		function addColumnsToTableInCreateColumns(){
 			event.preventDefault();
 			var data;
@@ -5317,8 +5319,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		}
 		
 		//Aggregate columns
-
-
+		
 		function fillAggregateColumVariablesList(){
 			var columnsFielset= document.getElementById("columnsFielset");
 			columnsFielset.innerHTML="<legend>Select your variables/columns:</legend>";
@@ -5352,20 +5353,19 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		}
 		function drawTableInColumnBoxTableInAggregateColumns(){
 			var columnsBox=document.getElementById("columnsBoxAggregateColumn");
-			columnsBox.innerHTML=""			
+			var columns;
+			columnsBox.innerHTML="";
+			
 				for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
-					columnsBox.innerHTML+='<tr><td>'+currentNode.STAnewColumnsToAdd[i][0]+'</td><td>'+currentNode.STAnewColumnsToAdd[i][1]+'</td><td>';
-					for(var a=0;a<currentNode.STAnewColumnsToAdd[i][2].length;a++){
+					columns=""
+					for(var a=0;a<currentNode.STAnewColumnsToAdd[i][2].length;a++){ //unfold array with columns to put in string
 						if (a!=0){
-						columnsBox.innerHTML+=", "	;
+						columns+=", "	;
 						}
-						columnsBox.innerHTML+=currentNode.STAnewColumnsToAdd[i][2][a];
+						columns+=currentNode.STAnewColumnsToAdd[i][2][a];
 					}
-
-						
-					columnsBox.innerHTML+='</td><td><button onclick="deleteRowInColumnsBoxTable('+a+')">Delete</button></td></tr>';
+					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Variables/columns: </b>${columns} <button onclick="deleteRowInColumnsBoxTable('+a+')">Delete</button>`;
 				}
-			columnsBox.innerHTML+='</table>';
 		}
 		/////
 		function giveMeNetworkInformation(event) {

@@ -157,7 +157,6 @@
 		</form>
 	</dialog>
 
-
 	<dialog id="DialogSelectColumns">
 		<form>
 			Select columns:
@@ -371,6 +370,7 @@
 			</div>
 		</form>
 	</dialog>
+
 
 	<dialog id="DialogSelectRow">
 		<div id="divTitleSelectRow" class="center" style="font-size: large;"></div>
@@ -2717,9 +2717,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					break;
 				}
 			}
-			return groupByParams;
+			var dataCurrentAttributes={};
+			currentNode.STAdata=GroupByTableData(data, dataAttributes, dataCurrentAttributes, groupByParams);
+			currentNode.STAdataAttributes=dataCurrentAttributes;
+			networkNodes.update(currentNode);
 		}
-
 
 		function GetSelectNRecords(event) {
 			event.preventDefault(); // We don't want to submit this form
@@ -2854,7 +2856,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					return;
 
 				currentNode.STAUrlAPICounter = []; // I need to restart it 
-				
 				var previousURL = parentNode.STAURL;//put URL ready to add things
 
 				var prevFilter = GetQueryParamFromURL(parentNode.STAURL, "$filter");
@@ -2893,15 +2894,13 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			if (currentNode.STAOGCAPIconformance.includes("cql-text")){
 				currentNode.STAUrlAPICounter = []; // I need to restart it 
 				stopreadInformationRowFilterOGCAPIFeatures = false;
-				currentNode.STAURL = previousURL  +"?filter="; 
+				currentNode.STAURL = previousURL  +"?filter=";
 				if (currentNode.STAUrlAPI){
 					currentNode.STAUrlAPI="";
 				}
 				readInformationRowFilterOGCAPIFeatures(currentNode.STAelementFilter, "no", "no"); //apply filter
 				currentNode.STAURL = currentNode.STAURL+currentNode.STAUrlAPI+"&f=json";
-				//Always work ask for X results? If not, it can fail
 				currentNode.STAExpectedLength = document.getElementById("SelectNumberOfRecordsFilterRows").value;
-
 				LoadJSONNodeSTAData(currentNode);
 				networkNodes.update(currentNode);
 				UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousURL);
@@ -4265,31 +4264,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			document.getElementById("SelectSortByNumberOfRecords").value=node.STAExpectedLength;
 		}
 
-		const AggregationsOptions=[{name: "Mean", desc: "Mean"},
-					 {name: "Mode", desc: "Mode"},
-					 {name: "FirstValue", desc: "First value"},
-					 {name: "Median", desc: "Median"},
-					 {name: "StandardDeviation", desc: "Standard deviation"},
-					 {name: "LastValue", desc: "Last value"},
-					 {name: "Q1", desc: "Q1"},
-					 {name: "Variance", desc: "Variance"},
-					 {name: "RandomValue", desc: "Random value"},
-					 {name: "Q3", desc: "Q3"},
-					 {name: "Sum", desc: "Sum"},
-					 {name: "CountDefined", desc: "Count defined"},
-					 {name: "MinValue", desc: "Min. Value"},
-					 {name: "Concatenate", desc: "Concatenate"},
-					 {name: "Count", desc: "Count"},
-					 {name: "MaxValue", desc: "Max. value"},
-					 {name: "Span", desc: "Span"},
-					 {name: "ProportionDefined", desc: "Proportion defined"}]; 
-		const GroupByDateTimeOptions=[{name: "Year", desc: "Year"},
-					 {name: "Month", desc: "Month"},
-					 {name: "Day", desc: "Day"},
-					 {name: "Hour", desc: "Hour"},
-					 {name: "Minute", desc: "Minute"},
-					 {name: "Second", desc: "Second"}]; 
-
 		function showCheckRadioOptions(div_name, div_option_prefix, options, nCols, radio_name, fEvent) {
 			var cdns=[];
 			
@@ -4410,8 +4384,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			CheckSelectedAggrGroupBy(null, node.id);
 			return;
 		}
-
-
 
 		function ShowTableSelectRowDialog(parentNode, node) {
 			var data = parentNode.STAdata;
@@ -4877,10 +4849,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						if (parentNode.OGCType){
 							currentNode.OGCType="OGCAPIitem";
 						}
-
 						ShowTableFilterRowsDialog(parentNode, currentNode);
 						document.getElementById("DialogFilterRows").showModal();
-				
 					}
 				}
 				else if (currentNode.image == "SortBySTA.png") {
@@ -4944,6 +4914,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
 			}
 		}
+
 		function networkContext(params) {
 			params.event.preventDefault();  //https://stackoverflow.com/questions/38258940/open-an-extension-popup-html-list-on-right-click-of-node-contextmenu-in-visj
 
