@@ -1,11 +1,11 @@
-/* 
-    This file is part of TAPIS. TAPIS is a web page and a Javascript code 
-    that builds queries and explore the STAplus content, saves it as CSV or 
-    GeoJSON and connects with the MiraMon Map Browser. While the project is 
-    completely independent from the Orange data mining software, it has been 
-    inspired by its GUI. The general idea of the application is to be able 
+/*
+    This file is part of TAPIS. TAPIS is a web page and a Javascript code
+    that builds queries and explore the STAplus content, saves it as CSV or
+    GeoJSON and connects with the MiraMon Map Browser. While the project is
+    completely independent from the Orange data mining software, it has been
+    inspired by its GUI. The general idea of the application is to be able
     to work with STA data as tables.
-  
+
     The TAPIS client is free software under the terms of the MIT License
 
     Copyright (c) 2023-2024 Joan Masó
@@ -27,19 +27,19 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-    
+
     The TAPIS can be updated from https://github.com/joanma747/tapis.
 
-    Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
-    dins del grup del MiraMon. MiraMon és un projecte del 
-    CREAF que elabora programari de Sistema d'Informació Geogràfica 
-    i de Teledetecció per a la visualització, consulta, edició i anàlisi 
+    Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat)
+    dins del grup del MiraMon. MiraMon és un projecte del
+    CREAF que elabora programari de Sistema d'Informació Geogràfica
+    i de Teledetecció per a la visualització, consulta, edició i anàlisi
     de mapes ràsters i vectorials. Aquest progamari programari inclou
     aplicacions d'escriptori i també servidors i clients per Internet.
-    No tots aquests productes són gratuïts o de codi obert. 
-    
+    No tots aquests productes són gratuïts o de codi obert.
+
     En particular, el TAPIS es distribueix sota els termes de la llicència MIT.
-    
+
     El TAPIS es pot actualitzar des de https://github.com/joanma747/tapis.
 */
 
@@ -62,7 +62,7 @@ function getJSONType(a) {
 		return "integer";
 	if (parseFloat(a))
 		return "number"
-	else 
+	else
 		return "string";
 }
 
@@ -146,14 +146,14 @@ function JoinTablesData(dataLeft, dataRight, dataLeftAttributesNull, dataRightAt
 	var dataLeftAttributesArray = Object.keys(dataLeftAttributes);
 	var dataRightAttributesArray = Object.keys(dataRightAttributes);
 	var dataRightNameInJoin=[], dataCurrent=[];
-	
+
 	for (var i=0; i<dataLeftAttributesArray.length; i++) {
 		dataCurrentAttributes[dataLeftAttributesArray[i]]=deapCopy(dataLeftAttributes[dataLeftAttributesArray[i]]);
 	}
 	for (var i=0; i<dataRightAttributesArray.length; i++) {
 		for (var j=0; j<options.RowMatching.length; j++)
 			if (dataRightAttributesArray[i]==options.RowMatching[j].right)
-				break; 
+				break;
 		if (j<options.RowMatching.length) {
 			dataRightNameInJoin[i]==null;
 			continue; //This should be not included as it is already there.
@@ -172,9 +172,9 @@ function JoinTablesData(dataLeft, dataRight, dataLeftAttributesNull, dataRightAt
 		dataRightNameInJoin[i]=dataRightAttributesArray[i];
 		dataCurrentAttributes[dataRightNameInJoin[i]]=deapCopy(dataRightAttributes[dataRightAttributesArray[i]]);
 	}
-			
+
 	var dataCurrentAttributesArray = Object.keys(dataCurrentAttributes);
-	
+
 	//Sort a duplicate of the second tabla by the matching criteria.
 	var dataRightSorted=deapCopy(dataRight);
 	dataRightSorted.sort(function (a, b) {
@@ -200,7 +200,7 @@ function JoinTablesData(dataLeft, dataRight, dataLeftAttributesNull, dataRightAt
 		for (var i=0; i<options.RowMatching.length; i++)
 			recordRight[options.RowMatching[i].right]=dataLeft[j][options.RowMatching[i].left];
 		iRight=binarySearch(dataRightSorted, recordRight, compareRightTable, options);
-		
+
 		if (options.NotMatch=="LeftTable" || options.NotMatch=="BothTables" || iRight!=null) {
 			dataCurrent.push(deapCopy(dataLeft[j]));
 			if (iRight!=null) {
@@ -252,13 +252,13 @@ function JoinTablesData(dataLeft, dataRight, dataLeftAttributesNull, dataRightAt
 					 {name: "Count", desc: "Count"},
 					 {name: "MaxValue", desc: "Max. value"},
 					 {name: "Span", desc: "Span"},
-					 {name: "ProportionDefined", desc: "Proportion defined"}]; 
+					 {name: "ProportionDefined", desc: "Proportion defined"}];
 		const GroupByDateTimeOptions=[{name: "Year", desc: "Year"},
 					 {name: "Month", desc: "Month"},
 					 {name: "Day", desc: "Day"},
 					 {name: "Hour", desc: "Hour"},
 					 {name: "Minute", desc: "Minute"},
-					 {name: "Second", desc: "Second"}]; 
+					 {name: "Second", desc: "Second"}];
 
 /*All these functions DO NOT support an array null or will zero elements or with undefined or null element. That is why "CountDefined" and "ProportionDefined" are not defined
   All these functions EXCEPT "Concatenate", "Mode", "Median", "Q1" and "Q3" expect an array of numbers*/
@@ -455,8 +455,8 @@ function GroupByTableData(data, dataAttributesNull, dataCurrentAttributes, group
 	var dataAttributes=dataAttributesNull ? dataAttributesNull : getDataAttributesSimple(data);
 	var dataAttributesArray = Object.keys(dataAttributes);
 	var s, record;
-	
-	/*Structure of the table: 
+
+	/*Structure of the table:
 		-the grouping collumns
 		-columns the statistics of the first aggregation collumn
 		-columns the statistics of the second aggregation collumn
@@ -474,7 +474,7 @@ function GroupByTableData(data, dataAttributesNull, dataCurrentAttributes, group
 			for (var k=0; k<groupByParams.aggregationAttr[dataAttributesArray[j]].length; k++) {
 				s=dataAttributesArray[j]+"_"+groupByParams.aggregationAttr[dataAttributesArray[j]][k];
 				dataCurrentAttributes[s]=deapCopy(dataAttributes[dataAttributesArray[j]]);
-				//Modify the Attribute description accordingly. 
+				//Modify the Attribute description accordingly.
 			}
 		}
 	}
@@ -525,7 +525,7 @@ function GroupByTableData(data, dataAttributesNull, dataCurrentAttributes, group
 	for (var i=1; i<dataSorted.length; i++) {
 		iniRecord=dataSorted[i_ini];
 		if (0!=sortRecords(iniRecord, dataSorted[i])){
-			//records i_ini to i-1 are grouped			
+			//records i_ini to i-1 are grouped
 			dataCurrent.push(GroupRecordsData(dataSorted, i_ini, i-1, dataAttributesArray, groupByParams));  //Add the record to the result
 			i_ini=i;
 		}
@@ -535,14 +535,14 @@ function GroupByTableData(data, dataAttributesNull, dataCurrentAttributes, group
 }
 
 //rowNumbers: Show two numbers as first collumn
-//prefix_selectedEntityId, in the radio buttons to select use prefix_selectedEntityId+i as an identifier, 
-//selectedEntityId index of the selected radio button, 
+//prefix_selectedEntityId, in the radio buttons to select use prefix_selectedEntityId+i as an identifier,
+//selectedEntityId index of the selected radio button,
 //f_onclickselectEntity: on click function for the radio buttons
 //f_onclickselectEntityParam: on click function for the radio buttons parameter (it is an string)
 //f_isAttributeAnyURI: function to determine if an attribute is a URI
 //f_attributeToHide: function to determine if an attribute should be hidden in the view
 		function GetHTMLTable(data, dataAttributesInput, rowNumbers, prefix_selectedEntityId, selectedEntityId, f_onclickselectEntity, f_onclickselectEntityParam, f_isAttributeAnyURI, f_attributeToHide) {
-			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributesSimple(data); 
+			var dataAttributes = dataAttributesInput ? dataAttributesInput : getDataAttributesSimple(data);
 			var cdns=[], needhref=[], record, cell, dataAttribute;
 			var dataAttributesArray = Object.keys(dataAttributes);
 
@@ -628,3 +628,34 @@ function addNewColumnWithAutoincrementalValues(data,columnName,firstValue){
 	}
 	return data;
 }
+
+function addnewColumnSummingColumns(data, columnName,columnsToSum){
+	var sum; 
+	//numWithComa, value, num;
+	for (var i=0;i<data.length;i++){
+		sum=0;
+
+		for (var a=0;a<columnsToSum.length;a++){
+			if (typeof data[i][columnsToSum[a]] =="string"){
+				sum+=parseFloat(data[i][columnsToSum[a]]);
+			}else{
+				sum+= data[i][columnsToSum[a]]; //Tal com agafa el CSV mai passarà per aquí perque sempre és STRING
+			}
+			// value=data[i][columnsToSum[a]];
+			// if (value.includes(".")){ //float with .
+			// 	num= parseFloat(value);
+			// }else if (value.includes(",")){ //Float with ","
+        	// 	numWithComa=data[i][columnsToSum[a]];
+			// 	num=value.replace(",",".");
+			// 	num= parseFloat(numWithComa);
+			// }else{ //Integer
+			// num= parseInt(value);
+			// }
+			//sum+=num;
+		}
+		data[i][columnName]= sum;
+
+	}
+	return data;
+}
+

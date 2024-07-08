@@ -277,6 +277,8 @@
 				<label for="variance">Variance</label><br>
 				<input type="radio" id="median" name="TypeOfOperation" value="median">
 				<label for="median">Median</label><br>
+				<input type="radio" id="concatenate" name="TypeOfOperation" value="concatenate">
+				<label for="concatenate">Concatenate</label><br>
 			  </fieldset>
 			  <br>
 			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
@@ -288,7 +290,7 @@
 			  </div>
 			</span>
 			<div class="center" style="margin-top: 10px">
-			  <button value="default" onClick="GetAggregateColumns(event)">OK</button>
+			  <button value="default" onClick="addColumnsToTableInAggregateColumns(event)">Create new columns</button>
 			  <button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		  </form>
@@ -5344,6 +5346,41 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Variables/columns: </b>${columns} <button onclick="deleteRowInColumnsBoxTable('+a+')">Delete</button>`;
 				}
 		}
+
+		function addColumnsToTableInAggregateColumns(event){
+			event.preventDefault();
+			var data;
+			for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
+	
+				switch(currentNode.STAnewColumnsToAdd[i][0]) {
+				case  "sum":
+					data= addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
+					break;
+				case  "product":
+					
+					break;
+				case  "minimalValue":
+					
+				break;
+				case  "maximalValue":
+					
+					break;
+				case  "meanValue":
+					
+					break;
+				case  "variance":
+					
+					break;
+				case  "median":
+					
+					break;
+				case  "concatenate":
+					
+					break;
+				}
+
+		}
+	}
 		/////
 		function giveMeNetworkInformation(event) {
 				if (event)
