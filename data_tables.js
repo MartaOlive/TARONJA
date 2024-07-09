@@ -662,3 +662,37 @@ function addnewColumnSummingColumns(data, columnName,columnsToSum, decimalNumber
 	return data;
 }
 
+function addnewColumnMultiplyingColumns(data, columnName,columnsToSum, decimalNumber){
+	var product; 
+	//numWithComa, value, product;
+	for (var i=0;i<data.length;i++){
+		
+		for (var a=0;a<columnsToSum.length;a++){
+			if (typeof data[i][columnsToSum[a]] =="string"){
+				if (a==0){
+					product=parseFloat(data[i][columnsToSum[a]]);
+				}else{
+					product=product*parseFloat(data[i][columnsToSum[a]]);
+				}
+			 
+			}else{
+				if (a==0){
+					product=data[i][columnsToSum[a]];
+				}else{
+					product=product* data[i][columnsToSum[a]]; //Tal com agafa el CSV mai passarà per aquí perque sempre és STRING
+
+
+				}
+
+			}
+		}
+		
+		if (decimalNumber){
+			data[i][columnName]= product.toFixed(decimalNumber);
+		}else{
+			data[i][columnName]= product;
+		}
+	}
+	return data;
+}
+
