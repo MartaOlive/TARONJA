@@ -256,13 +256,11 @@
 			  <label for="columnNameAggregateColumns">Column Name </label>
 			  <input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
 			  <br>
-			  <label for="decimalNumberAggregateColumns">Choose how many decimal numbers you want to round up (if you prefer): </label>
-			  <input id="decimalNumberAggregateColumns" type="number" style="margin-top: 10px; margin-bottom: 10px; "  max="10" min="0"> 
-			  <div >
+			  
 				<fieldset id="columnsFielset" style="display:inline-block">
 				  
 						 
-				</fieldset>
+				</fieldset>		
 			  <fieldset id="operationsFieldSet" style="display:inline-block">
 				<legend>Select your operation:</legend>
 				<input type="radio" id="sum" name="TypeOfOperation" value="sum" checked> 
@@ -282,6 +280,17 @@
 				<input type="radio" id="concatenate" name="TypeOfOperation" value="concatenate">
 				<label for="concatenate">Concatenate</label><br>
 			  </fieldset>
+
+				<fieldset  style="display:inline-block" >
+					<legend>Set number of decimals:</legend>
+					<input type="radio" id="chooseNumberDecimals_1" name="chooseNumberDecimals" value="no" checked> 
+					<label for="chooseNumberDecimals_1">No </label>
+					<br>
+					<input type="radio" id="chooseNumberDecimals_0" name="chooseNumberDecimals" value="yes"> 
+					<label for="chooseNumberDecimals_0">Yes: </label>
+					<input id="chooseNumberDecimals_0_input" type="number" max="10" min="0"> 
+								 
+				</fieldset>
 			  <br>
 			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
 			  <div style="width:auto;" >
@@ -5251,11 +5260,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			for (var a=0;a<currentNode.STAnewColumnsToAdd.length;a++){
 	
 				if (currentNode.STAnewColumnsToAdd[a][0]=="constantValue" ){
-					columnsBox.innerHTML+= `<li><b>Column type:</b> Constant value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'>Delete</button></li>`;
+					columnsBox.innerHTML+= `<li><b>Column type:</b> Constant value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'><img src="trash.png" alt="Remove" title="Remove"></button></li>`;
 				}else if (currentNode.STAnewColumnsToAdd[a][0]=="autoincrementalValue" ){
-					columnsBox.innerHTML+= `<li><b>Column type:</b> Autoincremental value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>Initial value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'>Delete</button></li>`
+					columnsBox.innerHTML+= `<li><b>Column type:</b> Autoincremental value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>Initial value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'><img src="trash.png" alt="Remove" title="Remove"></button></li>`
 				}else{
-					columnsBox.innerHTML+= `<li><b>Column type:</b> Empty column, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]} <button onclick='deleteRowInColumnsBoxTable(${a})'>Delete</button></li>`
+					columnsBox.innerHTML+= `<li><b>Column type:</b> Empty column, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]} <button onclick='deleteRowInColumnsBoxTable(${a})'><img src="trash.png" alt="Remove" title="Remove"></button></li>`
 				}
 
 			
@@ -5320,6 +5329,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			var TypeOfOperation=document.getElementsByName("TypeOfOperation"); //operation
 			var STANewColumnsArray=[],variablesArray=[],variable; 
 			var dataKeys= Object.keys(currentNode.STAdata[0]);
+			var chooseNumberDecimalsInputRadio,chooseNumberDecimalsInput;
 
 			for (var i=0;i<TypeOfOperation.length;i++){ //Take operation and column name
 				if (TypeOfOperation[i].checked){
@@ -5333,7 +5343,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					variablesArray.push(dataKeys[a]);
 				}
 			}
-			STANewColumnsArray.push(variablesArray);	
+			STANewColumnsArray.push(variablesArray);
+			if (document.getElementById("chooseNumberDecimals_0").checked){
+				STANewColumnsArray.push(document.getElementById("chooseNumberDecimals_0_input").value)
+			}	
+						
 			currentNode.STAnewColumnsToAdd.push(STANewColumnsArray); //[typeOfOperation,columnName,[variables]]
 			networkNodes.update(currentNode);
 			drawTableInColumnBoxTableInAggregateColumns();
@@ -5351,16 +5365,25 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						}
 						columns+=currentNode.STAnewColumnsToAdd[i][2][a];
 					}
-					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Variables/columns: </b>${columns} <button onclick="deleteRowInColumnsBoxTable(${i})">Delete</button>`;
+					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Variables/columns: </b>${columns}` 
+					if (currentNode.STAnewColumnsToAdd[i][3]){
+						columnsBox.innerHTML+=`<b>Decimal number: </b> ${currentNode.STAnewColumnsToAdd[i][3]}`
+					}
+						
+					columnsBox.innerHTML+=`<button onclick="deleteRowInColumnsBoxTable(${i})"><img src="trash.png" alt="Remove" title="Remove"></button>`;
 				}
 		}
 
 		function addColumnsToTableInAggregateColumns(event){
 			event.preventDefault();
 			var data;
-			var decimalNumber= document.getElementById("decimalNumberAggregateColumns")?.value;
+			var decimalNumber;
+		
 			for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
-	
+				decimalNumber=""; //Restart 
+				if (currentNode.STAnewColumnsToAdd[i][3]){
+				decimalNumber=currentNode.STAnewColumnsToAdd[i][3];
+			}
 				switch(currentNode.STAnewColumnsToAdd[i][0]) {
 					case  "sum":
 						if (decimalNumber!=""){

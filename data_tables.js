@@ -688,7 +688,11 @@ function addnewColumnMultiplyingColumns(data, columnName,columnsToSum, decimalNu
 		}
 		
 		if (decimalNumber){
+			if (decimalNumber==0){ //round number
+				data[i][columnName]= Math.round(product);
+			}
 			data[i][columnName]= product.toFixed(decimalNumber);
+		
 		}else{
 			data[i][columnName]= product;
 		}
