@@ -13,8 +13,6 @@
 	<script type="text/javascript" src="guf.js"></script>
 	<script type="text/javascript" src="data_tables.js"></script>
 	<script type="text/javascript" src="STAselectExpand.js"></script>
-	<script type="text/javascript" src="selectColumnsDlg.js"></script>
-	<script type="text/javascript" src="groupByDlg.js"></script>
 	<script type="text/javascript" src="STAfilter.js"></script>
 
 	<link rel="stylesheet" href="tapis.css">
@@ -213,6 +211,7 @@
 			</div>
 		</form>
 	</dialog>
+
 	<dialog id="DialogCreateColumns">
 		<form>
 			Create columns:
@@ -244,7 +243,7 @@
 			</span>
 			<div class="center" style="margin-top: 10px">
 			  <button value="default" onClick="addColumnsToTableInCreateColumns()">Add columns to your table</button>
-			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
+			  <button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		  </form>
 	</dialog>
@@ -257,11 +256,13 @@
 			  <label for="columnNameAggregateColumns">Column Name </label>
 			  <input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
 			  <br>
-			  
+			  <label for="decimalNumberAggregateColumns">Choose how many decimal numbers you want to round up (if you prefer): </label>
+			  <input id="decimalNumberAggregateColumns" type="number" style="margin-top: 10px; margin-bottom: 10px; "  max="10" min="0"> 
+			  <div >
 				<fieldset id="columnsFielset" style="display:inline-block">
 				  
 						 
-				</fieldset>		
+				</fieldset>
 			  <fieldset id="operationsFieldSet" style="display:inline-block">
 				<legend>Select your operation:</legend>
 				<input type="radio" id="sum" name="TypeOfOperation" value="sum" checked> 
@@ -281,17 +282,6 @@
 				<input type="radio" id="concatenate" name="TypeOfOperation" value="concatenate">
 				<label for="concatenate">Concatenate</label><br>
 			  </fieldset>
-
-				<fieldset  style="display:inline-block" >
-					<legend>Set number of decimals:</legend>
-					<input type="radio" id="chooseNumberDecimals_1" name="chooseNumberDecimals" value="no" checked> 
-					<label for="chooseNumberDecimals_1">No </label>
-					<br>
-					<input type="radio" id="chooseNumberDecimals_0" name="chooseNumberDecimals" value="yes"> 
-					<label for="chooseNumberDecimals_0">Yes: </label>
-					<input id="chooseNumberDecimals_0_input" type="number" max="10" min="0"> 
-								 
-				</fieldset>
 			  <br>
 			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
 			  <div style="width:auto;" >
@@ -303,7 +293,7 @@
 			</span>
 			<div class="center" style="margin-top: 10px">
 			  <button value="default" onClick="addColumnsToTableInAggregateColumns(event)">Create new columns</button>
-			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
+			  <button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		  </form>
 	</dialog>
@@ -315,113 +305,7 @@
 			</span>
 			<div class="center">
 				<button value="default" onClick="GetColumnsCalculator(event)">OK</button>
-				<button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
-			</div>
-		</form>
-	</dialog>
-	<dialog id="DialogCreateColumns">
-		<form>
-			Create columns:
-			<span id="DialogCreateColumnsHTML">
-			 <br>
-			  <label for="columnNameCreateColumns">Column Name </label>
-			  <input id="columnNameCreateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
-			  <br>
-			  <div>
-				<fieldset>
-					<legend>Select your operation:</legend>
-					<input type="radio" id="constantValue" name="TypeOfValues" value="constantValue" checked> 
-					<label for="constantValue">Constant value</label><input id="inputText_constantValue" type="text" style="margin-left:10px" ><br>
-					<input type="radio" id="autoincrementalValue" name="TypeOfValues" value="autoincrementalValue">
-					<label for="autoincrementalValue">Autoincemental value</label><input id="inputText_autoincrementalValue" type="text" style="margin-left:10px"  placeholder="Initial value" ><br>
-					<input type="radio" id="empty" name="TypeOfValues" value="empty">
-					<label for="empty">Empty column</label><br>
-				</fieldset>
-				<button value="add" onClick="addColumnToListCreateColumn(event)"style="margin-bottom:10px">Add column to list </button>
-				<div  style="width:auto;">
-					<label>Columns to add</label>
-					<div >
-						<ol id="columnsBoxCreateColumns"></ol>
-					</div>
-				</div>
-			  </div>
-			  
-		
-			</span>
-			<div class="center" style="margin-top: 10px">
-			  <button value="default" onClick="addColumnsToTableInCreateColumns()">Add columns to your table</button>
-			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
-			</div>
-		  </form>
-	</dialog>
-
-	<dialog id="DialogAggregateColumns">
-		<form>
-			Aggregate columns:
-			<span id="DialogAggregateColumnsHTML">
-			  <br>
-			  <label for="columnNameAggregateColumns">Column Name </label>
-			  <input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
-			  <br>
-			  
-				<fieldset id="columnsFielset" style="display:inline-block">
-				  
-						 
-				</fieldset>		
-			  <fieldset id="operationsFieldSet" style="display:inline-block">
-				<legend>Select your operation:</legend>
-				<input type="radio" id="sum" name="TypeOfOperation" value="sum" checked> 
-				<label for="sum">Sum</label><br>
-				<input type="radio" id="product" name="TypeOfOperation" value="product">
-				<label for="product">Product</label><br>
-				<input type="radio" id="minimalValue" name="TypeOfOperation" value="minimalValue">
-				<label for="minimalValue">Minimal Value</label><br>
-				<input type="radio" id="maximalValue" name="TypeOfOperation" value="maximalValue">
-				<label for="maximalValue">Maximal Value</label><br>
-				<input type="radio" id="meanValue" name="TypeOfOperation" value="meanValue">
-				<label for="meanValue">Mean Value</label><br>
-				<input type="radio" id="variance" name="TypeOfOperation" value="variance">
-				<label for="variance">Variance</label><br>
-				<input type="radio" id="median" name="TypeOfOperation" value="median">
-				<label for="median">Median</label><br>
-				<input type="radio" id="concatenate" name="TypeOfOperation" value="concatenate">
-				<label for="concatenate">Concatenate</label><br>
-			  </fieldset>
-
-				<fieldset  style="display:inline-block" >
-					<legend>Set number of decimals:</legend>
-					<input type="radio" id="chooseNumberDecimals_1" name="chooseNumberDecimals" value="no" checked> 
-					<label for="chooseNumberDecimals_1">No </label>
-					<br>
-					<input type="radio" id="chooseNumberDecimals_0" name="chooseNumberDecimals" value="yes"> 
-					<label for="chooseNumberDecimals_0">Yes: </label>
-					<input id="chooseNumberDecimals_0_input" type="number" max="10" min="0"> 
-								 
-				</fieldset>
-			  <br>
-			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
-			  <div style="width:auto;" >
-				<label>Columns to add</label>
-				<div >
-					<ol id="columnsBoxAggregateColumn"></ol>
-				</div>
-			  </div>
-			</span>
-			<div class="center" style="margin-top: 10px">
-			  <button value="default" onClick="addColumnsToTableInAggregateColumns(event)">Create new columns</button>
-			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
-			</div>
-		  </form>
-	</dialog>
-
-	<dialog id="DialogColumnsCalculator">
-		<form>
-			Columns Calculator:
-			<span id="DialogColumnsCalculatorHTML">
-			</span>
-			<div class="center">
-				<button value="default" onClick="GetColumnsCalculator(event)">OK</button>
-				<button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
+				<button value="cancel" formmethod="dialog">Cancel</button>
 			</div>
 		</form>
 	</dialog>
@@ -591,9 +475,8 @@
 			<br>
 			<fieldset style="display: inline;">
 				<legend>Delimiter</legend>
-				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked></input><input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=";"></input></label> &ensp;
-				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterTab"></input> Tab</label> &ensp;
-				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterAuto" checked="checked"></input> Auto</label>
+				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked></input><input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=","></input></label> &ensp;
+				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterTab"></input> Tab</label>
 			</fieldset>
 			Encoding: <select id="DialogImportCSVEncoding">
 				<option value="windows-1252">Windows 1252 (Western Latin)</option>
@@ -628,8 +511,7 @@
 				<option value="x-mac-cyrillic">X-MAC-Cyrillic</option>
 			</select>
 			<br>
-			<label><input type="checkbox" id="DialogImportCSVHeader" checked="checked"></input>The first line contains field names</label><br>
-			<label><input type="checkbox" id="DialogImportCSVStringTyping"></input>Import numbers as strings</label>
+			<label><input type="checkbox" id="DialogImportCSVHeader" checked="checked"></input>The first line contains field names</label>
 			<br>
 			<fieldset>
 				<legend>Meaning source</legend>
@@ -933,6 +815,9 @@
 		*/
 
 		var config;
+		//var STAurl = "https://citiobs.demo.secure-dimensions.de/inaturalist/v1.1";
+		//var STAurl="https://citiobs.demo.secure-dimensions.de/staplus/v1.1";
+		//var MMNpath="../osm";
 
 		const STAEntities = {ObservedProperties: {singular: "ObservedProperty", entities: ["Datastreams", "MultiDatastreams"], properties: ["name", "definition", "description", "properties"]},
 				Observations: {singular: "Observation", entities: ["Datastream", "MultiDatastream", "FeatureOfInterest", "ObservationGroups", "Subjects", "Objects"], properties: ["phenomenonTime", "resultTime", "result", "resultQuality", "validTime", "parameters"], entityRelations: ["Object", "Subject"]}, 
@@ -1696,27 +1581,10 @@
 			networkNodes.update(currentNode);
 			UpdateChildenTable(currentNode);
 			var csvReadParams = getCSVReadParams(data_csvw);
-			if (csvReadParams.delimiter) {
-				document.getElementById("DialogImportCSVDelimiterAuto").checked=false;
-				if ( csvReadParams.delimiter=='\t') {
-					document.getElementById("DialogImportCSVDelimiter").value="";
-					document.getElementById("DialogImportCSVDelimiterTab").checked=true;
-					document.getElementById("DialogImportCSVDelimiterText").checked=false;
-				} else {
-					document.getElementById("DialogImportCSVDelimiter").value=csvReadParams.delimiter;
-					document.getElementById("DialogImportCSVDelimiterTab").checked=false;
-					document.getElementById("DialogImportCSVDelimiterText").checked=true;
-				}
-			} else {
-				document.getElementById("DialogImportCSVDelimiterAuto").checked=true; 
-				document.getElementById("DialogImportCSVDelimiterText").checked=false;
-				document.getElementById("DialogImportCSVDelimiterTab").checked=false;
-				document.getElementById("DialogImportCSVDelimiter").value=="";
-			}
+			if (csvReadParams.delimiter)
+				document.getElementById("DialogImportCSVDelimiter").value=csvReadParams.delimiter;
 			if (csvReadParams.header)
 				document.getElementById("DialogImportCSVHeader").checked=csvReadParams.header;
-			if (csvReadParams.dynamicTyping)
-				document.getElementById("DialogImportCSVStringTyping").checked=csvReadParams.dynamicTyping ? false : true;
 		}
 
 		function ReadFileImportCSVW(event) {
@@ -1800,9 +1668,8 @@
 		function TransformTextCSVToTable(csvText, url) {
 			try
 			{
-				var result = Papa.parse(csvText, {delimiter: (document.getElementById("DialogImportCSVDelimiterAuto").checked ? null : (document.getElementById("DialogImportCSVDelimiterText").checked ? document.getElementById("DialogImportCSVDelimiter").value : '\t')),
+				var result = Papa.parse(csvText, {delimiter: (document.getElementById("DialogImportCSVDelimiterText").checked ? document.getElementById("DialogImportCSVDelimiter").value : '\t'),
 					header: document.getElementById("DialogImportCSVHeader").checked,
-					dynamicTyping: document.getElementById("DialogImportCSVStringTyping").checked ? false : true,
 					skipEmptyLines: true});
 				currentNode.STAdata=result.data;
 				if (url)
@@ -2736,7 +2603,129 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 		}
 
+		function GetSelectColumns(event) {
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogSelectColumns").close();
 
+			if (currentNode.image == "SelectColumnsSTA.png")
+			{
+				var previousSTAURL=null;
+				var parentNode=GetFirstParentNode(currentNode);
+				if (parentNode) {
+					if (parentNode.STAURL)
+					{
+						previousSTAURL=currentNode.STAURL;
+						currentNode.STAURL = parentNode.STAURL;
+					}
+					if (parentNode.STAdata)
+						currentNode.STAdata = deapCopy(parentNode.STAdata);
+					if (parentNode.STAdataAttributes)
+						currentNode.STAdataAttributes = deapCopy(parentNode.STAdataAttributes);
+				}
+			}
+			currentNode.STASelectedColumns=[];
+			var dataAttributes = currentNode.STAdataAttributes ? currentNode.STAdataAttributes : getDataAttributes(currentNode.STAdata);
+			const dataAttributesArray = Object.keys(dataAttributes);
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (!document.getElementById("SelectColumns_" + a).checked)
+					break;
+			}
+			if (a < dataAttributesArray.length) //A checked attribute has been found ("for" breaks before ending).
+			{
+				if (currentNode.image == "SelectColumnsSTA.png" && parentNode.STAURL)
+				{
+					var s;
+					currentNode.STAURL=AddQueryParamsToURL(currentNode.STAURL, "$select=");
+					for (var a = 0; a < dataAttributesArray.length; a++) {
+						if (document.getElementById("SelectColumns_" + a).checked) {
+							if (dataAttributesArray[a]=="@iot.selfLink")
+								s = dataAttributesArray[a];
+							else if (dataAttributesArray[a].startsWith("@iot."))
+								s = dataAttributesArray[a].substring(5);
+							else
+								s = dataAttributesArray[a].replace("@iot.", "/");  //Changes Datastreams@iot.navigationLink to Datastreams/navigationLink
+
+							currentNode.STAURL += s + ",";
+							currentNode.STASelectedColumns[a]=true;
+						}
+						else
+							currentNode.STASelectedColumns[a]=false;
+					}
+					currentNode.STAURL = currentNode.STAURL.slice(0, -1); //remove the last coma.
+					currentNode.STAExpectedLength = parentNode.STAExpectedLength;
+					networkNodes.update(currentNode);
+					showInfoMessage("Selecting STA columns...");
+					UpdateChildenSTAURL(currentNode, currentNode.STAURL, previousSTAURL);
+					LoadJSONNodeSTAData(currentNode);
+				}
+				else
+				{
+					//If there is no STA to query, the selection is done manually (table mode).
+					//currentNode.STAdata = deapCopy(currentNode.STAdata);
+					for (var a = 0; a < dataAttributesArray.length; a++) {
+						if (document.getElementById("SelectColumns_" + a).checked)
+							currentNode.STASelectedColumns[a]=true;
+						else
+							currentNode.STASelectedColumns[a]=false;
+					}
+
+					var data=currentNode.STAdata, record;
+					for (var i = 0; i < data.length; i++) {
+						record=data[i];
+						for (var a = 0; a < dataAttributesArray.length; a++) {
+							if (!currentNode.STASelectedColumns[a]) {
+								delete record[dataAttributesArray[a]];
+							}
+						}
+					}
+					for (var a = 0; a < dataAttributesArray.length; a++) {
+						if (!currentNode.STASelectedColumns[a])
+							delete dataAttributes[dataAttributesArray[a]];
+					}
+					networkNodes.update(currentNode);
+				}
+			}
+			else   //If no selected column has been found, no filter is done and all columns are selected
+			{
+				for (var a = 0; a < dataAttributesArray.length; a++) {
+					currentNode.STASelectedColumns[a]=true;
+				}
+			}
+		}
+
+		function GetGroupBy(event) {
+			var groupByParams={groupByAttr: [], groupByDate:"", aggregationAttr:{}};
+			event.preventDefault(); // We don't want to submit this form
+			document.getElementById("DialogGroupBy").close();
+			var parentNode=GetFirstParentNode(currentNode), selectedColumn, s;
+
+			var data = parentNode.STAdata ? parentNode.STAdata : currentNode.STAdata;
+
+			if (!data || !data.length) {
+				return;
+			}
+			var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
+			const dataAttributesArray = Object.keys(dataAttributes);
+
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (document.getElementById("GroupBySelects_" + a).checked) 
+					groupByParams.groupByAttr.push(dataAttributesArray[a]);
+				s=document.getElementById("GroupByAttributesAggr"+"_" + a).value;
+				if (s)
+					groupByParams.aggregationAttr[dataAttributesArray[a]]=JSON.parse(s);
+			}
+			
+			for (var i = 0; i < GroupByDateTimeOptions.length; i++) {
+				if (document.getElementById("DialogGroupByDateTime" + GroupByDateTimeOptions[i].name).checked) {
+					groupByParams.groupByDate=GroupByDateTimeOptions[i].name;
+					break;
+				}
+			}
+			var dataCurrentAttributes={};
+			currentNode.STAdata=GroupByTableData(data, dataAttributes, dataCurrentAttributes, groupByParams);
+			currentNode.STAdataAttributes=dataCurrentAttributes;
+			networkNodes.update(currentNode);
+		}
 
 		function GetSelectNRecords(event) {
 			event.preventDefault(); // We don't want to submit this form
@@ -4234,6 +4223,24 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}*/
 		}
 
+		function ShowTableSelectColumnsDialog(div_id, parentNode, node, selectDef, fevent) {
+			var data = parentNode.STAdata ? parentNode.STAdata : node.STAdata,
+				selectedColumns=node["STA"+div_id];
+
+			if (!data || !data.length) {
+				document.getElementById("Dialog"+div_id+"HTML").innerHTML = "No data to show.";
+				return;
+			}
+			var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
+			const dataAttributesArray = Object.keys(dataAttributes);
+
+			var s = '<table>';
+			for (var a = 0; a < dataAttributesArray.length; a++)
+				s += '<tr><td><input type="checkbox"' + ((!selectedColumns && selectDef) || (selectedColumns && (a>=selectedColumns.length || selectedColumns[a]))  ? 'checked="checked"' : '') + ' value="" id="'+div_id+'_' + a + '" name="'+div_id+'_' + a + '"' + (fevent ? ' onchange="'+ fevent +'"': '') + ' /> <label id="'+div_id+ '_label_' + a +'" for="'+div_id+'_' + a + '">' + dataAttributesArray[a] + '</label></td></tr>';
+			s += '</table>'	;
+			document.getElementById("Dialog"+div_id+"HTML").innerHTML = s;
+		}
+
 		function ShowTableSelectSortByDialog(node) {
 			var data = node.STAdata;
 
@@ -4261,6 +4268,126 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			document.getElementById("SelectSortByNumberOfRecords").value=node.STAExpectedLength;
 		}
 
+		function showCheckRadioOptions(div_name, div_option_prefix, options, nCols, radio_name, fEvent) {
+			var cdns=[];
+			
+			cdns.push('<table border="0">');
+			for(var j=0; j<options.length/nCols; j++) {
+				cdns.push('<tr>');
+				for(i=0; i<nCols; i++)
+					cdns.push('<td><label><input type="', (radio_name ? 'radio" name="'+radio_name : 'checkbox'), '" id="',div_option_prefix,options[j*nCols+i].name,'"', (fEvent ? ' onChange="'+fEvent+'"' : ''),'></input>',options[j*nCols+i].desc,'</label></td>');
+				cdns.push('</tr>');
+			}
+			if (options.length%nCols) {
+				cdns.push('<tr>');
+				for(var i=0; i<options.length%nCols; i++)
+					cdns.push('<td><label><input type="', (radio_name ? 'radio" name="'+radio_name : 'checkbox'), '" id="',div_option_prefix,options[j*nCols+i].name,'"', (fEvent ? ' onChange="'+fEvent+'"' : ''),'></input>',options[j*nCols+i].desc,'</label></td>');
+				cdns.push('</tr>');
+			}
+			cdns.push('</table>');
+			document.getElementById(div_name).innerHTML=cdns.join("");
+		}
+
+		function getAttributesAndAgrregationsJSONAsText(selectedColumn) {
+			var s="";
+			for (var i = 0; i < AggregationsOptions.length; i++) {
+				if (selectedColumn.indexOf(AggregationsOptions[i].name)!=-1)
+					s+=AggregationsOptions[i].desc + ", ";
+			}
+			if (s=="")
+				return "";
+			return s.slice(0,-2);
+		}
+
+		function ShowTableAttributesAndAgrregationsDialog(div_id, parentNode, node) {
+			var data = parentNode.STAdata ? parentNode.STAdata : node.STAdata,
+				selectedColumns=node["STA"+div_id], s;
+			
+			if (!selectedColumns)
+				return;
+
+			if (!data || !data.length) {
+				return;
+			}
+			var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
+			const dataAttributesArray = Object.keys(dataAttributes);
+
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				s=getAttributesAndAgrregationsJSONAsText(selectedColumns[a]);
+				document.getElementById(div_id+"_label_	" + a).innerHTML=dataAttributesArray[a] + (s=="" ? "" : ", " + s);
+				document.getElementById(div_id+"_" + a).value=JSON.stringify(selectedColumns[a]);
+			}
+		}
+		function AddSelectedOptionsToAggrGroupBy(event, nodeId) {
+			var node = networkNodes.get(nodeId), parentNode=GetFirstParentNode(node), selectedColumn=[];
+
+			for(var i=0; i<AggregationsOptions.length; i++) {
+				if (document.getElementById("DialogGroupByAggr"+AggregationsOptions[i].name).checked)
+					selectedColumn.push(AggregationsOptions[i].name);
+			}
+			var s=getAttributesAndAgrregationsJSONAsText(selectedColumn);
+			var data = parentNode.STAdata ? parentNode.STAdata : node.STAdata;
+			
+			if (!data || !data.length) {
+				return;
+			}
+			var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
+			const dataAttributesArray = Object.keys(dataAttributes);
+
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (document.getElementById("GroupByAttributesAggr"+"_" + a).checked)
+				{
+					document.getElementById("GroupByAttributesAggr"+"_label_" + a).innerHTML=dataAttributesArray[a] + (s=="" ? "" : ", " + s);
+					document.getElementById("GroupByAttributesAggr"+"_" + a).value=JSON.stringify(selectedColumn);
+				}
+			}
+		}
+		
+		function CheckSelectedAggrGroupBy(event, nodeId) {
+			var node = networkNodes.get(nodeId), parentNode=GetFirstParentNode(node), selectedColumn, s;
+
+			var data = parentNode.STAdata ? parentNode.STAdata : node.STAdata;
+			
+			if (!data || !data.length) {
+				return;
+			}
+			var dataAttributes = parentNode.STAdataAttributes ? parentNode.STAdataAttributes : getDataAttributes(data);
+			const dataAttributesArray = Object.keys(dataAttributes);
+
+			var somethingSelected=false,somethingCheck=false;
+			for (var a = 0; a < dataAttributesArray.length; a++) {
+				if (document.getElementById("GroupByAttributesAggr"+"_" + a).checked) {
+					somethingCheck=true;
+					s=document.getElementById("GroupByAttributesAggr"+"_" + a).value;
+					if (s) {
+						selectedColumn=JSON.parse(s);
+						for(var i=0; i<AggregationsOptions.length; i++) {
+							document.getElementById("DialogGroupByAggr"+AggregationsOptions[i].name).checked=selectedColumn.indexOf(AggregationsOptions[i].name)==-1 ? false : true;
+							if (selectedColumn.indexOf(AggregationsOptions[i].name)!=-1)
+								somethingSelected=true;
+						}
+						if (somethingSelected)
+							break;
+					}
+				}
+			}
+			for(var i=0; i<AggregationsOptions.length; i++)
+			{
+				document.getElementById("DialogGroupByAggr"+AggregationsOptions[i].name).disabled=!somethingCheck;
+				if (!somethingCheck)
+					document.getElementById("DialogGroupByAggr"+AggregationsOptions[i].name).checked=false;
+			}
+		}
+
+		function ShowGroupByDialog(parentNode, node) {
+			ShowTableSelectColumnsDialog("GroupBySelects", parentNode, node, false, null);
+			ShowTableSelectColumnsDialog("GroupByAttributesAggr", parentNode, node, false, "CheckSelectedAggrGroupBy(event, '"+node.id+"')");
+			ShowTableAttributesAndAgrregationsDialog("GroupByAttributesAggr", parentNode, node);
+			showCheckRadioOptions("DialogGroupByDateTimeOptionsHTML", "DialogGroupByDateTime", GroupByDateTimeOptions, 1, "DialogGroupByDateTimeOption");
+			showCheckRadioOptions("DialogGroupByAggregationOptionsHTML", "DialogGroupByAggr", AggregationsOptions, 3, null, "AddSelectedOptionsToAggrGroupBy(event, '"+node.id+"')");
+			CheckSelectedAggrGroupBy(null, node.id);
+			return;
+		}
 
 		function ShowTableSelectRowDialog(parentNode, node) {
 			var data = parentNode.STAdata;
@@ -4748,7 +4875,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else if (currentNode.image == "CreateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode.STAdata){
-						currentNode.STAdataCopy=currentNode.STAdata; //To recovery data if cancel is pressed
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent	
 					}
 					 if (parentNode) {
@@ -4762,10 +4888,9 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else if (currentNode.image == "AggregateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 						
-
 					if (parentNode.STAdata){
-						currentNode.STAdataCopy=currentNode.STAdata; //To recovery data if cancel is pressed
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent
+						
 					}
 					fillAggregateColumVariablesList();
 					if (parentNode) {
@@ -5126,11 +5251,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			for (var a=0;a<currentNode.STAnewColumnsToAdd.length;a++){
 	
 				if (currentNode.STAnewColumnsToAdd[a][0]=="constantValue" ){
-					columnsBox.innerHTML+= `<li><b>Column type:</b> Constant value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'><img src="trash.png" alt="Remove" title="Remove"></button></li>`;
+					columnsBox.innerHTML+= `<li><b>Column type:</b> Constant value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'>Delete</button></li>`;
 				}else if (currentNode.STAnewColumnsToAdd[a][0]=="autoincrementalValue" ){
-					columnsBox.innerHTML+= `<li><b>Column type:</b> Autoincremental value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>Initial value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'><img src="trash.png" alt="Remove" title="Remove"></button></li>`
+					columnsBox.innerHTML+= `<li><b>Column type:</b> Autoincremental value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>Initial value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'>Delete</button></li>`
 				}else{
-					columnsBox.innerHTML+= `<li><b>Column type:</b> Empty column, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]} <button onclick='deleteRowInColumnsBoxTable(${a})'><img src="trash.png" alt="Remove" title="Remove"></button></li>`
+					columnsBox.innerHTML+= `<li><b>Column type:</b> Empty column, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]} <button onclick='deleteRowInColumnsBoxTable(${a})'>Delete</button></li>`
 				}
 
 			
@@ -5179,17 +5304,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			document.getElementById("DialogCreateColumns").close();
 			showInfoMessage("New columns have been added");
 		}
-		function cancelButtonRecoveryOldData(event){
-			event.preventDefault();
-			currentNode.STAdata=currentNode.STAdataCopy;
-			networkNodes.update(currentNode)
-
-			if (currentNode.image=="CreateColumns.png"){
-				document.getElementById("DialogCreateColumns").close();
-			}else{
-				document.getElementById("DialogAggregateColumns").close();
-			}
-		}
+		
 		//Aggregate columns
 		
 		function fillAggregateColumVariablesList(){
@@ -5205,7 +5320,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			var TypeOfOperation=document.getElementsByName("TypeOfOperation"); //operation
 			var STANewColumnsArray=[],variablesArray=[],variable; 
 			var dataKeys= Object.keys(currentNode.STAdata[0]);
-			var chooseNumberDecimalsInputRadio,chooseNumberDecimalsInput;
 
 			for (var i=0;i<TypeOfOperation.length;i++){ //Take operation and column name
 				if (TypeOfOperation[i].checked){
@@ -5219,11 +5333,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					variablesArray.push(dataKeys[a]);
 				}
 			}
-			STANewColumnsArray.push(variablesArray);
-			if (document.getElementById("chooseNumberDecimals_0").checked){
-				STANewColumnsArray.push(document.getElementById("chooseNumberDecimals_0_input").value)
-			}	
-						
+			STANewColumnsArray.push(variablesArray);	
 			currentNode.STAnewColumnsToAdd.push(STANewColumnsArray); //[typeOfOperation,columnName,[variables]]
 			networkNodes.update(currentNode);
 			drawTableInColumnBoxTableInAggregateColumns();
@@ -5241,41 +5351,32 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						}
 						columns+=currentNode.STAnewColumnsToAdd[i][2][a];
 					}
-					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Variables/columns: </b>${columns}` 
-					if (currentNode.STAnewColumnsToAdd[i][3]){
-						columnsBox.innerHTML+=`<b>Decimal number: </b> ${currentNode.STAnewColumnsToAdd[i][3]}`
-					}
-						
-					columnsBox.innerHTML+=`<button onclick="deleteRowInColumnsBoxTable(${i})"><img src="trash.png" alt="Remove" title="Remove"></button>`;
+					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Variables/columns: </b>${columns} <button onclick="deleteRowInColumnsBoxTable(${i})">Delete</button>`;
 				}
 		}
 
 		function addColumnsToTableInAggregateColumns(event){
 			event.preventDefault();
 			var data;
-			var decimalNumber;
-		
+			var decimalNumber= document.getElementById("decimalNumberAggregateColumns")?.value;
 			for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
-				decimalNumber=""; //Restart 
-				if (currentNode.STAnewColumnsToAdd[i][3]){
-				decimalNumber=currentNode.STAnewColumnsToAdd[i][3];
-			}
+	
 				switch(currentNode.STAnewColumnsToAdd[i][0]) {
 					case  "sum":
 						if (decimalNumber!=""){
-							 addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
+							data= addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
 
 						}else{
-							 addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
+							data= addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
 
 						}
 						break;
 					case  "product":
 					if (decimalNumber!=""){
-							addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
+							data= addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
 
 						}else{
-							addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
+							data= addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
 
 						}
 						break;

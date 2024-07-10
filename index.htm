@@ -308,111 +308,8 @@
 		  </form>
 	</dialog>
 
-	<dialog id="DialogColumnsCalculator">
-		<form>
-			Columns Calculator:
-			<span id="DialogColumnsCalculatorHTML">
-			</span>
-			<div class="center">
-				<button value="default" onClick="GetColumnsCalculator(event)">OK</button>
-				<button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
-			</div>
-		</form>
-	</dialog>
-	<dialog id="DialogCreateColumns">
-		<form>
-			Create columns:
-			<span id="DialogCreateColumnsHTML">
-			 <br>
-			  <label for="columnNameCreateColumns">Column Name </label>
-			  <input id="columnNameCreateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
-			  <br>
-			  <div>
-				<fieldset>
-					<legend>Select your operation:</legend>
-					<input type="radio" id="constantValue" name="TypeOfValues" value="constantValue" checked> 
-					<label for="constantValue">Constant value</label><input id="inputText_constantValue" type="text" style="margin-left:10px" ><br>
-					<input type="radio" id="autoincrementalValue" name="TypeOfValues" value="autoincrementalValue">
-					<label for="autoincrementalValue">Autoincemental value</label><input id="inputText_autoincrementalValue" type="text" style="margin-left:10px"  placeholder="Initial value" ><br>
-					<input type="radio" id="empty" name="TypeOfValues" value="empty">
-					<label for="empty">Empty column</label><br>
-				</fieldset>
-				<button value="add" onClick="addColumnToListCreateColumn(event)"style="margin-bottom:10px">Add column to list </button>
-				<div  style="width:auto;">
-					<label>Columns to add</label>
-					<div >
-						<ol id="columnsBoxCreateColumns"></ol>
-					</div>
-				</div>
-			  </div>
-			  
-		
-			</span>
-			<div class="center" style="margin-top: 10px">
-			  <button value="default" onClick="addColumnsToTableInCreateColumns()">Add columns to your table</button>
-			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
-			</div>
-		  </form>
-	</dialog>
 
-	<dialog id="DialogAggregateColumns">
-		<form>
-			Aggregate columns:
-			<span id="DialogAggregateColumnsHTML">
-			  <br>
-			  <label for="columnNameAggregateColumns">Column Name </label>
-			  <input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
-			  <br>
-			  
-				<fieldset id="columnsFielset" style="display:inline-block">
-				  
-						 
-				</fieldset>		
-			  <fieldset id="operationsFieldSet" style="display:inline-block">
-				<legend>Select your operation:</legend>
-				<input type="radio" id="sum" name="TypeOfOperation" value="sum" checked> 
-				<label for="sum">Sum</label><br>
-				<input type="radio" id="product" name="TypeOfOperation" value="product">
-				<label for="product">Product</label><br>
-				<input type="radio" id="minimalValue" name="TypeOfOperation" value="minimalValue">
-				<label for="minimalValue">Minimal Value</label><br>
-				<input type="radio" id="maximalValue" name="TypeOfOperation" value="maximalValue">
-				<label for="maximalValue">Maximal Value</label><br>
-				<input type="radio" id="meanValue" name="TypeOfOperation" value="meanValue">
-				<label for="meanValue">Mean Value</label><br>
-				<input type="radio" id="variance" name="TypeOfOperation" value="variance">
-				<label for="variance">Variance</label><br>
-				<input type="radio" id="median" name="TypeOfOperation" value="median">
-				<label for="median">Median</label><br>
-				<input type="radio" id="concatenate" name="TypeOfOperation" value="concatenate">
-				<label for="concatenate">Concatenate</label><br>
-			  </fieldset>
 
-				<fieldset  style="display:inline-block" >
-					<legend>Set number of decimals:</legend>
-					<input type="radio" id="chooseNumberDecimals_1" name="chooseNumberDecimals" value="no" checked> 
-					<label for="chooseNumberDecimals_1">No </label>
-					<br>
-					<input type="radio" id="chooseNumberDecimals_0" name="chooseNumberDecimals" value="yes"> 
-					<label for="chooseNumberDecimals_0">Yes: </label>
-					<input id="chooseNumberDecimals_0_input" type="number" max="10" min="0"> 
-								 
-				</fieldset>
-			  <br>
-			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
-			  <div style="width:auto;" >
-				<label>Columns to add</label>
-				<div >
-					<ol id="columnsBoxAggregateColumn"></ol>
-				</div>
-			  </div>
-			</span>
-			<div class="center" style="margin-top: 10px">
-			  <button value="default" onClick="addColumnsToTableInAggregateColumns(event)">Create new columns</button>
-			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
-			</div>
-		  </form>
-	</dialog>
 
 	<dialog id="DialogColumnsCalculator">
 		<form>
@@ -591,7 +488,7 @@
 			<br>
 			<fieldset style="display: inline;">
 				<legend>Delimiter</legend>
-				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked></input><input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=";"></input></label> &ensp;
+				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked></input><input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=","></input></label> &ensp;
 				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterTab"></input> Tab</label> &ensp;
 				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterAuto" checked="checked"></input> Auto</label>
 			</fieldset>
@@ -5280,10 +5177,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						}
 						break;
 					case  "minimalValue":
-						
-					break;
+						addnewColumnMinimalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); 
+						break;
 					case  "maximalValue":
-						
+						addnewColumnMaximalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); 
+
 						break;
 					case  "meanValue":
 						

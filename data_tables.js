@@ -716,3 +716,27 @@ function addnewColumnMultiplyingColumns(data, columnName,columnsToSum, decimalNu
 	}
 }
 
+function addnewColumnMinimalValue(data, columnName,columnsToEvaluate){
+	var values,min;
+	for (var i=0;i<data.length;i++){
+		values=[];
+		for (var a=0;a<columnsToEvaluate.length;a++){
+			values.push(data[i][columnsToEvaluate[a]]);
+		}
+		min=aggrFuncMinValue(values); //Use function to be able to evaluate many columns
+		data[i][columnName]=min;
+	}
+}
+
+function addnewColumnMaximalValue(data, columnName,columnsToEvaluate){
+	var values,max;
+	for (var i=0;i<data.length;i++){
+		values=[];
+		for (var a=0;a<columnsToEvaluate.length;a++){
+			values.push(data[i][columnsToEvaluate[a]]);
+		}
+		max=aggrFuncMaxValue(values); //Use function to be able to evaluate many columns
+		data[i][columnName]=max;
+	}
+}
+
