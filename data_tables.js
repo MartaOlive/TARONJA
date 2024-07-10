@@ -30,7 +30,7 @@
 
     The TAPIS can be updated from https://github.com/joanma747/tapis.
 
-    Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat)
+    Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at ieee org) 
     dins del grup del MiraMon. MiraMon és un projecte del
     CREAF que elabora programari de Sistema d'Informació Geogràfica
     i de Teledetecció per a la visualització, consulta, edició i anàlisi
@@ -42,6 +42,24 @@
 
     El TAPIS es pot actualitzar des de https://github.com/joanma747/tapis.
 */
+
+/*
+This library use two main types of data. In general, table functions expect 
+these two objects as inputs and respond these as outputs.
+
+"Data tables" (commonly referenced with the parameter 'data' or derivates) are 
+an array of records, each on being an object of key and value pairs.
+Normaly, the same keys are present in every record, but this is
+not required. values are not restricted being numbers, strings or 
+objects. See a json schema and examples in /schemas/data_*.json
+
+"Data attributes" (commonly referenced with the parameter 'dataAttributes' 
+or derivates), are an object. Every keys of the main object is an object 
+that defines the 'type', 'description', 'definition', 'UoM', 'UoMSymbol' 
+and 'UoMDefinition'. See a json schema and examples in /schemas/dataAttributes_*.json
+*/
+
+
 
 "use strict"
 
