@@ -659,7 +659,6 @@ function addnewColumnSummingColumns(data, columnName,columnsToSum, decimalNumber
 			data[i][columnName]= sum;
 		}
 	}
-	return data;
 }
 
 function addnewColumnMultiplyingColumns(data, columnName,columnsToSum, decimalNumber){
@@ -697,6 +696,5 @@ function addnewColumnMultiplyingColumns(data, columnName,columnsToSum, decimalNu
 			data[i][columnName]= product;
 		}
 	}
-	return data;
 }
 

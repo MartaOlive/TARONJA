@@ -243,7 +243,7 @@
 			</span>
 			<div class="center" style="margin-top: 10px">
 			  <button value="default" onClick="addColumnsToTableInCreateColumns()">Add columns to your table</button>
-			  <button value="cancel" formmethod="dialog">Cancel</button>
+			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
 			</div>
 		  </form>
 	</dialog>
@@ -302,7 +302,7 @@
 			</span>
 			<div class="center" style="margin-top: 10px">
 			  <button value="default" onClick="addColumnsToTableInAggregateColumns(event)">Create new columns</button>
-			  <button value="cancel" formmethod="dialog">Cancel</button>
+			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
 			</div>
 		  </form>
 	</dialog>
@@ -314,7 +314,7 @@
 			</span>
 			<div class="center">
 				<button value="default" onClick="GetColumnsCalculator(event)">OK</button>
-				<button value="cancel" formmethod="dialog">Cancel</button>
+				<button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
 			</div>
 		</form>
 	</dialog>
@@ -4884,6 +4884,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else if (currentNode.image == "CreateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode.STAdata){
+						currentNode.STAdataCopy=currentNode.STAdata; //To recovery data if cancel is pressed
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent	
 					}
 					 if (parentNode) {
@@ -4897,9 +4898,10 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				else if (currentNode.image == "AggregateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 						
+
 					if (parentNode.STAdata){
+						currentNode.STAdataCopy=currentNode.STAdata; //To recovery data if cancel is pressed
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent
-						
 					}
 					fillAggregateColumVariablesList();
 					if (parentNode) {
@@ -5313,7 +5315,17 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			document.getElementById("DialogCreateColumns").close();
 			showInfoMessage("New columns have been added");
 		}
-		
+		function cancelButtonRecoveryOldData(event){
+			event.preventDefault();
+			currentNode.STAdata=currentNode.STAdataCopy;
+			networkNodes.update(currentNode)
+
+			if (currentNode.image=="CreateColumns.png"){
+				document.getElementById("DialogCreateColumns").close();
+			}else{
+				document.getElementById("DialogAggregateColumns").close();
+			}
+		}
 		//Aggregate columns
 		
 		function fillAggregateColumVariablesList(){
@@ -5387,19 +5399,19 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				switch(currentNode.STAnewColumnsToAdd[i][0]) {
 					case  "sum":
 						if (decimalNumber!=""){
-							data= addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
+							 addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
 
 						}else{
-							data= addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
+							 addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
 
 						}
 						break;
 					case  "product":
 					if (decimalNumber!=""){
-							data= addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
+							addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
 
 						}else{
-							data= addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
+							addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
 
 						}
 						break;
