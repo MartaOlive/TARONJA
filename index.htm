@@ -5184,10 +5184,11 @@ async function requestAndRefreshCountResults(currentNode, period) {
 
 						break;
 					case  "meanValue":
-						
+						addnewColumnMeanValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
 						break;
 					case  "variance":
-						
+						addnewColumnVarianceValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+
 						break;
 					case  "median":
 						

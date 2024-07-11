@@ -289,19 +289,39 @@ var r=0;
 }
 
 function aggrFuncMode(values){
-	//TBD
+	//Text o numeros 
 }
 
 function aggrFuncFirstValue(values){
 	return values[0];
 }
 
-function aggrFuncMedian(values){
-	//TBD
+function aggrFuncCoefficientOfVariation (values){ //Aquesta no estava,però com és fàcil de calcular tenint les altres...
+	var standardDeviation= aggrFuncStandardDeviation(values);
+	var mean= aggrFuncMean(values);
+	var CoefficientOfVariation= standardDeviation/mean;
+	return CoefficientOfVariation;
 }
+function aggrFuncMedian(values) {
+	var numberOfValues = values.length;
+	var isPar, middleNumber, median;
+	var sortedValues = values.sort();
+	if (numberOfValues % 2 === 0) {
+	  isPar = true;
+	}
+	if (isPar) {
+	  middleNumber = numberOfValues / 2;
+	  median = ((sortedValues[middleNumber - 1] + sortedValues[(middleNumber + 1) - 1])) / 2;
+	} else {
+	  median = sortedValues[((numberOfValues + 1) / 2) - 1];
+	}
+	return median;
+  }
 
 function aggrFuncStandardDeviation(values){
-	//TBD
+	var variance= aggrFuncVariance(values);
+	var standardDeviation= Math.sqrt(variance);
+	return standardDeviation;
 }
 
 function aggrFuncLastValue(values){
@@ -313,7 +333,14 @@ function aggrFuncQ1(values){
 }
 
 function aggrFuncVariance(values){
-	//TBD
+	var mean= aggrFuncMean(values);
+	var summation=0, value, variance;
+	for (var i=0;i<values.length;i++){
+		value= values[i]-mean;
+		summation+=value*value;
+	}
+	variance= summation/(values.length-1);
+	return variance;
 }
 
 function aggrFuncRandomValue(values){
@@ -716,7 +743,7 @@ function addnewColumnMultiplyingColumns(data, columnName,columnsToSum, decimalNu
 	}
 }
 
-function addnewColumnMinimalValue(data, columnName,columnsToEvaluate){
+function addnewColumnMinimalValue(data, columnName,columnsToEvaluate, decimalNumber){
 	var values,min;
 	for (var i=0;i<data.length;i++){
 		values=[];
@@ -724,11 +751,21 @@ function addnewColumnMinimalValue(data, columnName,columnsToEvaluate){
 			values.push(data[i][columnsToEvaluate[a]]);
 		}
 		min=aggrFuncMinValue(values); //Use function to be able to evaluate many columns
-		data[i][columnName]=min;
+		if (decimalNumber){
+			if (decimalNumber==0){ //round number
+				data[i][columnName]= Math.round(min);
+			}
+			data[i][columnName]= min.toFixed(decimalNumber);
+		
+		}else{
+			data[i][columnName]= min;
+		}
+		
+		//data[i][columnName]=min;
 	}
 }
 
-function addnewColumnMaximalValue(data, columnName,columnsToEvaluate){
+function addnewColumnMaximalValue(data, columnName,columnsToEvaluate, decimalNumber){
 	var values,max;
 	for (var i=0;i<data.length;i++){
 		values=[];
@@ -736,7 +773,57 @@ function addnewColumnMaximalValue(data, columnName,columnsToEvaluate){
 			values.push(data[i][columnsToEvaluate[a]]);
 		}
 		max=aggrFuncMaxValue(values); //Use function to be able to evaluate many columns
-		data[i][columnName]=max;
+		if (decimalNumber){
+			if (decimalNumber==0){ //round number
+				data[i][columnName]= Math.round(max);
+			}
+			data[i][columnName]= max.toFixed(decimalNumber);
+		
+		}else{
+			data[i][columnName]= max;
+		}
+		//data[i][columnName]=max;
 	}
 }
 
+function addnewColumnMeanValue(data, columnName,columnsToEvaluate, decimalNumber){
+	var values,mean;
+	for (var i=0;i<data.length;i++){
+		values=[];
+		for (var a=0;a<columnsToEvaluate.length;a++){
+			values.push(data[i][columnsToEvaluate[a]]);
+		}
+		mean=aggrFuncMean(values); //Use function to be able to evaluate many columns
+		if (decimalNumber){
+			if (decimalNumber==0){ //round number
+				data[i][columnName]= Math.round(mean);
+			}
+			data[i][columnName]= mean.toFixed(decimalNumber);
+		
+		}else{
+			data[i][columnName]= mean;
+		}
+		//data[i][columnName]=mean;
+	}
+}
+
+function addnewColumnVarianceValue(data, columnName,columnsToEvaluate, decimalNumber){
+	var values,variance;
+	for (var i=0;i<data.length;i++){
+		values=[];
+		for (var a=0;a<columnsToEvaluate.length;a++){
+			values.push(data[i][columnsToEvaluate[a]]);
+		}
+		variance=aggrFuncVariance(values); //Use function to be able to evaluate many columns
+		if (decimalNumber){
+			if (decimalNumber==0){ //round number
+				data[i][columnName]= Math.round(variance);
+			}
+			data[i][columnName]= variance.toFixed(decimalNumber);
+		
+		}else{
+			data[i][columnName]= variance;
+		}
+		//data[i][columnName]=variance;
+	}
+}

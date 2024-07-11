@@ -14,47 +14,55 @@
     <span id="DialogAggregateColumnsHTML">
       <br>
       <label for="columnName">Column Name </label>
-      <input id="columnName" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
+      <input id="columnName" type="text" style="margin-top: 10px; margin-bottom: 10px; ">
       <br>
-      <div >
+      <div>
         <fieldset id="columnsFielset" style="display:inline-block">
           <legend>Select your variables/columns:</legend>
-        
-          
-            <input type="checkbox" id="scales" name="scales" checked />
-            <label for="scales">Scales</label>
+
+
+          <input type="checkbox" id="scales" name="scales" checked />
+          <label for="scales">Scales</label>
           <br>
-        
-          
-            <input type="checkbox" id="horns" name="horns" />
-            <label for="horns">Horns</label>
-         
+
+
+          <input type="checkbox" id="horns" name="horns" />
+          <label for="horns">Horns</label>
+
         </fieldset>
-      <fieldset id="operationsFieldSet" style="display:inline-block">
-        <legend>Select your operation:</legend>
-        <input type="radio" id="sum" name="TypeOfValues" value="sum" checked> 
-        <label for="sum">Sum</label><br>
-        <input type="radio" id="product" name="TypeOfValues" value="product">
-        <label for="product">Product</label><br>
-        <input type="radio" id="minimalValue" name="TypeOfValues" value="minimalValue">
-        <label for="minimalValue">Minimal Value</label><br>
-        <input type="radio" id="maximalValue" name="TypeOfValues" value="maximalValue">
-        <label for="maximalValue">Maximal Value</label><br>
-        <input type="radio" id="meanValue" name="TypeOfValues" value="meanValue">
-        <label for="meanValue">Mean Value</label><br>
-        <input type="radio" id="variance" name="TypeOfValues" value="variance">
-        <label for="variance">Variance</label><br>
-        <input type="radio" id="median" name="TypeOfValues" value="median">
-        <label for="median">Median</label><br>
-      </fieldset>
-      <br>
-      <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
-      <div style="width:auto;border:solid black 1px " >
-        <label>Columns to add</label>
-        <div id="columnsBox"style="border:solid black 1px">
-          <table class="tableInAddColumns" id="columnsBoxTable"><tr> <th>Operation</th><th>Column name</th> <th>Columns</th><th></th> </tr></table> 
+        <fieldset id="operationsFieldSet" style="display:inline-block">
+          <legend>Select your operation:</legend>
+          <input type="radio" id="sum" name="TypeOfValues" value="sum" checked>
+          <label for="sum">Sum</label><br>
+          <input type="radio" id="product" name="TypeOfValues" value="product">
+          <label for="product">Product</label><br>
+          <input type="radio" id="minimalValue" name="TypeOfValues" value="minimalValue">
+          <label for="minimalValue">Minimal Value</label><br>
+          <input type="radio" id="maximalValue" name="TypeOfValues" value="maximalValue">
+          <label for="maximalValue">Maximal Value</label><br>
+          <input type="radio" id="meanValue" name="TypeOfValues" value="meanValue">
+          <label for="meanValue">Mean Value</label><br>
+          <input type="radio" id="variance" name="TypeOfValues" value="variance">
+          <label for="variance">Variance</label><br>
+          <input type="radio" id="median" name="TypeOfValues" value="median">
+          <label for="median">Median</label><br>
+        </fieldset>
+        <br>
+        <button value="add" onClick="addColumnToListAggregateColumns(event)" style="margin-bottom:10px">Add column to
+          list </button>
+        <div style="width:auto;border:solid black 1px ">
+          <label>Columns to add</label>
+          <div id="columnsBox" style="border:solid black 1px">
+            <table class="tableInAddColumns" id="columnsBoxTable">
+              <tr>
+                <th>Operation</th>
+                <th>Column name</th>
+                <th>Columns</th>
+                <th></th>
+              </tr>
+            </table>
+          </div>
         </div>
-      </div>
       </div>
     </span>
     <div class="center">
@@ -62,6 +70,26 @@
       <button value="cancel" formmethod="dialog">Cancel</button>
     </div>
   </form>
+  <script>
+    var mediaan = aggrFuncMedian([1, 3, 5, 6, 7,8,2]);
+    function aggrFuncMedian(values) {
+      var numberOfValues = values.length;
+      var isPar, middleNumber, median;
+      var sortedValues = values.sort();
+      if (numberOfValues % 2 === 0) {
+        isPar = true;
+      }
+      if (isPar) {
+        middleNumber = numberOfValues / 2;
+        median = ((sortedValues[middleNumber - 1] + sortedValues[(middleNumber + 1) - 1])) / 2;
+      } else {
+        median = sortedValues[((numberOfValues + 1) / 2) - 1];
+      }
+
+
+      return median;
+    }
+  </script>
 </body>
 
 </html>
