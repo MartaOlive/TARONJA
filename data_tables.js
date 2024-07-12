@@ -288,9 +288,35 @@ var r=0;
 	return r/values.length;
 }
 
-function aggrFuncMode(values){
-	//Text o numeros 
-}
+function aggrFuncMode(values) {
+	var numberValueArray=[];//[value of mode], one or more
+	var summaryOfData={}; //Object. Every key is a value, every value of the key is the number of repetitions
+	var numberOfRepetitions, maxNumberOfRepetitions=0, mode;
+	for (var i = 0; i < values.length; i++) { //creating summaryOfData object
+	  if (summaryOfData[values[i]]) {
+		numberOfRepetitions = summaryOfData[values[i]];
+		summaryOfData[values[i]] = numberOfRepetitions+ 1;
+
+	  }else{ //First appearance
+		summaryOfData[values[i]]=1;
+	  }
+	}
+
+	var objectKeys=Object.keys(summaryOfData); //every key is a different value from values
+
+	for (var a=0;a<objectKeys.length;a++){ //Searching value with more repetitions
+	  if (summaryOfData[objectKeys[a]]==maxNumberOfRepetitions){
+		numberValueArray.push(objectKeys[a]);//several with same number
+	  }else if (summaryOfData[objectKeys[a]]>maxNumberOfRepetitions){
+		  numberValueArray=[objectKeys[a]]; //add moda value 
+		  maxNumberOfRepetitions = summaryOfData[objectKeys[a]]; //update number max
+	  }
+	}
+	mode=numberValueArray; //One value or more, always in a array;
+   
+	return mode;
+
+  }
 
 function aggrFuncFirstValue(values){
 	return values[0];
@@ -305,8 +331,8 @@ function aggrFuncCoefficientOfVariation (values){ //Aquesta no estava,però com 
 function aggrFuncMedian(values) {
 	var numberOfValues = values.length;
 	var isPar, middleNumber, median;
-	var sortedValues = values.sort();
-	if (numberOfValues % 2 === 0) {
+	var sortedValues = sortValuesNumbersOrText(values);
+	if (numberOfValues % 2 == 0) {
 	  isPar = true;
 	}
 	if (isPar) {
@@ -826,4 +852,37 @@ function addnewColumnVarianceValue(data, columnName,columnsToEvaluate, decimalNu
 		}
 		//data[i][columnName]=variance;
 	}
+}
+
+function sortValuesNumbersOrText(arrayValues) {
+	var arrayNumbers = [];
+	var arrayText = [];
+	var arrayNumbersArranged, arrayTextsArranged, arrayValuesArranged;
+	var isNumber, punctuationMark;
+	for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
+		if (typeof arrayValues[i] !== "undefined") {
+			isNumber = true;
+			punctuationMark = false;
+			for (var a = 0; a < arrayValues[i].length; a++) { //check each character
+				if (isNumber == true && arrayValues[i] != "," && arrayValues[i] != "." && punctuationMark != true) {
+					if (isNaN(arrayValues[i][a])) {//is not a number 
+						isNumber = false;
+
+					}
+					if (arrayValues[i] != "," || arrayValues[i] != ".") {
+						punctuationMark = true;
+					}
+				}
+			}
+			if (isNumber == true) {
+				arrayNumbers.push(arrayValues[i]);
+			} else {
+				arrayText.push(arrayValues[i]);
+			}
+		}
+		arrayNumbersArranged = arrayNumbers.sort((a, b) => a - b);
+		arrayTextsArranged = arrayText.sort();
+		arrayValuesArranged = arrayNumbersArranged.concat(arrayTextsArranged); //join arrays
+	}
+	return arrayValuesArranged;
 }

@@ -221,7 +221,7 @@ function obtainValuesFromSTAdataInCSV(column) {
 			}
 		}
 	}
-	var valuesSorted = sortValuesForSelect(valuesArray);
+	var valuesSorted = sortValuesNumbersOrText(valuesArray);
 	return valuesSorted;
 }
 
@@ -985,7 +985,7 @@ async function fillValueSelectorFilterRow(count) {
 					arrayValors.push(valor);
 				}
 			}
-			arrayValuesArranged = sortValuesForSelect(arrayValors); //arrange values 
+			arrayValuesArranged = sortValuesNumbersOrText(arrayValors); //arrange values 
 		}
 	} else { //CSV, OGCAPIFeature (3selectors)
 		var selectorColumns = document.getElementById("selectorColumns_" + count);
@@ -1019,38 +1019,38 @@ async function fillValueSelectorFilterRow(count) {
 
 	showAndHiddeSelectorAndInputsFilterRow(count);
 }
-function sortValuesForSelect(arrayValues) {
-	var arrayNumbers = [];
-	var arrayText = [];
-	var arrayNumbersArranged, arrayTextsArranged, arrayValuesArranged;
-	var isNumber, punctuationMark;
-	for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
-		if (typeof arrayValues[i] !== "undefined") {
-			isNumber = true;
-			punctuationMark = false;
-			for (var a = 0; a < arrayValues[i].length; a++) { //check each character
-				if (isNumber == true && arrayValues[i] != "," && arrayValues[i] != "." && punctuationMark != true) {
-					if (isNaN(arrayValues[i][a])) {//is not a number 
-						isNumber = false;
+// function sortValuesForSelect(arrayValues) { //Està a data_tables (sortValuesNumbersOrText())
+// 	var arrayNumbers = [];
+// 	var arrayText = [];
+// 	var arrayNumbersArranged, arrayTextsArranged, arrayValuesArranged;
+// 	var isNumber, punctuationMark;
+// 	for (var i = 0; i < arrayValues.length; i++) { //Separate numbers and text
+// 		if (typeof arrayValues[i] !== "undefined") {
+// 			isNumber = true;
+// 			punctuationMark = false;
+// 			for (var a = 0; a < arrayValues[i].length; a++) { //check each character
+// 				if (isNumber == true && arrayValues[i] != "," && arrayValues[i] != "." && punctuationMark != true) {
+// 					if (isNaN(arrayValues[i][a])) {//is not a number 
+// 						isNumber = false;
 
-					}
-					if (arrayValues[i] != "," || arrayValues[i] != ".") {
-						punctuationMark = true;
-					}
-				}
-			}
-			if (isNumber == true) {
-				arrayNumbers.push(arrayValues[i]);
-			} else {
-				arrayText.push(arrayValues[i]);
-			}
-		}
-		arrayNumbersArranged = arrayNumbers.sort((a, b) => a - b);
-		arrayTextsArranged = arrayText.sort();
-		arrayValuesArranged = arrayNumbersArranged.concat(arrayTextsArranged); //join arrays
-	}
-	return arrayValuesArranged;
-}
+// 					}
+// 					if (arrayValues[i] != "," || arrayValues[i] != ".") {
+// 						punctuationMark = true;
+// 					}
+// 				}
+// 			}
+// 			if (isNumber == true) {
+// 				arrayNumbers.push(arrayValues[i]);
+// 			} else {
+// 				arrayText.push(arrayValues[i]);
+// 			}
+// 		}
+// 		arrayNumbersArranged = arrayNumbers.sort((a, b) => a - b);
+// 		arrayTextsArranged = arrayText.sort();
+// 		arrayValuesArranged = arrayNumbersArranged.concat(arrayTextsArranged); //join arrays
+// 	}
+// 	return arrayValuesArranged;
+// }
 function changeWriteToSelect(number, selector) {  //To take the text in input
 	event.preventDefault();
 
