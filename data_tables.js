@@ -441,7 +441,10 @@ function aggrFuncVariance(values){
 }
 
 function aggrFuncRandomValue(values){
-	//TBD
+	var max= values.length;
+	var randomIndex=Math.floor(Math.random() * max);
+	var randomValue= values[randomIndex];
+	return randomValue;
 }
 
 
