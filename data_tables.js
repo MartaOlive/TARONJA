@@ -334,7 +334,10 @@ function aggrFuncMedian(values) {
 	var sortedValues = sortValuesNumbersOrText(values);
 	if (numberOfValues % 2 == 0) {
 	  isPar = true;
+	}else{
+		isPar = false;
 	}
+
 	if (isPar) {
 	  middleNumber = numberOfValues / 2;
 	  median = ((sortedValues[middleNumber - 1] + sortedValues[(middleNumber + 1) - 1])) / 2;
@@ -354,10 +357,78 @@ function aggrFuncLastValue(values){
 	return values[values.length-1];
 }
 
-function aggrFuncQ1(values){
-	//TBD
+function aggrFuncQ1(values) {
+	var isPar, medianaPosition, q1;
+	var valuesSorted = values.sort((a, b) => a - b);
+	if (valuesSorted.length % 2 == 0) {
+	  isPar = true;
+	} else {
+	  isPar = false;
+	}
+
+	if (isPar) {
+	  medianaPosition = valuesSorted.length / 2; 
+	  
+	  if (medianaPosition% 2 == 0){//par
+		numbersPerSite = medianaPosition - (medianaPosition / 2);
+		q1 = (valuesSorted[numbersPerSite - 1] + valuesSorted[(numbersPerSite - 1)+1])/2;
+
+	  }else{ 
+		numbersPerSite = medianaPosition - ((medianaPosition-1) / 2); //Every side has numberPerSite -1 numbers
+		 q1 = valuesSorted[numbersPerSite - 1];
+	  }     
+	}
+	else {
+	  medianaPosition = (valuesSorted.length + 1) / 2;
+	  if (medianaPosition% 2 == 0){//if number is par, every side has an odd number of digits
+		numbersPerSite = medianaPosition - (medianaPosition / 2);
+		q1 = valuesSorted[numbersPerSite - 1];
+
+	  }else{//if number is odd, every side has an par number of digits
+		numbersPerSite = (medianaPosition -1)- ((medianaPosition -1)/ 2);
+		q1 = (valuesSorted[numbersPerSite - 1] + valuesSorted[(numbersPerSite - 1)+1])/2;
+	  }
+	 
+	}
+	return q1;
+	  
 }
 
+function aggrFuncQ3(values) {
+	var isPar, medianaPosition, q3;
+      var valuesSorted = values.sort((a, b) => a - b);
+      if (valuesSorted.length % 2 == 0) {
+        isPar = true;
+      } else {
+        isPar = false;
+      }
+
+      if (isPar) {
+        medianaPosition = valuesSorted.length / 2;
+
+        if (medianaPosition % 2 == 0) {//par
+          numbersPerSite = medianaPosition + (medianaPosition / 2);
+          q3 = (valuesSorted[numbersPerSite - 1] + valuesSorted[(numbersPerSite - 1) + 1]) / 2;
+
+        } else {
+          numbersPerSite = medianaPosition + ((medianaPosition + 1) / 2); //Every side has numberPerSite -1 numbers
+          q3 = valuesSorted[numbersPerSite - 1];
+        }
+      }
+      else {
+        medianaPosition = (valuesSorted.length + 1) / 2;
+        if (medianaPosition % 2 == 0) {//if number is par, every side has an odd number of digits
+          numbersPerSite = medianaPosition + (medianaPosition / 2);
+          q3 = valuesSorted[numbersPerSite - 1];
+
+        } else {//if number is odd, every side has an par number of digits
+          numbersPerSite = medianaPosition + ((medianaPosition - 1) / 2);
+          q3 = (valuesSorted[numbersPerSite - 1] + valuesSorted[(numbersPerSite - 1) + 1]) / 2;
+        }
+
+      }
+      return q3;
+}
 function aggrFuncVariance(values){
 	var mean= aggrFuncMean(values);
 	var summation=0, value, variance;
@@ -373,9 +444,7 @@ function aggrFuncRandomValue(values){
 	//TBD
 }
 
-function aggrFuncQ3(values){
-	//TBD
-}
+
 
 function aggrFuncSum(values){
 var r=0;
@@ -851,6 +920,38 @@ function addnewColumnVarianceValue(data, columnName,columnsToEvaluate, decimalNu
 			data[i][columnName]= variance;
 		}
 		//data[i][columnName]=variance;
+	}
+}
+function addnewColumnMedianValue (data, columnName,columnsToEvaluate, decimalNumber){
+	var values,median;
+	for (var i=0;i<data.length;i++){
+		values=[];
+		for (var a=0;a<columnsToEvaluate.length;a++){
+			values.push(data[i][columnsToEvaluate[a]]);
+		}
+		median=aggrFuncMedian(values); //Use function to be able to evaluate many columns
+		if (decimalNumber){
+			if (decimalNumber==0){ //round number
+				data[i][columnName]= Math.round(median);
+			}
+			data[i][columnName]= median.toFixed(decimalNumber);
+		
+		}else{
+			data[i][columnName]= median;
+		}
+		//data[i][columnName]=median;
+	}
+}
+function addnewColumnConcatenatingValues (data, columnName,columnsToEvaluate){ //!!!!!!!!!!!!No funciona amb numeros
+	var values,concatenated;
+	for (var i=0;i<data.length;i++){
+		values=[];
+		for (var a=0;a<columnsToEvaluate.length;a++){
+			values.push(data[i][columnsToEvaluate[a]]);
+		}
+		concatenated=aggrFuncConcatenate(values); //Use function to be able to evaluate many columns
+
+		data[i][columnName]= concatenated;
 	}
 }
 
