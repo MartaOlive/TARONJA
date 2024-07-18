@@ -427,7 +427,7 @@ function aggrFuncQ3(values) {
         }
 
       }
-      return q3;
+    return q3;
 }
 function aggrFuncVariance(values){
 	var mean= aggrFuncMean(values);

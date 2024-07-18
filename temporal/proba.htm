@@ -5,86 +5,138 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../tapis.css">
+  <link href=".../tools.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
 
-  <form>
-    Aggregate columns:
-    <span id="DialogAggregateColumnsHTML">
+  <form name="CalculadoraCapes" onsubmit="return false;"><br>
+    <label for="columnNameColumnsCalculator">Column Name </label>
+    <input id="columnNameColumnsCalculator" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
+    <br>
+      <label for="afegeix-capa-capa-calcul-valor-capa-0">Capa:</label>
+      <select id="calculator_selectColumns" name="calculator_selectColumnsValue" style="width:400px;" onchange="">
+        <option value="columna1" selected="selected">Columna 1</option>
+      </select>
+
+      <input type="button" value="Write in the formula" onclick="">
+
+    <fieldset>
+      <legend>Operators and functions for the formula: </legend>
+      <input type="button" style="width:40px" value="&#40;" onclick="WriteInTheFormulaButtons('&#40;')">
+      <input type="button" style="width:40px" value="&#41;"  onclick="WriteInTheFormulaButtons('&#41;')">
       <br>
-      <label for="columnName">Column Name </label>
-      <input id="columnName" type="text" style="margin-top: 10px; margin-bottom: 10px; ">
+      <input type="button" style="width:40px" value="=" onclick="WriteInTheFormulaButtons('=')">
+      <input type="button" style="width:40px" value="&gt;=" onclick="WriteInTheFormulaButtons('&gt;=')">
+      <input type="button" style="width:40px" value="&lt;" onclick="WriteInTheFormulaButtons('<')">&nbsp;&nbsp;&nbsp;&nbsp; <!--per fer la separacio-->
+
+      
+
+      <input type="button" style="width:30px" value="7" onclick="WriteInTheFormulaButtons('7')">
+      <input type="button" style="width:30px" value="8" onclick="WriteInTheFormulaButtons('8')">
+      <input type="button" style="width:30px" value="9" onclick="WriteInTheFormulaButtons('9')">&nbsp;&nbsp;&nbsp;&nbsp;
+
+      <input type="button" style="width:30px" value="/" onclick="WriteInTheFormulaButtons('/')"> &nbsp;&nbsp;&nbsp;&nbsp;
+
+      <input type="button" style="width:40px" value="and" onclick="WriteInTheFormulaButtons('and')">
+
       <br>
-      <div>
-        <fieldset id="columnsFielset" style="display:inline-block">
-          <legend>Select your variables/columns:</legend>
+      <input type="button" style="width:40px" value="≠" onclick="WriteInTheFormulaButtons('≠')">
+      <input type="button" style="width:40px" value="&lt;=" onclick="WriteInTheFormulaButtons('&lt;=')">
+      <input type="button" style="width:40px" value="&gt;" onclick="WriteInTheFormulaButtons('&gt;')">&nbsp;&nbsp;&nbsp;&nbsp;
 
 
-          <input type="checkbox" id="scales" name="scales" checked />
-          <label for="scales">Scales</label>
-          <br>
+      <input type="button" style="width:30px" value="4" onclick="WriteInTheFormulaButtons('4')">
+      <input type="button" style="width:30px" value="5" onclick="WriteInTheFormulaButtons('5')">
+      <input type="button" style="width:30px" value="6" onclick="WriteInTheFormulaButtons('6')">&nbsp;&nbsp;&nbsp;&nbsp;
+
+      <input type="button" style="width:30px" value="×" onclick="WriteInTheFormulaButtons('x')"> &nbsp;&nbsp;&nbsp;&nbsp;
+     
+      <input type="button" style="width:40px" value="or" onclick="WriteInTheFormulaButtons('or')">
+      <br>
+   
+      <input type="button" style="width:40px" value="Log" onclick="WriteInTheFormulaButtons('log')"> <!-- Math.log10	 -->
+      <input type="button" style="width:40px" value="Ln"  onclick="WriteInTheFormulaButtons('ln')"><!-- Math.log	 -->
+      <input type="button" style="width:40px" value="xⁿ" onclick="WriteInTheFormulaButtons('xn')">&nbsp;&nbsp;&nbsp;&nbsp;
 
 
-          <input type="checkbox" id="horns" name="horns" />
-          <label for="horns">Horns</label>
+      <input type="button" style="width:30px" value="1" onclick="WriteInTheFormulaButtons('1')">
+      <input type="button" style="width:30px" value="2" onclick="WriteInTheFormulaButtons('2')">
+      <input type="button" style="width:30px" value="3" onclick="WriteInTheFormulaButtons('3')">&nbsp;&nbsp;&nbsp;&nbsp;
+      
+      <input type="button" style="width:30px" value="-" onclick="WriteInTheFormulaButtons('-')"> &nbsp;&nbsp;&nbsp;&nbsp;
+      
+      <input type="button" style="width:40px" value="not"  onclick="WriteInTheFormulaButtons('not')">
 
-        </fieldset>
-        <fieldset id="operationsFieldSet" style="display:inline-block">
-          <legend>Select your operation:</legend>
-          <input type="radio" id="sum" name="TypeOfValues" value="sum" checked>
-          <label for="sum">Sum</label><br>
-          <input type="radio" id="product" name="TypeOfValues" value="product">
-          <label for="product">Product</label><br>
-          <input type="radio" id="minimalValue" name="TypeOfValues" value="minimalValue">
-          <label for="minimalValue">Minimal Value</label><br>
-          <input type="radio" id="maximalValue" name="TypeOfValues" value="maximalValue">
-          <label for="maximalValue">Maximal Value</label><br>
-          <input type="radio" id="meanValue" name="TypeOfValues" value="meanValue">
-          <label for="meanValue">Mean Value</label><br>
-          <input type="radio" id="variance" name="TypeOfValues" value="variance">
-          <label for="variance">Variance</label><br>
-          <input type="radio" id="median" name="TypeOfValues" value="median">
-          <label for="median">Median</label><br>
-        </fieldset>
-        <br>
-        <button value="add" onClick="addColumnToListAggregateColumns(event)" style="margin-bottom:10px">Add column to
-          list </button>
-        <div style="width:auto;border:solid black 1px ">
-          <label>Columns to add</label>
-          <div id="columnsBox" style="border:solid black 1px">
-            <table class="tableInAddColumns" id="columnsBoxTable">
-              <tr>
-                <th>Operation</th>
-                <th>Column name</th>
-                <th>Columns</th>
-                <th></th>
-              </tr>
-            </table>
-          </div>
-        </div>
+      <br>
+      <input type="button" style="width:40px" value="√¯" onclick="WriteInTheFormulaButtons('√¯')"> <!-- Math.sqrt	 -->
+      <input type="button" style="width:40px" value="Ent" onclick="WriteInTheFormulaButtons('ent')"> <!-- Math.trunc	 -->
+      <input type="button" style="width:40px" value="Abs" onclick="WriteInTheFormulaButtons('Abs')">&nbsp;&nbsp;&nbsp;&nbsp;<!-- Math.abs	 -->
+
+      
+      <input type="button" style="width:30px" value="&#928;"  onclick="WriteInTheFormulaButtons('&#928;')">
+      <input type="button" style="width:30px" value="0" onclick="WriteInTheFormulaButtons('0')">
+      <input type="button" style="width:30px" value="." onclick="WriteInTheFormulaButtons('.')">&nbsp;&nbsp;&nbsp;&nbsp;
+      
+      <input type="button" style="width:30px" value="+" onclick="WriteInTheFormulaButtons('+')"> &nbsp;&nbsp;&nbsp;&nbsp;
+      
+     
+      <input type="button" style="width:40px" value="xor" onclick="WriteInTheFormulaButtons('xor')">
+
+      <br>
+    
+      <input type="button" style="width:40px" value="%"  onclick="WriteInTheFormulaButtons('&%')">
+      <input type="button" style="width:40px" value="Exp" onclick="WriteInTheFormulaButtons('exp')"> <!-- Math.exp	 -->
+      <input type="button" style="width:40px" value="1/x" onclick="WriteInTheFormulaButtons('1/x')">&nbsp;&nbsp;&nbsp;&nbsp;
+
+      <input type="button" style="width:30px" value="e"   onclick="WriteInTheFormulaButtons('e')">
+
+      <br><br>
+      <input type="button" style="width:62px" value="sin" onclick="WriteInTheFormulaButtons('sin')"> <!-- Math.sin	 -->
+      <input type="button" style="width:62px" value="asin" onclick="WriteInTheFormulaButtons('asin')"> <!-- Math.asin	 -->
+      <input type="button" style="width:62px" value="cos"  onclick="WriteInTheFormulaButtons('cos')"> <!-- Math.cos	 -->
+      <input type="button" style="width:62px" value="acos" onclick="WriteInTheFormulaButtons('acos')"> <!-- Math.acos	 -->
+      <input type="button" style="width:62px" value="tan"  onclick="WriteInTheFormulaButtons('tan')"> <!-- Math.tan	 -->
+      <input type="button" style="width:62px" value="atan" onclick="WriteInTheFormulaButtons('atan')"> <!-- Math.atan	 -->
+      
+      <br>
+      <input type="button" style="width:62px" value="sing" onclick="WriteInTheFormulaButtons('sing')"> <!-- Math.sin	(&quot;,&quot;*Math.PI/180)	 -->
+      <input type="button" style="width:62px" value="asing" onclick="WriteInTheFormulaButtons('asing')">  <!--Math.asin	(&quot;,&quot;)*180/Math.PI&quot	 -->
+      <input type="button" style="width:62px" value="cosg"  onclick="WriteInTheFormulaButtons('cosg')">   <!--Math.cos	(&quot;,&quot;*Math.PI/180)	 -->
+      <input type="button" style="width:62px" value="acosg" onclick="WriteInTheFormulaButtons('acosg')"> <!--Math.acos	(&quot;,&quot;*Math.PI/180)	 -->
+      <input type="button" style="width:62px" value="tang"  onclick="WriteInTheFormulaButtons('tang')"> <!--Math.tan	(&quot;,&quot;*Math.PI/180)	 -->
+      <input type="button" style="width:62px" value="atang" onclick="WriteInTheFormulaButtons('atang')"> <!--Math.atan	(&quot;,&quot;*Math.PI/180)	 -->
+    </fieldset>
+    
+    <label>Formula:</label>
+    <br>
+    <textarea id="textAreaFormulaColumnsCalculator" style="width:438px;height:100px"></textarea>
+    <br>
+    <button value="add" onClick="addColumnToListColumnsCalculator(event)"style="margin-bottom:10px">Add column to list </button>
+    <div  style="width:auto;">
+      <label>Add formula to new columns list</label>
+      <div >
+        <ol id="columnsBoxColumnsCalculator"></ol>
       </div>
-    </span>
-    <div class="center">
-      <button value="default" onClick="addColumnsToTableInAggregateColumns(event)">OK</button>
-      <button value="cancel" formmethod="dialog">Cancel</button>
     </div>
+    <br>
+    <div class="center" style="margin-top: 10px">
+    <button value="default" onClick="addColumnsToTableInColumnsCalculator()">Add columns to your table</button>
+    <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
+  </div>
   </form>
+
   <script>
     var array = [20, 30, 50, 60, 70, 80, 110, 120, 150, 160, 200, 310, 330, 340, 450, 460]; //par, 8 par (6,5 / 32)
     var array2 = [2, 3, 5, 6, 7, 8, 11, 12, 15, 16, 20, 31, 33, 34, 36]; //impar, 7 impar (6, 31)
     var array3 = [2, 3, 5, 6, 7, 8, 11, 12, 15, 16, 20, 31, 33, 34]; //par, 7 impar (6,20)
     var array4 = [2, 3, 5, 6, 7, 8, 11, 12, 15, 16, 20, 31, 33, 34, 36, 45, 46, 47, 48, 49, 50]; //impar, 8 par (7,5/45,5)
 
-    var qq1 = aggrFuncRandomValue(array)
-
-    function aggrFuncRandomValue(values) {
-      var max= values.length;
-      var randomIndex=Math.floor(Math.random() * max);
-      var randomValue= values[randomIndex];
-      return randomValue;
+    function WriteInTheFormulaButtons(character){
+      event.preventDefault();
+      var textAreaFormulaColumnsCalculator= document.getElementById("textAreaFormulaColumnsCalculator");
+      textAreaFormulaColumnsCalculator.value+=character;
     }
-    console.log("random value: " + qq1)
 
   </script>
 </body>
