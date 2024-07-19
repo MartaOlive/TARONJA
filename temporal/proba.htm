@@ -55,8 +55,8 @@
       <input type="button" style="width:40px" value="or" onclick="WriteInTheFormulaButtons('or')">
       <br>
    
-      <input type="button" style="width:40px" value="Log" onclick="WriteInTheFormulaButtons('log')"> <!-- Math.log10	 -->
-      <input type="button" style="width:40px" value="Ln"  onclick="WriteInTheFormulaButtons('ln')"><!-- Math.log	 -->
+      <input type="button" style="width:40px" value="Log" onclick="WriteInTheFormulaButtons('Math.log10()')"> 
+      <input type="button" style="width:40px" value="Ln"  onclick="WriteInTheFormulaButtons('Math.log()')">
       <input type="button" style="width:40px" value="xⁿ" onclick="WriteInTheFormulaButtons('xn')">&nbsp;&nbsp;&nbsp;&nbsp;
 
 
@@ -69,9 +69,9 @@
       <input type="button" style="width:40px" value="not"  onclick="WriteInTheFormulaButtons('not')">
 
       <br>
-      <input type="button" style="width:40px" value="√¯" onclick="WriteInTheFormulaButtons('√¯')"> <!-- Math.sqrt	 -->
-      <input type="button" style="width:40px" value="Ent" onclick="WriteInTheFormulaButtons('ent')"> <!-- Math.trunc	 -->
-      <input type="button" style="width:40px" value="Abs" onclick="WriteInTheFormulaButtons('Abs')">&nbsp;&nbsp;&nbsp;&nbsp;<!-- Math.abs	 -->
+      <input type="button" style="width:40px" value="Exp" onclick="WriteInTheFormulaButtons('Math.exp()')">
+      <input type="button" style="width:40px" value="%"  onclick="WriteInTheFormulaButtons('&%')">
+      <input type="button" style="width:40px" value="√¯" onclick="WriteInTheFormulaButtons('Math.sqrt()')">&nbsp;&nbsp;&nbsp;&nbsp;
 
       
       <input type="button" style="width:30px" value="&#928;"  onclick="WriteInTheFormulaButtons('&#928;')">
@@ -85,27 +85,27 @@
 
       <br>
     
-      <input type="button" style="width:40px" value="%"  onclick="WriteInTheFormulaButtons('&%')">
-      <input type="button" style="width:40px" value="Exp" onclick="WriteInTheFormulaButtons('exp')"> <!-- Math.exp	 -->
-      <input type="button" style="width:40px" value="1/x" onclick="WriteInTheFormulaButtons('1/x')">&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="button" style="width:40px" value="1/x" onclick="WriteInTheFormulaButtons('1/x')">
+      <input type="button" style="width:40px" value="Ent" onclick="WriteInTheFormulaButtons('Math.trunc()')"> 
+      <input type="button" style="width:40px" value="Abs" onclick="WriteInTheFormulaButtons('Math.abs()')">&nbsp;&nbsp;&nbsp;&nbsp;
 
       <input type="button" style="width:30px" value="e"   onclick="WriteInTheFormulaButtons('e')">
 
       <br><br>
-      <input type="button" style="width:62px" value="sin" onclick="WriteInTheFormulaButtons('sin')"> <!-- Math.sin	 -->
-      <input type="button" style="width:62px" value="asin" onclick="WriteInTheFormulaButtons('asin')"> <!-- Math.asin	 -->
-      <input type="button" style="width:62px" value="cos"  onclick="WriteInTheFormulaButtons('cos')"> <!-- Math.cos	 -->
-      <input type="button" style="width:62px" value="acos" onclick="WriteInTheFormulaButtons('acos')"> <!-- Math.acos	 -->
-      <input type="button" style="width:62px" value="tan"  onclick="WriteInTheFormulaButtons('tan')"> <!-- Math.tan	 -->
-      <input type="button" style="width:62px" value="atan" onclick="WriteInTheFormulaButtons('atan')"> <!-- Math.atan	 -->
+      <input type="button" style="width:62px" value="sin" onclick="WriteInTheFormulaButtons('Math.sin()')"> 
+      <input type="button" style="width:62px" value="asin" onclick="WriteInTheFormulaButtons('Math.asin()')"> 
+      <input type="button" style="width:62px" value="cos"  onclick="WriteInTheFormulaButtons('Math.cos()')"> 
+      <input type="button" style="width:62px" value="acos" onclick="WriteInTheFormulaButtons('Math.acos()')"> 
+      <input type="button" style="width:62px" value="tan"  onclick="WriteInTheFormulaButtons('Math.tan()')"> 
+      <input type="button" style="width:62px" value="atan" onclick="WriteInTheFormulaButtons('Math.atan()')"> 
       
       <br>
-      <input type="button" style="width:62px" value="sing" onclick="WriteInTheFormulaButtons('sing')"> <!-- Math.sin	(&quot;,&quot;*Math.PI/180)	 -->
-      <input type="button" style="width:62px" value="asing" onclick="WriteInTheFormulaButtons('asing')">  <!--Math.asin	(&quot;,&quot;)*180/Math.PI&quot	 -->
-      <input type="button" style="width:62px" value="cosg"  onclick="WriteInTheFormulaButtons('cosg')">   <!--Math.cos	(&quot;,&quot;*Math.PI/180)	 -->
-      <input type="button" style="width:62px" value="acosg" onclick="WriteInTheFormulaButtons('acosg')"> <!--Math.acos	(&quot;,&quot;*Math.PI/180)	 -->
-      <input type="button" style="width:62px" value="tang"  onclick="WriteInTheFormulaButtons('tang')"> <!--Math.tan	(&quot;,&quot;*Math.PI/180)	 -->
-      <input type="button" style="width:62px" value="atang" onclick="WriteInTheFormulaButtons('atang')"> <!--Math.atan	(&quot;,&quot;*Math.PI/180)	 -->
+      <input type="button" style="width:62px" value="sing" onclick="WriteInTheFormulaButtons('Math.sin( *Math.PI/180)')"> <!-- Math.sin	(&quot;,&quot;*Math.PI/180)	 -->
+      <input type="button" style="width:62px" value="asing" onclick="WriteInTheFormulaButtons('Math.asin()*180/Math.PI')">  <!--Math.asin	(&quot;,&quot;)*180/Math.PI&quot	 -->
+      <input type="button" style="width:62px" value="cosg"  onclick="WriteInTheFormulaButtons('Math.cos( *Math.PI/180)')">   <!--Math.cos	(&quot;,&quot;*Math.PI/180)	 -->
+      <input type="button" style="width:62px" value="acosg" onclick="WriteInTheFormulaButtons('Math.acos( *Math.PI/180)')"> <!--Math.acos	(&quot;,&quot;*Math.PI/180)	 -->
+      <input type="button" style="width:62px" value="tang"  onclick="WriteInTheFormulaButtons('Math.tan( *Math.PI/180)	')"> <!--Math.tan	(&quot;,&quot;*Math.PI/180)	 -->
+      <input type="button" style="width:62px" value="atang" onclick="WriteInTheFormulaButtons('Math.atan( *Math.PI/180)')"> <!--Math.atan	(&quot;,&quot;*Math.PI/180)	 -->
     </fieldset>
     
     <label>Formula:</label>
@@ -132,9 +132,16 @@
     var array3 = [2, 3, 5, 6, 7, 8, 11, 12, 15, 16, 20, 31, 33, 34]; //par, 7 impar (6,20)
     var array4 = [2, 3, 5, 6, 7, 8, 11, 12, 15, 16, 20, 31, 33, 34, 36, 45, 46, 47, 48, 49, 50]; //impar, 8 par (7,5/45,5)
 
+    var textarea= document.getElementById("textAreaFormulaColumnsCalculator")
+    textarea.addEventListener('click', event => {
+      console.log(textarea.selectionStart) // logs previous location
+    })
+
     function WriteInTheFormulaButtons(character){
       event.preventDefault();
       var textAreaFormulaColumnsCalculator= document.getElementById("textAreaFormulaColumnsCalculator");
+      var text=textAreaFormulaColumnsCalculator.value;
+      //var modisyText= ;
       textAreaFormulaColumnsCalculator.value+=character;
     }
 

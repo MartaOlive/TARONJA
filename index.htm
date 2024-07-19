@@ -488,7 +488,7 @@
 			<br>
 			<fieldset style="display: inline;">
 				<legend>Delimiter</legend>
-				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked></input><input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=","></input></label> &ensp;
+				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterText" checked></input><input type="text" id="DialogImportCSVDelimiter" size="1" maxlength="1" value=";"></input></label> &ensp;
 				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterTab"></input> Tab</label> &ensp;
 				<label><input type="radio" name="DialogImportCSVDelimiter" id="DialogImportCSVDelimiterAuto" checked="checked"></input> Auto</label>
 			</fieldset>
@@ -3082,6 +3082,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 								else if (dataAttribute.type=="integer" && type=="number")
 									dataAttribute.type="number";
 							}
+							if (dataAttribute.type=="object")
+								break;
 						}
 					}
 					else
@@ -4165,6 +4167,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			if (node.STAURL)
 				addTitleInRowFilterDialog("divTitleSelectRow");
 
+			document.getElementById("SelectNumberOfRecordsSelectRowLabel").style.display=(node.image == "SelectRowTable.png") ? "none" : "inline-block";
+
 			if (!data || !data.length) {
 				document.getElementById("DialogSelectRowsTable").innerHTML = "No data to show.";
 				return;
@@ -4323,8 +4327,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			{
 				alert("Incompatible node. " + errorText + ". It has not been added.");
 				return null;
-				//return false?? Crec que amb el null no impedeix que uneixi el node que no volem que uneixi
-			}
+				}
 			if (nodeFrom.STAURL && IdOfSTAEntity(nodeTo) != -1) {
 				if (nodeFrom.image=="ogc.png")
 					nodeTo.STAURL = nodeFrom.STAURL + "/" + STAEntitiesArray[IdOfSTAEntity(nodeTo)];
@@ -4385,24 +4388,15 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				DoGeoFilterRows(nodeTo);
 				return true;
 			}
-			if (nodeTo.image == "SelectColumnsTable.png" || nodeTo.image == "Meaning.png") {
-				UpdateChildTableNode(nodeTo, nodeFrom);
-				if (calUnir)
-					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
-				return true;
-			}
-			if (nodeTo.image == "SelectRowTable.png" || nodeTo.image == "FilterRowsTable.png") {
+			if (nodeTo.image == "Meaning.png" || 
+                            nodeTo.image == "SelectColumnsTable.png" || nodeTo.image == "SelectRowTable.png" || 
+			    nodeTo.image == "FilterRowsTable.png" || nodeTo.image == "JoinTables.png"){
 				if (nodeFrom.STAdata)
-					nodeTo.STAdata = deapCopy(nodeFrom.STAdata);
+					nodeTo.STAdata = deapCopy(nodeFrom.STAdata);  //This copy will be done again in "SelectColumnsTable.png" and "SelectRowTable.png". We do it here to have the full table while the user does not enter any selection
 				if (nodeFrom.STAdataAttributes)
 					nodeTo.STAdataAttributes = deapCopy(nodeFrom.STAdataAttributes);
 				networkNodes.update(nodeTo);
-				if (calUnir)
-					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
-				return true;
-			}
-			if (nodeTo.image == "JoinTables.png") {
-				networkNodes.update(nodeTo);
+				UpdateChildTableNode(nodeTo, nodeFrom);
 				if (calUnir)
 					networkEdges.add([{ from: nodeFrom.id, to: nodeTo.id, arrows: "from" }]);
 				return true;
@@ -5225,7 +5219,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						addnewColumnConcatenatingValues(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
 						break;
 				}
-
 			}
 			document.getElementById("DialogAggregateColumns").close();
 		}
