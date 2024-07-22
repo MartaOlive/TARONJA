@@ -298,7 +298,7 @@ function aggrFuncModes(values) {
 	}
 
 	var numberValueArray=[];  //[value of mode], one or more
-	var numberOfRepetitions, max=0;
+	var max=0;
 	var objectKeys=Object.keys(summaryOfData); //every key is a different value from values
 	var nObjectKeys=objectKeys.length;
 
@@ -328,7 +328,7 @@ function aggrFuncCoefficientOfVariation (values){
 
 function aggrFuncMedian(values) {
 	var n = values.length;
-	var middleNumber, median;
+	var middleNumber;
 	var sortedValues = values.sort((a, b) => a - b);
 
 	if (n%2) 
@@ -353,16 +353,16 @@ function aggrFuncQ1(values) {
 
 	if (valuesSorted.length%2) {
 		medianaPosition = (valuesSorted.length + 1) / 2;
-		if (medianaPosition% 2){//if number is odd, every side has an par number of digits
+		if (medianaPosition% 2){//if number is odd, every side has an even number of digits
 			numbersPerSite = medianaPosition - 1 - (medianaPosition -1)/2;
 			return (valuesSorted[numbersPerSite - 1] + valuesSorted[numbersPerSite])/2;
 		}
-		return valuesSorted[medianaPosition - medianaPosition / 2 - 1];  ////if number is par, every side has an odd number of digits
+		return valuesSorted[medianaPosition - medianaPosition / 2 - 1];  ////if number is even, every side has an odd number of digits
 	}
 	medianaPosition = valuesSorted.length/2;	  
 	if (medianaPosition%2) 
 		return valuesSorted[medianaPosition - (medianaPosition-1) / 2 - 1];  //Every side has numberPerSite -1 numbers     
-	//par
+	//even
 	numbersPerSite = medianaPosition - medianaPosition / 2;
 	return (valuesSorted[numbersPerSite - 1] + valuesSorted[numbersPerSite])/2;
 }
@@ -373,7 +373,7 @@ function aggrFuncQ3(values) {
 
 	if (valuesSorted.length % 2) {
         	medianaPosition = (valuesSorted.length + 1) / 2;
-        	if (medianaPosition % 2) {//if number is odd, every side has an par number of digits
+        	if (medianaPosition % 2) {//if number is odd, every side has an even number of digits
 			numbersPerSite = medianaPosition + (medianaPosition - 1) / 2;
 			return (valuesSorted[numbersPerSite - 1] + valuesSorted[numbersPerSite]) / 2;
         	}

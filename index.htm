@@ -5112,8 +5112,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		//Aggregate columns
 		
 		function fillAggregateColumVariablesList(){
-			// var columnsFielset= document.getElementById("columnsFielset");
-			// columnsFielset.innerHTML="<legend>Select attributes:</legend>";
+
 			var dataKeys= Object.keys(currentNode.STAdata[0]);
 			var n= dataKeys.length;
 			var dataKeysObject=[];
@@ -5121,23 +5120,24 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				dataKeysObject.push({name:dataKeys[i], desc:dataKeys[i] });
 			}
 			showCheckRadioOptions("columnsFielset", "attributesRadioAggrgatedColumns_", dataKeysObject, 1, null);
-
-
-			// for (var i=0;i<dataKeys.length;i++){
-			// 	columnsFielset.innerHTML+=' <input type="checkbox" id="columnsFielset_'+dataKeys[i]+'" value="'+dataKeys[i]+'"/><label for="'+dataKeys[i]+'">'+dataKeys[i]+'</label><br>'
-			// }
+			//Create list of columns to avoid repetitions
+			var DialogAggregateColumnsHTML = document.getElementById("DialogAggregateColumnsHTML");
+			DialogAggregateColumnsHTML.setAttribute("data-columnList", dataKeys);
+		
 		}
 		function addColumnToListAggregateColumns(event){
 			event.preventDefault();
-			var TypeOfOperation=document.getElementsByName("TypeOfOperation"); //operation
+			var TypeOfOperation=document.getElementsByName("operationsRadioAggrgatedColumns"); //operation
 			var STANewColumnsArray=[],variablesArray=[],variable; 
 			var dataKeys= Object.keys(currentNode.STAdata[0]);
 			var chooseNumberDecimalsInputRadio,chooseNumberDecimalsInput,typeOfOperationLenght=TypeOfOperation.length,dataKeysLenght=dataKeys.length;
-
+			var columnList= document.getElementById("DialogAggregateColumnsHTML").getAttribute("data-columnList");
+			console.log(columnList)
 			for (var i=0;i<typeOfOperationLenght;i++){ //Take operation and column name
 				if (TypeOfOperation[i].checked){
 					var columnName= document.getElementById("columnNameAggregateColumns").value;
-					STANewColumnsArray.push(TypeOfOperation[i].value,columnName);
+					//comprobar si pot afegir una columna amb el mateix nom
+					STANewColumnsArray.push(TypeOfOperation[i].id.split("AggrgatedColumns_")[1],columnName);
 				}
 			}
 			for (var a=0;a<dataKeysLenght;a++ ){
