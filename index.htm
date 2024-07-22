@@ -254,32 +254,57 @@
 			Aggregate columns:
 			<span id="DialogAggregateColumnsHTML">
 			  <br>
-			  <label for="columnNameAggregateColumns">Column Name </label>
-			  <input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
-			  <br>
+
 			  
-				<fieldset id="columnsFielset" style="display:inline-block">
+				<fieldset  style="display:inline-block">
+					<legend>Select attributes:</legend>
+					<span id="columnsFielset"></span>
 				  
 						 
 				</fieldset>		
-			  <fieldset id="operationsFieldSet" style="display:inline-block">
-				<legend>Select your operation:</legend>
-				<input type="radio" id="sum" name="TypeOfOperation" value="sum" checked> 
-				<label for="sum">Sum</label><br>
-				<input type="radio" id="product" name="TypeOfOperation" value="product">
-				<label for="product">Product</label><br>
-				<input type="radio" id="minimalValue" name="TypeOfOperation" value="minimalValue">
-				<label for="minimalValue">Minimal Value</label><br>
-				<input type="radio" id="maximalValue" name="TypeOfOperation" value="maximalValue">
-				<label for="maximalValue">Maximal Value</label><br>
-				<input type="radio" id="meanValue" name="TypeOfOperation" value="meanValue">
-				<label for="meanValue">Mean Value</label><br>
-				<input type="radio" id="variance" name="TypeOfOperation" value="variance">
-				<label for="variance">Variance</label><br>
-				<input type="radio" id="median" name="TypeOfOperation" value="median">
-				<label for="median">Median</label><br>
-				<input type="radio" id="concatenate" name="TypeOfOperation" value="concatenate">
-				<label for="concatenate">Concatenate</label><br>
+			  <fieldset style="display:inline-block">
+				<legend>Aggregations:</legend>
+				<span  id="operationsFieldSet"></span>
+				<!-- <input type="radio" id="aggregatedColums_sum" name="TypeOfOperation" value="sum" checked> 
+				<label for="aggregatedColums_sum">Sum</label><br>
+				<input type="radio" id="aggregatedColums_product" name="TypeOfOperation" value="product">
+				<label for="aggregatedColums_product">Product</label><br>
+				<input type="radio" id="aggregatedColums_minimalValue" name="TypeOfOperation" value="minimalValue">
+				<label for="aggregatedColums_minimalValue">Min. Value</label><br>
+				<input type="radio" id="aggregatedColums_maximalValue" name="TypeOfOperation" value="maximalValue">
+				<label for="aggregatedColums_maximalValue">Max. Value</label><br>
+				<input type="radio" id="aggregatedColums_meanValue" name="TypeOfOperation" value="meanValue">
+				<label for="aggregatedColums_meanValue">Mean</label><br>
+				<input type="radio" id="aggregatedColums_variance" name="TypeOfOperation" value="variance">
+				<label for="aggregatedColums_variance">Variance</label><br>
+				<input type="radio" id="aggregatedColums_median" name="TypeOfOperation" value="median">
+				<label for="aggregatedColums_median">Median</label><br>
+				<input type="radio" id="aggregatedColums_concatenate" name="TypeOfOperation" value="concatenate">
+				<label for="aggregatedColums_concatenate">Concatenate</label><br>-->
+				<!-- //No fete les funcions -->
+				<!--<input type="radio" id="aggregatedColums_q1" name="TypeOfOperation" value="q1">
+				<label for="aggregatedColums_q1">Q1</label><br>
+				<input type="radio" id="aggregatedColums_q3" name="TypeOfOperation" value="q3">
+				<label for="aggregatedColums_q3">Q3</label><br>&nbsp;
+
+				<input type="radio" id="aggregatedColums_mode" name="TypeOfOperation" value="mode">
+				<label for="aggregatedColums_mode">Mode</label><br>
+				<input type="radio" id="aggregatedColums_standardDeviation" name="TypeOfOperation" value="standardDeviation">
+				<label for="aggregatedColums_standardDeviation">Standard deviation</label><br>
+				 <input type="radio" id="aggregatedColums_span" name="TypeOfOperation" value="span">--> <!--///???? -->
+				<!--<label for="aggregatedColums_span">Span</label><br>
+				<input type="radio" id="aggregatedColums_firstValue" name="TypeOfOperation" value="firstValue">
+				<label for="aggregatedColums_firstValue">First value</label><br>
+				<input type="radio" id="aggregatedColums_lastValue" name="TypeOfOperation" value="lastValue">
+				<label for="aggregatedColums_lastValue">Last value</label><br>
+				<input type="radio" id="aggregatedColums_randomValue" name="TypeOfOperation" value="randomValue">
+				<label for="aggregatedColums_randomValue">Random value</label><br>
+				<input type="radio" id="aggregatedColums_countDefined" name="TypeOfOperation" value="countDefined">
+				<label for="aggregatedColums_countDefined">Count defined</label><br>
+				<input type="radio" id="aggregatedColums_count" name="TypeOfOperation" value="count"> --> <!--//te sentit aquí?-->
+				<!--<label for="aggregatedColums_count">Count </label><br>
+				<input type="radio" id="aggregatedColums_proportionDefined" name="TypeOfOperation" value="proportionDefined">  
+				<label for="aggregatedColums_proportionDefined">Proportion defined </label><br> -->
 			  </fieldset>
 
 				<fieldset  style="display:inline-block" >
@@ -293,6 +318,8 @@
 								 
 				</fieldset>
 			  <br>
+			  <label for="columnNameAggregateColumns">Column Name </label>
+			  <input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
 			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
 			  <div style="width:auto;" >
 				<label>Columns to add</label>
@@ -302,7 +329,7 @@
 			  </div>
 			</span>
 			<div class="center" style="margin-top: 10px">
-			  <button value="default" onClick="addColumnsToTableInAggregateColumns(event)">Create new columns</button>
+			  <button value="default" onClick="addColumnsToTableInAggregateColumns(event)">Ok</button>
 			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
 			</div>
 		  </form>
@@ -4659,6 +4686,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent
 					}
 					fillAggregateColumVariablesList();
+					showCheckRadioOptions("operationsFieldSet", "operationsRadioAggrgatedColumns_", AggregationsOptions, 3, "operationsRadioAggrgatedColumns");
 					if (parentNode) {
 						if (!currentNode.STAnewColumnsToAdd){
 							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
@@ -5084,28 +5112,36 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		//Aggregate columns
 		
 		function fillAggregateColumVariablesList(){
-			var columnsFielset= document.getElementById("columnsFielset");
-			columnsFielset.innerHTML="<legend>Select your variables/columns:</legend>";
+			// var columnsFielset= document.getElementById("columnsFielset");
+			// columnsFielset.innerHTML="<legend>Select attributes:</legend>";
 			var dataKeys= Object.keys(currentNode.STAdata[0]);
-			for (var i=0;i<dataKeys.length;i++){
-				columnsFielset.innerHTML+=' <input type="checkbox" id="columnsFielset_'+dataKeys[i]+'" value="'+dataKeys[i]+'"/><label for="'+dataKeys[i]+'">'+dataKeys[i]+'</label><br>'
+			var n= dataKeys.length;
+			var dataKeysObject=[];
+			for (var i=0;i<n;i++){
+				dataKeysObject.push({name:dataKeys[i], desc:dataKeys[i] });
 			}
+			showCheckRadioOptions("columnsFielset", "attributesRadioAggrgatedColumns_", dataKeysObject, 1, null);
+
+
+			// for (var i=0;i<dataKeys.length;i++){
+			// 	columnsFielset.innerHTML+=' <input type="checkbox" id="columnsFielset_'+dataKeys[i]+'" value="'+dataKeys[i]+'"/><label for="'+dataKeys[i]+'">'+dataKeys[i]+'</label><br>'
+			// }
 		}
 		function addColumnToListAggregateColumns(event){
 			event.preventDefault();
 			var TypeOfOperation=document.getElementsByName("TypeOfOperation"); //operation
 			var STANewColumnsArray=[],variablesArray=[],variable; 
 			var dataKeys= Object.keys(currentNode.STAdata[0]);
-			var chooseNumberDecimalsInputRadio,chooseNumberDecimalsInput;
+			var chooseNumberDecimalsInputRadio,chooseNumberDecimalsInput,typeOfOperationLenght=TypeOfOperation.length,dataKeysLenght=dataKeys.length;
 
-			for (var i=0;i<TypeOfOperation.length;i++){ //Take operation and column name
+			for (var i=0;i<typeOfOperationLenght;i++){ //Take operation and column name
 				if (TypeOfOperation[i].checked){
 					var columnName= document.getElementById("columnNameAggregateColumns").value;
 					STANewColumnsArray.push(TypeOfOperation[i].value,columnName);
 				}
 			}
-			for (var a=0;a<dataKeys.length;a++ ){
-				variable=document.getElementById("columnsFielset_"+dataKeys[a]);
+			for (var a=0;a<dataKeysLenght;a++ ){
+				variable=document.getElementById("attributesRadioAggrgatedColumns_"+dataKeys[a]);
 				if (variable.checked){
 					variablesArray.push(dataKeys[a]);
 				}
@@ -5132,7 +5168,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						}
 						columns+=currentNode.STAnewColumnsToAdd[i][2][a];
 					}
-					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Variables/columns: </b>${columns}` 
+					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Attributes: </b>${columns}` 
 					if (currentNode.STAnewColumnsToAdd[i][3]){
 						columnsBox.innerHTML+=`<b>Decimal number: </b> ${currentNode.STAnewColumnsToAdd[i][3]}`
 					}

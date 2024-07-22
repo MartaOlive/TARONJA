@@ -427,7 +427,7 @@ var r=values[0], n=values.length;
 function aggrFuncConcatenate(values){
 var r="", n=values.length;
 	for (var i=0; i<n; i++) {
-		r=values[i]+" ";
+		r+=values[i]+" ";
 	}
 	return r.slice(0, -1);  //remove last character
 }
