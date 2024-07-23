@@ -232,8 +232,9 @@
 					<label for="empty">Empty column</label><br>
 				</fieldset>
 				<button value="add" onClick="addColumnToListCreateColumn(event)"style="margin-bottom:10px">Add column to list </button>
+				<br><br>
 				<div  style="width:auto;">
-					<label>Columns to add</label>
+					<label>List of columns to add</label>
 					<div >
 						<ol id="columnsBoxCreateColumns"></ol>
 					</div>
@@ -321,11 +322,13 @@
 			  <label for="columnNameAggregateColumns">Column Name </label>
 			  <input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
 			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
+			  <br><br>
 			  <div style="width:auto;" >
-				<label>Columns to add</label>
-				<div >
+				<label>List of columns to add</label>
+				<!-- <div >
 					<ol id="columnsBoxAggregateColumn"></ol>
-				</div>
+				</div> -->
+				<span id= spanColumnsListAggregateColumns></span>
 			  </div>
 			</span>
 			<div class="center" style="margin-top: 10px">
@@ -4692,7 +4695,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
 						}
 						networkNodes.update(currentNode);
-						//drawTableInColumnBoxTableInAggregateColumns()
+						drawTableInColumnBoxTableInAggregateColumns()
 						document.getElementById("DialogAggregateColumns").showModal();
 					}
 				}
@@ -5156,33 +5159,39 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			drawTableInColumnBoxTableInAggregateColumns();
 		}
 		function drawTableInColumnBoxTableInAggregateColumns(){
-			var columnsBox=document.getElementById("columnsBoxAggregateColumn");
-			var columns;
-			columnsBox.innerHTML="";
-			
-				for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
-					columns=""
-					for(var a=0;a<currentNode.STAnewColumnsToAdd[i][2].length;a++){ //unfold array with columns to put in string
+			var spanColumnsListAggregateColumns=document.getElementById("spanColumnsListAggregateColumns");
+			var cdns=[];
+			cdns.push(`<table border=1><tr><th>Attributes</th><th>Operation</th><th>Column name</th><th>Number of decimals</th></tr>`)
+			if (currentNode.STAnewColumnsToAdd.length!=0){
+				var n= currentNode.STAnewColumnsToAdd.length, attributes="";
+				for (var i=0;i<n;i++){
+					attributes="";//restart
+					for (var a =0; a<currentNode.STAnewColumnsToAdd[i][2].length; a++){
 						if (a!=0){
-						columns+=", "	;
+							attributes+=", ";
 						}
-						columns+=currentNode.STAnewColumnsToAdd[i][2][a];
-					}
-					columnsBox.innerHTML+=`<li> <b>Operation: </b> ${currentNode.STAnewColumnsToAdd[i][0]}, <b> Column name: </b>${currentNode.STAnewColumnsToAdd[i][1]}, <b>Attributes: </b>${columns}` 
-					if (currentNode.STAnewColumnsToAdd[i][3]){
-						columnsBox.innerHTML+=`<b>Decimal number: </b> ${currentNode.STAnewColumnsToAdd[i][3]}`
-					}
+						attributes +=currentNode.STAnewColumnsToAdd[i][2][a];
 						
-					columnsBox.innerHTML+=`<button onclick="deleteRowInColumnsBoxTable(${i})"><img src="trash.png" alt="Remove" title="Remove"></button>`;
+					}
+				cdns.push(`<tr><td>${attributes}</td><td>${currentNode.STAnewColumnsToAdd[i][0]}</td><td>${currentNode.STAnewColumnsToAdd[i][1]}</td>`);
+					if (currentNode.STAnewColumnsToAdd[i][3]){ //number of decimals
+					cdns.push(`<td>${currentNode.STAnewColumnsToAdd[i][3]}</td>`);
+					}else{
+					cdns.push(`<td> </td>`);
+					}
 				}
+			}
+			
+		cdns.push(`</table>`);
+		spanColumnsListAggregateColumns.innerHTML=cdns;
 		}
 
 		function addColumnsToTableInAggregateColumns(event){
 			event.preventDefault();
 			var data;
-			var decimalNumber;
+			var decimalNumber,n=currentNode.STAnewColumnsToAdd.length;
 		
-			for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
+			for (var i=0;i<n;i++){
 				decimalNumber=""; //Restart 
 				if (currentNode.STAnewColumnsToAdd[i][3]){
 				decimalNumber=currentNode.STAnewColumnsToAdd[i][3];
