@@ -5124,8 +5124,9 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 			showCheckRadioOptions("columnsFielset", "attributesRadioAggrgatedColumns_", dataKeysObject, 1, null);
 			//Create list of columns to avoid repetitions
-			var DialogAggregateColumnsHTML = document.getElementById("DialogAggregateColumnsHTML");
-			DialogAggregateColumnsHTML.setAttribute("data-columnList", dataKeys);
+			currentNode.STAcolumnsList=dataKeys;
+			// var DialogAggregateColumnsHTML = document.getElementById("DialogAggregateColumnsHTML");
+			// DialogAggregateColumnsHTML.setAttribute("data-columnList", dataKeys);
 		
 		}
 		function addColumnToListAggregateColumns(event){
@@ -5134,12 +5135,10 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			var STANewColumnsArray=[],variablesArray=[],variable; 
 			var dataKeys= Object.keys(currentNode.STAdata[0]);
 			var chooseNumberDecimalsInputRadio,chooseNumberDecimalsInput,typeOfOperationLenght=TypeOfOperation.length,dataKeysLenght=dataKeys.length;
-			var columnList= document.getElementById("DialogAggregateColumnsHTML").getAttribute("data-columnList");
-			console.log(columnList)
+			var columnList= currentNode.STAcolumnsList;
 			for (var i=0;i<typeOfOperationLenght;i++){ //Take operation and column name
 				if (TypeOfOperation[i].checked){
 					var columnName= document.getElementById("columnNameAggregateColumns").value;
-					//comprobar si pot afegir una columna amb el mateix nom
 					STANewColumnsArray.push(TypeOfOperation[i].id.split("AggrgatedColumns_")[1],columnName);
 				}
 			}
@@ -5154,9 +5153,32 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				STANewColumnsArray.push(document.getElementById("chooseNumberDecimals_0_input").value)
 			}	
 						
-			currentNode.STAnewColumnsToAdd.push(STANewColumnsArray); //[typeOfOperation,columnName,[variables]]
-			networkNodes.update(currentNode);
-			drawTableInColumnBoxTableInAggregateColumns();
+
+			//Search if name for column is not repeated
+			var columnList=	currentNode.STAcolumnsList;
+			var n= columnList.length, columnNameExist=false;
+			
+			//currentNode.STAnewColumnsToAdd[i][1]
+			for (var i=0;i<n;i++){
+				if (columnList[i]==columnName){
+					columnNameExist=true;
+					break;
+				}
+			}
+			if(columnNameExist){
+				alert("Chosen column name already exists, change it to add the column to the list ");
+			}else{
+
+				//afegir nom a la llista
+				columnList.push(columnName);
+				currentNode.STAcolumnsList=columnList
+				currentNode.STAnewColumnsToAdd.push(STANewColumnsArray); //[typeOfOperation,columnName,[variables]]
+				networkNodes.update(currentNode);
+				drawTableInColumnBoxTableInAggregateColumns();
+			}
+
+			
+			
 		}
 		function drawTableInColumnBoxTableInAggregateColumns(){
 			var spanColumnsListAggregateColumns=document.getElementById("spanColumnsListAggregateColumns");
