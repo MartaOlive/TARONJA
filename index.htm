@@ -282,12 +282,13 @@
 				<label for="aggregatedColums_median">Median</label><br>
 				<input type="radio" id="aggregatedColums_concatenate" name="TypeOfOperation" value="concatenate">
 				<label for="aggregatedColums_concatenate">Concatenate</label><br>-->
+				
+				
 				<!-- //No fete les funcions -->
 				<!--<input type="radio" id="aggregatedColums_q1" name="TypeOfOperation" value="q1">
 				<label for="aggregatedColums_q1">Q1</label><br>
 				<input type="radio" id="aggregatedColums_q3" name="TypeOfOperation" value="q3">
 				<label for="aggregatedColums_q3">Q3</label><br>&nbsp;
-
 				<input type="radio" id="aggregatedColums_mode" name="TypeOfOperation" value="mode">
 				<label for="aggregatedColums_mode">Mode</label><br>
 				<input type="radio" id="aggregatedColums_standardDeviation" name="TypeOfOperation" value="standardDeviation">
@@ -319,15 +320,23 @@
 								 
 				</fieldset>
 			  <br>
-			  <label for="columnNameAggregateColumns">Column Name </label>
-			  <input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
+			  <fieldset>
+				<legend >Column Name </legend>
+				<input type="radio" name="columnNameRadioAggregateColumns" id ="columnNameRadioAggregateColumns_personalized">
+				<label for ="columnNameRadioAggregateColumns_personalized" >Personalized</label>
+				<input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
+				<br>				
+				<input type="radio" name="columnNameRadioAggregateColumns" checked="checked"  id ="columnNameRadioAggregateColumns_suggested">
+				<label for ="columnNameRadioAggregateColumns_suggested" >Suggested: </label>
+				<span id ="columnNameAggregateColumns_span" ></span>
+			  </fieldset>
+			 
+			  
 			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
+
 			  <br><br>
 			  <div style="width:auto;" >
 				<label>List of columns to add</label>
-				<!-- <div >
-					<ol id="columnsBoxAggregateColumn"></ol>
-				</div> -->
 				<span id= spanColumnsListAggregateColumns></span>
 			  </div>
 			</span>
@@ -5293,25 +5302,35 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		}
 		function writeColumnNameInAggregatedColumns(event){
 			event.preventDefault();
-			var columnNameValue=document.getElementById("columnNameAggregateColumns").value
-			if (columnNameValue==""){
+			var columnName=document.getElementById("columnNameAggregateColumns")
+			var columnNameValue=columnName.value;
+			var spanSuggested= document.getElementById("columnNameAggregateColumns_span");
+			//if (columnNameValue==""){
 				var dataKeys= Object.keys(currentNode.STAdata[0]);
 				var dataKeysLenght=dataKeys.length, attribute, columnNameText="";
 				for (var a=0;a<dataKeysLenght;a++ ){
 						attribute=document.getElementById("attributesRadioAggrgatedColumns_"+dataKeys[a]);
 						if (attribute.checked){
-							columnNameText+=dataKeys[a];
+							if (columnNameText==""){
+								columnNameText+=dataKeys[a];
+							}else{ //more than one chosen
+								columnNameText+=", "+dataKeys[a];
+							}
+							
 						}
 				}
 				//
 				var TypeOfOperation=document.getElementsByName("operationsRadioAggrgatedColumns");
+				var typeOfOperationLenght=TypeOfOperation.length
 				for (var i=0;i<typeOfOperationLenght;i++){ //Take operation and column name
 					if (TypeOfOperation[i].checked){
-						columnNameText+=", "+ TypeOfOperation[i];
+						columnNameText+=", "+ TypeOfOperation[i].id.split("AggrgatedColumns_")[1];
 					}
 				}
-				columnNameValue.value=columnNameText;
-			}
+
+				spanSuggested.innerHTML= columnNameText;
+				//Posar en el suggested: columnNameValue.value=columnNameText;
+			//}
 			/////
 			
 		}
