@@ -5139,18 +5139,19 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		function addColumnToListAggregateColumns(event){
 			event.preventDefault();
 			var TypeOfOperation=document.getElementsByName("operationsRadioAggrgatedColumns"); //operation
-			var STANewColumnsArray=[],variablesArray=[],variable; 
+			var STANewColumnsArray=[],attributesArray=[],attribute; 
 			var dataKeys= Object.keys(currentNode.STAdata[0]);
 			var chooseNumberDecimalsInputRadio,chooseNumberDecimalsInput,typeOfOperationLenght=TypeOfOperation.length,dataKeysLenght=dataKeys.length;
 			var columnList= currentNode.STAcolumnsList;
-
-			for (var i=0;i<typeOfOperationLenght;i++){ //Take operation and column name
-				if (TypeOfOperation[i].checked){
-					var columnName= document.getElementById("columnNameAggregateColumns").value;
-					STANewColumnsArray.push(TypeOfOperation[i].id.split("AggrgatedColumns_")[1],columnName);
-				}
+			var columnName;
+			
+			if (document.getElementById("columnNameRadioAggregateColumns_personalized").checked){
+				columnName=document.getElementById("columnNameAggregateColumns").value;
+				if (columnName.length==0) columnName="noname";
+			}else{
+				columnName=document.getElementById("columnNameAggregateColumns_span").value;
 			}
-					
+						
 
 			//Search if name for column is not repeated
 			var columnList=	currentNode.STAcolumnsList;
@@ -5168,24 +5169,38 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				alert("Chosen column name already exists, change it to add column to the list ");
 			}
 			else{ //It can be added
-
-				for (var a=0;a<dataKeysLenght;a++ ){
-					variable=document.getElementById("attributesRadioAggrgatedColumns_"+dataKeys[a]);
-					if (variable.checked){
-						variablesArray.push(dataKeys[a]);
+				var typeOfOperationExist=false, atLeast2attributesSelected =false; 
+				for (var i=0;i<typeOfOperationLenght;i++){ //Take operation 
+					if (TypeOfOperation[i].checked){
+						STANewColumnsArray.push(TypeOfOperation[i].id.split("AggrgatedColumns_")[1],columnName);
+						typeOfOperationExist=true;
 					}
 				}
-				STANewColumnsArray.push(variablesArray);
+
+				for (var a=0;a<dataKeysLenght;a++ ){
+					attribute=document.getElementById("attributesRadioAggrgatedColumns_"+dataKeys[a]);
+					if (attribute.checked){
+						attributesArray.push(dataKeys[a]);
+					}
+				}
+				if (attributesArray.length >= 2){
+					atLeast2attributesSelected=true;
+				}
+				STANewColumnsArray.push(attributesArray);
 				if (document.getElementById("chooseNumberDecimals_0").checked){
 					STANewColumnsArray.push(document.getElementById("chooseNumberDecimals_0_input").value)
 				}
 
-				//afegir nom a la llista
-				columnList.push(columnName);
-				currentNode.STAcolumnsList=columnList
-				currentNode.STAnewColumnsToAdd.push(STANewColumnsArray); //[typeOfOperation,columnName,[variables]]
-				networkNodes.update(currentNode);
-				drawTableInColumnBoxTableInAggregateColumns();
+				if (typeOfOperationExist==false ||atLeast2attributesSelected==false){
+					alert("At least two attributes and one aggregation method have to be selected");
+				}else{//All is correct, new column can be added to the list
+					columnList.push(columnName); //Add to Column list to avoid duplicates
+					currentNode.STAcolumnsList=columnList
+					currentNode.STAnewColumnsToAdd.push(STANewColumnsArray); //[typeOfOperation,columnName,[attributes]]
+					networkNodes.update(currentNode);
+					drawTableInColumnBoxTableInAggregateColumns();
+				}
+
 			}
 
 			
@@ -5305,7 +5320,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			var columnName=document.getElementById("columnNameAggregateColumns")
 			var columnNameValue=columnName.value;
 			var spanSuggested= document.getElementById("columnNameAggregateColumns_span");
-			//if (columnNameValue==""){
 				var dataKeys= Object.keys(currentNode.STAdata[0]);
 				var dataKeysLenght=dataKeys.length, attribute, columnNameText="";
 				for (var a=0;a<dataKeysLenght;a++ ){
@@ -5314,7 +5328,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 							if (columnNameText==""){
 								columnNameText+=dataKeys[a];
 							}else{ //more than one chosen
-								columnNameText+=", "+dataKeys[a];
+								columnNameText+="_"+dataKeys[a];
 							}
 							
 						}
@@ -5324,13 +5338,13 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				var typeOfOperationLenght=TypeOfOperation.length
 				for (var i=0;i<typeOfOperationLenght;i++){ //Take operation and column name
 					if (TypeOfOperation[i].checked){
-						columnNameText+=", "+ TypeOfOperation[i].id.split("AggrgatedColumns_")[1];
+						columnNameText+="_"+ TypeOfOperation[i].id.split("AggrgatedColumns_")[1];
 					}
 				}
 
 				spanSuggested.innerHTML= columnNameText;
-				//Posar en el suggested: columnNameValue.value=columnNameText;
-			//}
+				spanSuggested.value=columnNameText;
+				
 			/////
 			
 		}
