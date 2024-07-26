@@ -275,6 +275,27 @@ function JoinTablesData(dataLeft, dataRight, dataLeftAttributesNull, dataRightAt
 					 {name: "Hour", desc: "Hour"},
 					 {name: "Minute", desc: "Minute"},
 					 {name: "Second", desc: "Second"}]; 
+const AggregationColumnsOptions=[{name: "Mean", desc: "Mean"},
+	{name: "Mode", desc: "Mode"},
+	{name: "FirstValue", desc: "First value"},
+	{name: "Median", desc: "Median"},
+	{name: "StandardDeviation", desc: "Standard deviation"},
+	{name: "LastValue", desc: "Last value"},
+	{name: "Q1", desc: "Q1"},
+	{name: "Variance", desc: "Variance"},
+	{name: "RandomValue", desc: "Random value"},
+	{name: "Q3", desc: "Q3"},
+	{name: "Sum", desc: "Sum"},
+	{name: "CountDefined", desc: "Count defined"},
+	{name: "MinValue", desc: "Min. Value"},
+	{name: "Product", desc: "Product"},
+	{name: "Concatenate", desc: "Concatenate"},
+	//{name: "Count", desc: "Count"},
+	{name: "MaxValue", desc: "Max. value"},
+	{name: "Span", desc: "Span"},
+	{name: "ProportionDefined", desc: "Proportion defined"}
+	
+]; 
 
 /*All these functions DO NOT support an array null or will zero elements or with undefined or null element. That is why "CountDefined" and "ProportionDefined" are not defined
   All these functions EXCEPT "Concatenate", "Mode", "Median", "Q1" and "Q3" expect an array of numbers*/
@@ -338,9 +359,7 @@ function aggrFuncMedian(values) {
 }
 
 function aggrFuncStandardDeviation(values){
-	var variance= aggrFuncVariance(values);
-	var standardDeviation= Math.sqrt(variance);
-	return standardDeviation;
+	return Math.sqrt(aggrFuncVariance(values));
 }
 
 function aggrFuncLastValue(values){
@@ -901,6 +920,38 @@ function addnewColumnConcatenatingValues (data, columnName,columnsToEvaluate){ /
 
 		data[i][columnName]= concatenated;
 	}
+}
+
+function addnewColumnModeValue(data, columnName,columnsToEvaluate){
+	return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncMode); //aggrFuncMode (one mode), for array aggrFuncModes
+}
+
+function addnewColumnFirstValue (data, columnName,columnsToEvaluate){
+	return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncFirstValue); 
+}
+function addnewColumnStandardDeviationValue (data, columnName,columnsToEvaluate){
+	return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncStandardDeviation); 
+}
+function addnewColumnLastValue (data, columnName,columnsToEvaluate){
+	return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncLastValue); 
+}
+function addnewColumnQ1Value (data, columnName,columnsToEvaluate){
+	return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncQ1); 
+}
+function addnewColumnQ3Value (data, columnName,columnsToEvaluate){
+	return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncQ3); 
+}
+function addnewColumnRandomValue (data, columnName,columnsToEvaluate){
+	return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncRandomValue); 
+}
+function addnewColumnCount (data, columnName,columnsToEvaluate){ //TE SENTIT?
+	return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncCount); 
+}
+function addnewColumnCountDefined (data, columnName,columnsToEvaluate){ //No està feta la funció
+	//return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncCountDefined); 
+}
+function addnewColumnProportionDefined (data, columnName,columnsToEvaluate){ //No està feta la funció
+	//return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncProportionDefined); 
 }
 
 function sortValuesNumbersOrText(arrayValues) {

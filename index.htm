@@ -217,10 +217,7 @@
 		<form>
 			Create columns:
 			<span id="DialogCreateColumnsHTML">
-			 <br>
-			  <label for="columnNameCreateColumns">Column Name </label>
-			  <input id="columnNameCreateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
-			  <br>
+
 			  <div>
 				<fieldset>
 					<legend>Select your operation:</legend>
@@ -231,14 +228,20 @@
 					<input type="radio" id="empty" name="TypeOfValues" value="empty">
 					<label for="empty">Empty column</label><br>
 				</fieldset>
+
+				<fieldset>
+					<legend>Column name:</legend>
+					<input type="radio" name="columnNameRadioCreateColumns" id ="columnNameRadioACreateColumns_personalized" checked="checked"> <!--Function has no sense, it is only to mimic aggregated columns dialog-->
+					<label for ="columnNameRadioACreateColumns_personalized" >Personalized</label>
+					<input id="columnNameCreateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
+
+
+				</fieldset>
 				<button value="add" onClick="addColumnToListCreateColumn(event)"style="margin-bottom:10px">Add column to list </button>
 				<br><br>
-				<div  style="width:auto;">
+				<div style="width:auto;" >
 					<label>List of columns to add</label>
-					<div >
-						<ol id="columnsBoxCreateColumns"></ol>
-					</div>
-				</div>
+					<span id= spanColumnsListCreateColumns></span>
 			  </div>
 			  
 		
@@ -266,62 +269,24 @@
 			  <fieldset style="display:inline-block">
 				<legend>Aggregations:</legend>
 				<span  id="operationsFieldSet"></span>
-				<!-- <input type="radio" id="aggregatedColums_sum" name="TypeOfOperation" value="sum" checked> 
-				<label for="aggregatedColums_sum">Sum</label><br>
-				<input type="radio" id="aggregatedColums_product" name="TypeOfOperation" value="product">
-				<label for="aggregatedColums_product">Product</label><br>
-				<input type="radio" id="aggregatedColums_minimalValue" name="TypeOfOperation" value="minimalValue">
-				<label for="aggregatedColums_minimalValue">Min. Value</label><br>
-				<input type="radio" id="aggregatedColums_maximalValue" name="TypeOfOperation" value="maximalValue">
-				<label for="aggregatedColums_maximalValue">Max. Value</label><br>
-				<input type="radio" id="aggregatedColums_meanValue" name="TypeOfOperation" value="meanValue">
-				<label for="aggregatedColums_meanValue">Mean</label><br>
-				<input type="radio" id="aggregatedColums_variance" name="TypeOfOperation" value="variance">
-				<label for="aggregatedColums_variance">Variance</label><br>
-				<input type="radio" id="aggregatedColums_median" name="TypeOfOperation" value="median">
-				<label for="aggregatedColums_median">Median</label><br>
-				<input type="radio" id="aggregatedColums_concatenate" name="TypeOfOperation" value="concatenate">
-				<label for="aggregatedColums_concatenate">Concatenate</label><br>-->
-				
-				
-				<!-- //No fete les funcions -->
-				<!--<input type="radio" id="aggregatedColums_q1" name="TypeOfOperation" value="q1">
-				<label for="aggregatedColums_q1">Q1</label><br>
-				<input type="radio" id="aggregatedColums_q3" name="TypeOfOperation" value="q3">
-				<label for="aggregatedColums_q3">Q3</label><br>&nbsp;
-				<input type="radio" id="aggregatedColums_mode" name="TypeOfOperation" value="mode">
-				<label for="aggregatedColums_mode">Mode</label><br>
-				<input type="radio" id="aggregatedColums_standardDeviation" name="TypeOfOperation" value="standardDeviation">
-				<label for="aggregatedColums_standardDeviation">Standard deviation</label><br>
-				 <input type="radio" id="aggregatedColums_span" name="TypeOfOperation" value="span">--> <!--///???? -->
-				<!--<label for="aggregatedColums_span">Span</label><br>
-				<input type="radio" id="aggregatedColums_firstValue" name="TypeOfOperation" value="firstValue">
-				<label for="aggregatedColums_firstValue">First value</label><br>
-				<input type="radio" id="aggregatedColums_lastValue" name="TypeOfOperation" value="lastValue">
-				<label for="aggregatedColums_lastValue">Last value</label><br>
-				<input type="radio" id="aggregatedColums_randomValue" name="TypeOfOperation" value="randomValue">
-				<label for="aggregatedColums_randomValue">Random value</label><br>
-				<input type="radio" id="aggregatedColums_countDefined" name="TypeOfOperation" value="countDefined">
-				<label for="aggregatedColums_countDefined">Count defined</label><br>
-				<input type="radio" id="aggregatedColums_count" name="TypeOfOperation" value="count"> --> <!--//te sentit aquí?-->
-				<!--<label for="aggregatedColums_count">Count </label><br>
-				<input type="radio" id="aggregatedColums_proportionDefined" name="TypeOfOperation" value="proportionDefined">  
-				<label for="aggregatedColums_proportionDefined">Proportion defined </label><br> -->
 			  </fieldset>
 
 				<fieldset  style="display:inline-block" >
 					<legend>Set number of decimals:</legend>
-					<input type="radio" id="chooseNumberDecimals_1" name="chooseNumberDecimals" value="no" checked> 
-					<label for="chooseNumberDecimals_1">No </label>
-					<br>
-					<input type="radio" id="chooseNumberDecimals_0" name="chooseNumberDecimals" value="yes"> 
-					<label for="chooseNumberDecimals_0">Yes: </label>
-					<input id="chooseNumberDecimals_0_input" type="number" max="10" min="0"> 
+					<span>
+						<input type="radio" id="chooseNumberDecimals_1" name="chooseNumberDecimals" value="no" checked> 
+						<label for="chooseNumberDecimals_1">No </label>
+						<br>
+						<input type="radio" id="chooseNumberDecimals_0" name="chooseNumberDecimals" value="yes"> 
+						<label for="chooseNumberDecimals_0">Yes: </label>
+						<input id="chooseNumberDecimals_0_input" type="number" max="10" min="0">
+					</span>
+
 								 
 				</fieldset>
 			  <br>
-			  <fieldset>
-				<legend >Column Name </legend>
+			  <fieldset style="display:inline-block" >
+				<legend >Column name: </legend>
 				<input type="radio" name="columnNameRadioAggregateColumns" id ="columnNameRadioAggregateColumns_personalized">
 				<label for ="columnNameRadioAggregateColumns_personalized" >Personalized</label>
 				<input id="columnNameAggregateColumns" type="text" style="margin-top: 10px; margin-bottom: 10px; "> 
@@ -330,7 +295,7 @@
 				<label for ="columnNameRadioAggregateColumns_suggested" >Suggested: </label>
 				<span id ="columnNameAggregateColumns_span" ></span>
 			  </fieldset>
-			 
+			 <br>
 			  
 			  <button value="add" onClick="addColumnToListAggregateColumns(event)"style="margin-bottom:10px">Add column to list </button>
 
@@ -4698,7 +4663,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent
 					}
 					fillAggregateColumVariablesList();
-					showCheckRadioOptions("operationsFieldSet", "operationsRadioAggrgatedColumns_", AggregationsOptions, 3, "operationsRadioAggrgatedColumns", "writeColumnNameInAggregatedColumns (event)");
+					showCheckRadioOptions("operationsFieldSet", "operationsRadioAggrgatedColumns_", AggregationColumnsOptions, 3, "operationsRadioAggrgatedColumns", "writeColumnNameInAggregatedColumns (event)");
 					if (parentNode) {
 						if (!currentNode.STAnewColumnsToAdd){
 							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
@@ -5044,28 +5009,44 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
                  
             }  
-			drawTColumnsInformaionInColumnBoxTableInCreateColumns();
+			drawTableInColumnBoxTableInCreateColumns();
 			
 
 
 		}
-		function drawTColumnsInformaionInColumnBoxTableInCreateColumns(){
-			var columnsBox=document.getElementById("columnsBoxCreateColumns");
-			columnsBox.innerHTML=""
-   
- 
-			for (var a=0;a<currentNode.STAnewColumnsToAdd.length;a++){
-	
-				if (currentNode.STAnewColumnsToAdd[a][0]=="constantValue" ){
-					columnsBox.innerHTML+= `<li><b>Column type:</b> Constant value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'><img src="trash.png" alt="Remove" title="Remove"></button></li>`;
-				}else if (currentNode.STAnewColumnsToAdd[a][0]=="autoincrementalValue" ){
-					columnsBox.innerHTML+= `<li><b>Column type:</b> Autoincremental value, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]}, <b>Initial value: </b>${currentNode.STAnewColumnsToAdd[a][2]}<button onclick='deleteRowInColumnsBoxTable(${a})'><img src="trash.png" alt="Remove" title="Remove"></button></li>`
-				}else{
-					columnsBox.innerHTML+= `<li><b>Column type:</b> Empty column, <b>Column name:</b> ${currentNode.STAnewColumnsToAdd[a][1]} <button onclick='deleteRowInColumnsBoxTable(${a})'><img src="trash.png" alt="Remove" title="Remove"></button></li>`
-				}
 
-			
+		function drawTableInColumnBoxTableInCreateColumns(){
+			var spanColumnsListAggregateColumns=document.getElementById("spanColumnsListCreateColumns");
+			var cdns=[], tableHTML;
+
+			tableHTML='<table border=1><tr><th>Column type</th><th>Column name</th><th>Value</th></th></tr>';
+			if (currentNode.STAnewColumnsToAdd.length!=0){ //[columnType, columnName, value]
+				var n= currentNode.STAnewColumnsToAdd.length, columnType;
+				for (var i=0;i<n;i++){
+					switch(currentNode.STAnewColumnsToAdd[i][0]){
+						case "constantValue":
+							columnType="Constant value"
+							break;
+						case "autoincrementalValue":
+							columnType="Autoincremental value"
+							break;
+						case "empty":
+							columnType="Empty"
+							break;
+								
+					}
+						tableHTML+=`<tr><td>${columnType}</td><td>${currentNode.STAnewColumnsToAdd[i][1]}</td>`;
+					if (currentNode.STAnewColumnsToAdd[i][2]){ 
+						tableHTML+=`<td>${currentNode.STAnewColumnsToAdd[i][2]}</td>`;
+					}else{
+						tableHTML+=`<td> </td>`;
+					}
+					tableHTML+=`<td><button onclick='deleteRowInColumnsBoxTable(${i})'><img src="trash.png" alt="Remove" title="Remove"></button> </td>`;
+				}
 			}
+			tableHTML+=`</table>`;
+			cdns=[tableHTML];
+			spanColumnsListAggregateColumns.innerHTML=cdns;
 		}
 
 		function deleteRowInColumnsBoxTable(number){
@@ -5079,7 +5060,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 
 			currentNode.STAnewColumnsToAdd=copyWithoutNumber;
 			if (currentNode.image=="CreateColumns.png"){ //createColumn
-				drawTColumnsInformaionInColumnBoxTableInCreateColumns();
+				drawTableInColumnBoxTableInCreateColumns();
 			}else{ //aggregateTable
 				drawTableInColumnBoxTableInAggregateColumns();
 			} 
@@ -5208,8 +5189,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		}
 		function drawTableInColumnBoxTableInAggregateColumns(){
 			var spanColumnsListAggregateColumns=document.getElementById("spanColumnsListAggregateColumns");
-			var cdns=[];
-			cdns.push(`<table border=1><tr><th>Attributes</th><th>Operation</th><th>Column name</th><th>Number of decimals</th></tr>`)
+			var cdns;
+			var tableHTML=`<table border=1><tr><th>Attributes</th><th>Operation</th><th>Column name</th><th>Number of decimals</th></tr>`;
 			if (currentNode.STAnewColumnsToAdd.length!=0){
 				var n= currentNode.STAnewColumnsToAdd.length, attributes="";
 				for (var i=0;i<n;i++){
@@ -5221,17 +5202,18 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						attributes +=currentNode.STAnewColumnsToAdd[i][2][a];
 						
 					}
-				cdns.push(`<tr><td>${attributes}</td><td>${currentNode.STAnewColumnsToAdd[i][0]}</td><td>${currentNode.STAnewColumnsToAdd[i][1]}</td>`);
+					tableHTML+=`<tr><td>${attributes}</td><td>${currentNode.STAnewColumnsToAdd[i][0]}</td><td>${currentNode.STAnewColumnsToAdd[i][1]}</td>`;
 					if (currentNode.STAnewColumnsToAdd[i][3]){ //number of decimals
-					cdns.push(`<td>${currentNode.STAnewColumnsToAdd[i][3]}</td>`);
+						tableHTML+=`<td>${currentNode.STAnewColumnsToAdd[i][3]}</td>`;
 					}else{
-					cdns.push(`<td> </td>`);
+						tableHTML+=`<td> </td>`;
 					}
 				}
 			}
 			
-		cdns.push(`</table>`);
-		spanColumnsListAggregateColumns.innerHTML=cdns;
+			tableHTML+=`</table>`;
+			cdns=[tableHTML];
+			spanColumnsListAggregateColumns.innerHTML=cdns;
 		}
 
 		function addColumnsToTableInAggregateColumns(event){
@@ -5239,81 +5221,122 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			var data;
 			var decimalNumber,n=currentNode.STAnewColumnsToAdd.length;
 		
-			for (var i=0;i<n;i++){
-				decimalNumber=""; //Restart 
-				if (currentNode.STAnewColumnsToAdd[i][3]){
-				decimalNumber=currentNode.STAnewColumnsToAdd[i][3];
-			}
-				switch(currentNode.STAnewColumnsToAdd[i][0]) {
-					case  "sum":
+			if (n!=0){
+				for (var i=0;i<n;i++){
+					decimalNumber=""; //Restart 
+					if (currentNode.STAnewColumnsToAdd[i][3]){
+						decimalNumber=currentNode.STAnewColumnsToAdd[i][3];
+					}
+					switch(currentNode.STAnewColumnsToAdd[i][0]) {
+						case  "Sum":
+							if (decimalNumber!=""){
+								addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
+
+							}else{
+								addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
+
+							}
+							break;
+						case  "Product": //(s'ha de crear)
 						if (decimalNumber!=""){
-							 addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
+								addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
 
-						}else{
-							 addnewColumnSummingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
+							}else{
+								addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
 
-						}
-						break;
-					case  "product":
-					if (decimalNumber!=""){
-							addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2],decimalNumber); //data, columnName,columnsToSum, decimalnumber
-
-						}else{
-							addnewColumnMultiplyingColumns(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); //data, columnName,columnsToSum
-
-						}
-						break;
-					case  "minimalValue":
-					if (decimalNumber!=""){
-						addnewColumnMinimalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber); 
-
-					}else{
-						addnewColumnMinimalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); 
-					}
-						break;
-					case  "maximalValue":
-					if (decimalNumber!=""){
-						addnewColumnMaximalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber); 
-
-					}else{
-
-					}
-						addnewColumnMaximalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); 
-
-						break;
-					case  "meanValue":
-					if (decimalNumber!=""){
-						addnewColumnMeanValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
-
-					}else{
-						addnewColumnMeanValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
-
-					}	
-						break;
-					case  "variance":
-					if (decimalNumber!=""){
-						addnewColumnVarianceValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
-
-					}else{
-						addnewColumnVarianceValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
-
-					}
-						break;
-					case  "median":
+							}
+							break;
+						case  "MinValue":
 						if (decimalNumber!=""){
-							addnewColumnMedianValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+							addnewColumnMinimalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber); 
 
 						}else{
-							addnewColumnMedianValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							addnewColumnMinimalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); 
+						}
+							break;
+						case  "MaxValue":
+						if (decimalNumber!=""){
+							addnewColumnMaximalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber); 
+
+						}else{
 
 						}
-						break;
-					case  "concatenate":
-						addnewColumnConcatenatingValues(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
-						break;
+							addnewColumnMaximalValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]); 
+
+							break;
+						case  "Mean":
+						if (decimalNumber!=""){
+							addnewColumnMeanValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+
+						}else{
+							addnewColumnMeanValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+
+						}	
+							break;
+						case  "Variance":
+							if (decimalNumber!=""){
+								addnewColumnVarianceValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+
+							}else{
+								addnewColumnVarianceValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+
+							}
+								break;
+						case  "Median":
+							if (decimalNumber!=""){
+								addnewColumnMedianValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+
+							}else{
+								addnewColumnMedianValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+
+							}
+							break;
+						case  "Concatenate":
+							addnewColumnConcatenatingValues(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;
+
+						case  "Mode":
+							addnewColumnModeValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;
+						case  "FirstValue":
+							addnewColumnFirstValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;
+
+						case  "StandardDeviation":
+							addnewColumnStandardDeviationValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;
+						case  "LastValue":
+							addnewColumnLastValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;
+						case  "Q1":
+							addnewColumnQ1Value(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;
+						case  "Q3":
+							addnewColumnQ3Value(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;
+						case  "RandomValue":
+							addnewColumnRandomValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;						
+						case  "Count": //TE SENTIT?
+							addnewColumnCount(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;
+						case  "CountDefined": //Falta fer la funció que conta
+							
+							break;
+						case  "span": //???
+							//
+							break;
+						case  "ProportionDefined": //Falta fer la funció que conta
+							addnewColumnProportionDefined(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+							break;
+					}
 				}
+				document.getElementById("DialogAggregateColumns").close();
+			}else{
+				alert("There are no columns in the list to add, nothing will be added to the table")
 			}
-			document.getElementById("DialogAggregateColumns").close();
+
+			
 		}
 		function writeColumnNameInAggregatedColumns(event){
 			event.preventDefault();
