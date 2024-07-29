@@ -221,12 +221,12 @@
 			  <div>
 				<fieldset>
 					<legend>Select your operation:</legend>
-					<input type="radio" id="constantValue" name="TypeOfValues" value="constantValue" checked> 
-					<label for="constantValue">Constant value</label><input id="inputText_constantValue" type="text" style="margin-left:10px" ><br>
-					<input type="radio" id="autoincrementalValue" name="TypeOfValues" value="autoincrementalValue">
-					<label for="autoincrementalValue">Autoincemental value</label><input id="inputText_autoincrementalValue" type="text" style="margin-left:10px"  placeholder="Initial value" ><br>
-					<input type="radio" id="empty" name="TypeOfValues" value="empty">
-					<label for="empty">Empty column</label><br>
+					<input type="radio" id="columnNameRadioType_constantValue" name="TypeOfValues" value="constantValue" checked> 
+					<label for="columnNameRadioType_constantValue">Constant value</label><input id="inputText_constantValue" type="text" style="margin-left:10px" ><br>
+					<input type="radio" id="columnNameRadioType_autoincrementalValue" name="TypeOfValues" value="autoincrementalValue">
+					<label for="columnNameRadioType_autoincrementalValue">Autoincemental value</label><input id="inputText_autoincrementalValue" type="text" style="margin-left:10px"  placeholder="Initial value" ><br>
+					<input type="radio" id="columnNameRadioType_empty" name="TypeOfValues" value="empty">
+					<label for="columnNameRadioType_empty">Empty column</label><br>
 				</fieldset>
 
 				<fieldset>
@@ -247,7 +247,7 @@
 		
 			</span>
 			<div class="center" style="margin-top: 10px">
-			  <button value="default" onClick="addColumnsToTableInCreateColumns()">Add columns to your table</button>
+			  <button value="default" onClick="addColumnsToTableInCreateColumns()">Ok</button>
 			  <button value="cancel" formmethod="dialog" onclick="cancelButtonRecoveryOldData(event)">Cancel</button>
 			</div>
 		  </form>
@@ -4642,6 +4642,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				}
 				else if (currentNode.image == "CreateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
+					createColumnListToAddColumns();//create columnsList including columns in the table 
 					if (parentNode.STAdata){
 						currentNode.STAdataCopy=currentNode.STAdata; //To recovery data if cancel is pressed
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent	
@@ -4650,10 +4651,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						if (!currentNode.STAnewColumnsToAdd){
 							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
 						}
-						//Update-create columns List
-						var dataKeys= Object.keys(currentNode.STAdata[0]);
-						currentNode.STAcolumnsList=dataKeys;
-
 						networkNodes.update(currentNode);
 						drawTableInColumnBoxTableInCreateColumns();
 						document.getElementById("DialogCreateColumns").showModal();
@@ -4662,6 +4659,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 
 				else if (currentNode.image == "AggregateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
+					createColumnListToAddColumns();//create columnsList including columns in the table 
 					if (parentNode.STAdata){
 						currentNode.STAdataCopy=currentNode.STAdata; //To recovery data if cancel is pressed
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent
@@ -5002,13 +5000,47 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}
 		}
 
-		//Create Columns
-		function addColumnToListCreateColumn(event){
+
+		//General to addColumns
+		function cancelButtonRecoveryOldData(event){
 			event.preventDefault();
+			currentNode.STAdata=currentNode.STAdataCopy;
+			networkNodes.update(currentNode)
+
+			if (currentNode.image=="CreateColumns.png"){
+				document.getElementById("DialogCreateColumns").close();
+			}else{
+				document.getElementById("DialogAggregateColumns").close();
+			}
+		}
+		function deleteRowInColumnsBoxTable(number){
+			event.preventDefault(); 
+			var copyWithoutNumber=[],n=currentNode.STAcolumnsList.length, c=currentNode.STAnewColumnsToAdd.length,columsnListNew=[];
+			for (var i=0;i<c;i++){
+				if (i!=number){
+					copyWithoutNumber.push(currentNode.STAnewColumnsToAdd[i])
+				}else{
+					var columnToErase=currentNode.STAnewColumnsToAdd[i][1];
+				}
+			}
+
+			//Erase attribute from the column list
+			for (var a=0;a<n;a++) {
+				if (currentNode.STAcolumnsList[a]!=columnToErase){
+					columsnListNew.push(currentNode.STAcolumnsList[a])
+				}
+			}	
+
+			currentNode.STAnewColumnsToAdd=copyWithoutNumber;
+			currentNode.STAcolumnsList=columsnListNew;
+			if (currentNode.image=="CreateColumns.png"){ //createColumn
+				drawTableInColumnBoxTableInCreateColumns();
+			}else{ //aggregateTable
+				drawTableInColumnBoxTableInAggregateColumns();
+			} 
 			
-			var TypeOfValuesRadiobuttons= document.getElementsByName("TypeOfValues");
-			var columnName= document.getElementById("columnNameCreateColumns").value;
-			if (columnName.length==0) columnName="noname";
+		}
+		function columnExistInTheTable(columnName){
 			var columnList=	currentNode.STAcolumnsList;
 			var n= columnList.length, columnNameExist=false;
 			
@@ -5018,20 +5050,43 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					break;
 				}
 			}
+			if (!columnNameExist){
+				columnList.push(columnName); //Add to Column list to avoid duplicates
+				currentNode.STAcolumnsList=columnList 
+			}
+
+			return columnNameExist;
+		}
+		function createColumnListToAddColumns(){
+			var dataKeys= Object.keys(currentNode.STAdata[0]);
+			currentNode.STAcolumnsList=dataKeys;
+			networkNodes.update(currentNode);
+		}
+
+		//Create Columns
+
+		function addColumnToListCreateColumn(event){
+			event.preventDefault();
+			
+			var TypeOfValuesRadiobuttons= document.getElementsByName("TypeOfValues");
+			var columnName= document.getElementById("columnNameCreateColumns").value;
+			var n= TypeOfValuesRadiobuttons.length;
+			
+			if (columnName.length==0) columnName="noname";
+			var columnNameExist=columnExistInTheTable(columnName); //Search if name for column is not repeated
 
 			if(columnNameExist){ //It will not be added because column name already exist
 				alert("Chosen column name already exists, change it to add column to the list ");
 			}else{
-				for (var i = 0; i < TypeOfValuesRadiobuttons.length; i++) {
+				for (var i = 0; i <n ; i++) {
 					if (TypeOfValuesRadiobuttons[i].checked){
 						var number= document.getElementById("inputText_"+TypeOfValuesRadiobuttons[i].value)?.value;
 						if (number=="") //to avoid undefined in column list and problems afeter
-							number=0;
+							number="0";
 						currentNode.STAnewColumnsToAdd.push([TypeOfValuesRadiobuttons[i].value,columnName,number]);
 					}
             	} 
-				columnList.push(columnName); //Add to Column list to avoid duplicates
-				currentNode.STAcolumnsList=columnList 
+
 				drawTableInColumnBoxTableInCreateColumns();
 			}
 
@@ -5070,34 +5125,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			cdns=[tableHTML];
 			spanColumnsListAggregateColumns.innerHTML=cdns;
 		}
-
-		function deleteRowInColumnsBoxTable(number){
-			event.preventDefault(); 
-			var copyWithoutNumber=[],n=currentNode.STAcolumnsList.length, c=currentNode.STAnewColumnsToAdd.length,columsnListNew=[];
-			for (var i=0;i<c;i++){
-				if (i!=number){
-					copyWithoutNumber.push(currentNode.STAnewColumnsToAdd[i])
-				}else{
-					var columnToErase=currentNode.STAnewColumnsToAdd[i][1];
-				}
-			}
-
-			//Erase attribute from the column list
-			for (var a=0;a<n;a++) {
-				if (currentNode.STAcolumnsList[a]!=columnToErase){
-					columsnListNew.push(currentNode.STAcolumnsList[a])
-				}
-			}	
-
-			currentNode.STAnewColumnsToAdd=copyWithoutNumber;
-			currentNode.STAcolumnsList=columsnListNew;
-			if (currentNode.image=="CreateColumns.png"){ //createColumn
-				drawTableInColumnBoxTableInCreateColumns();
-			}else{ //aggregateTable
-				drawTableInColumnBoxTableInAggregateColumns();
-			} 
-			
-		}
 		function addColumnsToTableInCreateColumns(){
 			event.preventDefault();
 			var data;
@@ -5123,17 +5150,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			document.getElementById("DialogCreateColumns").close();
 			showInfoMessage("New columns have been added");
 		}
-		function cancelButtonRecoveryOldData(event){
-			event.preventDefault();
-			currentNode.STAdata=currentNode.STAdataCopy;
-			networkNodes.update(currentNode)
+		
 
-			if (currentNode.image=="CreateColumns.png"){
-				document.getElementById("DialogCreateColumns").close();
-			}else{
-				document.getElementById("DialogAggregateColumns").close();
-			}
-		}
 		//Aggregate columns
 		
 		function fillAggregateColumVariablesList(){
@@ -5164,18 +5182,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			}else{
 				columnName=document.getElementById("columnNameAggregateColumns_span").value;
 			}
-						
 
-			//Search if name for column is not repeated
-			var columnList=	currentNode.STAcolumnsList;
-			var n= columnList.length, columnNameExist=false;
-			
-			for (var i=0;i<n;i++){
-				if (columnList[i]==columnName){
-					columnNameExist=true;
-					break;
-				}
-			}
+			var columnNameExist=columnExistInTheTable(columnName); //Search if name for column is not repeated
 
 			if(columnNameExist){ //It will not be added because column name already exist
 				alert("Chosen column name already exists, change it to add column to the list ");
@@ -5206,8 +5214,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 				if (typeOfOperationExist==false ||atLeast2attributesSelected==false){
 					alert("At least two attributes and one aggregation method have to be selected");
 				}else{//All is correct, new column can be added to the list
-					columnList.push(columnName); //Add to Column list to avoid duplicates
-					currentNode.STAcolumnsList=columnList
 					currentNode.STAnewColumnsToAdd.push(STANewColumnsArray); //[typeOfOperation,columnName,[attributes]]
 					networkNodes.update(currentNode);
 					drawTableInColumnBoxTableInAggregateColumns();
@@ -5402,6 +5408,8 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			/////
 			
 		}
+		
+		
 		/////
 		function giveMeNetworkInformation(event) {
 				if (event)
