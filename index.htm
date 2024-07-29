@@ -4646,14 +4646,18 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						currentNode.STAdataCopy=currentNode.STAdata; //To recovery data if cancel is pressed
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent	
 					}
-					 if (parentNode) {
+					if (parentNode) {
 						if (!currentNode.STAnewColumnsToAdd){
 							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
 						}
+						//Update-create columns List
+						var dataKeys= Object.keys(currentNode.STAdata[0]);
+						currentNode.STAcolumnsList=dataKeys;
+
 						networkNodes.update(currentNode);
 						drawTableInColumnBoxTableInCreateColumns();
 						document.getElementById("DialogCreateColumns").showModal();
-					 }		
+					}		
 				}
 
 				else if (currentNode.image == "AggregateColumns.png") {
@@ -5003,19 +5007,33 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			event.preventDefault();
 			
 			var TypeOfValuesRadiobuttons= document.getElementsByName("TypeOfValues");
-			for (var i = 0; i < TypeOfValuesRadiobuttons.length; i++) {
-                if (TypeOfValuesRadiobuttons[i].checked){
-					var columnName= document.getElementById("columnNameCreateColumns").value;
-					var number= document.getElementById("inputText_"+TypeOfValuesRadiobuttons[i].value)?.value;
-					if (number=="") //to avoid undefined in column list and problems afeter
-						number=0;
-					currentNode.STAnewColumnsToAdd.push([TypeOfValuesRadiobuttons[i].value,columnName,number]);
-				}
-                 
-            }  
-			drawTableInColumnBoxTableInCreateColumns();
+			var columnName= document.getElementById("columnNameCreateColumns").value;
+			if (columnName.length==0) columnName="noname";
+			var columnList=	currentNode.STAcolumnsList;
+			var n= columnList.length, columnNameExist=false;
 			
+			for (var i=0;i<n;i++){
+				if (columnList[i]==columnName){
+					columnNameExist=true;
+					break;
+				}
+			}
 
+			if(columnNameExist){ //It will not be added because column name already exist
+				alert("Chosen column name already exists, change it to add column to the list ");
+			}else{
+				for (var i = 0; i < TypeOfValuesRadiobuttons.length; i++) {
+					if (TypeOfValuesRadiobuttons[i].checked){
+						var number= document.getElementById("inputText_"+TypeOfValuesRadiobuttons[i].value)?.value;
+						if (number=="") //to avoid undefined in column list and problems afeter
+							number=0;
+						currentNode.STAnewColumnsToAdd.push([TypeOfValuesRadiobuttons[i].value,columnName,number]);
+					}
+            	} 
+				columnList.push(columnName); //Add to Column list to avoid duplicates
+				currentNode.STAcolumnsList=columnList 
+				drawTableInColumnBoxTableInCreateColumns();
+			}
 
 		}
 
@@ -5152,7 +5170,6 @@ async function requestAndRefreshCountResults(currentNode, period) {
 			var columnList=	currentNode.STAcolumnsList;
 			var n= columnList.length, columnNameExist=false;
 			
-			//currentNode.STAnewColumnsToAdd[i][1]
 			for (var i=0;i<n;i++){
 				if (columnList[i]==columnName){
 					columnNameExist=true;
