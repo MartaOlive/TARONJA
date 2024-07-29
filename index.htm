@@ -4651,13 +4651,13 @@ async function requestAndRefreshCountResults(currentNode, period) {
 							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
 						}
 						networkNodes.update(currentNode);
+						drawTableInColumnBoxTableInCreateColumns();
 						document.getElementById("DialogCreateColumns").showModal();
 					 }		
 				}
+
 				else if (currentNode.image == "AggregateColumns.png") {
 					var parentNode=GetFirstParentNode(currentNode);
-						
-
 					if (parentNode.STAdata){
 						currentNode.STAdataCopy=currentNode.STAdata; //To recovery data if cancel is pressed
 						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent
@@ -4673,6 +4673,10 @@ async function requestAndRefreshCountResults(currentNode, period) {
 						document.getElementById("DialogAggregateColumns").showModal();
 					}
 				}
+
+
+
+
 				else if (currentNode.image == "ColumnsCalculator.png") {
 					var parentNode=GetFirstParentNode(currentNode);
 					if (parentNode) {
@@ -5051,14 +5055,24 @@ async function requestAndRefreshCountResults(currentNode, period) {
 
 		function deleteRowInColumnsBoxTable(number){
 			event.preventDefault(); 
-			var copyWithoutNumber=[];
-			for (var i=0;i<currentNode.STAnewColumnsToAdd.length;i++){
+			var copyWithoutNumber=[],n=currentNode.STAcolumnsList.length, c=currentNode.STAnewColumnsToAdd.length,columsnListNew=[];
+			for (var i=0;i<c;i++){
 				if (i!=number){
 					copyWithoutNumber.push(currentNode.STAnewColumnsToAdd[i])
+				}else{
+					var columnToErase=currentNode.STAnewColumnsToAdd[i][1];
 				}
 			}
 
+			//Erase attribute from the column list
+			for (var a=0;a<n;a++) {
+				if (currentNode.STAcolumnsList[a]!=columnToErase){
+					columsnListNew.push(currentNode.STAcolumnsList[a])
+				}
+			}	
+
 			currentNode.STAnewColumnsToAdd=copyWithoutNumber;
+			currentNode.STAcolumnsList=columsnListNew;
 			if (currentNode.image=="CreateColumns.png"){ //createColumn
 				drawTableInColumnBoxTableInCreateColumns();
 			}else{ //aggregateTable
@@ -5190,7 +5204,7 @@ async function requestAndRefreshCountResults(currentNode, period) {
 		function drawTableInColumnBoxTableInAggregateColumns(){
 			var spanColumnsListAggregateColumns=document.getElementById("spanColumnsListAggregateColumns");
 			var cdns;
-			var tableHTML=`<table border=1><tr><th>Attributes</th><th>Operation</th><th>Column name</th><th>Number of decimals</th></tr>`;
+			var tableHTML=`<table border=1><tr><th>Attributes</th><th>Operation</th><th>Column name</th><th>Number of decimals</th><th></th></tr>`;
 			if (currentNode.STAnewColumnsToAdd.length!=0){
 				var n= currentNode.STAnewColumnsToAdd.length, attributes="";
 				for (var i=0;i<n;i++){
@@ -5204,9 +5218,9 @@ async function requestAndRefreshCountResults(currentNode, period) {
 					}
 					tableHTML+=`<tr><td>${attributes}</td><td>${currentNode.STAnewColumnsToAdd[i][0]}</td><td>${currentNode.STAnewColumnsToAdd[i][1]}</td>`;
 					if (currentNode.STAnewColumnsToAdd[i][3]){ //number of decimals
-						tableHTML+=`<td>${currentNode.STAnewColumnsToAdd[i][3]}</td>`;
+						tableHTML+=`<td>${currentNode.STAnewColumnsToAdd[i][3]}</td><td><button onclick='deleteRowInColumnsBoxTable(${i})'><img src="trash.png" alt="Remove" title="Remove"></button></td></tr>`;
 					}else{
-						tableHTML+=`<td> </td>`;
+						tableHTML+=`<td> </td><td><button onclick='deleteRowInColumnsBoxTable(${i})'><img src="trash.png" alt="Remove" title="Remove"></button></td></tr>`;
 					}
 				}
 			}
