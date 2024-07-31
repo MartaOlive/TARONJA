@@ -5387,26 +5387,54 @@ async function requestAndRefreshCountResults(currentNode, period) {
 							break;
 
 						case  "Mode":
+						if (decimalNumber!=""){
+							addnewColumnModeValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+						}else{
 							addnewColumnModeValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+						}
 							break;
 						case  "FirstValue":
+						if (decimalNumber!=""){
+							addnewColumnFirstValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+						}else{
 							addnewColumnFirstValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+						}
 							break;
 
 						case  "StandardDeviation":
+						if (decimalNumber!=""){
+							addnewColumnStandardDeviationValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+						}else{
 							addnewColumnStandardDeviationValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+						}
 							break;
 						case  "LastValue":
+						if (decimalNumber!=""){
+							addnewColumnLastValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+						}else{
 							addnewColumnLastValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+						}
 							break;
 						case  "Q1":
+						if (decimalNumber!=""){
+							addnewColumnQ1Value(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+						}else{
 							addnewColumnQ1Value(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+						}
 							break;
 						case  "Q3":
+						if (decimalNumber!=""){
+							addnewColumnQ3Value(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+						}else{
 							addnewColumnQ3Value(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+						}
 							break;
 						case  "RandomValue":
+						if (decimalNumber!=""){
+							addnewColumnRandomValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+						}else{
 							addnewColumnRandomValue(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+						}
 							break;						
 						case  "Count": //TE SENTIT?
 							addnewColumnCount(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
@@ -5418,7 +5446,12 @@ async function requestAndRefreshCountResults(currentNode, period) {
 							//
 							break;
 						case  "ProportionDefined": //Falta fer la funció que conta
+						if (decimalNumber!=""){
+							addnewColumnProportionDefined(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2], decimalNumber);
+						}else{
 							addnewColumnProportionDefined(currentNode.STAdata, currentNode.STAnewColumnsToAdd[i][1],currentNode.STAnewColumnsToAdd[i][2]);
+						}
+							
 							break;
 					}
 				}
