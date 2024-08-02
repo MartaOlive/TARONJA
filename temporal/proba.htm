@@ -17,6 +17,7 @@
     <label for="afegeix-capa-capa-calcul-valor-capa-0">Capa:</label>
     <select id="calculator_selectColumns" name="calculator_selectColumnsValue" style="width:400px;" onchange="">
       <option value="columna1" selected="selected">Columna 1</option>
+      <option value="columna2" selected="selected">Columna 2</option>
     </select>
 
     <input type="button" value="Write in the formula" onclick="">
@@ -151,95 +152,29 @@
 
     var textarea = document.getElementById("textAreaFormulaColumnsCalculator")
     textarea.addEventListener('click', event => {
-      console.log(textarea.selectionStart) // logs previous location
+      textarea.setAttribute("data-mousePosition",textarea.selectionStart )
+      //console.log(textarea.selectionStart) // logs previous location
     })
 
     function WriteInTheFormulaButtons(character) {
       event.preventDefault();
       var textAreaFormulaColumnsCalculator = document.getElementById("textAreaFormulaColumnsCalculator");
       var text = textAreaFormulaColumnsCalculator.value;
+      var mousePosition = textAreaFormulaColumnsCalculator.getAttribute("data-mousePosition");
+      //var newText= 
       //var modisyText= ;
-      textAreaFormulaColumnsCalculator.value += character;
+      textAreaFormulaColumnsCalculator.value = [text.slice(0, mousePosition), character, text.slice(mousePosition)].join('');
+      if (!mousePosition){
+        mousePosition=0; //If a button is clicked before click text area
+      }
+      textAreaFormulaColumnsCalculator.setAttribute("data-mousePosition",parseInt(mousePosition)+character.length); //If there is no click, next button will be written after this.
+
+
+     //console.log([str.slice(0, pos), subStr, str.slice(pos)].join(''))
     }
-    const AggregationsOptions = [
-      //{ name: "Mean", desc: "Mean" },
-      //{ name: "Mode", desc: "Mode" },
-      //{ name: "FirstValue", desc: "First value" },
-      //{ name: "Median", desc: "Median" },
-      //{ name: "StandardDeviation", desc: "Standard deviation" },
-      //{ name: "LastValue", desc: "Last value" },
-      //{ name: "Q1", desc: "Q1" },
-      //{ name: "Variance", desc: "Variance" },
-      //{ name: "RandomValue", desc: "Random value" },
-      // { name: "Q3", desc: "Q3" },
-      // { name: "Sum", desc: "Sum" },
-      //{ name: "CountDefined", desc: "Count defined" },
-      // { name: "MinValue", desc: "Min. Value" },
-      // { name: "Concatenate", desc: "Concatenate" },
-      //{ name: "Count", desc: "Count" },
-      // { name: "MaxValue", desc: "Max. value" },
-      // { name: "Span", desc: "Span" },
-      //{ name: "ProportionDefined", desc: "Proportion defined" }, 
-
-      //a crear
-      { name: "Product", desc: "Product" }];
 
 
 
-    function addColumnToListAggregateColumns(event) {
-      event.preventDefault();
-      var TypeOfOperation = document.getElementsByName("operationsRadioAggrgatedColumns"); //operation
-      var STANewColumnsArray = [], attributesArray = [], attribute;
-      var dataKeys = Object.keys(currentNode.STAdata[0]);
-      var chooseNumberDecimalsInputRadio, chooseNumberDecimalsInput, typeOfOperationLenght = TypeOfOperation.length, dataKeysLenght = dataKeys.length;
-      var columnList = currentNode.STAcolumnsList;
-      var columnName;
-
-      var typeOfOperationExist = false, atLeast2attributesSelected = false;
-      //Operation
-      for (var i = 0; i < typeOfOperationLenght; i++) { //Take operation 
-        if (TypeOfOperation[i].checked) {
-          STANewColumnsArray.push(TypeOfOperation[i].id.split("AggrgatedColumns_")[1]);
-          typeOfOperationExist = true;
-        }
-      }
-      //attributes
-      for (var a = 0; a < dataKeysLenght; a++) {
-        attribute = document.getElementById("attributesRadioAggrgatedColumns_" + dataKeys[a]);
-        if (attribute.checked) {
-          attributesArray.push(dataKeys[a]);
-        }
-      }
-      if (attributesArray.length >= 2) {
-        atLeast2attributesSelected = true;
-      }
-
-      if (typeOfOperationExist == false || atLeast2attributesSelected == false) {
-        alert("At least two attributes and one aggregation method have to be selected");
-      } else {//All is correct, new column can be added to the list
-        //columnName
-        if (document.getElementById("columnNameRadioAggregateColumns_personalized").checked) {
-          columnName = document.getElementById("columnNameAggregateColumns").value;
-          if (columnName.length == 0) columnName = "noname";
-        } else {
-          columnName = document.getElementById("columnNameAggregateColumns_span").value;
-        }
-        var columnNameExist = columnExistInTheTable(columnName); //Search if name for column is not repeated
-        
-        if (columnNameExist) { //It will not be added because column name already exist
-          alert("Chosen column name already exists, change it to add column to the list ");
-        }
-        else { //It can be added
-          STANewColumnsArray.push(columnName, attributesArray);
-          if (document.getElementById("chooseNumberDecimals_0").checked) {
-            STANewColumnsArray.push(document.getElementById("chooseNumberDecimals_0_input").value)
-          }
-          currentNode.STAnewColumnsToAdd.push(STANewColumnsArray); //[typeOfOperation,columnName,[attributes]]
-          networkNodes.update(currentNode);
-          drawTableInColumnBoxTableInAggregateColumns();
-        }
-      }
-    }
 
 
 

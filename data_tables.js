@@ -747,8 +747,9 @@ function addNewColumnWithAutoincrementalValues(data,columnName,firstValue){
 	return data;
 }
 
-function addnewColumnSummingColumns(data, columnName,columnsToSum, decimalNumber){
+function addnewColumnSummingColumns(data, columnName,columnsToSum, decimalNumber, dataAttributes){
 	var sum,n=columnsToSum.length; 
+	console.log(dataAttributes)
 	//numWithComa, value, num;
 	for (var i=0;i<data.length;i++){
 		sum=0;
@@ -876,7 +877,7 @@ function addnewColumnMedianValue(data, columnName,columnsToEvaluate, decimalNumb
 	return addnewColumnAggr(data, columnName,columnsToEvaluate, aggrFuncMedian, decimalNumber);
 }
 
-function addnewColumnAggr(data, columnName, columnsToEvaluate, aggrFunc, decimalNumber) {
+function addnewColumnAggr(data, columnName, columnsToEvaluate, aggrFunc, decimalNumber, dataAttributes) { //To pass dataAttributes without decimalNumber put "" to decimalnumber
 	var values, aggr;
 	for (var i=0; i<data.length; i++){
 		values=[];
@@ -884,7 +885,7 @@ function addnewColumnAggr(data, columnName, columnsToEvaluate, aggrFunc, decimal
 			values.push(data[i][columnsToEvaluate[a]]);
 		}
 		aggr=aggrFunc(values); //Use function to be able to evaluate many columns
-		if (decimalNumber){
+		if (decimalNumber || decimalNumber!=""){
 			if (decimalNumber==0){ //round number
 				data[i][columnName]= Math.round(aggr);
 			}
