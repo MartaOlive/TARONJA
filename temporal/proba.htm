@@ -20,7 +20,7 @@
       <option value="columna2" selected="selected">Columna 2</option>
     </select>
 
-    <input type="button" value="Write in the formula" onclick="">
+    <button onclick="WriteInTheFormulaButtons('attributeSelected')" >Write in the formula</button>
 
     <fieldset>
       <legend>Operators and functions for the formula: </legend>
@@ -161,8 +161,11 @@
       var textAreaFormulaColumnsCalculator = document.getElementById("textAreaFormulaColumnsCalculator");
       var text = textAreaFormulaColumnsCalculator.value;
       var mousePosition = textAreaFormulaColumnsCalculator.getAttribute("data-mousePosition");
-      //var newText= 
-      //var modisyText= ;
+
+      if (character=="attributeSelected"){
+        var selector = document.getElementById("calculator_selectColumns");
+        character = selector.options[selector.selectedIndex].value;
+      }
       textAreaFormulaColumnsCalculator.value = [text.slice(0, mousePosition), character, text.slice(mousePosition)].join('');
       if (!mousePosition){
         mousePosition=0; //If a button is clicked before click text area
@@ -170,7 +173,6 @@
       textAreaFormulaColumnsCalculator.setAttribute("data-mousePosition",parseInt(mousePosition)+character.length); //If there is no click, next button will be written after this.
 
 
-     //console.log([str.slice(0, pos), subStr, str.slice(pos)].join(''))
     }
 
 
