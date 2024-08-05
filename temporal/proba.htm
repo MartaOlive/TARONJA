@@ -20,7 +20,7 @@
       <option value="columna2" selected="selected">Columna 2</option>
     </select>
 
-    <button onclick="WriteInTheFormulaButtons('attributeSelected')" >Write in the formula</button>
+    <button onclick="WriteInTheFormulaButtons('attributeSelected')">Write in the formula</button>
 
     <fieldset>
       <legend>Operators and functions for the formula: </legend>
@@ -152,7 +152,7 @@
 
     var textarea = document.getElementById("textAreaFormulaColumnsCalculator")
     textarea.addEventListener('click', event => {
-      textarea.setAttribute("data-mousePosition",textarea.selectionStart )
+      textarea.setAttribute("data-mousePosition", textarea.selectionStart)
       //console.log(textarea.selectionStart) // logs previous location
     })
 
@@ -162,17 +162,15 @@
       var text = textAreaFormulaColumnsCalculator.value;
       var mousePosition = textAreaFormulaColumnsCalculator.getAttribute("data-mousePosition");
 
-      if (character=="attributeSelected"){
+      if (character == "attributeSelected") {
         var selector = document.getElementById("calculator_selectColumns");
         character = selector.options[selector.selectedIndex].value;
       }
       textAreaFormulaColumnsCalculator.value = [text.slice(0, mousePosition), character, text.slice(mousePosition)].join('');
-      if (!mousePosition){
-        mousePosition=0; //If a button is clicked before click text area
+      if (!mousePosition) {
+        mousePosition = 0; //If a button is clicked before click text area
       }
-      textAreaFormulaColumnsCalculator.setAttribute("data-mousePosition",parseInt(mousePosition)+character.length); //If there is no click, next button will be written after this.
-
-
+      textAreaFormulaColumnsCalculator.setAttribute("data-mousePosition", parseInt(mousePosition) + character.length); //If there is no click, next button will be written after this.
     }
 
 
