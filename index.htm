@@ -437,12 +437,10 @@
 			<br>
 			<button value="add" onClick="addColumnToListColumnsCalculator(event)" style="margin-bottom:10px">Add column to list
 			</button>
-			<div style="width:auto;">
-			  <label>Add formula to new columns list</label>
-			  <div>
-				<ol id="columnsBoxColumnsCalculator"></ol>
+			<div style="width:auto;" >
+				<label>List of columns to add</label>
+				<span id= spanColumnsListCalculatorColumns></span>
 			  </div>
-			</div>
 			<br>
 			<div class="center" style="margin-top: 10px">
 			  <button value="default" onClick="addColumnsToTableInColumnsCalculator()">Add columns to your table</button>
@@ -5168,9 +5166,11 @@
 			currentNode.STAcolumnsList=columsnListNew;
 			if (currentNode.image=="CreateColumns.png"){ //createColumn
 				drawTableInColumnBoxTableInCreateColumns();
-			}else{ //aggregateTable
+			}else if (currentNode.image=="AggregateColumns.png"){ //aggregateTable
 				drawTableInColumnBoxTableInAggregateColumns();
-			} 
+			} else{
+				drawTableInColumnBoxTableInCalculatorColumns();
+			}
 			
 		}
 	function columnExistInTheTable(columnName){
@@ -5593,7 +5593,19 @@
     }
 	
 	function addColumnToListColumnsCalculator(event){
+		event.preventDefault();
+		var columnName= document.getElementById("columnNameColumnsCalculator").value;
+		var textAreaFormulaColumnsCalculator= document.getElementById("textAreaFormulaColumnsCalculator");
+		if (columnName.length==0) columnName="noname";
+		var columnNameExist=columnExistInTheTable(columnName); //Search if name for column is not repeated
+		if(columnNameExist){ //It will not be added because column name already exist
+			alert("Chosen column name already exists, change it to add column to the list ");
+		}else{
 
+			currentNode.STAnewColumnsToAdd.push([textAreaFormulaColumnsCalculator.value,columnName]);
+			drawTableInColumnBoxTableInCalculatorColumns();
+		}
+		
 	}
 	function fillCalculatorColumVariablesList(){ //omplir el desplegable
 
@@ -5611,7 +5623,19 @@
 		currentNode.STAcolumnsList=dataKeys;
 	}
 	function drawTableInColumnBoxTableInCalculatorColumns(){
+		var spanColumnsListAggregateColumns=document.getElementById("spanColumnsListCalculatorColumns");
+		var cdns;
+		var tableHTML=`<table border=1><tr><th>Formula</th><th>Column name</th><th></th>`;
+			if (currentNode.STAnewColumnsToAdd.length!=0){
+		 		var n= currentNode.STAnewColumnsToAdd.length;
+		 		for (var i=0;i<n;i++){
+					tableHTML+= `<tr><td>${currentNode.STAnewColumnsToAdd[i][0]}</td> <td>${currentNode.STAnewColumnsToAdd[i][1]}</td><td><button onclick='deleteRowInColumnsBoxTable(${i})'><img src="trash.png" alt="Remove" title="Remove"></button></td></tr>`
 
+				}
+			}
+		 	tableHTML+=`</table>`;
+		 	cdns=[tableHTML];
+			spanColumnsListAggregateColumns.innerHTML=cdns;
 	}
 		
 		/////
