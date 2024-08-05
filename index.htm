@@ -323,7 +323,7 @@
 			<label for="afegeix-capa-capa-calcul-valor-capa-0">Capa:</label>
 			<select id="calculator_selectColumns" name="calculator_selectColumnsValue" style="width:400px;" onchange="">
 			  <option value="columna1" selected="selected">Columna 1</option>
-			  <option value="columna2" selected="selected">Columna 2</option>
+			  <option value="columna2" >Columna 2</option>
 			</select>
 		
 			<button onclick="WriteInTheFormulaButtons('attributeSelected')" >Write in the formula</button>
@@ -4799,14 +4799,23 @@
 						document.getElementById("DialogAggregateColumns").showModal();
 					}
 				}
-
-
-
-
 				else if (currentNode.image == "ColumnsCalculator.png") {
 					var parentNode=GetFirstParentNode(currentNode);
+					
+					if (parentNode.STAdata){
+						if (currentNode.STAdata){
+							currentNode.STAdataCopy=currentNode.STAdata; //To recovery data if cancel is pressed
+						}
+						currentNode.STAdata = deapCopy(parentNode.STAdata); //Necessary to reset data taking it from parent	
+					}
+					createColumnListToAddColumns();//create columnsList including columns in the table 
+					fillCalculatorColumVariablesList();
 					if (parentNode) {
-						//ShowColumnsCalculatorsDialog();
+						if (!currentNode.STAnewColumnsToAdd){
+							currentNode.STAnewColumnsToAdd=[]; //First time: To create it. Later: To erase old values					
+						}
+						networkNodes.update(currentNode);
+						drawTableInColumnBoxTableInCalculatorColumns();
 						document.getElementById("DialogColumnsCalculator").showModal();
 					}
 				}
@@ -5584,7 +5593,25 @@
     }
 	
 	function addColumnToListColumnsCalculator(event){
-		
+
+	}
+	function fillCalculatorColumVariablesList(){ //omplir el desplegable
+
+		var dataKeys= Object.keys(currentNode.STAdata[0]);
+		var n= dataKeys.length;
+		var select = document.getElementById("calculator_selectColumns");
+		var cdns=[]
+
+		for (var i=0;i<n;i++){
+			cdns.push(`<option value= ${dataKeys[i]}>${dataKeys[i]}</option>`);
+		}
+		select.innerHTML=cdns.join("");
+	
+		//Create list of columns to avoid repetitionss
+		currentNode.STAcolumnsList=dataKeys;
+	}
+	function drawTableInColumnBoxTableInCalculatorColumns(){
+
 	}
 		
 		/////
